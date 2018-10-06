@@ -1,0 +1,80 @@
+
+\documentclass[12pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+% See the ``Article customise'' template for come common customisations
+
+\title{Notes on Portfolio Optimization}
+\author{Ashwin Rao}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+
+\section{A Simple DP Formulation for one risky and one riskless asset}
+
+Assume we have $T$ discrete time steps labeled as $t = 0, 1, \ldots, T$. Wealth at time step $t$ is denoted as $W_t$. We start with wealth $W_0$. The utility of wealth consumption at final time $T$ is given as $U(W_T) = - \frac {e^{-\gamma W_T}} {\gamma}$ for some $\gamma > 0$. Let the one-step rate of return of the riskless asset be $r$ and let the one-step rate of return of the risky asset be the random variable $R \sim N(\mu, \sigma^2)$. Let the single-time-step discount factor for wealth be $\rho$.
+
+State will be represented as $(t, W_t)$. Assume our decision (action) at any time step $t$ is given by the quantity of investment in the risky asset at time step $t$ for all $0 <= t <= T-1$ and is denoted by $x_t$ (hence, quantity of investment in the riskless asset at time $t$ will be $W_t - x_t$). We denote the policy as $\pi$, so $\pi((t, W_t)) = x_t$.
+
+$$W_{t+1} = x_t (1 + R) + (W_t - x_t) (1 + r)$$
+
+Denote excess return of the risk asset (over riskless return) as $S = R - r$. So,
+
+$$W_{t+1} = x_t S + W_t (1 + r)$$
+
+
+
+Value function for a given policy is denoted as $V^{\pi}((t, W_t)) = E_{\pi}[\rho^{T-t} \cdot U(W_T) | (t, W_t)] = E_{\pi}[- \rho^{T-t} \cdot \frac {e^{-\gamma W_T}} {\gamma} | (t, W_t)]$. Optimal Value function will be denoted as $V^*((t, W_t)) = \max_{\pi} V^{\pi}((t, W_t)) = \max_{\pi} E_{\pi}[\rho^{T-t} \cdot U(W_T) | (t, W_t)] = \max_{\pi} E_{\pi}[-\rho^{T-t} \cdot \frac {e^{-\gamma W_T}} {\gamma} | (t, W_t)]$.
+
+ Assume $V^*((t, W_t)$ has the form $-a_t e^{-b_t W_t}$. Since $V^*((T, W_T)) = - \frac {e^{-\gamma W_T}} {\gamma}, a_T = \frac 1 {\gamma}, b_T = \gamma$.
+
+The Bellman optimality equation is:
+
+$$V^*((t, W_t)) = max_{x_t} (E_{R \sim N(\mu, \sigma^2}[\rho \cdot V^*((t+1, W_{t+1})])$$
+$$ = max_{x_t} (E_{R \sim N(\mu, \sigma^2)} [- \rho \cdot a_{t+1} e^{-b_{t+1} (x_t S + W_t(1+r))}])$$
+$$ = max_{x_t} (- \rho \cdot a_{t+1} e^{-b_{t+1}W_t(1+r) - b_{t+1} x_t (\mu - r) + \frac {\sigma^2} {2} b^2_{t+1} x_t^2})$$
+
+$\frac {\partial V^*((t, W_t)} {\partial x_t} = 0$ yields:
+
+$$-b_{t+1} (\mu - r) + \sigma^2 b_{t+1}^2 x^*_t = 0$$
+
+$$x^*_t = \frac {\mu - r} {\sigma^2 b_{t+1}}$$
+
+Plugging in $x^*_t$ in the above equation for $V^*((t, W_t)$ gives:
+
+$$V^*((t, W_t)) = - \rho \cdot a_{t+1} e^{-b_{t+1} W_t (1 + r) - \frac {(\mu - r)^2} {2 \sigma^2}} $$
+
+But since,
+
+$$V^*((t, W_t)) = -a_t e^{-b_t W_t}$$, we can write the following recursive equations for $a_t$ and $b_t$.
+
+$$a_t = \rho \cdot a_{t+1} e^{- \frac {(\mu -r)^2} {2 \sigma^2}}$$
+$$b_t = b_{t+1} (1 + r)$$
+
+Since we know that $a_T = \frac 1 \gamma, b_T = \gamma$,
+
+$$a_t = \frac {\rho^{T-t}} {\gamma} e^{- \frac {(\mu - r)^2 \cdot (T-t)} {2 \sigma^2}}$$
+$$b_t = \gamma \cdot (1+ r)^{T-t}$$
+
+Hence,
+
+$$x^*_t = \frac {\mu - r} {\sigma^2 \gamma (1+ r)^{T-t-1}}$$
+$$V^*((t, W_t)) = - \frac {\rho^{T-t}} {\gamma} e^{- \frac {(\mu - r)^2 \cdot (T-t)} {2 \sigma^2}} \cdot e^{- \gamma \cdot (1+ r)^{T-t} \cdot W_t}$$
+
+As extensions of this problem, consider:
+
+\begin{itemize}
+\item Discrete Amounts of shares to hold and discrete quantities of trades
+\item Transaction costs
+\item Locked-out days for trading
+\item Non-stationary/arbitrary distributions
+\item Borrowing rate changing/uncertain future borrowing rate
+\end{itemize}
+
+
+\end{document}

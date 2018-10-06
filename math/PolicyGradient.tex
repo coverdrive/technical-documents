@@ -1,0 +1,466 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\usetikzlibrary{positioning}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Policy Gradient Theorem]{Policy Gradient Theorem} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{ICME, Stanford University
+ % Your institution for the title page
+}
+
+\date{} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+\section{Motivation and Intuition}
+
+
+\begin{frame}
+\frametitle{Why do we care about Policy Gradient Theorem (PGT)?}
+\pause
+\begin{itemize}[<+->]
+\item Let us review how we got here
+\item We started with Markov Decision Processes and Bellman Equations
+\item We then studied several variants of DP and RL algorithms
+\item We noted that the idea of {\em Generalized Policy Iteration} (GPI) is key
+\item Policy Improvement step: $\pi(a|s)$ derived from $\argmax_a Q(s, a)$
+\item How do we do $\argmax$ when action space is large or continuous?
+\item Idea: Do Policy Improvement step with a Gradient Ascent instead
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{``Policy Improvement with a Gradient Ascent??''}
+\pause
+\begin{itemize}[<+->]
+\item We want to find the Policy that fetches the ``Best Expected Returns''
+\item Gradient Ascent on ``Expected Returns'' w.r.t params of Policy func
+\item So we need a func approx for (stochastic) Policy Func: $\pi(s, a; \theta)$
+\item In addition to the usual func approx for Action Value Func: $Q(s, a; w)$
+\item $\pi(s, a; \theta)$ func approx called {\em Actor}, $Q(s, a; w)$ func approx called {\em Critic}
+\item Critic parameters $w$ are optimized w.r.t $Q(s, a; w)$ loss function $\min$
+\item Actor parameters $\theta$ are optimized w.r.t Expected Returns $\max$
+\item We need to formally define ``Expected Returns''
+\item But we already see that this idea is appealing for continuous actions
+\item GPI with Policy Improvement done as {\bf Policy Gradient (Ascent)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Other Advantages of Policy Gradient approach}
+\pause
+\begin{itemize}[<+->]
+\item Finds the best {\em stochastic} policy
+\item Unlike the deterministic policy-focused search of other RL algorithms
+\item Naturally {\em explores} due to stochastic policy representation
+\item Small changes in $\theta \Rightarrow$ small changes in $\pi$, and in state distribution
+\item This avoids the convergence issues seen in $\argmax$-based algorithms 
+\end{itemize}
+\end{frame}
+
+\section{Definitions and Notation}
+
+\begin{frame}
+\frametitle{Notation}
+\pause
+\begin{itemize}[<+->]
+\item Discount Factor $\gamma$
+\item Assume episodic with $0 \leq \gamma \leq1$ or non-episodic with $0 \leq \gamma < 1$
+\item States $s_t \in \mathcal{S}$, Actions $a_t \in \mathcal{A}$, Rewards $r_t \in \mathbb{R}$, $\forall t \in \{0, 1, 2, \ldots\}$
+\item State Transition Probabilities $\mathcal{P}_{s,s'}^a = Pr(s_{t+1}=s'|s_t=s,a_t=a)$
+\item Expected Rewards $\mathcal{R}_s^a = E[r_t | s_t=s,a_t=a]$
+\item Initial State Probability Distribution $p_0 : \mathcal{S} \rightarrow [0,1]$
+\item Policy Func Approx $\pi(s,a;\theta) = Pr(a_t=a | s_t=s,\theta), \theta \in \mathbb{R}^k$
+\end{itemize}
+\pause
+PGT coverage will be quite similar for non-episodic, by considering average-reward objective (so we won't cover it)
+\end{frame}
+
+\begin{frame}
+\frametitle{``Expected Returns" Objective}
+\pause
+Now we formalize the ``Expected Returns'' Objective $J(\pi_{\theta})$
+$$J(\pi_{\theta}) = E[\sum_{t=0}^\infty \gamma^t r_t|\pi]$$
+\pause
+Value Function $V^{\pi}(s)$ and Action Value function $Q^{\pi}(s,a)$ defined as:
+$$V^{\pi}(s) = E[\sum_{t=k}^\infty \gamma^{t-k} r_t|s_k=s, \pi], \forall k \in \{0, 1, 2, \ldots\}$$
+$$Q^{\pi}(s,a) = E[\sum_{t=k}^\infty \gamma^{t-k} r_t|s_k=s, a_k=a, \pi], \forall k \in \{0, 1, 2, \ldots\}$$
+\pause
+$$\mbox{Advantage Function } A^{\pi}(s,a) = Q^{\pi}(s,a) - V^{\pi}(s)$$
+\pause
+Also, $p(s \rightarrow s', t, \pi)$ will be a key function for us - it denotes the probability of going from state $s$ to $s'$ in $t$ steps by following policy $\pi$
+\end{frame}
+
+\begin{frame}
+\frametitle{Discounted State Visitation Measure}
+\pause
+$$J(\pi_{\theta}) = E[\sum_{t=0}^\infty \gamma^t r_t|\pi] = \sum_{t=0}^\infty \gamma^t E[r_t|\pi]$$
+\pause
+$$ = \sum_{t=0}^\infty \gamma^t \int_{\mathcal{S}} (\int_{\mathcal{S}}  p_0(s_0) \cdot p(s_0 \rightarrow s, t, \pi) \cdot ds_0) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot \mathcal{R}_s^a \cdot da \cdot ds$$
+\pause
+$$ =  \int_{\mathcal{S}} (\int_{\mathcal{S}}  \sum_{t=0}^\infty \gamma^t \cdot p_0(s_0) \cdot p(s_0 \rightarrow s, t, \pi) \cdot ds_0) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot \mathcal{R}_s^a \cdot da \cdot ds$$
+\pause
+\begin{definition}
+$$J(\pi_{\theta}) =  \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot \mathcal{R}_s^a \cdot da \cdot ds$$
+\end{definition}
+\pause
+where $\rho^{\pi}(s) = \int_{\mathcal{S}}  \sum_{t=0}^\infty \gamma^t \cdot p_0(s_0) \cdot p(s_0 \rightarrow s, t, \pi) \cdot ds_0$ is the key function (for PGT) that we refer to as the {\em Discounted State Visitation Measure}.
+\end{frame}
+
+\section{Proof of Policy Gradient Theorem}
+
+\begin{frame}
+\frametitle{Policy Gradient Theorem}
+\pause
+\begin{theorem}
+$$\pderiv{J(\pi_{\theta})}{\theta} = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pderiv{\pi(s,a; \theta)}{\theta} Q^{\pi}(s,a) \cdot da \cdot ds$$
+\end{theorem}
+\pause
+\begin{itemize}[<+->]
+\item Note: $\rho^{\pi}(s)$ depends on $\theta$, but we don't have a $\pderiv{\rho^{\pi}(s)}{\theta}$ term in $\pderiv{J(\pi_{\theta})}{\theta}$
+\item So we can simply sample simulation paths, and at each time step, we calculate $\pderiv{\log \pi(s,a; \theta)}{\theta} Q^{\pi}(s,a)$ (probabilities implicit in the paths)
+\item We will estimate $Q^{\pi}(s,a)$ with a func approx $Q(s,a;w)$
+\item We will later show how to avoid the estimate bias of $Q(s,a;w)$
+\item This numerical estimate of $\pderiv{J(\pi_{\theta})}{\theta}$ enables {\bf Policy Gradient Ascent}
+\item We will now go through the PGT proof slowly and rigorously
+\item Providing commentary and intuition before each step in the proof
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+We begin the proof by noting that:
+$$J(\pi_{\theta}) = \int_{\mathcal{S}} p_0(s_0) \cdot V^{\pi}(s_0) \cdot ds_0 = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pi(s_0, a_0; \theta) \cdot Q^{\pi}(s_0, a_0) \cdot da_0 \cdot ds_0$$
+\pause
+Spilt $\pderiv{J(\pi_{\theta})}{\theta}$ by partial of $\pi(s_0, a_0; \theta)$ and partial of $Q^{\pi}(s_0, a_0)$
+\pause
+\begin{align*}
+\pderiv{J(\pi_{\theta})}{\theta} & = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a_0) \cdot da_0 \cdot ds_0 \\
+& + \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pi(s_0, a_0; \theta) \pderiv{Q^{\pi}(s_0, a_0)}{\theta} \cdot da_0 \cdot ds_0  \\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+Now expand $Q^{\pi}(s_0, a_0)$ to $\mathcal{R}_{s_0}^{a_0} + \int_{\mathcal{S}} \gamma \cdot \mathcal{P}_{s_0,s_1}^{a_0} \cdot V^{\pi}(s_1) \cdot ds_1$ (Bellman)
+\pause
+\begin{align*}
+& = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a_0) \cdot da_0 \cdot ds_0 \\
+& + \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pi(s_0, a_0; \theta) \cdot \frac {\partial} {\partial \theta} (\mathcal{R}_{s_0}^{a_0} + \int_{\mathcal{S}} \gamma \cdot \mathcal{P}_{s_0,s_1}^{a_0} \cdot V^{\pi}(s_1) \cdot ds_1) \cdot da_0 \cdot ds_0 \\
+\end{align*}
+\pause
+Note: $\pderiv{\mathcal{R}_{s_0}^{a_0}}{\theta} = 0$, so remove that term
+\pause
+\begin{align*}
+& = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a) \cdot da_0 \cdot ds_0 \\
+& + \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pi(s_0, a_0; \theta) \cdot \frac {\partial} {\partial \theta} (\int_{\mathcal{S}} \gamma \cdot \mathcal{P}_{s_0,s_1}^{a_0} \cdot V^{\pi}(s_1) \cdot ds_1) \cdot da_0 \cdot ds_0 \\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+Now take the $\pderiv{}{\theta}$ inside $\int_\mathcal{S}$ to apply only on $V^{\pi}(s_1)$
+\pause
+\begin{align*}
+& = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a) \cdot da_0 \cdot ds_0 \\
+& + \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pi(s_0, a_0; \theta) \int_{\mathcal{S}} \gamma \cdot \mathcal{P}_{s_0,s_1}^{a_0} \pderiv{V^{\pi}(s_1)}{\theta} ds_1 \cdot da_0 \cdot ds_0\\
+\end{align*}
+\pause
+Now bring the outside $\int_\mathcal{S}$ and $\int_\mathcal{A}$ inside the inner $\int_{S}$
+\pause
+\begin{align*}
+& = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a_0) \cdot da_0 \cdot ds_0 \\
+& + \int_{\mathcal{S}}  (\int_{\mathcal{S}} \gamma \cdot p_0(s_0) \int_{\mathcal{A}} \pi(s_0, a_0; \theta) \cdot \mathcal{P}_{s_0,s_1}^{a_0} \cdot d{a_0} \cdot ds_0) \pderiv{V^{\pi}(s_1)}{\theta} \cdot ds_1\\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Gradient Theorem}
+\pause
+Note that $\int_{\mathcal{A}} \pi(s_0, a_0; \theta) \cdot \mathcal{P}_{s_0,s_1}^{a_0} \cdot d{a_0} = p(s_0 \rightarrow s_1, 1, \pi)$
+\pause
+\begin{align*}
+& = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a_0) \cdot da_0 \cdot ds_0 \\
+& + \int_{\mathcal{S}} (\int_{\mathcal{S}} \gamma \cdot p_0(s_0) \cdot p(s_0 \rightarrow s_1, 1, \pi) \cdot ds_0) \cdot  \pderiv{V^{\pi}(s_1)}{\theta} \cdot ds_1\\
+\end{align*}
+\pause
+Now expand $V^{\pi}(s_1)$ to $\int_{\mathcal{A}} \pi(s_1, a_1; \theta) \cdot Q^{\pi}(s_1,a_1) \cdot da_1$
+\pause
+\begin{align*}
+& = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a_0) \cdot da \cdot ds_0 \\
+& + \int_{\mathcal{S}} (\int_{\mathcal{S}} \gamma \cdot p_0(s_0) p(s_0 \rightarrow s_1, 1, \pi) ds_0) \frac {\partial} {\partial \theta} (\int_{\mathcal{A}} \pi(s_1, a_1; \theta) \cdot Q^{\pi}(s_1,a_1) da_1) ds_1\\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+We are now back to where we started calculating partial of $\int_{\mathcal{A}} \pi \cdot Q^{\pi} \cdot da$.\\
+\pause
+Follow the same process of splitting $\pi \cdot Q^{\pi}$, then Bellman-expanding $Q^{\pi}$ (to calculate its partial), and iterate.
+\pause
+\begin{align*}
+& = \int_{\mathcal{S}} p_0(s_0) \int_{\mathcal{A}} \pderiv{\pi(s_0, a_0; \theta)}{\theta} Q^{\pi}(s_0, a_0) \cdot da_0 \cdot ds_0 \\
+& + \int_{\mathcal{S}} \int_{\mathcal{S}} \gamma \cdot p_0(s_0) p(s_0 \rightarrow s_1, 1, \pi) ds_0 (\int_{\mathcal{A}} \pderiv{\pi(s_1, a_1; \theta)}{\theta} Q^{\pi}(s_1,a_1) da_1 + \ldots)ds_1\\
+\end{align*}
+\pause
+This iterative process leads us to:
+$$= \sum_{t=0}^\infty \int_{\mathcal{S}} \int_{\mathcal{S}} \gamma^t \cdot p_0(s_0) \cdot p(s_0 \rightarrow s_t, t, \pi) \cdot ds_0 \int_{\mathcal{A}} \pderiv{\pi(s_t, a_t; \theta)}{\theta} Q^{\pi}(s_t,a_t) \cdot da_t \cdot ds_t$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+Bring $\sum_{t=0}^{\infty}$ inside the two $\int_{\mathcal{S}}$, and note that $\int_{\mathcal{A}} \pderiv{\pi(s_t, a_t; \theta)}{\theta} Q^{\pi}(s_t,a_t) \cdot da_t$ is independent of $t$.
+\pause
+$$= \int_{\mathcal{S}} \int_{\mathcal{S}} \sum_{t=0}^{\infty} \gamma^t \cdot p_0(s_0) \cdot p(s_0 \rightarrow s, t, \pi) \cdot ds_0 \int_{\mathcal{A}} \pderiv{\pi(s, a; \theta)}{\theta} Q^{\pi}(s,a) \cdot da \cdot ds$$
+\pause
+Reminder that $\int_{\mathcal{S}} \sum_{t=0}^{\infty} \gamma^t \cdot p_0(s_0) \cdot p(s_0 \rightarrow s, t, \pi) \cdot ds_0 \overset{\mathrm{def}}{=} \rho^{\pi}(s)$. So,
+\pause
+$$ \pderiv{J(\pi_{\theta})}{\theta} = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pderiv{\pi(s, a; \theta)}{\theta} Q^{\pi}(s,a) \cdot da \cdot ds $$
+$$\mathbb{Q.E.D.}$$
+\end{frame}
+
+\section{Compatible Function Approximation Theorem}
+
+\begin{frame}
+\frametitle{But we don't know the (true) $Q^{\pi}(s,a)$}
+\pause
+\begin{itemize}[<+->]
+\item Yes, and as usual, we will estimate it with a func approx $Q(s,a; w)$
+\item We refer to $Q(s,a; w)$ as the Critic func approx (with params $w$)
+\item We refer to $\pi(s, a; \theta)$ as the Actor func approx (with params $\theta$)
+\item But $Q(s,a;w)$ is a biased estimate of $Q^{\pi}(s,a)$, which is problematic
+\item To overcome bias $\Rightarrow$ {\em Compatible Function Approximation Theorem}
+\end{itemize}	
+\end{frame}
+
+\begin{frame}
+\frametitle{Compatible Function Approximation Theorem}
+\pause
+\begin{theorem}
+If the following two conditions are satisfied:
+\pause
+\begin{enumerate}
+\item Critic gradient is {\em compatible} with the Actor score function
+$$\pderiv{Q(s,a;w)}{w} = \pderiv{\log \pi(s,a; \theta)}{\theta}$$ 
+\pause
+\item Critic parameters $w$ minimize the following mean-squared error:
+$$\epsilon = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) (Q^{\pi}(s,a) - Q(s,a;w))^2 \cdot da \cdot ds$$
+\end{enumerate}
+\pause
+Then the Policy Gradient using critic $Q(s,a;w)$ is exact:
+$$\pderiv{J(\pi_{\theta})}{\theta} = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pderiv{\pi(s, a; \theta)}{\theta} Q(s,a; w) \cdot da \cdot ds$$
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Compatible Function Approximation Theorem}
+\pause
+For $w$ that minimizes
+$$\epsilon = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot (Q^{\pi}(s,a) - Q(s,a;w))^2 \cdot da \cdot ds,$$
+\pause
+$$\int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot (Q^{\pi}(s,a) - Q(s,a;w)) \cdot \pderiv{Q(s,a;w)}{w} \cdot da \cdot ds = 0$$
+\pause
+But since $\pderiv{Q(s,a;w)}{w} = \pderiv{\log \pi(s,a; \theta)}{\theta}$, we have:
+\pause
+$$\int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot (Q^{\pi}(s,a) - Q(s,a;w)) \cdot \pderiv{\log \pi(s,a; \theta)}{\theta} \cdot da \cdot ds = 0$$
+\pause
+\begin{align*}
+\mbox{Therefore, } & \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot Q^{\pi}(s,a) \cdot \pderiv{\log \pi(s,a; \theta)}{\theta} \cdot da \cdot ds \\
+= & \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot Q(s,a; w) \cdot \pderiv{\log \pi(s,a; \theta)}{\theta} \cdot da \cdot ds\\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Compatible Function Approximation Theorem}
+\pause
+$$\mbox{But } \pderiv{J(\pi_{\theta})}{\theta} = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot Q^{\pi}(s,a) \cdot \pderiv{\log \pi(s,a; \theta)}{\theta} \cdot da \cdot ds$$
+\pause
+\begin{align*}
+\mbox{So, } \pderiv{J(\pi_{\theta})}{\theta} & = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot Q(s,a; w) \cdot \pderiv{\log \pi(s,a; \theta)}{\theta} \cdot da \cdot ds\\
+& = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pderiv{\pi(s,a; \theta)}{\theta} \cdot Q(s,a; w) \cdot da \cdot ds\\
+\end{align*}
+$$\mathbb{Q.E.D.}$$
+\pause
+{\bf This means with conditions (1) and (2) of Compatible Function Approximation Theorem, we can use the critic func approx $Q(s,a;w)$ and still have the exact Policy Gradient.}
+\end{frame}
+
+\begin{frame}
+\frametitle{So what does the algorithm look like?}
+\pause
+\begin{itemize}[<+->]
+\item Generate a sufficient set of simulation paths $s_0,a_0,r_0,s_1,a_1,r_1,\ldots$
+\item $s_0$ is sampled from the distribution $p_0(\cdot)$
+\item $a_t$ is sampled from $\pi(s_t,\cdot; \theta)$
+\item $s_{t+1}$ sampled from transition probs and $r_{t+1}$ from reward func
+\item Sum $\gamma^t \cdot \pderiv{\log \pi(s_t,a_t; \theta)}{\theta} \cdot Q(s_t,a_t; w)$ over $t$ and over paths
+\item This gives an unbiased estimate of $\pderiv{J(\pi_{\theta})}{\theta}$
+\item To reduce variance, use advantage function estimate $A(s,a;w,v) = Q(s,a;w) - V(s; v)$ (instead of $Q(s,a;w))$
+\end{itemize}
+\pause
+\begin{align*}
+\mbox{Note: } & \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pderiv{\pi(s,a; \theta)}{\theta} \cdot V(s;v) \cdot da \cdot ds\\
+ = & \int_{\mathcal{S}} \rho^{\pi}(s) \cdot V(s;v) \frac \partial {\partial \theta} (\int_{\mathcal{A}} \pi(s,a; \theta) \cdot da) \cdot ds = 0\\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{How to enable Compatible Function Approximation}
+\pause
+A simple way to enable Compatible Function Approximation
+\pause
+$\pderiv{Q(s,a;w)}{w_i} = \pderiv{\log \pi(s,a; \theta)}{\theta_i}, \forall i$ is to set $Q(s,a;w)$ to be linear in its features.
+\pause
+$$Q(s,a;w) = \sum_{i=1}^n \phi_i(s,a) \cdot w_i = \sum_{i=1}^n \pderiv{\log \pi(s,a;\theta)}{\theta_i} \cdot w_i$$
+\pause
+We note below that a compatible $Q(s,a;w)$ serves as an approximation of the advantage function.
+\pause
+$$\int_{\mathcal{A}} \pi(s,a;\theta) \cdot Q(s,a;w) \cdot da = \int_{\mathcal{A}} \pi(s,a;\theta) \cdot (\sum_{i=1}^n \pderiv{\log \pi(s,a;\theta)}{\theta_i} \cdot w_i) \cdot da$$
+\pause
+$$=\int_{\mathcal{A}} \cdot (\sum_{i=1}^n \pderiv{\pi(s,a;\theta)}{\theta_i} \cdot w_i) \cdot da = \sum_{i=1}^n (\int_{\mathcal{A}} \pderiv{\pi(s,a;\theta)}{\theta_i} \cdot da)\cdot w_i$$
+\pause
+$$=\sum_{i=1}^n \frac {\partial} {\partial \theta_i} (\int_{\mathcal{A}} \pi(s,a;\theta) \cdot da)\cdot w_i = \sum_{i=1}^n \pderiv{1}{\theta_i} \cdot w_i = 0$$
+\end{frame}
+
+\section{Natural Policy Gradient}
+
+\begin{frame}
+\frametitle{Fisher Information Matrix}
+\pause
+Denoting $[\pderiv{\log \pi(s,a;\theta)}{\theta_i}], i = 1, \ldots, n$ as the score column vector $SC(s,a;\theta)$ and denoting
+$\pderiv{J(\pi_{\theta})}{\theta}$ as $\nabla_{\theta} J(\pi_{\theta})$, assuming compatible linear-approx critic:
+\pause
+\begin{align*}
+\nabla_{\theta} J(\pi_{\theta}) & = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a;\theta) \cdot (SC(s, a; \theta) \cdot SC(s,a;\theta)^T \cdot w) \cdot da \cdot ds\\
+& = E_{s \sim \rho^{\pi}, a \sim \pi}[SC(s,a;\theta) \cdot SC(s,a;\theta)^T] \cdot w\\
+& = FIM_{\rho^{\pi}, \pi}(\theta) \cdot w\\
+\end{align*}
+\pause
+where $FIM_{\rho_{\pi}, \pi}(\theta)$ is the Fisher Information Matrix w.r.t. $s \sim \rho^{\pi}, a \sim \pi$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Natural Policy Gradient}
+\pause
+\begin{itemize}[<+->]
+\item Recall the idea of Natural Gradient from Numerical Optimization
+\item Natural gradient $\nabla_{\theta}^{nat} J(\pi_{\theta})$ is the direction of optimal $\theta$ movement
+\item In terms of the KL-divergence metric (versus plain Euclidean norm)
+\item Natural gradient yields better convergence (we won't cover proof)
+\end{itemize}
+\pause
+$$\mbox{Formally defined as: } \nabla_{\theta} J(\pi_{\theta}) = FIM_{\rho_{\pi}, \pi}(\theta) \cdot \nabla_{\theta}^{nat} J(\pi_{\theta}) $$
+\pause
+$$\mbox{Therefore, } \nabla_{\theta}^{nat} J(\pi_{\theta}) = w$$
+\pause
+{\bf This compact result is great for our algorithm:}
+\pause
+\begin{itemize}[<+->]
+\item Update Critic params $w$ with the critic loss gradient (at step $t$) as:
+$$\gamma^t \cdot (SC(s_t,a_t,\theta) \cdot w - r_t - \gamma \cdot SC(s_{t+1}, a_{t+1},\theta) \cdot w) \cdot SC(s_t,a_t,\theta)$$
+\item Update Actor params $\theta$ in the direction equal to value of $w$
+\end{itemize}
+\end{frame}
+
+\end{document}

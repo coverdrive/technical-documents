@@ -1,0 +1,300 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Arsclassica Article
+% LaTeX Template
+% Version 1.1 (1/8/17)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Lorenzo Pantieri (http://www.lorenzopantieri.net) with extensive modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+11pt, % Main document font size
+a4paper, % Paper type, use 'letterpaper' for US Letter paper
+oneside, % One page layout (no page indentation)
+%twoside, % Two page layout (page indentation for binding and different headers)
+headinclude,footinclude, % Extra spacing for the header and footer
+BCOR5mm, % Binding correction
+]{scrartcl}
+
+\usepackage{cool}
+% \usepackage{amsmath}
+
+\input{structure.tex} % Include the structure.tex file which specified the document structure and layout
+
+\hyphenation{Fortran hy-phen-ation} % Specify custom hyphenation points in words with dashes where you would like hyphenation to occur, or alternatively, don't put any dashes in a word to stop hyphenation altogether
+
+%----------------------------------------------------------------------------------------
+%	TITLE AND AUTHOR(S)
+%----------------------------------------------------------------------------------------
+
+\title{\normalfont\spacedallcaps{Continuous-Time Pricing Equations for Agency Mortgage-Backed Securities}} % The article title
+
+%\subtitle{Subtitle} % Uncomment to display a subtitle
+
+\author{\spacedlowsmallcaps{Ashwin Rao}} % The article author(s) - author affiliations need to be specified in the AUTHOR AFFILIATIONS block
+
+\date{} % An optional date to appear under the author(s)
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	HEADERS
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\sectionmark}[1]{\markright{\spacedlowsmallcaps{#1}}} % The header for all pages (oneside) or for even pages (twoside)
+%\renewcommand{\subsectionmark}[1]{\markright{\thesubsection~#1}} % Uncomment when using the twoside option - this modifies the header on odd pages
+\lehead{\mbox{\llap{\small\thepage\kern1em\color{halfgray} \vline}\color{halfgray}\hspace{0.5em}\rightmark\hfil}} % The header style
+
+\pagestyle{scrheadings} % Enable the headers specified in this block
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+\maketitle % Print the title/author/date block
+
+\setcounter{tocdepth}{2} % Set the depth of the table of contents to show sections and subsections only
+
+\tableofcontents % Print the table of contents
+
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Overview}
+
+In this article, we derive pricing equations for Agency Mortgage-backed Securities (MBS), approximated to a continuous-time setting wherein interest and principal appear continuously (rather than the usual monthly). These equations provide tremendous intuition for pricing and risk of agency MBS.
+ 
+\section{Notation}
+Let $r(t)$ denote the short-rate at time $t$. We will assume a one-factor interest rate model:
+
+$$ dr(t) = \alpha(r, t) \cdot dt + \sigma(r, t) \cdot dz(t)$$
+
+where $z(t)$ refers to 1-dimensional brownian motion in the real-world measure. We will typically drop the arguments $r$ and $t$ to lighten notation (eg: $\alpha(r,t)$ will appear as simply $\alpha$, $z(t)$ will appear as $z$ etc.), but please bear in mind the dependency on $r$ and $t$ wherever they apply.
+
+Let $B(t)$ denote the Balance of the MBS and let $P(t)$ denote the price per unit balance at time $t$. So, the value of the MBS at time $t$ is $V(t) = B(t) \cdot P(t)$. We will derive the pricing equations for $P(t)$. 
+
+Assume the MBS pays a coupon $c(r, t)$ per unit balance per unit time. So, the coupon paid over the time period $dt$ will be $c(r,t) \cdot B(t) \cdot dt$. Assume the MBS principal payment rate is $\pi(r,t)$ so that the principal paid over the time period $dt$ will be $\pi(r,t) \cdot B(t) \cdot dt$. Hence, the balance amortizes down according to:
+
+$$dB(t) = - \pi(r,t) \cdot B(t) \cdot dt$$
+
+Note that $\pi(r,t)$ includes the scheduled principal payments and the prepayments (the bulk of the prepayments comprise of refinancings and relocations). A prepayment model predicts refinancings and relocations as a function of time and interest-rates, and hence, predicts $\pi(r,t)$ at any future time and any future state (i.e., short rate), and hence, at any future scenario of yield curve. The actual prepayments however can be different and so there is some uncertainty associated with $\pi(r,t)$ even when conditioned on an outcome of interest rates.
+
+\section{Pricing PDE}
+
+For ease of exposition, we will first assume that the prepayment for any MBS is a known determinstic function of time and interest rates. In other words, given the future time $t$ and the future scenario of interest rates, we have a deterministic principal payment $\pi(r,t)$. This will help us derive the pricing PDE only in terms of $t$ and $r$ (later, we will extend the PDE to include the dependence also in terms of the time-and-rate-{\em conditioned} uncertain refinancings and relocations).
+
+We consider two different MBS (with subscripts $1$ and $2$ for their respective notation). Consider the value $V_1 = P_1 B_1$ for the first MBS.
+
+$$dV_1 = B_1 dP_1 + P_1 dB_1$$
+
+Using Ito's lemma (for $dP_1$) and using the fact that $dB_1 = - \pi_1 B_1 dt$, we get:
+
+$$dV_1 = B_1 (\pderiv{P_1}{t} dt + \pderiv{P_1}{r} dr + \frac {1} {2} \sigma^2 \pderiv[2]{P_1}{r} dt) - P_1 \pi_1 B_1 dt$$
+$$ = B_1 (\pderiv{P_1}{t} + \alpha \pderiv{P_1}{r} -\pi P_1 + \frac {1} {2} \sigma^2 \pderiv[2]{P_1}{r}) dt + B_1 \sigma \pderiv{P_1}{r} dz$$
+
+Therefore,
+\begin{equation}
+\frac {dV_1} {V_1} = (\frac {1} {P_1} \pderiv {P_1} {t}  + \frac {\alpha} {P_1} \pderiv{P_1}{r} -\pi_1 + \frac {\sigma^2} {2P_1} \pderiv[2]{P_1}{r})dt + (\frac {\sigma} {P_1} \pderiv{P_1}{r}) dz
+\end{equation}
+
+Let us denote the lognormal drift and dispersion of $V_1$ as $\alpha_1$ and $\sigma_1$ respectively. So,
+\begin{equation}
+\frac {dV_1} {V_1} = \alpha_1 dt + \sigma_1 dz
+\end{equation}
+\begin{equation}
+\alpha_1 = \frac {1} {P_1} \pderiv {P_1} {t}  + \frac {\alpha} {P_1} \pderiv{P_1}{r} -\pi_1 + \frac {\sigma^2} {2P_1} \pderiv[2]{P_1}{r} \label{eq:drift}
+\end{equation}
+\begin{equation}
+\sigma_1 = \frac {\sigma} {P_1} \pderiv{P_1}{r} \label{eq:dispersion}
+\end{equation}
+
+Likewise, we have the corresponding equations for MBS $2$.
+
+Now, consider a portfolio $W = V_1 + V_2 = P_1 B_1 + P_2 B_2$ with values of $B_1$ and $B_2$ such that we can eliminate the $dz$ term in the expression for $dW = dV_1 + dV_2$. This would require:
+\begin{equation}
+B_1 \pderiv{P_1}{r} = - B_2 \pderiv{P_2}{r} \label{eq:balances}
+\end{equation}
+
+Since we have eliminated the $dz$ term in $dW$, we can assert that the portfolio $W$ together with the cashflow it generates (cashflows amount to $B_1(c_1 + \pi_1)B_1 + B_2(c_2 + \pi_2)$ per unit of time), should grow at the risk-free rate $r$. In other words,
+
+$$dV_1 + dV_2 + B_1(c_1 + \pi_1) dt + B_2(c_2 + \pi_2) dt = r (V_1 + V_2) dt$$
+
+Expanding this out, we get:
+
+$$B_1(\pderiv{P_1}{t} + \alpha_1 \pderiv{P_1}{r} - \pi_1 P_1 + (c_1 + \pi_1) + \frac {\sigma^2}{2} \pderiv[2]{P_1}{r})dt + $$
+$$B_2(\pderiv{P_2}{t} + \alpha_2 \pderiv{P_2}{r} - \pi_2 P_2 + (c_2 + \pi_2) + \frac {\sigma^2}{2} \pderiv[2]{P_2}{r})dt  = r(B_1P_1 + B_2P_2) dt$$
+
+Combining this with equation \ref{eq:balances}, we get:
+
+$$\frac{\pderiv{P_1}{t} + \alpha_1 \pderiv{P_1}{r} - (\pi_1 + r) P_1 + (c_1 + \pi_1) + \frac {\sigma^2}{2} \pderiv[2]{P_1}{r}} {\pderiv{P_1}{r}} = $$
+$$\frac{\pderiv{P_2}{t} + \alpha_2 \pderiv{P_2}{r} - (\pi_2 + r) P_2 + (c_2 + \pi_2) + \frac {\sigma^2}{2} \pderiv[2]{P_2}{r}} {\pderiv{P_2}{r}}$$
+
+Using equations \ref{eq:drift} and \ref{eq:dispersion}, the above equation can be succinctly expressed as:
+
+\begin{equation}
+\frac{\alpha_1 + \frac{c_1 + \pi_1} {P_1} - r} {\sigma_1} = \frac{\alpha_2 + \frac{c_2 + \pi_2} {P_2} - r} {\sigma_2} \label{eq:sharperatio}
+\end{equation}
+
+Note that investing in MBS 1 will generate an expected return per unit time not just from the lognormal drift $\alpha_1$ but also from the interest and principal cashflows ($=\frac {(c_1 + \pi_1) B_1}{V_1} = \frac{c_1 + \pi_1}{P_1}$). Hence, the expected excess return (return above the risk-free rate) per unit time is $\alpha_1 + \frac{c_1 + \pi_1} {P_1} - r$. The standard deviation of the return per unit time is $\sigma_1$. The ratio of the expected excess return to the standard deviation of return (per unit time) is the familiar {\em Price of Interest-Rate Risk} which is the same for every security exposed to only interest-rate risk. This is what equation \ref{eq:sharperatio} is telling us (the LHS and RHS of \ref{eq:sharperatio} are both equal to the Price of Interest-Rate Risk). We will denote the Price of Interest-Rate Risk as $\lambda^{(r)}$. Hence, equation \ref{eq:sharperatio} can be expressed as:
+
+$$\frac{\alpha_1 + \frac{c_1 + \pi_1} {P_1} - r} {\sigma_1} = \frac{\alpha_2 + \frac{c_2 + \pi_2} {P_2} - r} {\sigma_2} = \lambda^{(r)}$$
+
+Substituting in the above equation for $\alpha_1$ from equation \ref{eq:drift} and for $\sigma_1$ from equation \ref{eq:dispersion}, we get:
+
+$$\frac{\frac {1} {P_1} \pderiv {P_1} {t}  + \frac {\alpha} {P_1} \pderiv{P_1}{r} -\pi_1 + \frac {\sigma^2} {2P_1} \pderiv[2]{P_1}{r} + \frac{c_1 + \pi_1} {P_1} - r} {\frac {\sigma} {P_1} \pderiv{P_1}{r}} = \lambda^{(r)}$$
+
+Reorganizing and dropping the subscript $1$ in $P_1, c_1, \pi_1$, we arrive at the PDE:
+
+$$\pderiv {P} {t}  + (\alpha - \lambda^{(r)} \sigma) \pderiv{P}{r}  + \frac {\sigma^2} {2} \pderiv[2]{P}{r} + c + \pi = (\pi + r)P$$
+
+If we shift to the risk-neutral measure (denoting $z^{(Q)}$ as Brownian motion in the risk-neutral measure), knowing that the lognormal drift plus the cashflows per unit value per unit time should be equal to the risk-free rate $r$, we can write the Ito process for an MBS as:
+
+$$\frac {dV} {V} = (r - \frac {c + \pi} {P})dt + \sigma_1 dz^{(Q)} = (\alpha_1 - \lambda^{(r)} \sigma_1) dt + \sigma_1 dz^{(Q)}$$
+
+Since, $dz^{(Q)} = \lambda^{(r)} dt + dz$, the Ito process for the short-rate $r$ in the risk-neutral measure can be written as:
+
+$$dr = (\alpha - \lambda^{(r)} \sigma) dt + \sigma dz^{(Q)} = \alpha^{(Q)} dt + \sigma dz^{(Q)}$$
+
+where $\alpha^{(Q)} = \alpha - \lambda^{(r)} \sigma$ is the risk-neutral drift for $r$.
+
+So, the pricing PDE can also be expressed in terms of the risk-neutral drift for $r$ (as follows):
+
+$$\pderiv {P} {t}  + \alpha^{(Q)} \pderiv{P}{r}  + \frac {\sigma^2} {2} \pderiv[2]{P}{r} + c + \pi = (\pi + r)P $$
+
+Now let us relax our assumption that prepayments are a known deterministic function of time and interest rates. Let us denote $x$ as the stochastic process for the multiplier to the econometrically-estimated deterministic refinancing-rate function (of time and interest rates) and let us denote y as the stochastic process for the multiplier to the econometrically-estimated deterministic relocation-rate function (of time and interest rates).
+
+In this setting, we will have an excess spread $s$ (known as Option-Adjusted Spread) to account for the uncertainty of $x$ and $y$. The Pricing PDE becomes:
+
+\begin{equation}
+\pderiv {P} {t}  + \alpha^{(Q)} \pderiv{P}{r}  + \frac {\sigma^2} {2} \pderiv[2]{P}{r} + c + \pi = (\pi + r + s)P \label{eq:pde1}
+\end{equation}
+
+To account for the Option-Adjusted Spread $s$, we will need to bring in the stochasticity of $x$ and $y$ (together with the stochasticity of $r$). Define the Ito process for $x$ and $y$ in their respective risk-neutral measures as:
+
+$$dx = \alpha^{(Q)}_x dt + \sigma_x dz^{(Q)}_x$$
+$$dy = \alpha^{(Q)}_y dt + \sigma_y dz^{(Q)}_y$$
+
+For clarity and consistency of notation, let us now define the Ito process for $r$ in the risk-neutral measure as:
+
+$$dr = \alpha^{(Q)}_r dt + \sigma_y dz^{(Q)}_r$$
+
+Assume that the covariance of $dz^{(Q)}_x$ and $dz^{(Q)}_y$ is $\rho dt$ and that each of $dz^{(Q)}_x$ and $dz^{(Q)}_y$ are independent of $dz^{(Q)}_r$. Then, we can extend the pricing PDE with the same argument as above to:
+
+\begin{equation}
+\begin{split}
+\pderiv {P} {t} & + \alpha^{(Q)}_r \pderiv{P}{r}  + \frac {\sigma_r^2} {2} \pderiv[2]{P}{r} \\
+& + \alpha^{(Q)}_x \pderiv{P}{x}  + \frac {\sigma_x^2} {2} \pderiv[2]{P}{x} + \alpha^{(Q)}_y \pderiv{P}{y}  + \frac {\sigma_y^2} {2} \pderiv[2]{P}{y} + \rho \sigma_x \sigma_y \frac{\partial^2 P}{\partial x \partial y} \\
+& + c + \pi = (\pi + r + rs)P \label{eq:pde2}
+\end{split}
+\end{equation}
+
+where $rs$ is the residual spread after having accounted for the uncertainty of $r$, $x$ and $y$ (the residual spread would have to do with any residual risk such as liquidity or credit risk).
+
+\section{Martingale-based Pricing}
+
+Define the money-market process $M(t)$ as:
+
+$$dM(t) = r(t) \cdot M(t) \cdot dt$$
+
+with $M(0) = 1$.
+
+Consider a process $\theta(t)$ derived from the value process $V(t)$ and the cashflows, as follows:
+
+$$d\theta(t) = dV(t) + (c(r,t) + \pi(r,t)) B(t) dt$$
+
+If we assume that $\pi(r,t)$ is a known deterministic function of time and interest rates, the process $\frac {\theta(t)} {M(t)}$ is a martingale under the risk-neutral measure $Q$.
+
+Setting $B(0) = 1$ and $B(T) = 0$, we get:
+
+\begin{equation}
+\begin{split}
+P(0) & = E_Q[\int_0^T \frac {(c(r,t) + \pi(r,t)) B(t)} {M(t)} dt] \\
+& = E_Q[\int_0^T (c(r,t) + \pi(r,t)) B(t) e^{-\int_0^u r(u) du} dt] \\
+& = E_Q[\int_0^T (c(r,t) + \pi(r,t)) e^{-\int_0^u (r(u) +\pi(r, u)) du} dt]
+\end{split}
+\end{equation}
+
+Now, if we relax the assumption of $\pi(r,t)$ as a known deterministic function of time and interest rates, the equation will include
+a spread (Option-Adjusted Spread) $s$ as follows:
+
+\begin{equation}
+\begin{split}
+P(0) & = E_Q[\int_0^T (c(r,t) + \pi(r,t)) B(t) e^{-\int_0^u (r(u) + s) du} dt] \\
+& = E_Q[\int_0^T (c(r,t) + \pi(r,t)) e^{-\int_0^u (r(u) + s + \pi(r, u)) du} dt]
+\end{split}
+\end{equation}
+
+If we change the drifts of the processes for $x$ and $y$ to their respective risk-neutral measures, we can then refer to the resultant principal payment rate as $\pi^{(Q)}(r,t)$. Ignoring the convexity cost due to $x$ and $y$, we have the following equation in terms of $\pi^{(Q)}(r,t)$:
+
+\begin{equation}
+\begin{split}
+P(0) & = E_Q[\int_0^T (c(r,t) + \pi^{(Q)}(r,t)) B(t) e^{-\int_0^u (r(u) + rs) du} dt] \\
+& = E_Q[\int_0^T (c(r,t) + \pi^{(Q)}(r,t)) e^{-\int_0^u (r(u) + rs + \pi^{(Q)}(r, u)) du} dt]
+\end{split}
+\end{equation}
+
+where $rs$ is the residual spread that was defined earlier.
+
+
+
+\section{Sign of Price of Risk - Just an outline for now}
+
+For any risk factor $f$, expected excess return due to the risk $f$ (ignoring convexity cost) is:
+
+$$\frac {\lambda^{(f)} \sigma_f} {P} \pderiv{P}{f}$$
+
+$\lambda^{(r)}$ is negative when the yield curve is rising. This is because the expected excess return of a zero-coupon bond (yield of bond minus short rate) will be positive and $\pderiv{P}{r}$ is negative. When yield curve gets inverted, $\lambda^{(r)}$ will become negative.
+
+$\lambda^{(x)}$ (Price of Refinancing Model Risk) is negative and $\lambda^{(y)}$ (Price of Relocation Model Risk) is positive. This can be explained by looking at the OAS smile (premiums and discounts having a higher OAS). Premiums are mainly exposed to refinancing risk and $\pderiv{P}{x}$ is negative. Discounts are mainly exposed to relocation risk and $\pderiv{P}{y}$ is positive. So, $\lambda^{(x)}$ is negative and $\lambda^{(y)}$ is positive.
+
+\section{Direction of risk-neutral adjustment of drift - Just an outline for now}
+
+For any risk factor $f$, it's drift is subtracted by $\lambda^{(f)} \sigma_f$ to make the process for the risk factor $f$ risk-neutral. Since excess spread
+
+$$s = \frac {\lambda^{(f)} \sigma_f} {P} \pderiv{P}{f}$$
+
+the drift of $f$ is subtracted by:
+
+$$\frac{sP} {(\pderiv{P}{f})}$$
+
+So, the drift is adjusted in a direction that worsens price (assuming $s$ is positive).
+
+\section{Sensitivities - To be written}
+
+Write the martingale-based pricing equation for a few different MBS types, and take its derivatives with respect to a parallel shift in interest rates, and with respect to prepayment model risk parameters ($x$ and $y$).
+
+\section{Acknowledgements}
+
+First, some background on why I am writing this now (6 years after I moved my career from Wall Street to Silicon Valley). I spent most of my 14 years at Goldman Sachs and Morgan Stanley as a Trading Strategist and Quant Modeler for Interest Rate Products and Mortgage-Backed Securities (MBS). It was only during the later stages of those years that I realized that MBS can be handled with a pricing framework that is not just mathematically more appealing but also but appropriate for valuation and hedging (having implemented these ideas while at Morgan Stanley and confirmed its value for actual trading). I have to emphasize that this realization was prompted around 2006 when I met with Alex Levin who encouraged me to look at MBS in ways that I describe in this article. So the original ideas of the content here are surely not mine (that credit goes to Alex Levin and a few others, going as far back as the early 1990s). The motivation here is to introduce a newcomer to MBS to this content in a rigorous yet compact and accessible manner,  and help them look at MBS through these lenses rather than the traditional Monte-Carlo based "OAS" approach (which is what I unfortunately learnt and practiced for most of my career). The traditional approach doesn't provide nearly as much insight as the framework I articulate in this article (a more elaborate treatment can be found in the very fine book by Alex Levin and Andrew Davidson). Since moving out of Wall Street, I have been wanting to write this article but never got a chance.
+
+Recently, I started thinking about this content again in preparation for a seminar talk I am giving at Stanford, and I am glad to have written this down. Having said that, the current version is still a first cut and somewhat raw. I hope to have a finished version over the next couple of months.
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\refname}{\spacedlowsmallcaps{References}} % For modifying the bibliography heading
+
+\bibliographystyle{unsrt}
+
+\bibliography{sample.bib} % The file containing the bibliography
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
