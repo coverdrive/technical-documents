@@ -1,0 +1,178 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+%SetFonts
+
+%SetFonts
+
+
+\title{The Newsvendor meets the Options Trader}
+\author{Ashwin Rao}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This is a brief article to express my joy in a serendipity of my past life with my present. My past (14 years of it) was in the domain of Derivatives Trading,
+and my present is in the domain of Retail Supply Chain. Recently, I worked out that the foundational principles of derivatives pricing and the various forms of intuitive reasoning that go a long way in derivatives pricing/risk-management
+are highly applicable in my new world of supply optimization. 
+
+Derivatives Pricing/Trading/Risk-Management is grounded in the simple concept of pricing a call/put option, and if one understands call/put option pricing really well, the entire world of derivatives can be navigated
+fairly comfortably. And by ``understood'', I don't mean simply knowing the formulas of call/put option pricing but internalizing the core mathematical principles and reasoning intuitively about call/put option pricing. One can make exactly the same argument with Supply Optimization - it is grounded in the newsvendor problem and much of the reasoning in advanced supply optimization has its roots in the core principles, tradeoffs and intuition involving the newsvendor problem. Interestingly, it turns out that call/put option pricing can be shown to be ``equivalent'' to the newsvendor problem. The parallels actually run fairly deep, eg: Markov Decision Processes and Backward Induction form the common platform for a large class of Exotic Derivatives Pricing and Stochastic Optimization problems. However, in this brief note, I will only cover the basics and do a deeper dive on the mathematical equivalences in a future paper.
+
+\section{Call/Put Option Pricing}
+Let's start with the forward price of a call option: $E[\max(x-S, 0)] = E[(x-S)^+]$ where $x$ is the (unknown) price of the underlying stock at option expiration and $S$ is the strike of the call option. Likewise, the forward price of a put option is $E[\max(S-x,0)] = E[(S-x)^+]$. Note that in this formulation, we operate in the ``risk-neutral'' probability measure (that is derived from the real-world probability measure using Girsanov's Theorem - that we will not delve into in this article). Let us denote the probability density function for the random variable $x$ under this ``risk-neutral'' probability measure as $f(\cdot)$, the mean of $x$ as $\mu$ and the variance of $x$ as $\sigma^2$. Henceforth, we will not make the ``risk-neutral'' probability measure explicit as we will always be operating in this probability measure. Also, note that we will integrate the random variable $x$ from $-\infty$ to $\infty$ to keep the distribution for $x$ generic, even though in practical settings for the problems we are considering here, we may want the distribution for $x$ to have zero support for non-positive values.
+
+Derivatives Risk-Management is all about evaluating the sensitivities of derivatives prices to various parameters (which are affectionately refered to as ``greeks''). The most important ``greeks'' are derivatives of the option price with respect to:
+\begin{itemize}
+\item An appropriate ``distance'''-metric between $\mu$ and $S$ called ``moneyness'' ($\mu - S$, or $\log \frac \mu S$, or something else - the exact form chosen depending on the distribution, for ease of math).
+\item $\sigma$ ($\sigma$ is often refered to as ``volatility'', when adjusted for the time-to-expiration scale).
+\end{itemize}
+
+Let us focus on the derivative with respect to ``moneyness''. We want to work in a distribution-free setting, so we will simply evaluate the derivative of option price with respect to $S$, and the derivative of option price with respect to ``moneyness'' can then be expressed as the ratio of the derivative of option price with respect to $S$ and the derivative of ''moneyness' with respect to $S$. So let us denote the prices of the call and put options as functions of the strike $S$ and denote these functions as $g_1(S)$ and $g_2(S)$.
+
+$$g_1(S) = E[(x-S)^+] = \int_{-\infty}^{\infty} (x-S)^+ \cdot f(x) \cdot dx = \int_S^{\infty} (x-S) \cdot f(x) \cdot dx$$
+$$g_2(S) = E[(S-x)^+] = \int_{-\infty}^{\infty} (S-x)^+ \cdot f(x) \cdot dx = \int_{-\infty}^S (S-x) \cdot f(x) \cdot dx$$
+
+These are the ubiquitous ``hockey-stick'' payoff expectations that appear not only all over derivatives trading, but also in various other parts of mathematical economics.
+
+Now if we have a portfolio of $p$ call options and $h$ put options, the price of this portfolio is:
+
+$$g(S) = p \cdot \int_S^{\infty} (x-S) \cdot f(x) \cdot dx + h \cdot \int_{-\infty}^S (S-x) \cdot f(x) \cdot dx$$
+
+If we try to solve for the portfolio-common strike $S$ that minimizes the price of this portfolio of $p$ call options and $h$ put options, {\bf we have the Newsvendor Optimization problem}.
+
+\section{Newsvendor Optimization}
+In the Newsvendor Optimization problem, the newsvendor has to bring in the optimal quantity of newspapers in the morning that will give him the best profits. He knows that the demand for newspapers through the course of the day is a distribution with mean $\mu$ and variance $\sigma^2$. For every extra newspaper he carries at the end of the day (supply $S$ exceeds random demand $x$), he incurs a cost of $h$ (effectively the difference between a single newspaper's purchase price and disposal price). For every newspaper that a customer demands that he doesn't carry (random demand $x$ exceeds supply $S$), he incurs a cost of $p$ (effectively the difference between a single newspaper's sales price and purchase price), i.e., the lost revenue on each newspaper he is "out of stock" on. So, this is the exact mathematical formulation as $g(S)$ above and the task of the newsvendor is to identity the optimal $S$ that minimizes $g(S)$.
+
+So now let us return to $g(S), g_1(S), g_2(S)$ and evaluate their sensitivities to $S$.
+
+First, we note that:
+
+$$g_1(S) - g_2(S) = \int_S^{\infty} (x-S) \cdot f(x) \cdot dx - \int_{-\infty}^S (S-x) \cdot f(x) \cdot dx = \int_{-\infty}^{\infty} (x-S) \cdot f(x) \cdot dx = \mu - S$$
+
+This is the famous ``put-call parity'' that plays a big role in derivatives trading. It says that the difference between the call price and the put price (of the same strike) is equal to the difference between the underlying stock's forward price and the strike, i.e., it's ``moneyness''. So, $g_2'(S) - g_1'(S) = 1$. So, we only need to know one of $g_1(S)$ or $g_2(S)$ and we automatically have the other by put-call parity (likewise, for $g_1'(S)$ and $g_2'(S)$).
+
+$$g_2(S) = \int_{-\infty}^S (S-x) \cdot f(x) \cdot dx = S \cdot \int_{-\infty}^S f(x) \cdot dx - \int_{-\infty}^S x \cdot f(x) \cdot dx$$
+
+Integrating the second integral by parts, we get:
+
+$$g_2(S) = S \cdot \int_{-\infty}^S f(x) \cdot dx - (S \cdot \int_{-\infty}^S f(x) \cdot dx - \int_{-\infty}^S (\int_{-\infty}^x f(y) \cdot dy) \cdot dx) = \int_{-\infty}^S F(x) \cdot dx$$
+
+where $F(x)$ is the cumulative distribution function for the random variable $x$.
+
+By put-call parity,
+
+$$g_1(S) = \mu - S + \int_{-\infty}^S F(x) \cdot dx$$
+
+$$g(S) = p \cdot (\mu - S + \int_{-\infty}^S F(x) \cdot dx) + h \cdot (\int_{-\infty}^S F(x) \cdot dx) = p \cdot (\mu - S) + (p + h) \cdot (\int_{-\infty}^S F(x) \cdot dx)$$
+
+$$g_2'(S) = F(S)$$
+
+$$g_1'(S) = F(S) - 1$$.
+
+$$g'(S) = (p + h) \cdot F(S) - p$$
+
+Setting this to 0 gives:
+
+$$S^* = F^{-1}(\frac p {h + p})$$
+
+which is the classic formula for the optimal newsvendor supply being equal to the inverse cumulative distribution function of the ``critical ratio'' $\frac p {p + h}$
+
+\section{Specializing to a Gaussian Distribution}
+For reasoning and intuition with derivatives pricing, we view the call/put option price as a function of the ``moneyness'' ($\mu - S$ or a similar ``distance''-metric between $\mu$ and $S$) and the ``volatility'' $\sigma$, and this would also be a good way of reasoning and intuiting about the newsvendor problem and about more general supply optimization problems. This intuition comes into play quite nicely when we assume that the underlying stock/newspaper demand is a gaussian distribution with mean $\mu$ and variance $\sigma^2$. This section assumes a gaussian distribution $N(\mu, \sigma^2)$ for the underlying stock's price (likewise, for the demand distribution). 
+
+$$g_2(S) = \int_{-\infty}^S (S - x) \cdot f(x) \cdot dx = \int_{-\infty}^S (S-x) \cdot \frac {1} {\sqrt{2 \pi} \cdot \sigma} \cdot e^{- \frac {(x - \mu)^2} {2 \cdot \sigma^2}} \cdot dx$$
+Change to integration variable $y = \frac {x - \mu} {\sigma}$ and let $R = \frac {S - \mu} {\sigma}$ to work with standard normal distribution function $\phi(x)$ and standard cumulative normal distribution function $\Phi(x)$ (standard normal is $N(0, 1)$).
+
+$$g_2(S) = \int_{-\infty}^R (R - y) \cdot \frac {\sigma} {\sqrt{2 \pi}} \cdot e^{- \frac {y^2} 2} \cdot dy$$
+$$ = \sigma \cdot (\frac {R} {\sqrt{2 \pi}} \cdot \int_{-\infty}^R e^{- \frac {y^2} 2} \cdot dy - \frac 1 {\sqrt{2 \pi}} \cdot \int_{-\infty}^R y \cdot e^{- \frac {y^2} 2} \cdot dy)$$
+$$ = \sigma \cdot (R \cdot \Phi(R) + \phi(R))$$
+$$g_1(S) = \sigma \cdot (R \cdot \Phi(R) + \phi(R) - R)$$
+$$g(S) = \sigma \cdot ((p + h) \cdot (R \cdot \Phi(R) + \phi(R)) - p \cdot R)$$
+
+Since all of $g_1(S), g_2(S), g(S)$ are expressed in terms of $\mu - S$ and don't feature $\mu$ or $S$ independently in the expressions, their partial derivative with respect to $\mu$ is just the negative of their partial derivative with respect to $S$. As a result, the derivative of call option price with respect to $\mu$ is $1 - F(S) = 1 - \Phi(\frac {S - \mu} {\sigma})$ and the derivative of the put option price with respect to $\mu$ is $-F(S) = - \Phi(\frac {S - \mu} \sigma)$ (these sensitivities of option prices with respect to the underlying stock's forward price is refered to as the greek ''delta'', and it plays an important role in hedging derivatives, i.e., in creating portfolios that are insensitive to the underlying stock's moves).
+
+This concept of the greek ``delta'' can be brought to the newsvendor world - the corresponding idea here is that the newsvendor's cost's sensitivity to the expected demand $\mu$ would be:
+
+$$p - (p + h) \cdot F(S) = p - (p + h) \cdot \Phi(\frac {S - \mu} \sigma)$$
+
+Now, let us consider what happens at the optimal supply $S^*$.
+
+$$S^* = F^{-1} (\frac p {p + h}) = \mu + \Phi^{-1} (\frac p {p + h}) \cdot \sigma$$
+
+Optimal Supply $S^*$ decomposes into the ``cycle stock'' $\mu$ (forward price) and the ```safety stock'' $S^* - \mu$ (moneyness) which depends only on $\sigma$ and not on $\mu$.
+
+$$g(S^*) = \sigma \cdot (p + h) \cdot \phi(\frac {S^* - \mu} \sigma) = \sigma \cdot (p + h) \cdot \phi(\Phi^{-1}(\frac p {p + h})) $$ 
+
+Note that at the optimal $S^*$:
+
+\begin{itemize}
+\item The expression for the newsvendor cost $g(S^*)$ depends only on $\sigma$, $p$ and $h$ (is independent of the expected demand $\mu$). Hence, at $S^*$, the cost is insensitive to not just the supply, but also to the expected demand.
+\item The expression for the price of the portfolio of $p$ call options and $h$ put options ($g(S^*)$) depends only on $\sigma$, $p$ and $h$ (is independent of the underlying stock's forward price). Hence, at $S^*$, the portfolio price is insensitive to not just the strike, but also to the underlying stock's forward price, Hence, it is a ``market-neutral'' portfolio.
+\end{itemize}
+
+One is familiar with this situation of option price being independent of the underlying stock's forward price in the case of a straddle (one call and one put option struck at a common strike) when the straddle strike is equal to the underlying stock's forward price (``at-the-money'' straddle). In the case of a normal distribution, the ``at-the-money'' straddle price is $2 \cdot \sigma \cdot \phi(0)$ and in fact, the ``at-the-money'' call and put options are each priced at $\sigma \cdot \phi(0)$.
+
+\section{Levels of Service and their relation to Moneyness and Option Price}
+
+We typically talk about two types of ``levels of service'' for the newsvendor's business:
+\begin{enumerate}
+\item $\alpha$ (or Type 1): The expected fraction of days when no ``out of stocks" happen, assuming the demand is i.i.d on a set of days (equivalently, the probability that there will not be a ``out of stock'' on a given day).
+\item $\beta$ (or Type 2, sometimes called ``Fill Rate''): The ratio of the expected quantity of demand that is met from supply to the expected quantity of demand.
+\end{enumerate}
+
+Note that $\alpha = F(S)$ which is equal to the ``critical ratio'' $\frac p {p + h}$ when $S = S^*$. This means the ``level of service'' $\alpha$ is equal to the probability that the put option is in-the-money (probability that the call option is out-of-the-money).
+
+Note that:
+
+$$\beta = \frac {E[\min(x, S)]} {E[x]} = \frac {S - E[(S-x)^+]} {E[x]} =  \frac {S - g_2(S) } {\mu} = \frac {\mu - g_1(S)} {\mu} = 1 - \frac {g_1(S)} {\mu}$$
+
+So we can think of $1-\beta$ (``unfilled rate'') as the ratio of call option price to underlying stock's forward price.
+
+\section{Relationship between Levels of Service $\alpha$ and $\beta$}
+
+We have seen in the previous section that $\beta = 1 - \frac {g_1(S)} {\mu}$. Using the formula for $g_1(S)$ from section 3 ($g_1(S) = \mu - S + \int_{-\infty}^S F(x) dx$), we get: 
+
+$$\beta = 1 - \frac {\mu - S + \int_{-\infty}^S F(x) dx} {\mu}$$
+
+which yields:
+
+$$\beta = \frac {S - \int_{-\infty}^S F(x) dx} {\mu}$$
+
+When $S$ is equal to the optimum $S^*$, we have: $\alpha = F(S^*)$. So,
+
+$$\beta = \frac {F^{-1}(\alpha) - \int_{-\infty}^{F^{-1}(\alpha)} F(x) dx} {\mu}$$
+
+This is the key formula that relates the two measures of levels of service $\alpha$ and $\beta$. For an arbitrary cumulative density function of demand $F$, this formula enables us to get $\alpha$ from $\beta$, or get $\beta$ from $\alpha$.
+
+Now let us consider the case where the probability distribution of demand is a gaussian distribution $N(\mu, \sigma^2)$. We have seen in section 4 that $g_1(S) = \sigma \cdot (R \cdot \Phi(R) + \phi(R) - R)$ where $R = \frac {S - \mu} {\sigma}$. So,
+
+$$\beta = 1 - \frac {\sigma \cdot (R \cdot \Phi(R) + \phi(R) - R)} {\mu}$$
+
+where $\phi(x)$ is the standard normal distribution function and $\Phi(x)$ is the standard cumulative normal distribution function (standard normal is $N(0, 1)$)
+
+We simplify this expression using the fact that when $S = S^*$, $R = \Phi^{-1}(\alpha)$. This yields:
+
+$$\beta = 1 - \frac {\sigma} {\mu} \cdot (\phi(\Phi^{-1}(\alpha)) - (1 - \alpha) \cdot \Phi^{-1}(\alpha))$$
+
+where $\phi(x) = \frac 1 {\sqrt{2 \pi}} e^{\frac {-x^2} 2}$
+This is a rather useful formula that indicates that the relationship between $\alpha$ and $\beta$ depends on the {\em coefficient of variation} $\frac \sigma \mu$.
+
+In fact, this formula helps us conceptualize $1-\beta$ (``unfilled rate'') as the product of two intuitive quantities:
+
+\begin{itemize}
+\item The Coefficient of Variation $\frac {\sigma} {\mu}$
+\item The Normalized Option Price for Strike Fractile $\alpha$ (which is equal to $\phi(\Phi^{-1}(\alpha)) - (1 - \alpha) \cdot \Phi^{-1}(\alpha)$). This quantity is the option price when the distribution is standard normal $N(0,1)$ and the strike is expressed as the fractile $\alpha$ (i.e., Strike $= \Phi^{-1}(\alpha)$). This is because the Normalized Option Price for Strike Fractile $\alpha$ is $\int_{\Phi^{-1}(\alpha)}^{\infty} (x - \Phi^{-1}(\alpha)) \cdot \phi(x) \cdot dx$ which (as we worked out in section 4) equals $\phi(\Phi^{-1}(\alpha)) - (1 - \alpha) \cdot \Phi^{-1}(\alpha)$
+\end{itemize}
+
+
+
+\end{document}  

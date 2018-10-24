@@ -1,0 +1,152 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+%SetFonts
+
+%SetFonts
+
+
+\title{Economic Order Quantity under Spoilage/Expiration}
+\author{Ashwin Rao}
+\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This is a brief article to derive the optimal order quantity under the assumptions of a deterministic and fixed demand rate $\lambda$ (demand quantity per unit of time), a fixed spoilage/expiration rate $\gamma$  (spoilage/expiration as a fraction of the inventory quantity per unit of time), requirement of 100\% availability (no lost demand) and zero lead time.
+
+The motivation here is to derive an analytic form for the optimal order quantity to help develop strong economic intuition on the tradeoffs between ordering costs, holding costs and spoilage/expiration costs. We hope that once we internalize this economic intuition, it will greatly benefit us when we analyze the results from more complex, realistic models we will be developing.
+
+\section{Differential Equation for Inventory Quantity}
+
+We denote time by the variable $t$ and the inventory quantity by the variable $q$. Under these simple assumptions, we will order a quantity $Q$ on a periodic basis (period denoted by $T$) when $q$ drops to 0. We will soon see that $q$ as a function of $t$ is an exponential-decay function (with period $T$ and amplitude $Q$).
+
+$$dq = - \lambda \cdot dt - \gamma \cdot q \cdot dt \Rightarrow \frac {dq} {\lambda + \gamma \cdot q} = - dt$$
+
+Solving this differential equation for boundary conditions $q(0) = Q$ and $q(T) = 0$ gives:
+
+$$\log \frac {\lambda} {\lambda + \gamma \cdot Q} = -T \cdot \gamma \Rightarrow Q = \frac {\lambda} {\gamma} (e^{T \cdot \gamma} - 1)$$
+
+$$\log \frac {\lambda + \gamma \cdot q} {\lambda + \gamma \cdot Q} = -t \cdot \gamma \cdot \Rightarrow q = \frac {\lambda} {\gamma} (e^{-(t-T) \gamma} - 1)$$
+
+\section{Annual Purchases, Waste and Sales}
+
+Annual Sold Units
+
+$$ = \frac {1} {T} \int_0^T \lambda \cdot dt = \lambda$$
+
+Annual Wasted Units due to Spoilage/Expiration
+
+$$ = \frac {1} {T} \int_0^T \gamma \cdot q \cdot dt = \frac {\lambda} {T} \int_0^T e^{-(t-T) \cdot \gamma} - 1) dt = \lambda \frac {e^{T \cdot \gamma} - 1} {T \cdot \gamma} - \lambda = \frac {Q} {T} - \lambda$$
+
+Annual Purchased units = Annual sold units + Annual Wasted Units = $\frac {Q} {T}$ which is a variable, dependent on the order quantity $Q$.
+
+Since the annual sold units is a constant and the only variability in the annual purchased units comes from the ones that get spoilt/expire (wasted units), we don't need to include the sales revenue and the procurement cost of each unit in the objective function. But we need to include the cost incurred from the wasted units (a variable) in the objective function.
+
+\section{Cost Model}
+
+Now we come to the cost model (we want to minimize the annual total cost).
+
+Let ordering cost (cost for each order of size $Q$) be $K$ (since we are ignoring the unit-procurement cost component of the ordering cost, as explained above).
+Let $h$ be the holding cost per unit quantity per unit of time. Let $c$ be the procurement cost of a unit quantity (money lost when a unit quantity gets spoilt and goes into waste).
+
+Then, the holding cost over time interval $dt$ for inventory quantity $q$ is $h \cdot q \cdot dt$.
+
+Quantity of inventory spoilt/expired  in time $dt$ is $\gamma \cdot q \cdot dt$ whose spoilage/expiration cost is $c \cdot \gamma \cdot q \cdot dt$ for 
+
+We will minimize the integrated annual cost to solve for $T^*$ (and hence, $Q^*$).
+
+Annual Cost function
+
+$$ f(T) = \frac {K} {T} + \frac {1} {T} \int_0^T h \cdot q \cdot dt + \frac {1} {T} \int_0^T c \cdot \gamma \cdot q \cdot dt$$
+
+$$ = \frac {K} {T} + \frac {1} {T} \int_0^T (h + c \cdot \gamma) q \cdot dt$$
+
+$$ = \frac {K} {T} + \frac {1} {T} \int_0^T (h + c \cdot \gamma) \frac {\lambda} {\gamma} (e^{-(t-T) \cdot \gamma} - 1) dt$$
+
+$$ = \frac {K} {T} + \frac {(h + c \cdot \gamma) \lambda} {\gamma \cdot T} (\frac {e^{T \cdot \gamma} - 1} {\gamma} - T)$$
+
+\section{Optimal Order Quantity and Frequency}
+
+Taking the derivative of this Annual Cost function $f(T)$ with respect to $T$ and equating the derivative to 0 gives the equation:
+
+$$ \frac {K \cdot \gamma} {\lambda} = (c + \frac {h} {\gamma}) (e^{T^* \cdot \gamma} \cdot (T^* \cdot \gamma - 1) + 1)$$
+
+
+Taylor series-expanding and ignoring quadratic terms in the expansion, we get the following approximate solutions for $T^*$ and $Q^*$:
+
+$$T^* \approx \sqrt {\frac {2 \cdot K} {\lambda (c \cdot \gamma + h)}}$$
+
+$$Q^* \approx \sqrt {\frac {2 \cdot K \cdot \lambda} {c \cdot \gamma + h}}$$
+
+Often, holding costs are expressed as an annual percentage of inventory value, so we can write $h = r \cdot c$ where $h$ is the holding cost per unit quantity per unit time and $r$ is the holding cost per unit time expressed as a fraction of the value of inventory being held. Let us also denote the optimal frequency of replenishment (optimal turnover) as $\omega^*$ ($= \frac 1 {T^*}$). In this formulation,
+
+$$Q^* \approx \sqrt {\frac {2 \cdot K \cdot \lambda} {c \cdot (\gamma + r)}}$$
+
+$$T^* \approx \sqrt {\frac {2 \cdot K} {\lambda \cdot c \cdot (\gamma + r)}}$$
+
+$$\omega^* \approx \sqrt {\frac {\lambda \cdot c \cdot (\gamma + r)} {2 \cdot K} }$$
+
+If we denote the cost of demand per unit of time as $\theta$ ($\theta = \lambda \cdot c$), then we get:
+
+$$\omega^* \approx \sqrt {\frac {\theta \cdot (\gamma + r)} {2 \cdot K} }$$
+
+{\bf which is a rather simple, intuitive formula to work with}.
+
+\section{Properties of the Annual Cost Function}
+
+With a Taylor-series expansion of the annual cost function and ignoring higher order terms in the expansion, we can see that the annual cost function has the structure of the function described in the Appendix ($f(x) = \frac A x + B \cdot c$) and so, the properties derived in the Appendix are applicable to our cost function. We have:
+
+$$A = K$$
+
+$$B = \frac {\lambda \cdot (c \cdot \gamma + h)} 2 = \frac {\lambda \cdot c \cdot (\gamma + r)} 2  = \frac {\theta \cdot (\gamma + r)} 2$$
+
+So, at the minimum $T^*$, $f_1(T^*) = f_2(T^*)$, i.e.,{\bf the annual fixed ordering costs are exactly equal to the sum of annual holding costs and annual spoilage/expiration costs}. Each of these components (i.e., half the optimal total annual cost)
+
+$$ = \sqrt{ \frac {K \cdot \lambda \cdot (c \cdot \gamma + h)} 2} = \sqrt{ \frac {K \cdot \lambda \cdot c \cdot (\gamma + r)} 2}  = \sqrt{ \frac {K \cdot \theta \cdot (\gamma + r)} 2}$$
+
+We also note from the appendix that the annual cost function is rather flat within about 50\% to 200\% of the minimum $T^*$, but for large values of $T$ (say $T = \alpha \cdot T^*$ with $\alpha > 4$), {\bf the annual cost is approximately a multiple of $\frac \alpha 2$ of the minimum annual cost}.
+
+In other words, the usual intuition on EOQ tradeoff between ordering fixed cost and holding cost is now replaced by a tradeoff between ordering fixed cost and the combination of holding cost and spoilage/expiration cost. As a result, the balance shifts towards a frequent, just-in-time-arrival replenishment model.
+
+\section{Extension to Stockout Penalty Model}
+
+Finally, consider a model where instead of requiring 100\% availability, we impose a stockout penalty of $p$ per unit of lost demand quantity per unit of time. We know from standard literature on EOQ under stockouts-penalty that $h$ is simply scaled by a factor equal to the ``critical ratio'' $= \frac {p} {p+h}$. In this setting, the formulas for $T^*$ and $Q^*$ are:
+
+$$T^* \approx \sqrt {\frac {2 \cdot K} {\lambda (c \cdot \gamma + \frac {p \cdot h} {p + h})}}$$
+
+$$Q^* \approx \sqrt {\frac {2 \cdot K \cdot \lambda} {c \cdot \gamma + \frac {p \cdot h} {p + h}}}$$
+
+\appendix
+
+\section*{Appendix: Derivation of Function Properties}
+
+Consider a function $f(x) = f_1(x) + f_2(x)$ where $f_1(x) = \frac A x$ and $f_2(x) = B \cdot x$.
+
+To find the minimum of this function, set $f'(x) = 0$ which yields $- \frac A {x^2} + B = 0$ which yields $x = \sqrt{\frac A B}$.
+
+Note that at the minimum ($x^* = \sqrt{\frac A B}$),
+
+ $$f_1(x^*) = f_2(x^*) = \sqrt{A \cdot B}$$
+ 
+ $$f(x^*) = 2 \cdot \sqrt{A \cdot B}$$
+
+So, our first important insight is that at the minimum, the two components of $f(x)$ are equal.
+
+Now consider how this function grows around the minimum:
+
+$$\frac {f(\alpha \cdot x^*)} {f(x^*)} = 0.5 \cdot (\alpha + \frac 1 {\alpha})$$
+
+So, our second important insight is that the function growth (when viewed in terms of a constant multiple $\alpha$ of the minimum $x^*$) depends only on the multiple $\alpha$ and is independent of $A$ and $B$.
+
+Our third important insight is that the function is rather flat near the minimum (for values of $x$ ranging within say 50\% to 200\% of the minimum $x^*$), but for large values of the multiple $\alpha$ (say $\alpha > 4$), the function is approximately a multiple of $\frac \alpha 2$ of the minimum function value $f(x^*)$.
+
+\end{document}  

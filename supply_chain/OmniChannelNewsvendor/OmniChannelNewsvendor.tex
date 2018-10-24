@@ -1,0 +1,179 @@
+\documentclass[11pt]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+\usepackage[utf8]{inputenc}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+
+%SetFonts
+
+%SetFonts
+
+
+\title{Omni-Channel Newsvendor}
+\author{Ashwin Rao}
+\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+We consider a generalization to the newsvendor problem wherein we need to satisfy a separate level-of-service for each of $n$ populations. We are given the joint probability distribution of demand for the $n$ populations, and we need to identify the {\em minimum common inventory} $I$ to hold that satisfies each of the required levels-of service. A key feature of this problem is the allocation rule to apply when the total realized demand from the $n$ populations exceeds $I$. Here, we will assume that each population is associated with an {\em allocation fraction} $\gamma_i$ (with $\sum_{i=1}^n \gamma_i = 1$) such that when total realized demand exceeds $I$, stockouts will only be allocated to populations $i$ whose realized demand exceeds $\gamma_i I$.
+
+A key motivation for solving this problem is to zoom in on the core {\em incremental} mathematical complexity we encounter when we generalize from serial-system inventory control to distribution-system inventory control - we do this by suppressing other sources of complexity, i.e., by considering a single-period, single-item, single-echelon, no lead-time situation. We hope the insights obtained here will help us with the eventual business problem of holding common inventory in a multi-echelon distribution system that serves multiple channels, including physical-stores demand and online demand.
+
+\section{Problem Statement}
+
+For now, we will restrict ourselves to the case of 2-channel newsvendor. Let us label the two populations as $A$ and $B$. Let the common inventory be $I$ and the allocation fraction for population $A$ is denoted as $\gamma$ (allocation fraction for population $B$ will be $1-\gamma$). We are given the joint demand PDF $f(x,y$) (demand from population $A = x$ AND demand from population $B =  y$ occurs with probability $f(x,y)$). We need to satisfy a level-of-service $\alpha_A$ for population $A$ and $\alpha_B$ for population $B$. What should be the minimum common inventory to hold which satisfies each of these levels-of-service, with flexibility in choosing the allocation fraction parameter $\gamma$? 
+
+Let $x$ be the realized demand from population $A$ and let $y$ be the realized demand from population $B$. Let us denote the probabilities of not having a stockout for populations $A$ and $B$ respectively as $P_A(I, \gamma)$ and $P_B(I, \gamma)$. By the allocation rule we have defined:
+
+$$P_A(I, \gamma) = Prob[x \leq I - \min{(y, (1 - \gamma) I)}]$$
+$$P_B(I, \gamma) = Prob[y \leq I - \min{(x, \gamma I)}]$$
+
+The problem statement is as follows:
+
+$$P_A(I, \gamma) \geq \alpha_A$$
+$$P_B(I, \gamma) \geq \alpha_B$$
+$$I \geq 0$$
+$$0 \leq \gamma \leq 1$$
+
+Under the above constraints, solve for the decision variables $I$ and $\gamma$ that will minimize $I$
+
+A key point to note regarding this allocation rule is that operationally we have to assume that the realized demands of the two populations happen instantaneously and simultaneously. If the realized demands happen asynchronously during the course of the period, we will not be able to apply this simple allocation rule. This simplification is okay for now because as we mentioned earlier, our goal is to capture the key mathematical complexity that arises from satisfying an omni-channel demand with common inventory. To achieve this, we suppress the other sources of mathematical complexity (multi-period, multi-item, multi-echelon, lead times, asynchronous demand realization etc.), and reduce the problem to the bare-minimum problem of satisfying omni-channel (random) demand with common inventory, i.e., the omni-channel newsvendor problem.
+
+\section{Probability Space Partitions}
+
+Let $F(x,y)$ be the joint CDF (demand from population $A \leq x$ AND demand from population $B \leq y$ with probability $F(x,y)$). Let $f_A(\cdot)$ and $F_A(\cdot)$ be the marginal PDF and marginal CDF respectively for population $A$ and let $f_B(\cdot)$ and $F_B(\cdot)$ be the marginal PDF and marginal CDF respectively for population $B$.  Let $f_{A+B}(\cdot)$ and $F_{A+B}(\cdot)$ denote the PDF and CDF respectively for the sum of the demands from populations $A$ and $B$.
+
+ We can partition the spaces of $P_A(I, \gamma)$ and $P_B(I, \gamma)$ in two different ways.
+\subsection{Partition 1}
+
+$$P_A(I, \gamma) = \int_0^{(1-\gamma) I} \int_0^{I-y} f(x,y) \cdot dx \cdot dy + \int_{(1-\gamma) I}^{\infty} \int_0^{\gamma I} f(x,y) \cdot dx \cdot dy$$
+$$P_B(I, \gamma) = \int_0^{\gamma I} \int_0^{I-x} f(x,y) \cdot dy \cdot dx + \int_{\gamma I}^{\infty} \int_0^{(1-\gamma) I} f(x,y) \cdot dy \cdot dx$$
+
+\subsection{Partition 2}
+
+$$P_A(I, \gamma) = \int_0^{\gamma I} \int_0^{\infty} f(x,y) \cdot dy \cdot dx + \int_{\gamma I}^{I} \int_0^{I-x}f(x,y) \cdot dy \cdot dx$$
+$$ = F_A(\gamma I) + \int_{\gamma I}^{I} \int_0^{I-x}f(x,y) \cdot dy \cdot dx$$
+
+$$P_B(I, \gamma) = \int_0^{(1-\gamma) I} \int_0^{\infty} f(x,y) \cdot dx \cdot dy + \int_{(1-\gamma) I}^{I} \int_0^{I-y}f(x,y) \cdot dx \cdot dy$$
+$$ = F_B((1-\gamma) I) + \int_{(1-\gamma) I}^{I} \int_0^{I-y}f(x,y) \cdot dx \cdot dy$$
+
+\includegraphics[angle=-90, origin=c, height=120mm, width=120mm]{OmniChannel.jpeg}
+
+\section{Upper Bound}
+
+If we set $\gamma = 0$, we get:
+
+$$P_A(I, 0) = F_{A+B}(I) \geq \alpha_A$$
+$$P_B(I, 0) = F_B(I) \geq \alpha_B$$
+
+Therefore, when $\gamma = 0$:
+
+$$I = \max{(F_{A+B}^{-1}(\alpha_A), F_B^{-1}(\alpha_B))}$$
+
+Similarly, when $\gamma = 1$:
+
+$$I = \max{(F_A^{-1}(\alpha_A), F_{A+B}^{-1}(\alpha_B))}$$
+
+Therefore, allowing flexibility for $0 \leq \gamma \leq 1$, we have:
+
+$$I \leq \min{(\max{(F_{A+B}^{-1}(\alpha_A), F_B^{-1}(\alpha_B))}, \max{(F_A^{-1}(\alpha_A), F_{A+B}^{-1}(\alpha_B))})}$$
+
+\section{Normal Distribution}
+If we assume that populations $A$ and $B$ have a normally distributed joint-demand with means $\mu_A, \mu_B$, standard deviations $\sigma_A, \sigma_B$ and correlation $\rho$, then the upper-bound of the previous section reduces to the minimum of the following two values:
+
+$$\max{(\mu_A + \mu_B + \Phi^{-1}(\alpha_A) \cdot \sigma_{A+B}, \mu_B + \Phi^{-1}(\alpha_B) \cdot \sigma_B)}$$
+$$\max{(\mu_A + \Phi^{-1}(\alpha_A) \cdot \sigma_A, \mu_A + \mu_B + \Phi^{-1}(\alpha_B) \cdot \sigma_{A+B})}$$
+
+where
+
+$$ \sigma_{A+B} = \sqrt{\sigma_A^2 + \sigma_B^2 + 2 \cdot \sigma_A \cdot \sigma_B \cdot \rho}$$
+
+and $\Phi(\cdot)$ is the cumulative standard normal distribution.
+
+\section{Solution}
+
+Now we come back to the case of an arbitrary joint distribution of demand for $A$ and $B$. We note that:
+
+\begin{itemize}
+\item $P_A(I, \gamma)$ is monotonically increasing in both $I$ and $\gamma \in [0, 1]$ with $P_A(I, 0) = F_{A+B}(I)$ and $P_A(I, 1) = F_A(I)$.
+\item $P_B(I, \gamma)$ is monotonically increasing in $I$ and monotonically decreasing in $\gamma \in [0,1]$ with $P_B(I, 0) = F_B(I)$ and $P_B(I, 1) = F_{A+B}(I)$.
+\end{itemize}
+
+The following 3D graphs show $P_A(I, \gamma)$ and $P_B(I, \gamma)$ for a correlated bivariate normal distribution.
+
+\includegraphics[height=80mm, width=130mm]{pa_3d.png}
+
+\includegraphics[height=80mm, width=130mm]{pb_3d.png}
+
+ Consequently, we can define a function $\gamma 2I_A : [0,1] \rightarrow [0, \infty]$ as $\gamma 2I_A(\gamma) = I$ such that for a given $\gamma \in [0,1]$, $I$ is the unique solution to $P_A(I, \gamma) = \alpha_A$. . Similarly, we can define a function $\gamma 2I_B : [0,1] \rightarrow [0, \infty]$ as $\gamma 2I_B(\gamma) = I$ such that for a given $\gamma \in [0,1]$, $I$ is the unique solution to $P_B(I, \gamma) = \alpha_B$. Note that:
+
+\begin{itemize}
+\item $\gamma 2I_A$ is a monotonically decreasing function of $\gamma $ with $\gamma 2I_A(0) = F_{A+B}^{-1}(\alpha_A)$ and $\gamma 2I_A(1) = F_A^{-1}(\alpha_A)$.
+\item $\gamma 2I_B$ is a monotonically increasing function of $\gamma$ with $\gamma 2I_B(0) = F_B^{-1}(\alpha_B)$ and $\gamma 2I_B(1) = F_{A+B}^{-1}(\alpha_B)$.
+\end{itemize}
+
+We consider two cases:
+
+\begin{enumerate}
+\item $F_{A+B}^{-1}(\alpha_A) \geq F_B^{-1}(\alpha_B)$ and $F_A^{-1}(\alpha_A) \leq F_{A+B}^{-1}(\alpha_B)$ (i.e., the functions $\gamma 2I_A$ and $\gamma 2I_B$ intersect in the interval $[0,1]$). In this case, we simply have to solve the following two equations for the unknowns $I$ and $\gamma$. 
+$$P_A(I, \gamma) = \alpha_A$$
+$$P_B(I, \gamma) = \alpha_B$$
+\item
+\begin{enumerate}
+\item $F_{A+B}^{-1}(\alpha_A) < F_B^{-1}(\alpha_B)$. In this case, the solution is the minimum of the function $\gamma 2I_B$ in the interval $[0,1]$ which is equal to $F_B^{-1}(\alpha_B)$
+\item $F_A^{-1}(\alpha_A) > F_{A+B}^{-1}(\alpha_B)$. In this case, the solution is the minimum of the function $\gamma 2I_A$ in the interval $[0,1]$, which is equal to $F_A^{-1}(\alpha_A)$.
+\end{enumerate}
+\end{enumerate}
+
+The following graph shows the functions $\gamma 2I_A$ and $\gamma2I_B$ corresponding to the $P_A(I, \gamma)$ and $P_B(I, \gamma)$ graphs shown above for $\alpha_A = 0.95$ and $\alpha_B = 0.9$.
+
+\includegraphics[height=80mm, width=100mm]{gamma2i_2d.png}
+
+\section{More than 2 channels}
+
+Work in progress ...
+
+\end{document}
