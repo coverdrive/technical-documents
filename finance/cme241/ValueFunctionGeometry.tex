@@ -177,10 +177,10 @@ $$\vw(s) = \bw^T \cdot {\bf \phi}(s) =  \sum_{j=1}^m w_j \cdot \phi_j(s) \mbox{ 
 \item Denote $r(s,a)$ as the Expected Reward upon action $a$ in state $s$
 \item Denote $p(s,s',a)$ as the probability of transition $s \rightarrow s'$ upon action $a$
 \item Define
-$${\bf R}(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot r(s,a)$$
-$${\bf P}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot p(s,s',a)$$
-\item Denote {\bf R} as the vector $[{\bf R(s_1)}, {\bf R(s_2)}, \ldots, {\bf R(s_n)}]$
-\item Denote {\bf P} as the matrix $[{\bf P}(s_i, s_{i'})], 1 \leq i, i' \leq n$ 
+$${\bf R}_{\pi}(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot r(s,a)$$
+$${\bf P}_{\pi}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot p(s,s',a)$$
+\item Denote ${\bf R}_{\pi}$ as the vector $[{\bf R}_{\pi}(s_1), {\bf R}_{\pi}(s_2), \ldots, {\bf R}_{\pi}(s_n)]$
+\item Denote ${\bf P}_{\pi}$ as the matrix $[{\bf P}_{\pi}(s_i, s_{i'})], 1 \leq i, i' \leq n$ 
 \item Denote $\gamma$ as the MDP discount factor
 \end{itemize}
 \end{frame}
@@ -189,7 +189,7 @@ $${\bf P}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot p(s,s',a)$$
 \frametitle{Bellman operator $\bb$}
 \begin{itemize}
 \item Bellman operator $\bb$ for policy $\pi$ operating on VF vector $\bv$ defined as:
-$$\bb \bv = {\bf R} + \gamma {\bf P} \cdot \bv$$
+$$\bb \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
 \item Note that $\vpi$ is the fixed point of operator $\bb$ (meaning $\bb \vpi = \vpi$)
 \item If we start with an arbitrary VF vector $\bv$ and repeatedly apply $\bb$, 
 by Contraction Mapping Theorem, we will reach the fixed point $\vpi$
@@ -201,7 +201,7 @@ by Contraction Mapping Theorem, we will reach the fixed point $\vpi$
 \begin{frame}
 \frametitle{Projection operator $\bpi$}
 \begin{itemize}
-\item Firs we define ``distance'' $d({\bf v_1}, {\bf v_2})$ between VF vectors ${\bf v_1}, {\bf v_2}$
+\item First we define ``distance'' $d({\bf v_1}, {\bf v_2})$ between VF vectors ${\bf v_1}, {\bf v_2}$
 \item Weighted by $\bmu$ across the $n$ dimensions of ${\bf v_1}, {\bf v_2}$
 $$d({\bf v_1}, {\bf v_2}) = \sum_{i=1}^n \bmu(s_i) \cdot  ({\bf v_1}(s_i) - {\bf v_2}(s_i))^2 =  ({\bf v_1} - {\bf v_2})^T \cdot \bd \cdot ({\bf v_1} - {\bf v_2})$$
 where $\bd$ is the square diagonal matrix consisting of $\bmu(s_i), 1 \leq i \leq n$
@@ -278,38 +278,38 @@ followed by landing back in the $\bphi$ subspace (applying Projection operator $
 \begin{frame}
 \frametitle{Solution of $\bw_{BE}$ with a Linear System Formulation}
 \begin{align*}
-\bw_{BE} & = \argmin_\bw d(\vw, {\bf R} + \gamma {\bf P} \cdot \vw) \\
-& = \argmin_\bw d(\bphi \cdot \bw, {\bf R} + \gamma {\bf P} \cdot \bphi \cdot \bw)\\
-& = \argmin_\bw d(\bphi \cdot \bw - \gamma {\bf P} \cdot \bphi \cdot \bw, {\bf R} )\\
-& = \argmin_\bw d((\bphi - \gamma {\bf P} \cdot \bphi) \cdot \bw, {\bf R} )\\
+\bw_{BE} & = \argmin_\bw d(\vw, {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \vw) \\
+& = \argmin_\bw d(\bphi \cdot \bw, {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot \bw)\\
+& = \argmin_\bw d(\bphi \cdot \bw - \gamma {\bf P}_{\pi} \cdot \bphi \cdot \bw, {\bf R}_{\pi} )\\
+& = \argmin_\bw d((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot \bw, {\bf R}_{\pi} )\\
 \end{align*}
-This is a weighted least-squares linear regression of ${\bf R}$ versus $\bphi - \gamma {\bf P} \cdot \bphi$
+This is a weighted least-squares linear regression of ${\bf R}_{\pi}$ versus $\bphi - \gamma {\bf P}_{\pi} \cdot \bphi$
 with weights $\bmu$, whose solution is:
-$$w_{BE} = ((\bphi - \gamma {\bf P} \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma {\bf P} \cdot \bphi))^{-1} \cdot (\bphi - \gamma {\bf P} \cdot \bphi)^T \cdot \bd \cdot {\bf R}$$
+$$w_{BE} = ((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot {\bf R}_{\pi}$$
 \end{frame}
 
 \begin{frame}
 \frametitle{Solution of $\bw_{PBE}$ with a Linear System Formulation}
 $\bphi \cdot {\bf w}_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$. We know:
 $$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd$$
-$$\bb \bv = {\bf R} + \gamma {\bf P} \cdot \bv$$
+$$\bb \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
 Therefore,
-$$\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R} + \gamma {\bf P} \cdot \bphi \cdot {\bf w}_{PBE}) = \bphi \cdot {\bf w}_{PBE}$$
+$$\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) = \bphi \cdot {\bf w}_{PBE}$$
 Since columns of $\bphi$ are assumed to be independent (full rank),
 \begin{align*}
-(\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R} + \gamma {\bf P} \cdot \bphi \cdot {\bf w}_{PBE}) & = {\bf w}_{PBE}\\
-\bphi^T \cdot \bd \cdot ({\bf R} + \gamma {\bf P} \cdot \bphi \cdot {\bf w}_{PBE}) &= \bphi^T \cdot \bd \cdot \bphi \cdot {\bf w}_{PBE}\\
-\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P} \cdot \bphi) \cdot {\bf w}_{PBE} &= \bphi^T \cdot \bd \cdot {\bf R}\\ 
+(\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) & = {\bf w}_{PBE}\\
+\bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) &= \bphi^T \cdot \bd \cdot \bphi \cdot {\bf w}_{PBE}\\
+\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot {\bf w}_{PBE} &= \bphi^T \cdot \bd \cdot {\bf R}_{\pi}\\ 
 \end{align*}
 This is a square linear system of the form ${\bf A} \cdot {\bf w}_{PBE} = {\bf b}$ whose solution is:
-$${\bf w}_{PBE} = {\bf A}^{-1} \cdot {\bf b} = (\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P} \cdot \bphi))^{-1} \cdot \bphi^T \cdot \bd \cdot {\bf R}$$
+$${\bf w}_{PBE} = {\bf A}^{-1} \cdot {\bf b} = (\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$$
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Model-Free Learning of $\bw_{PBE}$}
 \begin{itemize}
-\item How do we construct matrix ${\bf A} = \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P} \cdot \bphi)$ and vector ${\bf b} = \bphi^T \cdot \bd \cdot {\bf R}$ without a model?
+\item How do we construct matrix ${\bf A} = \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)$ and vector ${\bf b} = \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$ without a model?
 \item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of ${\bf A}$ and ${\bf b}$
 \item Estimate of ${\bf A}$ is the outer-product of vectors $\phi(s)$ and $\phi(s) - \gamma \cdot \phi(s')$
 \item Estimate of ${\bf b}$ is scalar $r$ times vector  $\phi(s)$ 
