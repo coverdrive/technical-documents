@@ -35,7 +35,7 @@ We consider $n$ stores indexed by $i = 1, 2, \ldots, n$. The $n$ stores are serv
 \end{itemize}
 
 \section{Inventory Movements}
-Denote quantity of inventory movement initiated in epoch $t$ from the parent of node $i$ to node $i$ ($0 \leq i \leq n$) as $q_{t,i} \geq 0$. Node $i$ will receive that inventory of $q_{t,i}$ in epoch $t + L_i$. Denote $R_{t,i}$ as the inventory received in epoch $t$ at node $i$. Following the epoch of initiation of inventory movement $t$ and until the epoch of inventory receipt $t + L_i$, this quantity $q_i$ will appear as on-order $OO_{t+j,i,L_i-j+1}, 1 \leq j \leq L_i$. For the special case where $L_i = 0$, $R_{t,i} = q_{t,i}$ (Seqence of Events below illustrates that within an epoch, receipt of inventory happens after initiation of movement).
+Denote quantity of inventory movement initiated in epoch $t$ from the parent of node $i$ to node $i$ ($0 \leq i \leq n$) as $q_{t,i} \geq 0$. Node $i$ will receive that inventory of $q_{t,i}$ in epoch $t + L_i$. Denote $R_{t,i}$ as the inventory received in epoch $t$ at node $i$. Following the epoch of initiation of inventory movement $t$ and until the epoch of inventory receipt $t + L_i$, this quantity $q_i$ will appear as on-order $OO_{t+j,i,L_i-j+1}, 1 \leq j \leq L_i$. For the special case where $L_i = 0$, $R_{t,i} = q_{t,i}$ (Sequence of Events below illustrates that within an epoch, receipt of inventory happens after initiation of movement).
 
 Demand at store $i$ ($1 \leq i \leq n$) in epoch $t$ is denoted by random variable $D_{t,i}$.
 

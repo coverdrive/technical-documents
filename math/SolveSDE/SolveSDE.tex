@@ -1,0 +1,76 @@
+\documentclass[10pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+\usepackage[toc,page]{appendix}
+% See the ``Article customise'' template for come common customisations
+
+\usepackage{graphicx}	
+\usepackage{listings}
+
+\title{Solving Stochastic Differential Equations with time-dependent parameters}
+\author{Ashwin Rao}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+
+The purpose of this short note is to show how to solve stochastic differential equations (SDEs), specifically Ito processes, for the cases where the drift and dispersion are defined by time-dependent parameters. We will start by considering two simple cases.
+
+\section{Generalization of Geometric Brownian Motion}
+Geometric Brownian Motion (GBM) is given by the process:
+
+$$dx_t = \mu \cdot x_t \cdot dt + \sigma \cdot x_t \cdot dz_t$$
+
+We generalize GBM's parameters $\mu$ and $\sigma$ to be functions of time (as defined below):
+
+$$dx_t = \mu(t) \cdot x_t \cdot dt + \sigma(t) \cdot x_t \cdot dz_t$$
+
+This is solved easily by defining an appropriate function of $x_t$ and applying Ito's Lemma (similar to how we do it for GBM). We define 
+$$y_t = \log(x_t)$$
+Applying Ito's Lemma on $y_t$ with respect to $x_t$, we get:
+
+$$dy_t = \frac {dx_t} {x_t} - \frac {\sigma^2(t)} 2 \cdot dt = (\mu(t) - \frac {\sigma^2(t)} 2) \cdot dt + \sigma(t) \cdot dz_t$$
+$$y_T = y_S + \int_S^T (\mu(t) - \frac {\sigma^2(t)} 2) \cdot dt + \int_S^T  \sigma(t) \cdot dz_t$$
+$$x_T = x_S \cdot e^{\int_S^T (\mu(t) - \frac {\sigma^2(t)} 2) \cdot dt + \int_S^T  \sigma(t) \cdot dz_t}$$
+
+$x_T | x_S$ follows a lognormal distribution, i.e., 
+
+$$y_T = \log(x_T) \sim \mathcal{N}(\log(x_S) + \int_S^T (\mu(t) - \frac {\sigma^2(t)} 2) \cdot dt, \int_S^T  \sigma^2(t) \cdot dt)$$
+
+$$E[x_T|x_S] = x_S \cdot e^{\int_S^T \mu(t) \cdot dt}$$
+$$E[x_T^2|x_S] = x_S^2 \cdot e^{\int_S^T (2 \mu(t) + \sigma^2(t)) \cdot dt}$$
+$$Variance[x_T|x_S] = E[x_T^2|x_S] - (E[x_T|x_S])^2 = x_S^2 \cdot e^{\int_S^T 2 \mu(t) \cdot dt} \cdot (e^{\int_S^T \sigma^2(t) \cdot dt} - 1)$$
+
+For the special case of $\mu(t) = \mu$ (constant) and $\sigma(t) = \sigma$ (constant), we recover the solution for GBM:
+
+$$y_T = \log(x_T) \sim \mathcal{N}(\log(x_S) + (\mu - \frac {\sigma^2} 2)(T-S), \sigma^2 (T-S))$$
+$$E[x_T|x_S] = x_S \cdot e^{\mu (T-S)}$$
+$$Variance[x_T|x_S] = x_S^2 \cdot e^{2 \mu (T-S)} \cdot (e^{\sigma^2 (T-S)} - 1)$$
+
+\section{Generalization of Ornstein Uhlenbeck process}
+Consider the Ornstein-Uhlenbeck (OU) process, mean-reverting to 0.
+$$dx_t = -\alpha \cdot x_t \cdot dt + \sigma \cdot dz_t$$
+Now generalize the rate of mean-reversion and the dispersion to be functions of time.
+$$dx_t = \mu(t) \cdot x_t \cdot dt + \sigma(t) \cdot dz_t$$
+This is solved easily by defining an appropriate function of $t$ and $x_t$ and applying Ito's lemma (similar to how we do it for OU). We define
+$$y_t = x_t \cdot e^{-\int_0^t \mu(u) \cdot du}$$
+Applying Ito's Lemma on $y_t$ with respect to $x_t$, we get:
+
+$$dy_t = e^{-\int_0^t \mu(u) \cdot du} \cdot dx_t - x_t \cdot e^{-\int_0^t \mu(u) \cdot du} \cdot  \mu(t) \cdot dt = \sigma(t) \cdot e^{-\int_0^t \mu(u) \cdot du} \cdot dz_t$$
+$y_t$ is a martingale. Using Ito Isometry, we get:
+
+$$y_T \sim \mathcal{N}(y_S, \int_S^T \sigma^2(t) \cdot e^{-\int_0^t 2 \mu(u) \cdot du} \cdot dt)$$
+
+Therefore,
+
+$$x_T \sim \mathcal{N}(x_S \cdot e^{\int_S^T \mu(t) \cdot dt}, e^{\int_0^T 2\mu(t) \cdot dt} \cdot \int_S^T \sigma^2(t) \cdot e^{-\int_0^t 2 \mu(u) \cdot du} \cdot dt)$$
+
+For the special case of $\mu(t) = \mu$ (constant) and $\sigma(t) = \sigma$ (constant), we recover the solution for OU (mean-reverting to 0).
+
+$$x_T \sim \mathcal{N}(x_S \cdot e^{\mu (T-S)}, \frac {\sigma^2} {2 \mu} \cdot (e^{2 \mu (T-S)} - 1))$$
+
+\end{document}
