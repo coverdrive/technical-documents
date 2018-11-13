@@ -1,0 +1,221 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\usetikzlibrary{positioning}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Stochastic Calculus Foundations]{Overview of Stochastic Calculus Foundations} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ICME, Stanford University
+ % Your institution for the title page
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Continuous and Non-Differentiable Sample Paths}
+\begin{itemize}
+\item Sample paths of Brownian motion $z_t$ are continuous
+\item Sample paths of $z_t$ are almost always non-differentiable, meaning
+$$\lim_{h \rightarrow 0} \frac {z_{t+h} - z_t} {h} \mbox{ is almost always infinite}$$
+\item The intuition is that $\frac {dz_t} {dt}$ has standard deviation of $\frac 1 {\sqrt{dt}}$, which goes to $\infty$ as $dt$ goes to 0
+\item So, this derivative $\frac {dz_t} {dt}$ is almost always infinite
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Infinite Total Variation of Sample Paths}
+\begin{itemize}
+\item Sample paths of Brownian motion are of infinite total variation, i.e.
+$$\lim_{h \rightarrow 0} \sum_{i=m}^{n-1} |z_{(i+1)h} - z_{ih}| \mbox{ is almost always infinite}$$
+\item More succinctly, we write
+$$\int_S^T |dz_t| = \infty \mbox{ (almost always)}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Finite Quadratic Variation of Sample Paths}
+\begin{itemize}
+\item Sample paths of Brownian Motion are of finite quadratic variation, i.e.
+$$\lim_{h \rightarrow 0} \sum_{i=m}^{n-1} (z_{(i+1)h} - z_{ih})^2 = h(n-m)$$ 
+\item More succinctly, we write
+$$\int_S^T (dz_t)^2= T-S$$
+\item This means it's expected value is $T-S$ and it's variance is 0
+\item This leads to Ito's Lemma and Ito Isometry
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fokker-Planck equation of a Stochastic Process}
+\begin{itemize}
+\item Let's say we are given the following stochastic process
+$$dX_t = \mu(X_t, t) \cdot dt + \sigma(X_t, t) \cdot dz_t$$
+\item The Fokker-Planck equation of this process is the PDE:
+$$\pderiv{p(x,t)}{t} = -\pderiv{\{\mu(x,t) \cdot p(x,t)\}}{x} + \pderiv[2]{\{\frac {\sigma^2(x,t)} 2 \cdot p(x,t)\}}{x}$$
+where $p(x,t)$ is the probability density function of $X_t$
+\item The Fokker-Planck equation is used with problems where the initial distribution is known (Kolmogorov forward equation)
+\item However, if the problem is to know the distribution at previous times, the Feynman-Kac formula can be used (a consequence of the Kolmogorov backward equation)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Feynman-Kac Formula}
+\begin{itemize}
+\item Consider the partial differential equation:
+$$\pderiv{u(x,t)}{t} + \mu(x,t) \pderiv{u(x,t)}{x} + \frac {\sigma^2(x,t)} 2 \pderiv[2]{u(x,t)}{x} - V(x,t) u(x,t) = f(x,t)$$
+defined for all $x \in \mathbb{R}$, $t \in [0,T]$, subject to boundary $u(x,T) = \psi(x)$,
+where $\mu, \sigma, \psi, V, f$ are known functions, $T$ is a parameter and $u : \mathbb{R} \times [0,T] \rightarrow \mathbb{R}$ is the unknown.
+\item Then the Feynman-Kac formula tells us that the solution $u(x,t)$ can be written as the following conditional expectation:
+$$\mathbb{E}^{\mathbb{Q}}[\int_t^T e^{-\int_t^r V(X_{\tau}, \tau) d\tau} \cdot f(X_r, r) \cdot dr + e^{-\int_t^T V(X_{\tau}, \tau) d\tau} \cdot \psi(X_T) | X	_t = x]$$
+under measure $\mathbb{Q}$ such that $X_t$ is an Ito process defined as:
+$$dX_t = \mu(X_t, t) \cdot dt + \sigma(X_t, t) \cdot dz^{\mathbb{Q}}_t$$
+where $z^{\mathbb{Q}}_t$ is Brownian motion under $\mathbb{Q}$, and initial condition $X_t = x$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Stopping Time $\tau$}
+\begin{itemize}
+\item Random variable $\tau$ such that $Pr[\tau \leq t]$ is in $\sigma$-algebra $\mathcal{F}_t$, for all $t$
+\item Deciding whether $\tau \leq t$ only depends on information up to time $t$
+\item Hitting time of a Borel set $A$ for a process $X_t$ is the first time $X_t$ takes a value within the set $A$
+\item Hitting time is an example of stopping time. Formally, 
+$$T_{X,A} = \argmin_{t \in \mathbb{R}} \{X_t \in A\}$$
+eg: Hitting time of a process to exceed a certain fixed level
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Stopping Problem}
+\begin{itemize}
+\item Optimal Stopping problem: 
+$$V(x) = \argmax_{\tau} \mathbb{E}[G(X_{\tau})|X_0 = x]$$
+ where $\tau$ is a set of stopping times of $X_t$, $V(\cdot)$ is called the value function, and $G$ is called the reward (or gain) function.
+\item Note that sometimes we can have several stopping times that maximize $\mathbb{E}[G(X_{\tau})]$ and we say that the optimal stopping time
+is the smallest stopping time achieving the maximum value.
+\item Optimal Exercise Time of an American Option is an example
+\begin{itemize}
+\item $X_t$ is underlying price
+\item $x$ is spot price
+\item $\tau$ is set of times when option is in-the-money
+\item $V(\cdot)$ is American option price as function of spot ptice
+\item $G(\cdot)$ is the option payoff function
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Markov Property}
+\begin{itemize}
+\item Markov property says that the $\mathcal{F}_t$-conditional PDF of $X_{t+h}$ depends only on the present state $X_t$
+\item Strong Markov property says that for every stopping time $\tau$, the $\mathcal{F}_{\tau}$-conditional PDF of $X_{\tau+h}$ depends only on $X_{\tau}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Infinitesimal Generator and Dynkin's Formula}
+\begin{itemize}
+\item Infinitesimal Generator of a time homogeneous Ito diffusion $X_t$ is the PDE operator $A$ (operating on functions $f$) defined as
+$$ A \bullet f(x) = \lim_{t \rightarrow 0} \frac {\mathbb{E}[f(X_t) | X_0 = x] - f(x)} {t}$$
+\item If $dX_t = \mu(X) \cdot dt + \sigma(X) \cdot dz_t$, then
+$$ A \bullet f(x) = \sum_i \mu_i(x) \pderiv{f}{x_i} (x) + \sum_{i,j} (\sigma(x) \sigma(x)^T)_{i,j} \frac {\partial^2 f} {\partial x_i \, \partial x_j} (x)$$
+\item Let $\tau$ be a stopping time conditional on $X_0 = x$. Then, Dynkin's formula says:
+$$ \mathbb{E}[f(X_{\tau}) | X_0 = x] = f(x) + \mathbb{E}[\int_0^{\tau} A \bullet f(X_s) \cdot ds | X_0 = x]$$
+\item Stochastic generalization of 2nd fundamental theorem of calculus
+\end{itemize}
+\end{frame}
+
+\end{document}
