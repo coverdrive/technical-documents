@@ -179,8 +179,8 @@ $$U(x) \approx U(\bar{x}) + U'(\bar{x}) \cdot (x - \bar{x}) + \frac 1 2 U''(\bar
 $$U(x_{CE}) \approx U(\bar{x}) + U'(\bar{x}) \cdot (x_{CE} - \bar{x})$$
 \item Taking the expectation of the $U(x)$ expansion, we get:
 $$\mathbb{E}[U(x)] \approx U(\bar{x}) + \frac 1 2 \cdot U''(\bar{x}) \cdot \sigma_x^2$$
-\item Since $\mathbb{E}[U(x)] = U(x_{CE})$, the above two expressions are equal. Hence,
-$$U'(\bar{x}) \cdot (x_{CE} - \bar{x}) = \frac 1 2 \cdot U''(\bar{x}) \cdot \sigma_x^2$$
+\item Since $\mathbb{E}[U(x)] = U(x_{CE})$, the above two expressions are $\approx$. Hence,
+$$U'(\bar{x}) \cdot (x_{CE} - \bar{x}) \approx \frac 1 2 \cdot U''(\bar{x}) \cdot \sigma_x^2$$
 \end{itemize}
 \end{frame}
 
@@ -188,14 +188,14 @@ $$U'(\bar{x}) \cdot (x_{CE} - \bar{x}) = \frac 1 2 \cdot U''(\bar{x}) \cdot \sig
 \frametitle{Absolute \& Relative Risk-Aversion}
 \begin{itemize}
 \item From the last equation on the previous slide, Absolute Risk-Premium
-$$\pi_A = \bar{x} - x_{CE} = - \frac 1 2 \cdot \frac {U''(\bar{x})} {U'(\bar{x})} \cdot \sigma_x^2$$
+$$\pi_A = \bar{x} - x_{CE} \approx - \frac 1 2 \cdot \frac {U''(\bar{x})} {U'(\bar{x})} \cdot \sigma_x^2$$
 \item We refer to function A(x) = $-\frac {U''(x)} {U'(x)}$ as the {\bf Absolute Risk-Aversion}
-$$\pi_A = \frac 1 2 \cdot A(\bar{x}) \cdot \sigma_x^2$$
+$$\pi_A \approx \frac 1 2 \cdot A(\bar{x}) \cdot \sigma_x^2$$
 \item In multiplicative uncertainty settings, we focus on variance $\sigma_{\frac x {\bar{x}}}^2$ of $\frac x {\bar{x}}$ 
 \item In multiplicative settings, we also focus on Relative Risk-Premium $\pi_R$
-$$\pi_R = \frac {\pi_A} {\bar{x}} = - \frac 1 2 \cdot \frac {U''(\bar{x}) \cdot \bar{x}} {U'(\bar{x})} \cdot \frac {\sigma_x^2} {\bar{x}^2} = - \frac 1 2 \cdot \frac {U''(\bar{x}) \cdot \bar{x}} {U'(\bar{x})} \cdot \sigma_{\frac x {\bar{x}}}^2$$
+$$\pi_R = \frac {\pi_A} {\bar{x}} \approx - \frac 1 2 \cdot \frac {U''(\bar{x}) \cdot \bar{x}} {U'(\bar{x})} \cdot \frac {\sigma_x^2} {\bar{x}^2} = - \frac 1 2 \cdot \frac {U''(\bar{x}) \cdot \bar{x}} {U'(\bar{x})} \cdot \sigma_{\frac x {\bar{x}}}^2$$
 \item We refer to function R(x) = $-\frac {U''(x) \cdot x} {U'(x)}$ as the {\bf Relative Risk-Aversion}
-$$\pi_R = \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
+$$\pi_R \approx \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
 \end{itemize}
 \end{frame}
 
@@ -232,7 +232,7 @@ $$\pi_R = \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
 $$\mathbb{E}[U(x)] = -e^{-a \mu + \frac {a^2 \sigma^2} 2}$$
 $$x_{CE} = \mu - \frac {a \sigma^2} 2$$
 $$\mbox{Absolute Risk Premium } \pi_A = \mu - x_{CE} =  \frac {a \sigma^2} 2$$
-\item For optimization problems where $\sigma^2$ is a function of $\mu$, we seek the distribution that maximizes $\mu - \frac {a \sigma^2} 2$
+\item For optimization problems where $\sigma^2$ is a function of $\mu$, we seek the distribution that (approximately) maximizes $\mu - \frac {a \sigma^2} 2$
 \end{itemize}
 \end{frame}
 
