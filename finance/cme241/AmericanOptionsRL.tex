@@ -1,0 +1,223 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\usetikzlibrary{positioning}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[RL for American Options]{Pricing American Options with Reinforcement Learning} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ICME, Stanford University
+ % Your institution for the title page
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+\section{Review of Stopping Time}
+
+\begin{frame}
+\frametitle{Stopping Time}
+\begin{itemize}
+\item Stopping time $\tau$ is a ``random time'' (random variable) interpreted as time at which a given stochastic process exhibits certain behavior
+\item Stopping time often defined by a ``stopping policy'' to decide whether to continue/stop a process based on present position and past events
+\item Random variable $\tau$ such that $Pr[\tau \leq t]$ is in $\sigma$-algebra $\mathcal{F}_t$, for all $t$
+\item Deciding whether $\tau \leq t$ only depends on information up to time $t$
+\item Hitting time of a Borel set $A$ for a process $X_t$ is the first time $X_t$ takes a value within the set $A$
+\item Hitting time is an example of stopping time. Formally, 
+$$T_{X,A} = \min \{t \in \mathbb{R} | X_t \in A\}$$
+eg: Hitting time of a process to exceed a certain fixed level
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Stopping Problem}
+\begin{itemize}
+\item Optimal Stopping problem for Stochastic Process $X_t$: 
+$$V(x) = \max_{\tau} \mathbb{E}[G(X_{\tau})|X_0 = x]$$
+ where $\tau$ is a set of stopping times of $X_t$, $V(\cdot)$ is called the Value function, and $G$ is the Reward function.
+\item Note that sometimes we can have several stopping times that maximize $\mathbb{E}[G(X_{\tau})]$ and we say that the optimal stopping time
+is the smallest stopping time achieving the maximum value.
+\item Example of Optimal Stopping: Optimal Exercise of American Options
+\begin{itemize}
+\item $X_t$ is stochastic process for underlying security's price
+\item $x$ is underlying security's current price
+\item $\tau$ is set of exercise times corresponding to various stopping policies
+\item $V(\cdot)$ is American option price as function of underlying's current price
+\item $G(\cdot)$ is the option payoff function
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Optimal Stopping as an MDP}
+
+\begin{frame}
+\frametitle{Optimal Stopping Problems as Markov Decision Processes}
+\begin{itemize}
+\item We formulate Stopping Time problems as Markov Decision Processes
+\item {\em State} is a suitable function of the history of Stochastic Process $X_t$
+\item {\em Action} is Boolean: Stop or Continue
+\item {\em Reward} always 0, except upon Stopping (when it is $=G(X_{\tau})$)
+\item {\em State}-transitions governed by Underlying Price Stochastic Process
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Mainstream approaches to American Option Pricing}
+\begin{itemize}
+\item We see how American Option Pricing is an MDP
+\item So can be tackled with Dynamic Programming or RL algorithms
+\item But let us first review the mainstream approaches
+\item When payoff is not path-dependent and state dimension is not large, we can do backward induction (trees/grids)
+\item Otherwise, the mainstream is Longstaff-Schwartz algorithm
+\item Longstaff-Schwartz is essentially Approximate Dynamic Programming
+\item With customizations specific to the American Options problem
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Longstaff-Schwartz Algorithm}
+    def get_ls_price(
+        self,
+        num_dt: int,
+        num_paths: int,
+        feature_funcs: Sequence[Callable[[float, np.ndarray], float]]
+    ) -> float:
+        paths = self.get_all_paths(num_paths, num_dt)
+        cashflow = np.array([max(self.payoff(self.expiry, paths[i, :]), 0.)
+                             for i in range(num_paths)])
+        dt = self.expiry / num_dt
+        for t in range(num_dt - 1, 0, -1):
+            disc = np.exp(self.ir(t) - self.ir(t + dt))
+            cashflow = cashflow * disc
+            payoff = np.array([self.payoff(t, paths[i, :(t + 1)]) for
+                               i in range(num_paths)])
+            indices = [i for i in range(num_paths) if payoff[i] > 0]
+            if len(indices) > 0:
+                x_vals = np.array([[f(t, paths[i, :(t + 1)]) for f in
+                                    feature_funcs] for i in indices])
+                y_vals = np.array([cashflow[i] for i in indices])
+                estimate = x_vals.dot(
+                    np.linalg.lstsq(x_vals, y_vals, rcond=None)[0]
+                )
+
+                for i, ind in enumerate(indices):
+                    if payoff[ind] > estimate[i]:
+                        cashflow[ind] = payoff[ind]
+
+        return max(
+            self.payoff(0., np.array([self.spot_price])),
+            np.average(cashflow * np.exp(-self.ir(dt)))
+        )
+\end{frame}
+
+\begin{frame}
+\frametitle{RL as an alternative to Longstaff-Schwartz}
+\begin{itemize}
+\item RL is an alternative to Longstaff-Schwartz algorithm
+\item {\em State} is [Current Time, History of Underlying Security Prices]
+\item {\em Action} is Boolean: Exercise (i.e., Payoff and Stop) or Continue
+\item {\em Reward} always 0, except upon Exercise ($=$ Payoff)
+\item {\em State}-transitions governed by Underlying Price's Stochastic Process
+\item Optimal Policy $\Rightarrow$ Optimal Stopping $\Rightarrow$ Option Price
+\end{itemize}
+\end{frame}
+
+
+\end{document}
