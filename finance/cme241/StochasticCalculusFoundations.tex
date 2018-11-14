@@ -89,7 +89,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[Stochastic Calculus Foundations]{Overview of Stochastic Calculus Foundations} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[Stochastic Calculus Foundations]{Refresher on Stochastic Calculus Foundations} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Ashwin Rao} % Your name
 \institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -112,7 +112,6 @@ ICME, Stanford University
 \item Sample paths of $z_t$ are almost always non-differentiable, meaning
 $$\lim_{h \rightarrow 0} \frac {z_{t+h} - z_t} {h} \mbox{ is almost always infinite}$$
 \item The intuition is that $\frac {dz_t} {dt}$ has standard deviation of $\frac 1 {\sqrt{dt}}$, which goes to $\infty$ as $dt$ goes to 0
-\item So, this derivative $\frac {dz_t} {dt}$ is almost always infinite
 \end{itemize}
 \end{frame}
 
@@ -134,46 +133,59 @@ $$\lim_{h \rightarrow 0} \sum_{i=m}^{n-1} (z_{(i+1)h} - z_{ih})^2 = h(n-m)$$
 \item More succinctly, we write
 $$\int_S^T (dz_t)^2= T-S$$
 \item This means it's expected value is $T-S$ and it's variance is 0
-\item This leads to Ito's Lemma and Ito Isometry
+\item This leads to Ito's Lemma (Taylor series with $(dz_t)^2$ replaced with $dt$)
+\item This also leads to Ito Isometry (next slide)
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Fokker-Planck equation of a Stochastic Process}
+\frametitle{Ito Isometry}
 \begin{itemize}
-\item Let's say we are given the following stochastic process
+\item Let $X_t : [0,T] \times \Omega \rightarrow \mathbb{R}$ be a stochastic process adapted to filtration $\mathcal{F}$ of brownian motion $z_t$.
+\item Then, we know that the Ito integral $\int_0^T X_t \cdot dz_t$ is a martingale
+\item Ito Isometry tells us about the variance of $\int_0^T X_t \cdot dz_t$
+$$\mathbb{E}[(\int_0^T X_t \cdot dz_t)^2] = \mathbb{E}[\int_0^T X_t^2 \cdot dt]$$
+\item Extending this to two Ito integrals, we have:
+$$\mathbb{E}[(\int_0^T X_t \cdot dz_t) (\int_0^T Y_t \cdot dz_t)] = \mathbb{E}[\int_0^T X_t \cdot Y_t  \cdot dt]$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fokker-Planck equation for PDF of a Stochastic Process}
+\begin{itemize}
+\item We are given the following stochastic process:
 $$dX_t = \mu(X_t, t) \cdot dt + \sigma(X_t, t) \cdot dz_t$$
 \item The Fokker-Planck equation of this process is the PDE:
 $$\pderiv{p(x,t)}{t} = -\pderiv{\{\mu(x,t) \cdot p(x,t)\}}{x} + \pderiv[2]{\{\frac {\sigma^2(x,t)} 2 \cdot p(x,t)\}}{x}$$
 where $p(x,t)$ is the probability density function of $X_t$
-\item The Fokker-Planck equation is used with problems where the initial distribution is known (Kolmogorov forward equation)
+\item The Fokker-Planck equation is used for problems where the initial distribution is known (Kolmogorov forward equation)
 \item However, if the problem is to know the distribution at previous times, the Feynman-Kac formula can be used (a consequence of the Kolmogorov backward equation)
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Feynman-Kac Formula}
+\frametitle{Feynman-Kac Formula (PDE-SDE linkage)}
 \begin{itemize}
-\item Consider the partial differential equation:
-$$\pderiv{u(x,t)}{t} + \mu(x,t) \pderiv{u(x,t)}{x} + \frac {\sigma^2(x,t)} 2 \pderiv[2]{u(x,t)}{x} - V(x,t) u(x,t) = f(x,t)$$
-defined for all $x \in \mathbb{R}$, $t \in [0,T]$, subject to boundary $u(x,T) = \psi(x)$,
-where $\mu, \sigma, \psi, V, f$ are known functions, $T$ is a parameter and $u : \mathbb{R} \times [0,T] \rightarrow \mathbb{R}$ is the unknown.
+\item Consider the partial differential equation for $u : \mathbb{R} \times [0,T] \rightarrow \mathbb{R}$:
+$$\pderiv{u(x,t)}{t} + \mu(x,t) \pderiv{u(x,t)}{x} + \frac {\sigma^2(x,t)} 2 \pderiv[2]{u(x,t)}{x} - V(x,t) u(x,t) = f(x,t)$$ subject to $u(x,T) = \psi(x)$,
+where $\mu, \sigma, V, f, \psi$ are known functions.
 \item Then the Feynman-Kac formula tells us that the solution $u(x,t)$ can be written as the following conditional expectation:
-$$\mathbb{E}^{\mathbb{Q}}[\int_t^T e^{-\int_t^r V(X_{\tau}, \tau) d\tau} \cdot f(X_r, r) \cdot dr + e^{-\int_t^T V(X_{\tau}, \tau) d\tau} \cdot \psi(X_T) | X	_t = x]$$
-under measure $\mathbb{Q}$ such that $X_t$ is an Ito process defined as:
-$$dX_t = \mu(X_t, t) \cdot dt + \sigma(X_t, t) \cdot dz^{\mathbb{Q}}_t$$
-where $z^{\mathbb{Q}}_t$ is Brownian motion under $\mathbb{Q}$, and initial condition $X_t = x$
+$$\mathbb{E}[(\int_t^T e^{-\int_t^u V(X_s, s) ds} \cdot f(X_u, u) \cdot du) + e^{-\int_t^T V(X_u, u) du} \cdot \psi(X_T) | X_t = x]$$
+such that $X_u$ is the following Ito process with initial condition $X_t = x$:
+$$dX_u = \mu(X_u, u) \cdot du + \sigma(X_u, u) \cdot dz_u$$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Stopping Time $\tau$}
+\frametitle{Stopping Time}
 \begin{itemize}
+\item Stopping time $\tau$ is a ``random time'' (random variable) interpreted as time at which a given stochastic process exhibits certain behavior
+\item Stopping time often defined by a ``stopping policy'' to decide whether to continue/stop a process based on present position and past events
 \item Random variable $\tau$ such that $Pr[\tau \leq t]$ is in $\sigma$-algebra $\mathcal{F}_t$, for all $t$
 \item Deciding whether $\tau \leq t$ only depends on information up to time $t$
 \item Hitting time of a Borel set $A$ for a process $X_t$ is the first time $X_t$ takes a value within the set $A$
 \item Hitting time is an example of stopping time. Formally, 
-$$T_{X,A} = \argmin_{t \in \mathbb{R}} \{X_t \in A\}$$
+$$T_{X,A} = \min \{t \in \mathbb{R} | X_t \in A\}$$
 eg: Hitting time of a process to exceed a certain fixed level
 \end{itemize}
 \end{frame}
@@ -181,17 +193,17 @@ eg: Hitting time of a process to exceed a certain fixed level
 \begin{frame}
 \frametitle{Optimal Stopping Problem}
 \begin{itemize}
-\item Optimal Stopping problem: 
-$$V(x) = \argmax_{\tau} \mathbb{E}[G(X_{\tau})|X_0 = x]$$
+\item Optimal Stopping problem for Stochastic Process $X_t$: 
+$$V(x) = \max_{\tau} \mathbb{E}[G(X_{\tau})|X_0 = x]$$
  where $\tau$ is a set of stopping times of $X_t$, $V(\cdot)$ is called the value function, and $G$ is called the reward (or gain) function.
 \item Note that sometimes we can have several stopping times that maximize $\mathbb{E}[G(X_{\tau})]$ and we say that the optimal stopping time
 is the smallest stopping time achieving the maximum value.
-\item Optimal Exercise Time of an American Option is an example
+\item Example of Optimal Stopping: Optimal Exercise of American Options
 \begin{itemize}
-\item $X_t$ is underlying price
-\item $x$ is spot price
-\item $\tau$ is set of times when option is in-the-money
-\item $V(\cdot)$ is American option price as function of spot ptice
+\item $X_t$ is stochastic process for underlying security's price
+\item $x$ is underlying security's current price
+\item $\tau$ is set of exercise times corresponding to various stopping policies
+\item $V(\cdot)$ is American option price as function of underlying's current price
 \item $G(\cdot)$ is the option payoff function
 \end{itemize}
 \end{itemize}
@@ -208,11 +220,11 @@ is the smallest stopping time achieving the maximum value.
 \begin{frame}
 \frametitle{Infinitesimal Generator and Dynkin's Formula}
 \begin{itemize}
-\item Infinitesimal Generator of a time homogeneous Ito diffusion $X_t$ is the PDE operator $A$ (operating on functions $f$) defined as
+\item Infinitesimal Generator of a time-homogeneous $\mathbb{R}^n$-valued diffusion $X_t$ is the PDE operator $A$ (operating on functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$) defined as
 $$ A \bullet f(x) = \lim_{t \rightarrow 0} \frac {\mathbb{E}[f(X_t) | X_0 = x] - f(x)} {t}$$
-\item If $dX_t = \mu(X) \cdot dt + \sigma(X) \cdot dz_t$, then
+\item For $\mathbb{R}^n$-valued diffusion $X_t$ given by: $dX_t = \mu(X_t) \cdot dt + \sigma(X_t) \cdot dz_t$,
 $$ A \bullet f(x) = \sum_i \mu_i(x) \pderiv{f}{x_i} (x) + \sum_{i,j} (\sigma(x) \sigma(x)^T)_{i,j} \frac {\partial^2 f} {\partial x_i \, \partial x_j} (x)$$
-\item Let $\tau$ be a stopping time conditional on $X_0 = x$. Then, Dynkin's formula says:
+\item If $\tau$ is stopping time conditional on $X_0 = x$, Dynkin's formula says:
 $$ \mathbb{E}[f(X_{\tau}) | X_0 = x] = f(x) + \mathbb{E}[\int_0^{\tau} A \bullet f(X_s) \cdot ds | X_0 = x]$$
 \item Stochastic generalization of 2nd fundamental theorem of calculus
 \end{itemize}
