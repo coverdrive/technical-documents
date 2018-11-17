@@ -81,6 +81,8 @@
 \usepackage{cool}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{pseudocode}
+\usepackage{MnSymbol,wasysym}
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
 \usetikzlibrary{positioning}
@@ -110,7 +112,7 @@ ICME, Stanford University
 \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 \end{frame}
 
-\section{Review of Stopping Time}
+\section{Review of Optimal Stopping and its MDP Formulation}
 
 \begin{frame}
 \frametitle{Stopping Time}
@@ -145,7 +147,6 @@ is the smallest stopping time achieving the maximum value.
 \end{itemize}
 \end{frame}
 
-\section{Optimal Stopping as an MDP}
 
 \begin{frame}
 \frametitle{Optimal Stopping Problems as Markov Decision Processes}
@@ -158,66 +159,161 @@ is the smallest stopping time achieving the maximum value.
 \end{itemize}
 \end{frame}
 
+\section{Longstaff-Schwartz Algorithm}
+
 \begin{frame}
 \frametitle{Mainstream approaches to American Option Pricing}
 \begin{itemize}
-\item We see how American Option Pricing is an MDP
+\item American Option Pricing is Optimal Stopping, and hence an MDP
 \item So can be tackled with Dynamic Programming or RL algorithms
 \item But let us first review the mainstream approaches
-\item When payoff is not path-dependent and state dimension is not large, we can do backward induction (trees/grids)
-\item Otherwise, the mainstream is Longstaff-Schwartz algorithm
-\item Longstaff-Schwartz is essentially Approximate Dynamic Programming
-\item With customizations specific to the American Options problem
+\item For some American options, just price the European, eg: vanilla call
+\item When payoff is not path-dependent and state dimension is not large, we can do backward induction on a binomial/trinomial tree/grid
+\item Otherwise, the standard approach is \href{https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf}{\underline{\textcolor{blue}{Longstaff-Schwartz algorithm}}}
+\item Longstaff-Schwartz algorithm combines 3 ideas:
+\begin{itemize}
+\item Valuation based on Monte-Carlo simulation
+\item Function approximation of continuation value for in-the-money states
+\item Backward-recursive determination of early exercise states
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Longstaff-Schwartz Algorithm}
-    def get_ls_price(
-        self,
-        num_dt: int,
-        num_paths: int,
-        feature_funcs: Sequence[Callable[[float, np.ndarray], float]]
-    ) -> float:
-        paths = self.get_all_paths(num_paths, num_dt)
-        cashflow = np.array([max(self.payoff(self.expiry, paths[i, :]), 0.)
-                             for i in range(num_paths)])
-        dt = self.expiry / num_dt
-        for t in range(num_dt - 1, 0, -1):
-            disc = np.exp(self.ir(t) - self.ir(t + dt))
-            cashflow = cashflow * disc
-            payoff = np.array([self.payoff(t, paths[i, :(t + 1)]) for
-                               i in range(num_paths)])
-            indices = [i for i in range(num_paths) if payoff[i] > 0]
-            if len(indices) > 0:
-                x_vals = np.array([[f(t, paths[i, :(t + 1)]) for f in
-                                    feature_funcs] for i in indices])
-                y_vals = np.array([cashflow[i] for i in indices])
-                estimate = x_vals.dot(
-                    np.linalg.lstsq(x_vals, y_vals, rcond=None)[0]
-                )
-
-                for i, ind in enumerate(indices):
-                    if payoff[ind] > estimate[i]:
-                        cashflow[ind] = payoff[ind]
-
-        return max(
-            self.payoff(0., np.array([self.spot_price])),
-            np.average(cashflow * np.exp(-self.ir(dt)))
-        )
+\frametitle{Ingredients of Longstaff-Schwartz Algorithm}
+\begin{itemize}
+\item $m$ Monte-Carlo paths indexed $i = 0, 1, \ldots, m-1$
+\item $n+1$ time steps indexed $j = n, n-1, \ldots, 1, 0$ (we move back in time)
+\item Infinitesimal Risk-free rate at time $t_j$ denoted $r_{t_j}$
+\item Simulation paths of prices of underlying as input 2-dim array $SP[i,j]$
+\item At each time step, $CF[i]$ is PV of current+future cashflow for path $i$
+\item $s_{i,j}$ denotes state for $(i,j)$ $:=$ (time $t_j$, price history $SP[i,:(j+1)]$)
+\item $Payoff(s_{i,j})$ denotes Option Payoff at $(i,j)$
+\item $\phi_0(s_{i,j}), \ldots, \phi_{r-1}(s_{i,j})$ represent feature functions (of state $s_{i,j}$)
+\item $w_0, \ldots, w_{r-1}$ are the regression weights
+\item Regression function $f(s_{i,j}) = w \cdot \phi(s_{i,j}) = \sum_{l=0}^{r-1} w_l \cdot \phi_l(s_{i,j})$
+\item $f(\cdot)$ is estimate of continuation value for in-the-money states
+\end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{The Longstaff-Schwartz Algorithm}
+\begin{pseudocode}{LongstaffSchwartz}{SP[0:m, 0:n+1]}
+\COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
+CF[0:m] \GETS [Payoff(s_{i,n}) \mbox{ for } i \mbox{ in range}(m)]\\
+\FOR j \GETS n - 1 \DOWNTO 1 \DO
+\BEGIN
+CF[0:m] \GETS CF[0:m] * e^{-r_{t_j}(t_{j+1} - t_j)}\\
+X \GETS [\phi(s_{i,j}) \mbox{ for } i \mbox{ in range}(m) \mbox{ if } Payoff(s_{i,j}) > 0]\\
+Y \GETS [CF[i] \mbox{ for } i \mbox{ in range}(m) \mbox{ if } Payoff(s_{i,j}) > 0]\\
+w \GETS (X^T \cdot X)^{-1} \cdot X^T \cdot Y\\
+\COMMENT{Above regression gives estimate of continuation value}\\
+\FOR i \GETS 0 \TO m-1 \DO
+CF[i] \GETS Payoff(s_{i,j}) \mbox{\bf{ if }}  Payoff(s_{i,j}) > w \cdot \phi(s_{i,j})
+\END
+\\
+exercise \GETS Payoff(s_{0,0})\\
+continue \GETS e^{-r_0(t_1-t_0)} \cdot mean(CF[0:m])\\
+\RETURN{\max(exercise, continue)}\\
+\end{pseudocode}
+\end{frame}
+
+\section{RL Algorithms for American Option Pricing: LSPI and FQI}
 
 \begin{frame}
 \frametitle{RL as an alternative to Longstaff-Schwartz}
 \begin{itemize}
-\item RL is an alternative to Longstaff-Schwartz algorithm
+\item RL is straightforward if we clearly define the MDP
 \item {\em State} is [Current Time, History of Underlying Security Prices]
-\item {\em Action} is Boolean: Exercise (i.e., Payoff and Stop) or Continue
+\item {\em Action} is Boolean: Exercise (i.e., Stop) or Continue
 \item {\em Reward} always 0, except upon Exercise ($=$ Payoff)
 \item {\em State}-transitions governed by Underlying Price's Stochastic Process
-\item Optimal Policy $\Rightarrow$ Optimal Stopping $\Rightarrow$ Option Price
+\item Key is function approximation of state-conditioned continuation value
+\item Continuation Value $\Rightarrow$ Optimal Stopping $\Rightarrow$ Option Price
+\item We outline two RL Algorithms:
+\begin{itemize}
+\item Least Squares Policy Iteration (LSPI)
+\item Fitted Q-Iteration (FQI)
+\end{itemize}
+\item Both Algorithms are batch methods solving a linear system
+\item More details in \href{http://proceedings.mlr.press/v5/li09d/li09d.pdf}{\underline{\textcolor{blue}{Li, Szepesvari, Schuurmans paper}}}
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Least Squares Policy Iteration for Continuation Value}
+\begin{pseudocode}{LSPI-AmericanPricing}{SP[0:m, 0:n+1]}
+\COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
+\COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
+\COMMENT{$A_{i,j} \leftarrow \phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \mathbb{I}_{w\cdot \phi(s_{i,j+1}) \geq Payoff(s_{i,j+1})} * \phi(s_{i,j+1}))^T$}\\
+\COMMENT{$b_{i,j} \leftarrow \gamma \mathbb{I}_{w \cdot \phi(s_{i,j+1}) < Payoff(s_{i,j+1})} * Payoff(s_{i,j+1}) * \phi(s_{i,j})$}\\
+A \GETS 0, B \GETS 0, w \GETS 0\\
+\FOR i \GETS 0 \TO m - 1 \DO
+\BEGIN
+\FOR j \GETS 0 \TO n-1 \DO
+\BEGIN
+Q \GETS Payoff(s_{i,j+1})\\
+P \GETS \phi(s_{i,j+1}) \mbox{ {\bf if }} j < n-1 \mbox{\bf{ and }} Q \leq w \cdot \phi(s_{i,j+1}) \mbox{\bf{ else} } 0\\
+R \GETS Q \mbox{ {\bf if }} Q > w \cdot P \mbox{\bf{ else} } 0 \\
+A \GETS A + \phi(s_{i,j}) \cdot (\phi(s_{i,j}) - e^{-r_{t_j}(t_{j+1}-t_j)} * P)^T\\
+B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} *  R * \phi(s_{i,j})\\
+\END\\
+w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize == 0
+\END\\
+\end{pseudocode}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fitted Q-Iteration for Continuation Value}
+\begin{pseudocode}{FQI-AmericanPricing}{SP[0:m, 0:n+1]}
+\COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
+\COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
+\COMMENT{$A_{i,j} \leftarrow \phi(s_{i,j}) \cdot \phi(s_{i,j})^T$}\\
+\COMMENT{$b_{i,j} \leftarrow \gamma \max(Payoff(s_{i,j+1}), w \cdot \phi(s_{i,j+1})) * \phi(s_{i,j})$}\\
+A \GETS 0, B \GETS 0, w \GETS 0\\
+\FOR i \GETS 0 \TO m - 1 \DO
+\BEGIN
+\FOR j \GETS 0 \TO n-1 \DO
+\BEGIN
+Q \GETS Payoff(s_{i,j+1})\\
+P \GETS \phi(s_{i,j+1}) \mbox{ {\bf if }} j < n-1 \mbox{\bf{ else} } 0\\
+A \GETS A + \phi(s_{i,j}) \cdot \phi(s_{i,j})^T\\
+B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} *  \max(Payoff(s_{i,j+1}), w \cdot P) * \phi(s_{i,j})\\
+\END\\
+w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize == 0
+\END\\
+\end{pseudocode}
+\end{frame}
+
+\section{Choice of feature functions and Model-based adaptation}
+
+\begin{frame}
+\frametitle{Feature functions}
+\begin{itemize}
+\item Li, Szepesvari, Schuurmans recommend Laguerre polynomials (first 3)
+\item Over $S' = S_t/K$ where $S_t$ is underlying price and $K$ is strike
+\item $\phi_0(S_t) = 1, \phi_1(S_t) = e^{-\frac {S'} 2}, \phi_2(S_t) = e^{-\frac{S'} 2} \cdot (1-S'), \phi_3(S_t) = e^{-\frac{S'} 2} \cdot (1-2S'+S'^2/2)$
+\item They used these for Longstaff-Schwartz as well as for LSPI and FQI
+\item For LSPI and FQI, we also need feature functions for time
+\item They recommend $\phi_0^t(t) = sin(\frac {\pi(T-t)} {2T}), \phi_1^t(t) = \log(T-t), \phi_2^t(t) = (\frac t T)^2$
+\item They claim LSPI and FQI perform better than Longstaff-Schwartz with this choice of features functions
+\item We will code up these algorithms to validate this claim \smiley{}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Extending LSPI and FQI to model-based settings}
+\begin{itemize}
+\item Li, Szepesvari, Schuurmans have shown a model-free solution
+\item But the same algorithms can be extended to model-based settings
+\item Wherein we have explicit knowledge of the transition probabilities
+\item We simply change the TD target to a probability-weighted target
+\item This should help with speed of convergence
+\item Discussion: What other RL techniques could be used here? 
+\end{itemize}
+\end{frame}
+
+
 
 
 \end{document}
