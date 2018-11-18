@@ -107,8 +107,9 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Intuition on Risk-Aversion and Risk-Premium}
-\begin{itemize}
-\item Game where your payoff is based on outcome of a fair coin
+\pause
+\begin{itemize}[<+->]
+\item Let's play a game where your payoff is based on outcome of a fair coin
 \item You get \$100 for HEAD and \$0 for TAIL
 \item How much would you pay to play this game?
 \item You immediately say: ``Of course, \$50''
@@ -124,21 +125,21 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Specifying Risk-Aversion through a Utility function}
+\pause
+\begin{itemize}[<+->]
+\item We seek a ``valuation formula'' for the amount we'd pay that:
 \begin{itemize}
-\item So the amount we'd pay to consume a random outcome involves
-\begin{itemize}
-\item The Mean of the outcome (often called {\bf Reward})
-\item The Variance of the outcome ({\bf Risk})
-\item Our personal degree of {\bf Risk-Aversion}
+\item Increases one-to-one with the Mean of the outcome
+\item Decreases as the Variance of the outcome (i.e.. Risk) increases
+\item Decreases as our Personal Risk-Aversion increases
 \end{itemize}
-\item More generally, we want a ``valuation formula'' that combines:
-\begin{itemize}
-\item The entire probability distribution of the random outcome
-\item A function of the outcome that captures our Risk-Aversion
-\end{itemize}
-\item This function of the outcome is called {\em Utility} (denoted $U$)
-\item It relates to a fundamental concept called {\bf Utility of Consumption}
-\item We will illustrate this economic concept with a real-life example
+\item The last two properties above define the Risk-Premium
+\item But fundamentally why are we Risk-Averse?
+\item Why don't we just pay the mean of the random outcome?
+\item {\bf Reason: Our satisfaction to better outcomes grows non-linearly}
+\item We express this satisfaction non-linearity as a mathematical function
+\item Based on a core economic concept called {\bf Utility of Consumption}
+\item We will illustrate this concept with a real-life example
 \end{itemize}
 \end{frame}
 
@@ -149,7 +150,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Utility of Consumption and Certainty-Equivalent Value}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Marginal Satisfaction of eating cookies is a diminishing function
 \item Hence, Accumulated Satisfaction is a concave function
 \item Accumulated Satisfaction represents Utility of Consumption $U(x)$
@@ -170,7 +172,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Calculating the Risk-Premium}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We develop mathematical formalism to calculate Risk-Premia $\pi_A, \pi_R$
 \item To lighten notation, we refer to $\mathbb{E}[x]$ as $\bar{x}$ and Variance of $x$ as $\sigma_x^2$
 \item Taylor-expand $U(x)$ around $\bar{x}$, ignoring terms beyond quadratic
@@ -186,7 +189,8 @@ $$U'(\bar{x}) \cdot (x_{CE} - \bar{x}) \approx \frac 1 2 \cdot U''(\bar{x}) \cdo
 
 \begin{frame}
 \frametitle{Absolute \& Relative Risk-Aversion}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item From the last equation on the previous slide, Absolute Risk-Premium
 $$\pi_A = \bar{x} - x_{CE} \approx - \frac 1 2 \cdot \frac {U''(\bar{x})} {U'(\bar{x})} \cdot \sigma_x^2$$
 \item We refer to function A(x) = $-\frac {U''(x)} {U'(x)}$ as the {\bf Absolute Risk-Aversion}
@@ -201,7 +205,8 @@ $$\pi_R \approx \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
 
 \begin{frame}
 \frametitle{Taking stock of what we're learning here}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We've shown that Risk-Premium can be expressed as the product of:
 \begin{itemize}
 \item Extent of Risk-Aversion: either $A(\bar{x})$ or $R(\bar{x})$
@@ -224,7 +229,8 @@ $$\pi_R \approx \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
 
 \begin{frame}
 \frametitle{Constant Absolute Risk-Aversion (CARA)}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Consider the Utility function $U(x) = - e^{-ax}$
 \item Absolute Risk-Aversion $A(x) = \frac {-U''(x)} {U'(x)} = a$
 \item $a$ is called Coefficient of Constant Absolute Risk-Aversion (CARA)
@@ -238,7 +244,8 @@ $$\mbox{Absolute Risk Premium } \pi_A = \mu - x_{CE} =  \frac {a \sigma^2} 2$$
 
 \begin{frame}
 \frametitle{Constant Relative Risk-Aversion (CRRA)}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Consider the Utility function $U(x) = \frac {x^{1 - \gamma}} {1 - \gamma}$ for $\gamma \neq 1$
 \item Relative Risk-Aversion $R(x) = \frac {-U''(x) \cdot x} {U'(x)} = \gamma$
 \item $\gamma$ is called Coefficient of Constant Relative Risk-Aversion (CRRA)
@@ -258,7 +265,8 @@ $$\mbox{Relative Risk Premium } \pi_R = 1 - \frac {x_{CE}} {\bar{x}} =  1 - e^{-
 
 \begin{frame}
 \frametitle{A Portfolio application of CRRA (Merton 1969)}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We work in the setting of Merton's 1969 Portfolio problem
 \item We only consider the single-period (static) problem with 1 risky asset
 \item Riskless asset: $dR_t = r \cdot R_t \cdot dt$
@@ -275,12 +283,18 @@ $$dW_t = (r + \pi \cdot (\mu - r)) \cdot W_t \cdot dt + \pi \cdot \sigma \cdot W
 
 \begin{frame}
 \frametitle{Recovering Merton's solution (for this static case)}
+\pause
 Applying Ito's Lemma on $\log(W_t)$ gives us:
 $$W_T = W_0 \cdot e^{\int_0^T (r+\pi(\mu -r) - \frac {\pi^2 \sigma^2} 2) \cdot dt + \int_0^T \pi \cdot \sigma \cdot dz_t}$$
+\pause
 We want to maximize $\log(\mathbb{E}[U(W_T)]) = \log(\mathbb{E}[\frac {W_T^{1-\gamma}} {1-\gamma}])$
+\pause
 $$\mathbb{E}[\frac {W_T^{1-\gamma}} {1-\gamma}] = \frac {W_0^{1-\gamma}} {1-\gamma} \cdot \mathbb{E}[e^{\int_0^T (r+\pi(\mu - r) - \frac {\pi^2 \sigma^2} 2) \cdot (1-\gamma) \cdot dt + \int_0^T \pi \cdot \sigma \cdot (1-\gamma) \cdot dz_t}]$$
+\pause
 $$ = \frac {W_0^{1-\gamma}} {1-\gamma} \cdot e^{(r+\pi(\mu - r) - \frac {\pi^2 \sigma^2} 2) (1-\gamma) T + \frac {\pi^2 \sigma^2 (1-\gamma)^2 T} 2}$$
+\pause
 $$\pderiv{\{\log(\mathbb{E}[\frac {W_T^{1-\gamma}} {1-\gamma}])\}}{\pi} = (1-\gamma) \cdot T \cdot \pderiv{\{r + \pi(\mu - r) - \frac {\pi^2 \sigma^2 \gamma} 2\}}{\pi} = 0$$
+\pause
 $$ \Rightarrow \pi = \frac {\mu - r} {\sigma^2 \gamma}$$
 \end{frame}
 
