@@ -92,8 +92,9 @@
 \title[HJB and Merton Portfolio]{HJB Equation and Merton's Portfolio Problem} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Ashwin Rao} % Your name
-\institute[] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
+ICME, Stanford University
  % Your institution for the title page
 }
 
@@ -266,6 +267,8 @@ e^{-\rho t} \cdot \frac {(T-t+\epsilon)^\gamma \cdot W_t^{1 - \gamma}} {1-\gamma
 $$
 \end{frame}
 
+\section{Conclusions}
+
 \begin{frame}
 \frametitle{Illuminating Observations}
 \begin{itemize}
@@ -281,6 +284,20 @@ $$
 \item Constant Relative Risk-Aversion
 \item Frictionless trading
 \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Porting this to real-world Portfolio Optimization}
+\begin{itemize}
+\item Discrete Amounts of assets to hold and discrete quantities of trades
+\item Transaction costs
+\item Locked-out days for trading
+\item Non-stationary/arbitrary/correlated processes of multiple assets
+\item Changing/uncertain risk-free rate
+\item Consumption constraints
+\item Approximate Dynamic Programming or Reinforcement Learning
+\item Large Action Space points to Policy Gradient Algorithms
 \end{itemize}
 \end{frame}
 
