@@ -231,11 +231,18 @@ $$\pi_R \approx \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
 \frametitle{Constant Absolute Risk-Aversion (CARA)}
 \pause
 \begin{itemize}[<+->]
-\item Consider the Utility function $U(x) = - e^{-ax}$
+\item Consider the Utility function $U(x) = \frac {-e^{-ax}} {a}$ for $a \neq 0$
 \item Absolute Risk-Aversion $A(x) = \frac {-U''(x)} {U'(x)} = a$
 \item $a$ is called Coefficient of Constant Absolute Risk-Aversion (CARA)
+\item For $a=0$, $U(x) = x$ (note: $A(x) = \frac {-U''(x)} {U'(x)} = 0$)
 \item If the random outcome $x \sim \mathcal{N}(\mu, \sigma^2)$,
-$$\mathbb{E}[U(x)] = -e^{-a \mu + \frac {a^2 \sigma^2} 2}$$
+$$
+\mathbb{E}[U(x)] = 
+\begin{cases}
+\frac {- e^{-a \mu + \frac {a^2 \sigma^2} 2}} a & \text{for } a \neq 0\\
+\mu & \text {for } a = 0\\
+\end{cases}
+$$
 $$x_{CE} = \mu - \frac {a \sigma^2} 2$$
 $$\mbox{Absolute Risk Premium } \pi_A = \mu - x_{CE} =  \frac {a \sigma^2} 2$$
 \item For optimization problems where $\sigma^2$ is a function of $\mu$, we seek the distribution that (approximately) maximizes $\mu - \frac {a \sigma^2} 2$
