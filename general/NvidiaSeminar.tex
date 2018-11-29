@@ -97,8 +97,7 @@
 {VP Data Science at Target \& Adjunct Faculty at Stanford
  % Your institution for the title page
 }
-
-\date{} % Date, can be changed to a custom date
+\date{\today} % Date, can be changed to a custom date
 
 \begin{document}
 \begin{frame}
@@ -171,7 +170,7 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \begin{frame}
 \frametitle{Many real-world problems fit this MDP framework}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item Self-driving vehicle (speed/steering to optimize safety/time)
 \item Game of Chess (Boolean {\em Reward} at end of game)
 \item Complex Logistical Operations (eg: movements in a Warehouse)
@@ -201,14 +200,21 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \begin{frame}
 \frametitle{Value Function and Bellman Equations}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item Value function (under policy $\pi$) $V_{\pi}(s) = \mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
+\pause
 $$V_{\pi}(s) = \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
+\pause
 \item Optimal Value Function $V_{*}(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
+\pause
 $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox{ for all } s \in \mathcal{S}$$
+\pause
 \item {\em There exists an Optimal Policy} $\pi_{*}$ achieving $V_{*}(s)$ for all $s \in \mathcal{S}$
+\pause
 \item The above recursive equations are called {\em Bellman equations}
+\pause
 \item In continuous time, refered to as {\em Hamilton-Jacobi-Bellman (HJB)}
+\pause
 \item The algorithms based on Bellman equations are broadly classified as:
 \begin{itemize}
 \item Dynamic Programming
@@ -245,9 +251,9 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item Newsvendor problem is a single-period Inventory Control problem
 \item Daily demand for newspapers is a random variable $x$
 \item The newsvendor has an estimate of the PDF $f(x)$ of daily demand
-\item He incurs a ``holding cost'' of $h$ per newspaper that stays unsold
+\item For each newspaper that stays unsold, we suffer an {\em Excess cost} $h$
 \item Think of $h$ as the purchase price minus salvage price
-\item He incurs a ``stockout cost'' of $p$ per newspaper that he is short on
+\item For each newspaper we're short on, we suffer a {\em Deficit Cost} $p$
 \item Think of $p$ as the missed profits (sale price minus purchase price)
 \item But $p$ should also include potential loss of future customers
 \item What is the optimum \# of newspapers to bring in the morning?
@@ -284,7 +290,7 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \item The store experiences random daily demand given by PDF $f(x)$
 \item The store can order daily from a supplier carrying infinite inventory
 \item There's a cost associated with ordering, and order arrives in $L$ days
-\item Like newsvendor, there's a holding cost $h$ and a stockout cost $p$
+\item Like newsvendor, there's an Excess Cost $h$ and Deficit Cost $p$
 \item This is an MDP where {\em State} is current Inventory Level at the store
 \item {\em State} also includes current in-transit inventory (from supplier)
 \item {\em Action} is quantity to order in any given {\em State}
@@ -304,7 +310,7 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \pause
 \begin{itemize}[<+->]
 \item Inventory is integer-valued, and orders are in casepack units
-\item Holding/stockouts costs are not linear functions of inventory
+\item Excess/Deficit costs are not linear functions of inventory
 \item Perishability, Obsolescence, End-of-season involve big costs 
 \item Need to factor in labor costs of handling cases and singles
 \item Limits on shipping/receiving dates/times
@@ -355,18 +361,23 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \end{frame}
 
 \begin{frame}
+\frametitle{Concave Utility of Consumption $\Rightarrow \mathbb{E}[U(x)] < U(\mathbb{E}[x])$}
+\includegraphics[scale=0.32]{ce.png}
+\end{frame}
+
+\begin{frame}
 \frametitle{Solution to Single-period Portfolio Optimization}
 \pause
 \begin{itemize}[<+->]
 \item $W$ denotes end-of-period Wealth
 \item $\alpha$ denotes fraction to invest in risky asset ($1-\alpha$ is fraction in riskless)
 $$W \sim \mathcal{N}(1 + r + \alpha(\mu - r), \alpha^2 \sigma^2)$$
-\item Let Utility of Wealth function be $U(W) = -e^{-\gamma W}$ for $\gamma > 0$
-\item Where $\gamma$ is the coefficient (extent) of Risk-Aversion
+\item Let Utility of Wealth function be $U(W) = -e^{-\beta W}$ for $\beta > 0$
+\item Where $\beta$ is the coefficient (extent) of Risk-Aversion
 \item So we maximize over $\alpha$, the Expected Utility
-$$\mathbb{E}[-e^{-\gamma W}] = -e^{-\gamma(1 + r + \alpha(\mu - r)) + \frac {\gamma^2 \alpha^2 \sigma^2} 2} = g(\alpha)$$
+$$\mathbb{E}[-e^{-\beta W}] = -e^{-\beta(1 + r + \alpha(\mu - r)) + \frac {\beta^2 \alpha^2 \sigma^2} 2} = g(\alpha)$$
 \item Setting $\pderiv{\{\log{g(\alpha)}\}}{\alpha} = 0$, we get:
-$$\alpha^* = \frac {\mu - r} {\gamma \sigma^2}$$
+$$\alpha^* = \frac {\mu - r} {\beta \sigma^2}$$
 \item This is the fundamental investment fraction in Portfolio Optimization
 \item This fraction generalizes to multi-period and multiple risky assets
 \end{itemize}
@@ -376,8 +387,9 @@ $$\alpha^* = \frac {\mu - r} {\gamma \sigma^2}$$
 \frametitle{Multi-Period: Merton's Portfolio Optimization Problem}
 \pause
 \begin{itemize}[<+->]
-\item You will live for (deterministic) $T$ more years
-\item Current Wealth + PV of Future Income (less Debt) is $W_0 > 0$
+\item You will live for (deterministic) $T$ more years (say 20 years)
+\item Current Wealth is $W_0 $ (say \$ 10 million)
+\item Assume you have no further income and no debts
 \item You can invest in (allocate to) $n$ risky assets and a riskless asset
 \item Each asset has known normal distribution of returns
 \item Allowed to long or short any fractional quantities of assets
@@ -402,8 +414,8 @@ For ease of exposition, we state the problem for 1 risky asset
 \item Fraction of wealth allocated to risky asset denoted by $\pi(t, W_t)$
 \item Fraction of wealth in riskless asset will then be $1 - \pi(t, W_t)$
 \item Wealth consumption denoted by $c(t, W_t) \geq 0$
-\item Utility of Consumption function $U(x) = \frac {x^{1-\gamma}} {1 - \gamma}$ for $0 < \gamma \neq 1$
-\item $\gamma =$ (constant) Relative Risk-Aversion $\frac {-x \cdot U''(x)} {U'(x)}$
+\item Utility of Consumption function $U(x) = \frac {x^{1-\beta}} {1 - \beta}$ for $0 < \beta \neq 1$
+\item $\beta =$ (constant) Relative Risk-Aversion $\frac {-x \cdot U''(x)} {U'(x)}$
 \end{itemize}
 \end{frame}
 
@@ -414,8 +426,8 @@ For ease of exposition, we state the problem for 1 risky asset
 \item Balance constraint implies the following process for Wealth $W_t$
 $$dW_t = ((\pi_t \cdot (\mu - r) + r) \cdot W_t - c_t) \cdot dt + \pi_t \cdot \sigma \cdot W_t \cdot dz_t$$
 \item At any time $t$, determine optimal $[\pi(t,W_t), c(t, W_t)]$ to maximize:
-$$E[\int_t^T \frac {e^{-\rho (s-t)} \cdot c_s^{1-\gamma}} {1-\gamma} \cdot ds \mid W_t]$$
-\item where $\rho \geq 0$ is the utility discount rate
+$$E[\int_t^T \frac {\gamma^{s-t} \cdot c_s^{1-\beta}} {1-\beta} \cdot ds \mid W_t]$$
+\item where $0 \leq \gamma \leq 1$ is the annualized discount factor
 \item Think of this as a continuous-time Stochastic Control problem
 \item {\em State} is $(t, W_t)$, {\em Action} is $[\pi_t, c_t]$, {\em Reward} per unit time is $U(c_t)$
 \item Stochastic process for $W_t$ above defines the transition probabilities
@@ -430,9 +442,9 @@ $$E[\int_t^T \frac {e^{-\rho (s-t)} \cdot c_s^{1-\gamma}} {1-\gamma} \cdot ds \m
 \pause
 \begin{itemize}[<+->]
 \item Optimal Value Function $V^*(t, W_t)$ has a recursive formulation
-$$V^*(t, W_t) = \max_{\pi, c} E[V^*(t_1, W_{t_1}) + \int_t^{t_1} \frac {e^{-\rho s} \cdot c_s^{1-\gamma}} {1 - \gamma} \cdot ds]$$
+$$V^*(t, W_t) = \max_{\pi, c} E[\int_t^{t_1} \frac {\gamma^s \cdot c_s^{1-\beta}} {1 - \beta} \cdot ds + V^*(t_1, W_{t_1})]$$
 \item Re-expressed as a Hamilton-Jacobi-Bellman (HJB) formulation
-$$\max_{\pi_t, c_t} E[dV^*(t, W_t) + \frac {e^{-\rho t} \cdot c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = 0$$
+$$\max_{\pi_t, c_t} E[dV^*(t, W_t) + \frac {\gamma^t \cdot c_t^{1-\beta}}{1 - \beta} \cdot dt] = 0$$
 \item Standard HJB calculus (Ito's Lemma followed by partial derivatives w.r.t. $\pi_t, c_t$) gives us a PDE for $V^*(t, W_t)$
 \item We can reduce the PDE to a tractable ODE with a guessed solution
 \item All the gory details in \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MertonPortfolio.pdf}{\underline{\textcolor{blue}{this lecture}}}
@@ -443,22 +455,28 @@ $$\max_{\pi_t, c_t} E[dV^*(t, W_t) + \frac {e^{-\rho t} \cdot c_t^{1-\gamma}}{1 
 \begin{frame}
 \frametitle{Gaining Insights into the Solution}
 \begin{itemize}
-\item Optimal Allocation $\pi^*(t, W_t) = \frac {\mu - r} {\sigma^2 \gamma}$ (independent of $t$ and $W_t$)
+\item Optimal Allocation $\pi^*(t, W_t) = \frac {\mu - r} {\sigma^2 \beta}$ (independent of $t$ and $W_t$)
 \item Optimal Fractional Consumption $\frac {c^*(t, W_t)} {W_t}$ depends only on $t$ ($= f(t)$)
 \item With Optimal Allocation \& Consumption, the Wealth process is:
-$$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)) \cdot dt + \frac {\mu - r} {\sigma \gamma} \cdot dz_t$$
-\item Expected Portfolio Return is constant over time ($=r + \frac {(\mu - r)^2} {\sigma^2 \gamma}$)
+$$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \beta} - f(t)) \cdot dt + \frac {\mu - r} {\sigma \beta} \cdot dz_t$$
+\item Expected Portfolio Return is constant over time ($=r + \frac {(\mu - r)^2} {\sigma^2 \beta}$)
 \item Fractional Consumption $f(t)$ increases over time
-\item Expected Rate of Wealth Growth $r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)$ decreases over time
-\item If $r + \frac {(\mu - r)^2} {\sigma^2 \gamma} > f(0)$, we start by Consuming $<$ Expected Portfolio Growth and over time, we Consume $>$ Expected Portfolio Growth
-\item Wealth Growth Volatility is constant ($= \frac {\mu - r} {\sigma \gamma}$)
+\item Expected Rate of Wealth Growth $r + \frac {(\mu - r)^2} {\sigma^2 \beta} - f(t)$ decreases over time
+\item If $r + \frac {(\mu - r)^2} {\sigma^2 \beta} > f(0)$, we start by Consuming $<$ Expected Portfolio Growth and over time, we Consume $>$ Expected Portfolio Growth
+\item Wealth Growth Volatility is constant ($= \frac {\mu - r} {\sigma \beta}$)
 \end{itemize}
-
 \end{frame}
 
 \begin{frame}
+\frametitle{Portfolio Return versus Consumption Rate}
+\includegraphics[width=12cm, height=8cm]{portfolio.png}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Porting this to Real-World Portfolio Optimization}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Analytical tractability in Merton's formulation was due to:
 \begin{itemize}
 \item Normal distribution of asset returns
@@ -484,8 +502,7 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)) \cdot 
 
 \begin{frame}
 \frametitle{Overview of a few other problems}
-\pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item Financial Trading: American Options Pricing
 \item Financial Trading: Trade Order Execution
 \item Retail: Clearance Pricing 
@@ -510,7 +527,7 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)) \cdot 
 \begin{frame}
 \frametitle{MDP for Optimal Options Exercise}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item {\em State} is [Current Time, History of Underlying Security Prices]
 \item {\em Action} is Boolean: Exercise (i.e., Payoff and Stop) or Continue
 \item {\em Reward} always 0, except upon Exercise ($=$ Payoff)
@@ -539,7 +556,7 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)) \cdot 
 \begin{frame}
 \frametitle{MDP for Optimal Trade Order Execution}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item {\em State} is [Time Remaining, Stock Remaining to be Sold, Market Info]
 \item {\em Action} is Quantity of Stock to Sell at current time
 \item {\em Reward} is Utility of Sales Proceeds (i.e., Variance-adjusted-Proceeds)
@@ -560,14 +577,14 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)) \cdot 
 \item If price markdowns are small, we end up with surplus at season-end
 \item Surplus often needs to be disposed at poor salvage price
 \item If price reductions are large, we run out of Christmas trees early
-\item Stockout cost is considered to be large during holiday season
+\item ``Stockout'' cost is considered to be large during holiday season
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{MDP for Clearance Pricing}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item {\em State} is [Days Left, Current Inventory, Current Price, Market Info]
 \item {\em Action} is Price Markdown
 \item {\em Reward} includes Sales revenue, markdown cost, stockout cost, salvage
@@ -581,9 +598,11 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)) \cdot 
 \begin{frame}
 \frametitle{Perspective (and a bit of ``advice'') from the Trenches}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item I always start with a simple version of problem to develop intuition
+\pause
 \item My first line of attack is DP customized to the problem structure
+\pause
 \item RL Algorithms that are my personal favorites (links to my lectures):
 \begin{itemize}
 \item Deep Q-Network (DQN): Experience Replay, 2nd Target Network
@@ -591,14 +610,18 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - f(t)) \cdot 
 \item \href {https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/ValueFunctionGeometry.pdf}{\underline{\textcolor{blue}{Exact Gradient Temporal-Difference (GTD)}}}
 \item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient (esp. Natural Gradient, TRPO)}}}
 \end{itemize}
+\pause
 \item I prefer to separate Model Estimation from Policy Optimization
+\pause
 \item So we can customize RL algorithms to take advantage of:
 \begin{itemize}
 \item Knowledge of transition probabilities
 \item Knowledge of reward function
 \item Any problem-specific structure that simplifies the algorithm
 \end{itemize}
+\pause
 \item Feature Engineering based on known closed-form approximations
+\pause
 \item Many real-world, large-scale problems ultimately come down to
 suitable choices of DNN architectures and hyperparameter tuning \frownie
 \end{itemize}
