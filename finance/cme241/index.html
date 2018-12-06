@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CME 241: Reinforcement Learning for Stochastic Control Problems in Finance </title>
+</head>
+
+<body>
+<h1>Welcome to CME241: Reinforcement Learning for Stochastic Control Problems in Finance</h1>
+<h1>Instructor: <a href="mailto:ashwin.rao@stanford.edu">Ashwin Rao</a></h1>
+<h2>Winter 2019 Classes: Wed & Fri 4:30pm - 5:50pm. Bldg 160 (Wallenberg Hall), Room 321. CA: <a href="mailto:jeffgu@stanford.edu">Jeffrey Gu</a>.</h2>
+<h2>Course Overview</h2>
+<ul>
+<li>Theory of Markov Decision Processes (MDP)</li>
+<li>Dynamic Programming (DP) Algorithms</li>
+<li>Reinforcement Learning (RL) Algorithms</li>
+<li>We will model and apply these algorithms to 3 Financial/Trading problems:
+<ul>
+<li>(Dynamic) Asset-Allocation to maximize <em>Utility of Consumption</em></li>
+<li>Optimal Exercise/Stopping of Path-dependent American Options</li>
+<li> Optimal Trade Order Execution (managing <em>Price Impact</em>)</li>
+</ul>
+</li>
+<li>By treating each of these problems as MDPs (i.e., Stochastic Control)</li>
+<li>We will first go over classical/analytical solutions to these problems (in simple settings)</li>
+<li>Then we will introduce real-world considerations, and tackle with RL (or DP)</li>
+<li>Emphasis on Python implementations of these models and algorithms</li>
+<li>More details on the course contents <a href="course_details.pdf">here</a></li>
+</ul>
+<h2>Pre-requisites</h2>
+<ul>
+<li> <strong>Required</strong>: Robust (not necessarily advanced) background in Applied Mathematics, especially in Optimization and Probability Theory (eg: CME 106)</li>
+<li> <strong>Required</strong>: Background in Data Structures & Algorithms, with programming experience in numpy/scipy</li>
+<li> <strong>Recommended</strong>: Basic background in Pricing (eg: MATH 238) and Portfolio Theory, although we will do an overview of the requisite Finance/Economics</li>
+<li> <strong>Not required</strong>: MDP, DP, RL (we will cover these topics from scratch)</li>
+</ul>
+<h2>Grade will be based on</h2>
+<ul>
+	<li>Mid-Term Exam</li>
+	<li>Final Exam</li>
+	<li>Programming work (throughout the course)</li>
+	<li>Class Participation</li>
+</ul>
+<h2>Learning Material will be a combination of</h2>
+<ul>
+	<li><a href="lecture_slides/">Technical Documents/Lecture Slides I have prepared specifically for this course</a></li>
+	<li><a href="https://github.com/coverdrive/MDP-DP-RL">Python codebase I have developed for this course</a> to help you "learn through coding"</li>
+	<li><a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html">Slides and Videos from David Silver's UCL course on RL</a></li>
+	<li>For deeper self-study and reference, augment the above content with <a href="http://incompleteideas.net/book/the-book-2nd.html">The Sutton-Barto RL Book and Sutton's accompanying teaching material</a></li>
+</ul>
+<h2>Course Tenets</h2>
+<ul>
+	<li>When learning Theory, blend notational rigor with intuitive understanding</li>
+	<li>Write down the mathematical formalism of the lecture contents with great precision (without refering to how I've written them)</li>
+	<li>Always start with a simple model/simple algorithm and be clear about why you might want to use a more complex model/algorithm</li>
+	<li>Programming is a powerful tool to grasp mathematical concepts (code all ideas/models/algorithms with the aim to visualize them)</li>
+	<li>Code modularity/re-use is important (leverage Object-Oriented and Functional Programming paradigms)</li>
+	<li>Important to recogize and model various frictions encountered in real-world trading</li>
+	<li>Discuss the ideas you learn with other students, with the CA, and with me. Question everything!</li>
+</ul>
+
+<h2>Week-by-week (tentative) schedule</h2>
+<ul>
+	<li>Week 1: Markov Decision Processes & Overview of Finance Problems</li>
+	<li>Week 2: Bellman Equations & Dynamic Programming Algorithms</li>
+	<li>Week 3: Optimal Asset Allocation problem</li>
+	<li>Week 4: Optimal Exercise of American Options problem</li>
+	<li>Week 5: Optimal Trade Order Execution problem, and Mid-Term Exam</li>
+	<li>Week 6: Model-free Prediction (RL for Value Function Estimation)</li>
+	<li>Week 7: Model-Free Control (RL for Optimal Value Function/Policy)</li>
+	<li>Week 8: RL with Function Approximation (including Deep RL)</li>
+	<li>Week 9: Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD</li>
+	<li>Week 10: Policy Gradient Algorithms, and Final Exam</li>
+</ul>
+</body>
+</html>
