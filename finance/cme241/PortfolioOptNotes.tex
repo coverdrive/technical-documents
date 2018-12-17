@@ -29,29 +29,29 @@ $$W_{t+1} = x_t S + W_t (1 + r)$$
 
 
 
-Value function for a given policy is denoted as $V^{\pi}((t, W_t)) = E_{\pi}[\rho^{T-t} \cdot U(W_T) | (t, W_t)] = E_{\pi}[- \rho^{T-t} \cdot \frac {e^{-\gamma W_T}} {\gamma} | (t, W_t)]$. Optimal Value function will be denoted as $V^*((t, W_t)) = \max_{\pi} V^{\pi}((t, W_t)) = \max_{\pi} E_{\pi}[\rho^{T-t} \cdot U(W_T) | (t, W_t)] = \max_{\pi} E_{\pi}[-\rho^{T-t} \cdot \frac {e^{-\gamma W_T}} {\gamma} | (t, W_t)]$.
+Value function for a given policy is denoted as $V^{\pi}(t, W_t) = E_{\pi}[\rho^{T-t} \cdot U(W_T) | (t, W_t)] = E_{\pi}[- \rho^{T-t} \cdot \frac {e^{-\gamma W_T}} {\gamma} | (t, W_t)]$. Optimal Value function will be denoted as $V^*(t, W_t) = \max_{\pi} V^{\pi}(t, W_t) = \max_{\pi} E_{\pi}[\rho^{T-t} \cdot U(W_T) | (t, W_t)] = \max_{\pi} E_{\pi}[-\rho^{T-t} \cdot \frac {e^{-\gamma W_T}} {\gamma} | (t, W_t)]$.
 
- Assume $V^*((t, W_t)$ has the form $-a_t e^{-b_t W_t}$. Since $V^*((T, W_T)) = - \frac {e^{-\gamma W_T}} {\gamma}, a_T = \frac 1 {\gamma}, b_T = \gamma$.
+ Assume $V^*(t, W_t)$ has the form $-a_t e^{-b_t W_t}$. Since $V^*(T, W_T) = - \frac {e^{-\gamma W_T}} {\gamma}, a_T = \frac 1 {\gamma}, b_T = \gamma$.
 
 The Bellman optimality equation is:
 
-$$V^*((t, W_t)) = max_{x_t} (E_{R \sim N(\mu, \sigma^2}[\rho \cdot V^*((t+1, W_{t+1})])$$
+$$V^*(t, W_t) = max_{x_t} (E_{R \sim N(\mu, \sigma^2)}[\rho \cdot V^*(t+1, W_{t+1})])$$
 $$ = max_{x_t} (E_{R \sim N(\mu, \sigma^2)} [- \rho \cdot a_{t+1} e^{-b_{t+1} (x_t S + W_t(1+r))}])$$
 $$ = max_{x_t} (- \rho \cdot a_{t+1} e^{-b_{t+1}W_t(1+r) - b_{t+1} x_t (\mu - r) + \frac {\sigma^2} {2} b^2_{t+1} x_t^2})$$
 
-$\frac {\partial V^*((t, W_t)} {\partial x_t} = 0$ yields:
+$\frac {\partial V^*(t, W_t)} {\partial x_t} = 0$ yields:
 
 $$-b_{t+1} (\mu - r) + \sigma^2 b_{t+1}^2 x^*_t = 0$$
 
 $$x^*_t = \frac {\mu - r} {\sigma^2 b_{t+1}}$$
 
-Plugging in $x^*_t$ in the above equation for $V^*((t, W_t)$ gives:
+Plugging in $x^*_t$ in the above equation for $V^*(t, W_t)$ gives:
 
-$$V^*((t, W_t)) = - \rho \cdot a_{t+1} e^{-b_{t+1} W_t (1 + r) - \frac {(\mu - r)^2} {2 \sigma^2}} $$
+$$V^*(t, W_t) = - \rho \cdot a_{t+1} e^{-b_{t+1} W_t (1 + r) - \frac {(\mu - r)^2} {2 \sigma^2}} $$
 
 But since,
 
-$$V^*((t, W_t)) = -a_t e^{-b_t W_t}$$, we can write the following recursive equations for $a_t$ and $b_t$.
+$$V^*(t, W_t) = -a_t e^{-b_t W_t}$$, we can write the following recursive equations for $a_t$ and $b_t$.
 
 $$a_t = \rho \cdot a_{t+1} e^{- \frac {(\mu -r)^2} {2 \sigma^2}}$$
 $$b_t = b_{t+1} (1 + r)$$
@@ -64,7 +64,7 @@ $$b_t = \gamma \cdot (1+ r)^{T-t}$$
 Hence,
 
 $$x^*_t = \frac {\mu - r} {\sigma^2 \gamma (1+ r)^{T-t-1}}$$
-$$V^*((t, W_t)) = - \frac {\rho^{T-t}} {\gamma} e^{- \frac {(\mu - r)^2 \cdot (T-t)} {2 \sigma^2}} \cdot e^{- \gamma \cdot (1+ r)^{T-t} \cdot W_t}$$
+$$V^*(t, W_t) = - \frac {\rho^{T-t}} {\gamma} e^{- \frac {(\mu - r)^2 \cdot (T-t)} {2 \sigma^2}} \cdot e^{- \gamma \cdot (1+ r)^{T-t} \cdot W_t}$$
 
 As extensions of this problem, consider:
 
