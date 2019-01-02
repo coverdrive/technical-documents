@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 \mode<presentation> {
 
@@ -113,54 +113,69 @@
 % \end{frame}
 
 \begin{frame}
-\frametitle{Overview of the Course}
-\begin{itemize}
-\item Theory of Markov Decision Processes (MDPs)
-\item Dynamic Programming (DP) Algorithms (a.k.a. model-based)
-\item Reinforcement Learning (RL) Algorithms (a.k.a. model-free)
-\item Plenty of Python implementations of models and algorithms
-\item Apply these algorithms to 3 Financial/Trading problems:
-\begin{itemize}
-\item (Dynamic) Asset-Allocation to maximize utility of Consumption
-\item Optimal Exercise/Stopping of Path-dependent American Options
-\item Optimal Trade Order Execution (managing Price Impact)
-\end{itemize}
-\item By treating each of the problems as MDPs (i.e., Stochastic Control)
-\item We will go over classical/analytical solutions to these problems
-\item Then introduce real-world considerations, and tackle with RL (or DP)
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{What is the flavor of this course?}
-An important goal of this course is to effectively blend:
-\begin{itemize}
-\item Theory/Mathematics
-\item Programming/Algorithms
-\item Modeling of Read-World Finance/Trading Problems
+\frametitle{Meet your Instructor}
+\pause
+\begin{itemize}[<+->]
+\item My educational background: Algorithms Theory \& Abstract Algebra
+\item 10 years at Goldman Sachs (NY) {\em Rates/Mortgage Derivatives} Trading
+\item 4 years at Morgan Stanley as {\em Managing Director - Market Modeling}
+\item Founded Tech Startup {\em ZLemma}, Acquired by hired.com in 2015
+\item One of our products was algorithmic jobs/career guidance for students
+\item I've been teaching short/medium-length courses for 25 years
+\item Topics across Pure \& Applied Math, CS, Programming, Finance
+\item Current Interest: A.I. for Dynamic Decisioning under Uncertainty
+\item V.P. Data Science at Target focused on Optimal Inventory Control
+\item Joined Stanford ICME as Adjunct in Fall 2018
+\item Apart from CME 241, I am a technical mentor to ICME students
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Pre-Requisites and Housekeeping}
+\frametitle{Requirements and Setup}
+\pause
+\begin{itemize}[<+->]
+\item (Light) Pre-requisites:
 \begin{itemize}
-\item Theory Pre-reqs: Optimization, Probability, Pricing, Portfolio Theory
-\item Coding Pre-reqs: Data Structures/Algorithms with numpy/scipy
-\item Alternative: Written test to demonstrate above-listed background
-\item Grade based on Class Participation, 2 Exams, and Programming Work
+\item Undergraduate-level background in Applied Mathematics (Linear Algebra, Probability Theory, Optimization)
+\item Background in Data Structures \& Algorithms, with programming experience in numpy/scipy
+\item Basic background in Pricing and Portfolio Theory, but we will do an overview of the requisite Finance/Economics
+\item No background required in MDP, DP, RL (we will cover these topics from scratch)
+\end{itemize}
+\item Install Python 3 and supporting editor/IDE (eg: PyCharm)
+\item Create git repo for this course (for assignments/sharing)
+\item Send the git repo details to the Course Assistant (for reviews/grading)
+\item Install LaTeX and supporting editor (eg: TeXShop)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Housekeeping}
+\pause
+\begin{itemize}[<+->]
+\item Grade based on:
+\begin{itemize}
+\item 20\%: Mid-Term Exam
+\item 30\%: Final Exam
+\item 30\%: Programming Assignments (to be done throughout the course)
+\item 20\%: Class Participation
+\end{itemize} 
 \item Passing grade fetches 3 credits, can be applied towards MCF degree
 \item Wed and Fri 4:30pm - 5:50pm, 01/07/2019 - 03/15/2019
 \item Classes in \href{https://campus-map.stanford.edu/?srch=200-203}{\underline{\textcolor{blue}{Building 200 (Lane History Corner) - Room 203}}}
 \item Appointments: Any time Fridays or an hour before class Wednesdays
 \item Use appointments time to discuss theory as well as your code
 \item Course Web Site: \href{cme241.stanford.edu}{\underline{\textcolor{blue}{cme241.stanford.edu}}}
+\item Course Assistant (CA) is Jeffrey Gu (ICME student)
+\item My e-mail: \href{mailto:ashwin.rao@stanford.edu}{\underline{\textcolor{blue}{ashwin.rao@stanford.edu}}}, CA e-mail: \href{mailto:jeffgu@stanford.edu}{\underline{\textcolor{blue}{jeffgu@stanford.edu}}}
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Resources}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item I recommend \href{http://incompleteideas.net/book/the-book-2nd.html}{\underline{\textcolor{blue}{Sutton-Barto}}} as the companion book for this course
 \begin{itemize}
 \item I won't follow the structure of Sutton-Barto book
@@ -183,31 +198,79 @@ An important goal of this course is to effectively blend:
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Learning Tenets (to thrive in this course)}
+\pause
+\begin{itemize}[<+->]
+\item When learning Theory, blend notational rigor with concepts intuition
+\item LaTeX the mathematical formalism of lecture contents with precision
+\item Programming is a powerful tool to grasp mathematical concepts
+\item Code modularity/re-use is important (leverage OOP/FP paradigms)
+\item Always start with a simple model/algorithm, evolve incrementally
+\item Important to model various frictions encountered in real-world trading
+\item Discuss the ideas you learn with others (incl. with the CA and me)
+\item Remember this is an intro course. Avoid advanced RL at this stage
+\item Success := {\bf Blending Theory, Algos/Code, Real-World Modeling}
+\end{itemize}
+\end{frame}
 
 \begin{frame}
-\frametitle{The MDP Framework (that RL is based on)}
+\frametitle{A.I. for Dynamic Decisioning under Uncertainty}
+\pause
+\begin{itemize}[<+->]
+\item Let's browse some terms used to characterize this branch of A.I.
+\item {\em Stochastic}: Uncertainty in key quantities, evolving over time
+\item {\em Optimization}: A well-defined metric to be maximized (``The Goal'')
+\item {\em Dynamic}:  Decisions need to a function of the changing situations
+\item {\em Control}: Overpower uncertainty by persistent steering towards goal
+\item Jargon overload due to confluence of Control Theory, O.R. and A.I.
+\item For language clarity, let's just refer to this area as {\em Stochastic Control}
+\item The core framework is called {\em Markov Decision Processes} (MDP)
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{The MDP Framework}
 \includegraphics[width=12cm, height=7cm]{MDP.png}
 \end{frame}
 
 \begin{frame}
 \frametitle{Components of the MDP Framework}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item The {\em Agent} and the {\em Environment} interact in a time-sequenced loop
 \item {\em Agent} responds to [{\em State}, {\em Reward}] by taking an {\em Action}
 \item {\em Environment} responds by producing next step's (random) {\em State}
 \item {\em Environment} also produces a (random) scalar denoted as {\em Reward}
 \item Goal of {\em Agent} is to maximize {\em Expected Sum} of all future {\em Reward}s
 \item By controlling the ({\em Policy} : {\em State} $\rightarrow$ {\em Action}) function
-\item {\em Agent} often doesn't know the {\em Model} of the {\em Environment}
-\item {\em Model} refers to state-transition probabilities and reward function
-\item So, {\em Agent} has to learn the {\em Model} AND learn the Optimal {\em Policy}
 \item This is a dynamic (time-sequenced control) system under uncertainty
 \end{itemize}
 \end{frame}
 
 \begin{frame}
+\frametitle{Formal MDP Framework}
+\pause
+The following notation is for discrete time steps. Continuous-time formulation is analogous (often involving
+\href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/StochasticCalculusFoundations.pdf}{\underline{\textcolor{blue}{Stochastic Calculus}}})
+\begin{itemize}[<+->]
+\item States $S_t \in \mathcal{S}$ where $\mathcal{S}$ is the State Space
+\item Actions $A_t \in \mathcal{A}$ where $\mathcal{A}$ is the Action Space
+\item Rewards $R_t \in \mathbb{R}$ denoting numerical feedback\
+\item Transitions $p(s',r|s,a) = Pr\{S_{t+1}=s',R_{t+1}=r|S_t=s,A_t=a\}$
+\item $\gamma \in [0,1]$ is the Discount Factor for Reward when defining {\em Return}
+\item Return $G_t = R_t + \gamma \cdot R_{t+1} + \gamma^2 \cdot R_{t+1} + \ldots$
+\item Policy $\pi(a|s)$ is probability that Agent takes action $a$ in states $s$
+\item The goal is find a policy that maximizes  $\mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
 \frametitle{Many real-world problems fit this MDP framework}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Self-driving vehicle (speed/steering to optimize safety/time)
 \item Game of Chess (Boolean {\em Reward} at end of game)
 \item Complex Logistical Operations (eg: movements in a Warehouse)
@@ -221,35 +284,110 @@ An important goal of this course is to effectively blend:
 
 \begin{frame}
 \frametitle{Why are these problems hard?}
-\begin{itemize}
-\item {\em Model} of {\em Environment} is unknown (learn as you go)
+\pause
+\begin{itemize}[<+->]
 \item {\em State} space can be large or complex (involving many variables)
 \item Sometimes, {\em Action} space is also large or complex
 \item No direct feedback on ``correct'' {\em Actions} (only feedback is {\em Reward})
+\item Time-sequenced complexity ({\em Actions} influence future {\em States/Actions})
 \item {\em Action}s can have delayed consequences (late {\em Reward}s)
-\item Time-sequenced complexity (eg: {\em Actions} influence future {\em Actions})
+\item {\em Agent} often doesn't know the {\em Model} of the {\em Environment}
+\item ``Model'' refers to probabilities of state-transitions and rewards
+\item So, {\em Agent} has to learn the {\em Model} AND solve for the Optimal {\em Policy}
 \item {\em Agent} {\em Action}s need to tradeoff between ``explore'' and ``exploit''
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Why is RL interesting/useful to learn about?}
+\frametitle{Value Function and Bellman Equations}
+\pause
 \begin{itemize}
+\item Value function (under policy $\pi$) $V_{\pi}(s) = \mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
+\pause
+$$V_{\pi}(s) = \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
+\pause
+\item Optimal Value Function $V_{*}(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
+\pause
+$$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox{ for all } s \in \mathcal{S}$$
+\pause
+\item {\em There exists an Optimal Policy} $\pi_{*}$ achieving $V_{*}(s)$ for all $s \in \mathcal{S}$
+\pause
+\item Determining $V_{\pi}(s)$ known as {\em Prediction}, and $V_{*}(s)$ known as {\em Control}
+\pause
+\item The above recursive equations are called {\em Bellman equations}
+\pause
+\item In continuous time, refered to as {\em Hamilton-Jacobi-Bellman (HJB)}
+\pause
+\item The algorithms based on Bellman equations are broadly classified as:
+\begin{itemize}
+\item Dynamic Programming
+\item Reinforcement Learning
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Dynamic Programming versus Reinforcement Learning}
+\pause
+\begin{itemize}[<+->]
+\item When Model is known $\Rightarrow$ {\em Dynamic Programming} (DP)
+\item DP Algorithms take advantage of knowledge of probabilities
+\item So, DP Algorithms do not require interaction with the environment
+\item Model-based/DP algorithms often refered to as {\em Planning Algorithms}
+\item When Model is unknown $\Rightarrow$ {\em Reinforcement Learning} (RL)
+\item RL Algorithms interact with the Environment and incrementally learn
+\item Environment interaction could be real interaction or a simulator
+\item RL approach: Try different actions \& learn what works, what doesn't
+\item RL Algorithms' key challenge is to tradeoff ``explore'' versus ``exploit''
+\item DP or RL, Good approximation of Value Function is vital to success
+\item Deep Neural Networks are typically used for function approximation
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Why is RL interesting/useful to learn about?}
+\pause
+\begin{itemize}[<+->]
 \item RL solves MDP problem when {\em Environment Model} is unknown
-\item Also useful when {\em State} or {\em Action} space is too large/complex
+\item Or when only an {\em Environment Simulator} is available
+\item The above two situations are typical in real-world problems
 \item {\bf Promise of modern A.I. is based on success of RL algorithms}
-\item Potential for automated decision-making in real-world business
-\item In 10 years: Bots that act or behave more optimal than humans
+\item Potential for automated decision-making in many industries
+\item In 10-20 years: Bots that act or behave more optimal than humans
 \item RL already solves various low-complexity real-world problems
-\item RL will soon be the most-desired skill in the Data Science job-market
+\item RL might soon be the most-desired skill in the technical job-market
 \item Possibilities in Finance are endless (we cover 3 important problems)
 \item Learning RL is a lot of fun! (interesting in theory as well as coding)
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Optimal Asset Allocation to Maximize Consumption Utility}
+\frametitle{Overview of the Course}
+\pause
+\begin{itemize}[<+->]
+\item Theory of Markov Decision Processes (MDPs)
+\item Dynamic Programming (DP) Algorithms
+\item Reinforcement Learning (RL) Algorithms
+\item Plenty of Python implementations of models and algorithms
+\item Apply these algorithms to 3 Financial/Trading problems:
 \begin{itemize}
+\item (Dynamic) Asset-Allocation to maximize Utility of Consumption
+\item Optimal Exercise/Stopping of Path-dependent American Options
+\item Optimal Trade Order Execution (managing Price Impact)
+\end{itemize}
+\item By treating each of the problems as MDPs (i.e., Stochastic Control)
+\item We will go over classical/analytical solutions to these problems
+\item Then introduce real-world considerations, and tackle with RL (or DP)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Asset Allocation to Maximize Consumption Utility}
+\pause
+\begin{itemize}[<+->]
 \item You can invest in (allocate wealth to) a collection of assets
 \item Investment horizon is a fixed length of time
 \item Each risky asset has an unknown distribution of returns
@@ -262,9 +400,12 @@ An important goal of this course is to effectively blend:
 \end{itemize}
 \end{frame}
 
+
+
 \begin{frame}
 \frametitle{MDP for Optimal Asset Allocation problem}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item {\em State} is [Current Time, Current Holdings, Current Prices]
 \item {\em Action} is [Allocation Quantities, Consumption Quantity]
 \item {\em Action}s limited by various real-world trading constraints
@@ -275,7 +416,8 @@ An important goal of this course is to effectively blend:
 
 \begin{frame}
 \frametitle{Optimal Exercise of Path-Dependent American Options}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item RL is an alternative to Longstaff-Schwartz algorithm for Pricing
 \item {\em State} is [Current Time, History of Underlying Security Prices]
 \item {\em Action} is Boolean: Exercise (i.e., Payoff and Stop) or Continue
@@ -288,7 +430,8 @@ An important goal of this course is to effectively blend:
 
 \begin{frame}
 \frametitle{Optimal Trade Order Execution (controlling Price Impact)}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item You are tasked with selling a large qty of a (relatively less-liquid) stock
 \item You have a fixed horizon over which to complete the sale
 \item Goal is to maximize aggregate sales proceeds over horizon
@@ -302,7 +445,8 @@ An important goal of this course is to effectively blend:
 
 \begin{frame}
 \frametitle{MDP for Optimal Trade Order Execution}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item {\em State} is [Time Remaining, Stock Remaining to be Sold, Market Info]
 \item {\em Action} is Quantity of Stock to Sell at current time
 \item {\em Reward} is Utility of Sales Proceeds (i.e., Variance-adjusted-Proceeds)
@@ -314,7 +458,8 @@ An important goal of this course is to effectively blend:
 
 \begin{frame}
 \frametitle{Week by Week (Tentative) Schedule}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item W1: Markov Decision Processes \& Overview of Finance Problems
 \item W2: Bellman Equations \& Dynamic Programming Algorithms
 \item W3: Optimal Asset Allocation problem
@@ -324,8 +469,8 @@ An important goal of this course is to effectively blend:
 \item W7: Model-Free Control (RL for Optimal Value Function/Policy)
 \item W8: RL with Function Approximation (including Deep RL)
 \item W9: Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD
-\item W10: Policy Gradient Algorithms, and Final Exam
-
+\item W10: Policy Gradient Algorithms
+\item W11: Final Exam
 \end{itemize}
 \end{frame}
 
@@ -362,7 +507,6 @@ An important goal of this course is to effectively blend:
 \item MS\&E 338 (Ben Van Roy - Spring 2019)
 \item MS\&E 348 (Gerd Infanger - Winter 2020)
 \item MS\&E 351 (Ben Van Roy - Winter 2019)
-
 \end{itemize}
 \end{frame}
 
