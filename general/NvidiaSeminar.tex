@@ -146,7 +146,7 @@
 \item Goal of {\em Agent} is to maximize {\em Expected Sum} of all future {\em Reward}s
 \item By controlling the ({\em Policy} : {\em State} $\rightarrow$ {\em Action}) function
 \item This is a dynamic (time-sequenced control) system under uncertainty
-\item Formally known as a Markov Decision Process (MDP)
+\item Formally known as a {\em Markov Decision Process} (MDP)
 \end{itemize}
 \end{frame}
 
@@ -189,8 +189,8 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \item {\em State} space can be large or complex (involving many variables)
 \item Sometimes, {\em Action} space is also large or complex
 \item No direct feedback on ``correct'' {\em Actions} (only feedback is {\em Reward})
+\item Time-sequenced complexity ({\em Actions} influence future {\em States/Actions})
 \item {\em Action}s can have delayed consequences (late {\em Reward}s)
-\item Time-sequenced complexity (eg: {\em Actions} influence future {\em Actions})
 \item {\em Agent} often doesn't know the {\em Model} of the {\em Environment}
 \item ``Model'' refers to probabilities of state-transitions and rewards
 \item So, {\em Agent} has to learn the {\em Model} AND solve for the Optimal {\em Policy}
@@ -211,6 +211,8 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \pause
 \item {\em There exists an Optimal Policy} $\pi_{*}$ achieving $V_{*}(s)$ for all $s \in \mathcal{S}$
 \pause
+\item Determining $V_{\pi}(s)$ known as {\em Prediction}, and $V_{*}(s)$ known as {\em Control}
+\pause
 \item The above recursive equations are called {\em Bellman equations}
 \pause
 \item In continuous time, refered to as {\em Hamilton-Jacobi-Bellman (HJB)}
@@ -220,6 +222,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item Dynamic Programming
 \item Reinforcement Learning
 \end{itemize}
+
 \end{itemize}
 \end{frame}
 
@@ -231,6 +234,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item When Model is known $\Rightarrow$ {\em Dynamic Programming} (DP)
 \item DP Algorithms take advantage of knowledge of probabilities
 \item So, DP Algorithms do not require interaction with the environment
+\item Model-based/DP algorithms often refered to as {\em Planning Algorithms}
 \item When Model is unknown $\Rightarrow$ {\em Reinforcement Learning} (RL)
 \item RL Algorithms interact with the Environment and incrementally learn
 \item Environment interaction could be real interaction or a simulator
