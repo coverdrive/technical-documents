@@ -415,14 +415,28 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \end{frame}
 
 \begin{frame}
-\frametitle{Optimal Exercise of Path-Dependent American Options}
+\frametitle{Optimal Exercise of Path-dependent American Options}
 \pause
 \begin{itemize}[<+->]
-\item RL is an alternative to Longstaff-Schwartz algorithm for Pricing
+\item An American option can be exercised anytime before option maturity
+\item Key decision at any time is to exercise or continue
+\item The default algorithm is Backward Induction on a tree/grid
+\item But it doesn't work for path-dependent options 
+\item Also, it's not feasible when state dimension is large
+\item Industry-Standard: Longstaff-Schwartz's simulation-based algorithm
+\item RL is an attractive alternative to Longstaff-Schwartz
+\item RL is straightforward once Optimal Exercise is modeled as an MDP
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{MDP for Optimal Options Exercise}
+\pause
+\begin{itemize}[<+->]
 \item {\em State} is [Current Time, History of Underlying Security Prices]
 \item {\em Action} is Boolean: Exercise (i.e., Payoff and Stop) or Continue
 \item {\em Reward} always 0, except upon Exercise ($=$ Payoff)
-\item {\em State}-transitions governed by Underlying Price's Stochastic Process
+\item {\em State}-transitions governed by Underlying Prices' Stochastic Process
 \item Optimal Policy $\Rightarrow$ Optimal Stopping $\Rightarrow$ Option Price
 \item Can be generalized to other Optimal Stopping problems
 \end{itemize}
