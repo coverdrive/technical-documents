@@ -244,6 +244,12 @@
 \item {\em Agent} responds to [{\em State}, {\em Reward}] by taking an {\em Action}
 \item {\em Environment} responds by producing next step's (random) {\em State}
 \item {\em Environment} also produces a (random) scalar denoted as {\em Reward}
+\item Each {\em State} is assumed to have the {\em Markov Property}, meaning:
+\begin{itemize}
+\item Next {\em State/Reward} depends only on Current {\em State} (for a given {\em Action})
+\item Current {\em State} captures all relevant information from {\em History}
+\item Current {\em State} is a sufficient statistic of the future (for a given {\em Action})
+\end{itemize} 
 \item Goal of {\em Agent} is to maximize {\em Expected Sum} of all future {\em Reward}s
 \item By controlling the ({\em Policy} : {\em State} $\rightarrow$ {\em Action}) function
 \item This is a dynamic (time-sequenced control) system under uncertainty
@@ -256,7 +262,8 @@
 The following notation is for discrete time steps. Continuous-time formulation is analogous (often involving
 \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/StochasticCalculusFoundations.pdf}{\underline{\textcolor{blue}{Stochastic Calculus}}})
 \begin{itemize}[<+->]
-\item States $S_t \in \mathcal{S}$ where $\mathcal{S}$ is the State Space
+\item Time steps denoted as $t = 1, 2, 3, \ldots$
+\item Markov States $S_t \in \mathcal{S}$ where $\mathcal{S}$ is the State Space
 \item Actions $A_t \in \mathcal{A}$ where $\mathcal{A}$ is the Action Space
 \item Rewards $R_t \in \mathbb{R}$ denoting numerical feedback\
 \item Transitions $p(s',r|s,a) = Pr\{S_{t+1}=s',R_{t+1}=r|S_t=s,A_t=a\}$
@@ -265,6 +272,11 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \item Policy $\pi(a|s)$ is probability that Agent takes action $a$ in states $s$
 \item The goal is find a policy that maximizes  $\mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{How a baby learns to walk}
+\includegraphics[width=13cm, height=8cm]{BabyMDP.jpg}
 \end{frame}
 
 \begin{frame}
@@ -280,6 +292,11 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \item Optimal decisions during a football game
 \item Strategy to win an election (high-complexity MDP)
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Self-Driving Vehicle}
+\includegraphics[width=13cm, height=8cm]{CarMDP.jpg}
 \end{frame}
 
 \begin{frame}
@@ -362,6 +379,16 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item Possibilities in Finance are endless (we cover 3 important problems)
 \item Learning RL is a lot of fun! (interesting in theory as well as coding)
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Many Faces of Reinforcement Learning}
+\includegraphics[width=9cm, height=8cm]{many_faces_of_RL.PNG}
+\end{frame}
+
+\begin{frame}
+\frametitle{Vague (but in-vogue) Classification of Machine Learning}
+\includegraphics[width=9cm, height=8cm]{MLBranches.PNG}
 \end{frame}
 
 \begin{frame}
