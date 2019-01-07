@@ -55,24 +55,48 @@
 	<li>January 9: <a href="course_details.pdf">Course Overview - Intro to Markov Decision Processes, Reinforcement Learning and Finance Application Problems</a></li>
 	<ul>
 		<li>Reading: First (Introduction) chapter of Sutton-Barto book (pages 1-12), <a href="lecture_slides/rich_sutton_slides/1-admin-and-intro.pdf">Sutton's slides on Intro to RL</a></li>
+		<li>Assignment: 
+			<ul>
+				<li>Install/Setup on your laptop with LaTeX, Python 3 (and optionally Jupyter notebook)</li>
+				<li>Create a git repo for this course where you can upload and organize all the code and technical writing you as part of assignments and self-learning</li>
+				<li>Let the Course Assistant (CA) know of your git repo, so we can periodically review your assignments and other self-learning work</li>
+			</ul>
+		</li>
 	</ul>
 	<li>January 11: <a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Decision Processes</a></li>
 	<ul>
 		<li>Reading: Third (MDP) chapter of Sutton-Barto book (pages 47-67), <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Sutton's slides on MDPs</a></li>
 		<li>Video: <a href="https://www.youtube.com/watch?v=lfHX2hHRMVQ">David Silver's video (on youtube) on MDPs</a></li>
-		<li>Assignment: Write out the MP/MRP/MDP/Value Function definitions(in TeX),  Code up Python classes for MP/MRP/MDPs/Policies and Python functions for Value Function calculations</li>
+		<li>Assignment:
+			<ul>
+				<li>Write out the MP/MRP/MDP/Value Function definitions (in TeX) in your own style/notation (so you really internalize these concepts)</li>
+				<li>Think about the data structures/class design (in Python 3) to represent MP/MRP/MDPs/Policies and implement them with clear type declarations</li>
+				<li>Remember your data structure/code design must resemble the Mathematical/notational formalism as much as possible</li>
+				<li>Separately implement the r(s,s') and the R(s) = \sum_{s'} p(s,s') r(s,s') definitions of MRP (likewise for MDP)</li>
+				<li>Write code to convert/cast the former definition of MRP/MDP to the latter definition (put some thought into code design here)</li>
+				<li>Write code to implement several key transformations/calculations you learnt in this lecture, eg:</li>
+				<ul>
+					<li>Generate the stationary distribution for an MP</li>
+					<li>Create a MRP from an MDP and a (stochastic) Policy</li>
+					<li>Calculate the Value function for an MRP that you learnt in this lecture (matrix inversion-based)</li>
+				</ul>
+			</ul>
+		</li>
 	</ul>
 
 	<li>January 16: <a href="lecture_slides/david_silver_slides/MDP.pdf">Bellman Equations</a></li>
 	<ul>
-		<li>Assignment: Write out all the Bellman Equations (in TeX), Code up Python functions for Bellman calculations</li>
+		<li>Assignment:
+			<ul>
+				<li>Write out all 8 Bellman Equations and also the transformation from Optimal Action-Value function to Optimal Policy (in TeX)</li>
+				<li>Write code corresponding to the above equations</li>
 	</ul>
 	<li>January 18: <a href="lecture_slides/david_silver_slides/DP.pdf">Dynamic Programming Algorithms</a></li>
 	<ul>
 		<li>Reading: Fourth (MDP) chapter of Sutton-Barto book, <a href="lecture_slides/rich_sutton_slides/7-8-DP.pdf">Sutton's slides on Dynamic Programming</a></li>
 		<li>Video: <a href="https://www.youtube.com/watch?v=Nd1-UUMVfz4&t=3110s">David Silver's video (on youtube) on Dynamic Programming</a></li>
-		<li>Assignment: Write Python code for Dynamic Programming Algorithms (Policy Iteration, Value Iteration) and Approximate Dynamic Programming Algorithms</li>
-	</ul>
+		<li>Assignment: Write code for Dynamic Programming Algorithms (Policy Iteration, Value Iteration) and Approximate Dynamic Programming Algorithms</li>
+	</ul
 	<li>January 23: Understanding Risk-Aversion through Utility Theory (as a pre-req to Application Problem 1)</li>
 	<li>January 25: Application Problem 1 - Optimal Asset Allocation/Consumption (Merton's 1969 Paper)</li>
 	<li>January 30: Application Problem 1 - Optimal Asset Allocation/Consumption (Discussion on Real-World problem)</li>
