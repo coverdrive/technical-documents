@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+th {
+	text-align: left;
+}
+</style>
 <title>CME 241: Reinforcement Learning for Stochastic Control Problems in Finance </title>
 </head>
 
@@ -67,23 +72,35 @@
 </ul>
 
 <h2>Lecture-by-Lecture (tentative) schedule with corresponding lecture slides, reading/videos, and assignments</h2>
-<ul>
-	<li>January 9: <a href="course_details.pdf">Course Overview - Intro to Markov Decision Processes, Reinforcement Learning and Finance Application Problems</a></li>
-	<ul>
-		<li>Reading: First (Introduction) chapter of Sutton-Barto book (pages 1-12), <a href="lecture_slides/rich_sutton_slides/1-admin-and-intro.pdf">Sutton's slides on Intro to RL</a></li>
-		<li>Assignment: 
-			<ul>
+<table border="1">
+  <tr>
+    <th>Date</th>
+    <th>Lecture Slides</th>
+    <th>Reading</th>
+    <th>Assignments</th>
+  </tr>
+  <tr>
+    <th>January 9</th>
+    <th><a href="course_details.pdf">Course Overview</a></th>
+    <th>Sutton-Barto pp. 1-12, <a href="lecture_slides/rich_sutton_slides/1-admin-and-intro.pdf">Sutton's slides on Intro to RL</a></th>
+    <th>
+    	<ul>
 				<li>Install/Setup on your laptop with LaTeX, Python 3 (and optionally Jupyter notebook)</li>
 				<li>Create a git repo for this course where you can upload and organize all the code and technical writing you will do as part of assignments and self-learning</li>
 				<li>Let the Course Assistant (CA) know of your git repo, so we can periodically review your assignments and other self-learning work</li>
-			</ul>
-		</li>
-	</ul>
-	<li>January 11: <a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Decision Processes</a></li>
-	<ul>
-		<li>Reading: Third (MDP) chapter of Sutton-Barto book (pages 47-67), <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Sutton's slides on MDPs</a></li>
-		<li>Video: <a href="https://www.youtube.com/watch?v=lfHX2hHRMVQ">David Silver's video (on youtube) on MDPs</a></li>
-		<li>Suggested Assignment:
+		</ul>
+	</th>
+  </tr>
+  <tr>
+    <th>January 11</th>
+    <th><a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Decision Processes</a></th>
+    <th>
+    	<ul>
+			<li>Reading: Third (MDP) chapter of Sutton-Barto book (pages 47-67), <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Sutton's slides on MDPs</a></li>
+			<li>Video: <a href="https://www.youtube.com/watch?v=lfHX2hHRMVQ">David Silver's video (on youtube) on MDPs</a></li>
+		</ul>
+    </th>
+    <th>
 			<ul>
 				<li>Write out the MP/MRP/MDP/Value Function definitions (in LaTeX) in your own style/notation (so you really internalize these concepts)</li>
 				<li>Think about the data structures/class design (in Python 3) to represent MP/MRP/MDPs/Policies and implement them with clear type declarations</li>
@@ -97,57 +114,151 @@
 					<li>Calculate the Value function for an MRP that you learnt in this lecture (matrix inversion-based)</li>
 				</ul>
 			</ul>
-		</li>
-	</ul>
-
-	<li>January 16: <a href="lecture_slides/david_silver_slides/MDP.pdf">Bellman Equations</a></li>
-	<ul>
-		<li>Suggested Assignment:
-			<ul>
-				<li>Write out all 8 Bellman Equations and also the transformation from Optimal Action-Value function to Optimal Policy (in LaTeX)</li>
-				<li>Write code corresponding to the above equations</li>
-			</ul>
-		</li>
-	</ul>
-	<li>January 18: <a href="lecture_slides/david_silver_slides/DP.pdf">Dynamic Programming Algorithms</a></li>
-	<ul>
-		<li>Reading: Fourth (MDP) chapter of Sutton-Barto book, <a href="lecture_slides/rich_sutton_slides/7-8-DP.pdf">Sutton's slides on Dynamic Programming</a></li>
-		<li>Video: <a href="https://www.youtube.com/watch?v=Nd1-UUMVfz4&t=3110s">David Silver's video (on youtube) on Dynamic Programming</a></li>
-		<li>Suggested Assignment: Write code for Dynamic Programming Algorithms (Policy Iteration, Value Iteration) and Approximate Dynamic Programming Algorithms</li>
-	</ul>
-	<li>January 23: <a href="lecture_slides/UtilityTheoryForRisk.pdf">Understanding Risk-Aversion through Utility Theory</a>(as a pre-req to Application Problem 1)</li>
-	<ul>
-		<li>Optional (Related) reading: <a href="lecture_slides/EfficientFrontier.pdf">A Terse Introduction to Efficient Frontier Mathematics</a></li>
-		<li>Suggested Assignment:
-			<ul>
-				<li>Work out (in LaTeX) the equations for Absolute/Relative Risk Premia for CARA/CRRA respectively</li>
-				<li>Write the Portfolio application problem statement and solution with precise notation (in LaTeX)</li> 
-			</ul>
-		</li>
-	</ul>
-	<li>January 25: <a href="lecture_slides/MertonPortfolio.pdf">Application Problem 1 - Optimal Asset Allocation/Consumption (Merton's 1969 Portfolio Problem)</a></li>
-	<ul>
-		<li>Reading: <a href="lecture_slides/PortfolioOptNotes.pdf">Discrete-time CARA example</a></li>
-		<li>Optional Reading: <a href="lecture_slides/StochasticCalculusFoundations.pdf">Stochastic Calculus Foundations</a> (used in setting up HJB)</li>
-		<li>Suggested Assignment:
-			<ul>
-				<li>Model Merton's Portfolio problem as an MDP (write the model in LaTeX)</li>
-				<li>Implement this MDP model in code</li>
-				<li>Try recovering the closed-form solution with a DP algorithm that you implemented previously</li>
-			</ul>
-		</li>
-	</ul>
-	<li>January 30: Application Problem 1 - Optimal Asset Allocation/Consumption (Discussion on Real-World modeling and coding)</li>
-	<li>February 1: <a href="lecture_slides/AmericanOptionsRL.pdf">Application Problem 2 - Optimal Exercise of American Options</a></li>
-	<li>February 6: <a href="lecture_slides/OrderExecution.pdf">Application Problem 3 - Optimal Trade Order Execution</a></li>
-	<li>February 8: Mid-Term Exam</li>
-	<li>February 13 and 15: <a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free Prediction (RL for Value Function Estimation)</a></li>
-	<li>February 20 and 22: <a href="lecture_slides/david_silver_slides/control.pdf">Model-free Control (RL for Optimal Value Function/Policy)</a></li>
-	<li>February 27 and March 1: <a href="lecture_slides/david_silver_slides/FA.pdf">RL with Function Approximation (including Deep RL)</a></li>
-	<li>March 6 and March 8: <a href="lecture_slides/ValueFunctionGeometry.pdf">Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD</a></li>
-	<li>March 13 and 15: <a href="lecture_slides/PolicyGradient.pdf">Policy Gradient Algorithms</a></li>
-	<li>March 22 (3:30pm - 6:30pm): Final Exam</li>
-</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 16</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/MDP.pdf">Bellman Equations</a>
+    </th>
+    <th>
+    	
+    </th>
+    <th>
+    	<ul>
+			<li>Write out all 8 Bellman Equations and also the transformation from Optimal Action-Value function to Optimal Policy (in LaTeX)</li>
+			<li>Write code corresponding to the above equations</li>
+		</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 18</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/DP.pdf">Dynamic Programming Algorithms</a>
+    </th>
+    <th>
+    	<ul>
+			<li>Reading: Fourth (MDP) chapter of Sutton-Barto book, <a href="lecture_slides/rich_sutton_slides/7-8-DP.pdf">Sutton's slides on Dynamic Programming</a></li>
+			<li>Video: <a href="https://www.youtube.com/watch?v=Nd1-UUMVfz4&t=3110s">David Silver's video (on youtube) on Dynamic Programming</a></li>
+		</ul>
+    </th>
+    <th>
+    	<li>Write code for Dynamic Programming Algorithms (Policy Iteration, Value Iteration) and Approximate Dynamic Programming Algorithms</li>
+    </th>
+  </tr>
+  <tr>
+    <th>January 23</th>
+    <th>
+    	<a href="lecture_slides/UtilityTheoryForRisk.pdf">Understanding Risk-Aversion through Utility Theory</a>(as a pre-req to Application Problem 1)
+    </th>
+    <th>
+    	<ul>
+			<li>Optional (Related) reading: <a href="lecture_slides/EfficientFrontier.pdf">A Terse Introduction to Efficient Frontier Mathematics</a></li>
+	    </ul>
+    </th>
+    <th>
+    	<ul>
+			<li>Work out (in LaTeX) the equations for Absolute/Relative Risk Premia for CARA/CRRA respectively</li>
+			<li>Write the Portfolio application problem statement and solution with precise notation (in LaTeX)</li> 
+		</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 25</th>
+    <th>
+    	<a href="lecture_slides/MertonPortfolio.pdf">Application Problem 1 - Optimal Asset Allocation/Consumption (Merton's 1969 Portfolio Problem)</a>
+    </th>
+    <th>
+    	<ul>
+			<li>Reading: <a href="lecture_slides/PortfolioOptNotes.pdf">Discrete-time CARA example</a></li>
+			<li>Optional Reading: <a href="lecture_slides/StochasticCalculusFoundations.pdf">Stochastic Calculus Foundations</a> (used in setting up HJB)</li>
+		</ul>
+    </th>
+    <th>
+    	<ul>
+			<li>Model Merton's Portfolio problem as an MDP (write the model in LaTeX)</li>
+			<li>Implement this MDP model in code</li>
+			<li>Try recovering the closed-form solution with a DP algorithm that you implemented previously</li>
+		</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 30</th>
+    <th>
+    	Application Problem 1 - Optimal Asset Allocation/Consumption (Discussion on Real-World modeling and coding)
+    </th>
+    <th>
+    	
+    </th>
+    <th>
+    	
+    </th>
+  </tr>
+  <tr>
+    <th>February 1</th>
+    <th>
+    	<a href="lecture_slides/AmericanOptionsRL.pdf">Application Problem 2 - Optimal Exercise of American Options</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>February 6</th>
+    <th>
+    	<a href="lecture_slides/OrderExecution.pdf">Application Problem 3 - Optimal Trade Order Execution</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>February 8</th>
+    <th colspan="3">Midterm Exam</th>
+  </tr>
+  <tr>
+    <th>February 13 and 15</th>
+    <th>
+    	 <a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free Prediction (RL for Value Function Estimation)</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>February 20 and 22</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/control.pdf">Model-free Control (RL for Optimal Value Function/Policy)</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>February 27 and March 1</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/FA.pdf">RL with Function Approximation (including Deep RL)</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>March 6 and March 8</th>
+    <th>
+    	<a href="lecture_slides/ValueFunctionGeometry.pdf">Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>March 13 and March 15</th>
+    <th>
+    	<a href="lecture_slides/PolicyGradient.pdf">Policy Gradient Algorithms</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>March 22 (3:30pm-6:30pm)</th>
+    <th colspan="3">Final Exam</th>
+  </tr>
+</table>
 <h2>Learning Tenets</h2>
 <ul>
 	<li>When learning Theory, blend notational rigor with intuitive understanding</li>
