@@ -118,10 +118,10 @@ ICME, Stanford University
 \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 \end{frame}
 
-\section{Vector Space of Value Functions}
+\section{Value Functions as Vectors}
 
 \begin{frame}
-\frametitle{Vector Space of Value Functions}
+\frametitle{Value Functions as Vectors}
 \pause
 \begin{itemize}[<+->]
 \item Assume State pace $\mathcal{S}$ consists of $n$ states: $\{s_1, s_2, \ldots, s_n\}$
@@ -129,8 +129,8 @@ ICME, Stanford University
 \item This exposition extends easily to continuous state/action spaces too
 \item We denote a stochastic policy as $\pi(a|s)$ (probability of ``$a$ given $s$'')
 \item Abusing notation, deterministic policy denoted as $\pi(s) = a$
-\item Consider a $n$-dim vector space, each dim corresponding to a state in $\mathcal{S}$
-\item A vector in this space is a specific Value Function (VF) $\bv$: $\mathcal{S} \rightarrow \mathbb{R}$
+\item Consider $n$-dim space $\mathbb{R}^n$, each dim corresponding to a state in $\mathcal{S}$
+\item Think of a Value Function (VF) $\bv$: $\mathcal{S} \rightarrow \mathbb{R}$ as a vector in this space
 \item With coordinates $[\bv(s_1), \bv(s_2), \ldots, \bv(s_n)]$
 \item Value Function (VF) for a policy $\pi$ is denoted as $\vpi: \mathcal{S} \rightarrow \mathbb{R}$
 \item Optimal VF denoted as $\vstar: \mathcal{S} \rightarrow \mathbb{R}$ such that for any $s \in \mathcal{S}$,
