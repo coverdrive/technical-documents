@@ -1,0 +1,270 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{amsmath}
+
+\newcommand{\vpi}{{\bf v_{\pi}}}
+\newcommand{\vstar}{{\bf v_*}}
+\newcommand{\bbp}{{\bf B}_{\pi}}
+\newcommand{\bbs}{{\bf B}_*}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\pis}{\pi_*}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcounter{sauvegardeenumi}
+\newcommand{\asuivre}{\setcounter{sauvegardeenumi}{\theenumi}}
+\newcommand{\suite}{\setcounter{enumi}{\thesauvegardeenumi}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Bellman Operators]{Understanding (Exact) Dynamic Programming through Bellman Operators} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ICME, Stanford University
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+\section{Vector Space of Value Functions}
+
+\begin{frame}
+\frametitle{Vector Space of Value Functions}
+\begin{itemize}
+\item Assume State pace $\mathcal{S}$ consists of $n$ states: $\{s_1, s_2, \ldots, s_n\}$
+\item Assume Action space $\mathcal{A}$ consists of $m$ actions $\{a_1, a_2, \ldots, a_m\}$ 
+\item This exposition extends easily to continuous state/action spaces too
+\item We denote a stochastic policy as $\pi(a|s)$ (probability of ``$a$ given $s$'')
+\item Abusing notation, deterministic policy denoted as $\pi(s) = a$
+\item Consider a $n$-dim vector space, each dim corresponding to a state in $\mathcal{S}$
+\item A vector in this space is a specific Value Function (VF) $\bv$: $\mathcal{S} \rightarrow \mathbb{R}$
+\item With coordinates $[\bv(s_1), \bv(s_2), \ldots, \bv(s_n)]$
+\item Value Function (VF) for a policy $\pi$ is denoted as $\vpi: \mathcal{S} \rightarrow \mathbb{R}$
+\item Optimal VF denoted as $\vstar: \mathcal{S} \rightarrow \mathbb{R}$ such that for any $s \in \mathcal{S}$,
+$$\vstar(s) = \max_{\pi} \vpi(s)$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Some more notation}
+\begin{itemize}
+\item Denote $\mathcal{R}_s^a$ as the Expected Reward upon action $a$ in state $s$
+\item Denote $\mathcal{P}_{s,s'}^a$ as the probability of transition $s \rightarrow s'$ upon action $a$
+\item Define
+$${\bf R}_{\pi}(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot \mathcal{R}_s^a$$
+$${\bf P}_{\pi}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot \mathcal{P}_{s,s'}^a$$
+\item Denote ${\bf R}_{\pi}$ as the vector $[{\bf R}_{\pi}(s_1), {\bf R}_{\pi}(s_2), \ldots, {\bf R}_{\pi}(s_n)]$
+\item Denote ${\bf P}_{\pi}$ as the matrix $[{\bf P}_{\pi}(s_i, s_{i'})], 1 \leq i, i' \leq n$ 
+\item Denote $\gamma$ as the MDP discount factor
+\end{itemize}
+\end{frame}
+
+\section{Bellman Operators}
+
+\begin{frame}
+\frametitle{Bellman Operators $\bbp$ and $\bbs$}
+\begin{itemize}
+\item We define operators that transform a VF vector to another VF vector
+\item {\em Bellman Policy Operator} $\bbp$ (for policy $\pi$) operating on VF vector $\bv$:
+$$\bbp \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
+\item $\bbp$ is a linear operator with fixed point $\vpi$, meaning $\bbp \vpi = \vpi$
+\item {\em Bellman Optimality Operator} $\bbs$ operating on VF vector $\bv$:
+$$(\bbs \bv)(s) = \max_a \{ \mathcal{R}_s^a + \gamma \sum_{s' \in \mathcal{S}} \mathcal{P}_{s,s'}^a \cdot \bv(s') \}$$
+\item $\bbs$ is a non-linear operator with fixed point  $\vstar$, meaning $\bbs \vstar = \vstar$
+\item Define a function $G$ mapping a VF $\bv$ to a deterministic ``greedy'' policy $G(\bv)$ as follows:
+$$G(\bv)(s) = \argmax_a \{ \mathcal{R}_s^a + \gamma \sum_{s' \in \mathcal{S}} \mathcal{P}_{s,s'}^a \cdot \bv(s') \}$$
+\item ${\bf B}_{G(\bv)} \bv= \bbs \bv$ for any VF $\bv$ (Policy $G(\bv)$ achieves the $\max$ in $\bbs$)
+\end{itemize}
+\end{frame}
+
+\section{Contraction and Monotonicity}
+
+\begin{frame}
+\frametitle{Contraction and Monotonicity of Operators}
+\begin{itemize}
+\item Both $\bbp$ and $\bbs$ are $\gamma$-contraction operators in $L^{\infty}$ norm, meaning:
+\item For any two VFs ${\bf v_1}$ and ${\bf v_2}$,
+$$\Vert \bbp {\bf v_1} - \bbp {\bf v_2} \Vert_{\infty} \leq \gamma \Vert {\bf v_1} - {\bf v_2} \Vert_{\infty}$$
+$$\Vert \bbs {\bf v_1} - \bbs {\bf v_2} \Vert_{\infty} \leq \gamma \Vert {\bf v_1} - {\bf v_2} \Vert_{\infty}$$
+\item So we can invoke Contraction Mapping Theorem to claim fixed point
+\item We use the notation ${\bf v_1} \leq {\bf v_2}$ for any two VFs ${\bf v_1}, {\bf v_2}$ to mean:
+$${\bf v_1}(s) \leq {\bf v_2}(s) \mbox{ for all } s \in \mathcal{S}$$
+\item Also, both $\bbp$ and $\bbs$ are monotonic, meaning:
+\item For any two VFs ${\bf v_1}$ and ${\bf v_2}$,
+$${\bf v_1} \leq {\bf v_2} \Rightarrow \bbp {\bf v_1} \leq \bbp {\bf v_2}$$
+$${\bf v_1} \leq {\bf v_2} \Rightarrow \bbs {\bf v_1} \leq \bbs {\bf v_2}$$  
+\end{itemize}
+\end{frame}
+
+\section{Policy Evaluation}
+
+\begin{frame}
+\frametitle{Policy Evaluation}
+\begin{itemize}
+\item $\bbp$ satisfies the conditions of Contraction Mapping Theorem
+\item $\bbp$ has a unique fixed point $\vpi$, meaning $\bbp \vpi = \vpi$
+\item This is a succinct representation of Bellman Expectation Equation
+\item Starting with any VF $\bv$ and repeatedly applying $\bbp$, we will reach $\vpi$
+$$\lim_{N\rightarrow \infty} \bbp^N \bv = \vpi \mbox{ for any VF } \bv$$
+\item This is a succinct representation of the Policy Evaluation Algorithm
+\end{itemize}
+\end{frame}
+
+\section{Policy Iteration}
+
+\begin{frame}
+\frametitle{Policy Improvement}
+\begin{itemize}
+\item Let $\pi_k$ and ${\bf v_{\pi_k}}$ denote the Policy and the VF for the Policy in iteration $k$ of Policy Iteration
+\item Policy Improvement Step is: $\pi_{k+1} = G({\bf v_{\pi_k}})$, i.e. deterministic greedy
+\item Earlier we argued that $\bbs \bv = {\bf B}_{G(\bv)} \bv$ for any VF $\bv$. Therefore,
+\begin{equation}
+\bbs {\bf v_{\pi_k}} = {\bf B}_{G({\bf v_{\pi_k}})} {\bf v_{\pi_k}} = {\bf B}_{\pi_{k+1}} {\bf v_{\pi_k}}\label{eq:1}
+\end{equation}
+\item We also know from operator definitions that $\bbs \bv \geq \bbp \bv$ for all $\pi, \bv$
+\begin{equation}
+\bbs {\bf v_{\pi_k}} \geq  {\bf B}_{\pi_k} {\bf v_{\pi_k}} = {\bf v_{\pi_k}}\label{eq:2}
+\end{equation}
+\item Combining \eqref{eq:1} and \eqref{eq:2}, we get:
+$${\bf B}_{\pi_{k+1}} {\bf v_{\pi_k}} \geq {\bf v_{\pi_k}}$$
+\item Monotonicity of ${\bf B}_{\pi_{k+1}}$ implies 
+$${\bf B}_{\pi_{k+1}}^N {\bf v_{\pi_k}} \geq \ldots {\bf B}_{\pi_{k+1}}^2 {\bf v_{\pi_k}} \geq {\bf B}_{\pi_{k+1}} {\bf v_{\pi_k}} \geq {\bf v_{\pi_k}}$$
+$${\bf v_{\pi_{k+1}}} = \lim_{N\rightarrow \infty} {\bf B}_{\pi_{k+1}}^N {\bf v_{\pi_k}} \geq {\bf v_{\pi_k}}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Iteration}
+\begin{itemize}
+\item We have shown that in iteration $k+1$ of Policy Iteration, ${\bf v_{\pi_{k+1}}} \geq {\bf v_{\pi_k}}$
+\item If ${\bf v_{\pi_{k+1}}} = {\bf v_{\pi_k}}$, the above inequalities would hold as equalities
+\item So this would mean $\bbs {\bf v_{\pi_k}} = {\bf v_{\pi_k}}$
+\item But $\bbs$ has a unique fixed point $\vstar$
+\item So this would mean ${\bf v_{\pi_k}} = \vstar$
+\item Thus, at each iteration, Policy Iteration either strictly improves the VF or achieves the optimal VF $\vstar$
+\end{itemize}
+\end{frame}
+
+\section{Value Iteration}
+
+\begin{frame}
+\frametitle{Value Iteration}
+\begin{itemize}
+\item $\bbs$ satisfies the conditions of Contraction Mapping Theorem
+\item $\bbs$ has a unique fixed point $\vstar$, meaning $\bbs \vstar = \vstar$
+\item This is a succinct representation of Bellman Optimality Equation
+\item Starting with any VF $\bv$ and repeatedly applying $\bbs$, we will reach $\vstar$
+$$\lim_{N\rightarrow \infty} \bbs^N \bv = \vstar \mbox{ for any VF } \bv$$
+\item This is a succinct representation of the Value Iteration Algorithm
+\end{itemize}
+\end{frame}
+
+\section{Policy Optimality}
+
+\begin{frame}
+\frametitle{Greedy Policy from Optimal VF is an Optimal Policy}
+\begin{itemize}
+\item Earlier we argued that ${\bf B}_{G(\bv)} \bv= \bbs \bv$ for any VF $\bv$. Therefore,
+$${\bf B}_{G(\vstar)} \vstar = \bbs \vstar$$
+\item But $\vstar$ is the fixed point of $\bbs$, meaning $\bbs \vstar = \vstar$. Therefore,
+$${\bf B}_{G(\vstar)} \vstar = \vstar$$
+\item But we know that ${\bf B}_{G(\vstar)}$ has a unique fixed point ${\bf v}_{G(\vstar)}$. Therefore,
+$$\vstar =  {\bf v}_{G(\vstar)}$$
+\item This says that simply following the deterministic greedy policy $G(\vstar)$ (created from the Optimal VF $\vstar$) in fact achieves the Optimal VF $\vstar$
+\item In other words, $G(\vstar)$ is an Optimal (Deterministic) Policy
+\end{itemize}
+\end{frame}
+
+\end{document}
