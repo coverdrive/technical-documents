@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 \mode<presentation> {
 
@@ -122,7 +122,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Vector Space of Value Functions}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Assume State pace $\mathcal{S}$ consists of $n$ states: $\{s_1, s_2, \ldots, s_n\}$
 \item Assume Action space $\mathcal{A}$ consists of $m$ actions $\{a_1, a_2, \ldots, a_m\}$ 
 \item This exposition extends easily to continuous state/action spaces too
@@ -139,7 +140,8 @@ $$\vstar(s) = \max_{\pi} \vpi(s)$$
 
 \begin{frame}
 \frametitle{Some more notation}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Denote $\mathcal{R}_s^a$ as the Expected Reward upon action $a$ in state $s$
 \item Denote $\mathcal{P}_{s,s'}^a$ as the probability of transition $s \rightarrow s'$ upon action $a$
 \item Define
@@ -155,7 +157,8 @@ $${\bf P}_{\pi}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot \mathcal{P}_{s,s
 
 \begin{frame}
 \frametitle{Bellman Operators $\bbp$ and $\bbs$}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We define operators that transform a VF vector to another VF vector
 \item {\em Bellman Policy Operator} $\bbp$ (for policy $\pi$) operating on VF vector $\bv$:
 $$\bbp \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
@@ -173,7 +176,8 @@ $$G(\bv)(s) = \argmax_a \{ \mathcal{R}_s^a + \gamma \sum_{s' \in \mathcal{S}} \m
 
 \begin{frame}
 \frametitle{Contraction and Monotonicity of Operators}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Both $\bbp$ and $\bbs$ are $\gamma$-contraction operators in $L^{\infty}$ norm, meaning:
 \item For any two VFs ${\bf v_1}$ and ${\bf v_2}$,
 $$\Vert \bbp {\bf v_1} - \bbp {\bf v_2} \Vert_{\infty} \leq \gamma \Vert {\bf v_1} - {\bf v_2} \Vert_{\infty}$$
@@ -192,7 +196,8 @@ $${\bf v_1} \leq {\bf v_2} \Rightarrow \bbs {\bf v_1} \leq \bbs {\bf v_2}$$
 
 \begin{frame}
 \frametitle{Policy Evaluation}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item $\bbp$ satisfies the conditions of Contraction Mapping Theorem
 \item $\bbp$ has a unique fixed point $\vpi$, meaning $\bbp \vpi = \vpi$
 \item This is a succinct representation of Bellman Expectation Equation
@@ -206,7 +211,8 @@ $$\lim_{N\rightarrow \infty} \bbp^N \bv = \vpi \mbox{ for any VF } \bv$$
 
 \begin{frame}
 \frametitle{Policy Improvement}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Let $\pi_k$ and ${\bf v_{\pi_k}}$ denote the Policy and the VF for the Policy in iteration $k$ of Policy Iteration
 \item Policy Improvement Step is: $\pi_{k+1} = G({\bf v_{\pi_k}})$, i.e. deterministic greedy
 \item Earlier we argued that $\bbs \bv = {\bf B}_{G(\bv)} \bv$ for any VF $\bv$. Therefore,
@@ -227,7 +233,8 @@ $${\bf v_{\pi_{k+1}}} = \lim_{N\rightarrow \infty} {\bf B}_{\pi_{k+1}}^N {\bf v_
 
 \begin{frame}
 \frametitle{Policy Iteration}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We have shown that in iteration $k+1$ of Policy Iteration, ${\bf v_{\pi_{k+1}}} \geq {\bf v_{\pi_k}}$
 \item If ${\bf v_{\pi_{k+1}}} = {\bf v_{\pi_k}}$, the above inequalities would hold as equalities
 \item So this would mean $\bbs {\bf v_{\pi_k}} = {\bf v_{\pi_k}}$
@@ -241,7 +248,8 @@ $${\bf v_{\pi_{k+1}}} = \lim_{N\rightarrow \infty} {\bf B}_{\pi_{k+1}}^N {\bf v_
 
 \begin{frame}
 \frametitle{Value Iteration}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item $\bbs$ satisfies the conditions of Contraction Mapping Theorem
 \item $\bbs$ has a unique fixed point $\vstar$, meaning $\bbs \vstar = \vstar$
 \item This is a succinct representation of Bellman Optimality Equation
@@ -255,7 +263,8 @@ $$\lim_{N\rightarrow \infty} \bbs^N \bv = \vstar \mbox{ for any VF } \bv$$
 
 \begin{frame}
 \frametitle{Greedy Policy from Optimal VF is an Optimal Policy}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Earlier we argued that ${\bf B}_{G(\bv)} \bv= \bbs \bv$ for any VF $\bv$. Therefore,
 $${\bf B}_{G(\vstar)} \vstar = \bbs \vstar$$
 \item But $\vstar$ is the fixed point of $\bbs$, meaning $\bbs \vstar = \vstar$. Therefore,
