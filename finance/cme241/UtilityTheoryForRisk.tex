@@ -250,6 +250,25 @@ $$\mbox{Absolute Risk Premium } \pi_A = \mu - x_{CE} =  \frac {a \sigma^2} 2$$
 \end{frame}
 
 \begin{frame}
+\frametitle{A Portfolio Application of CARA}
+\pause
+\begin{itemize}[<+->]
+\item We are given \$1 to invest and hold for a horizon of 1 year
+\item Investment choices are 1 risky asset and 1 riskless asset
+\item Risky Asset Annual Return $\sim \mathcal{N}(\mu, \sigma^2)$
+\item Riskless Asset Annual Return $=r$
+\item Determine unconstrained $\pi$ to allocate to risky asset ($1-\pi$ to riskless)
+\item Such that Portfolio has maximum Utility of Wealth in 1 year
+\item With CARA Utility $U(W) = \frac {-e^{-aW}} {a}$ for $a \neq 0$
+\item Portfolio Wealth $W \sim \mathcal{N}(1+ r + \pi(\mu - r), \pi^2 \sigma^2)$
+\item From the section on CARA Utility, we know we need to maximize:
+$$1+r+\pi (\mu - r) - \frac {a \pi^2 \sigma^2} 2$$
+\item So optimal investment fraction in risky asset
+$$\pi^* = \frac {\mu - r} {a \sigma^2}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
 \frametitle{Constant Relative Risk-Aversion (CRRA)}
 \pause
 \begin{itemize}[<+->]
@@ -270,39 +289,41 @@ $$\mbox{Relative Risk Premium } \pi_R = 1 - \frac {x_{CE}} {\bar{x}} =  1 - e^{-
 \end{itemize}
 \end{frame}
 
+
+
 \begin{frame}
-\frametitle{A Portfolio application of CRRA (Merton 1969)}
+\frametitle{A Portfolio Application of CRRA (Merton 1969)}
 \pause
 \begin{itemize}[<+->]
 \item We work in the setting of Merton's 1969 Portfolio problem
 \item We only consider the single-period (static) problem with 1 risky asset
 \item Riskless asset: $dR_t = r \cdot R_t \cdot dt$
 \item Risky asset: $dS_t = \mu \cdot S_t \cdot dt + \sigma \cdot S_t \cdot dz_t$ (i.e. Geometric Brownian)
-\item We are given wealth $W_0$ at time 0, and horizon is denoted by time $T$
+\item We are given \$1 to invest, with continuous rebalancing for 1 year
 \item Determine constant fraction $\pi$ of $W_t$ to allocate to risky asset
-\item To maximize Expected Utility of wealth $W_T$ at time $T$
-\item Note: Portfolio is continuously rebalanced to maintain fraction $\pi$
+\item To maximize Expected Utility of Wealth $W = W_1$ (at time $t=1$)
+\item Constraint: Portfolio is continuously rebalanced to maintain fraction $\pi$
 \item So, the process for wealth $W_t$ is given by:
-$$dW_t = (r + \pi \cdot (\mu - r)) \cdot W_t \cdot dt + \pi \cdot \sigma \cdot W_t \cdot dz_t$$
-\item Assume CRRA, i.e. Utility function is $U(W_T) = \frac {W_T^{1-\gamma}} {1-\gamma}, 0 < \gamma \neq 1$
+$$dW_t = (r + \pi (\mu - r)) \cdot W_t \cdot dt + \pi \cdot \sigma \cdot W_t \cdot dz_t$$
+\item Assume CRRA Utility $U(W) = \frac {W^{1-\gamma}} {1-\gamma}, 0 < \gamma \neq 1$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Recovering Merton's solution (for this static case)}
 \pause
-Applying Ito's Lemma on $\log(W_t)$ gives us:
-$$W_T = W_0 \cdot e^{\int_0^T (r+\pi(\mu -r) - \frac {\pi^2 \sigma^2} 2) \cdot dt + \int_0^T \pi \cdot \sigma \cdot dz_t}$$
+Applying Ito's Lemma on $\log W_t$ gives us:
+$$\log W_t = \int_0^t (r + \pi (\mu - r) - \frac {\pi^2 \sigma^2} 2) \cdot du + \int_0^t \pi \cdot \sigma \cdot dz_u$$
 \pause
-We want to maximize $\log(\mathbb{E}[U(W_T)]) = \log(\mathbb{E}[\frac {W_T^{1-\gamma}} {1-\gamma}])$
+$$\Rightarrow \log W \sim \mathcal{N}(r+\pi(\mu -r) - \frac {\pi^2 \sigma^2} 2,  \pi^2 \sigma^2)$$
 \pause
-$$\mathbb{E}[\frac {W_T^{1-\gamma}} {1-\gamma}] = \frac {W_0^{1-\gamma}} {1-\gamma} \cdot \mathbb{E}[e^{\int_0^T (r+\pi(\mu - r) - \frac {\pi^2 \sigma^2} 2) \cdot (1-\gamma) \cdot dt + \int_0^T \pi \cdot \sigma \cdot (1-\gamma) \cdot dz_t}]$$
+From the section on CRRA Utility, we know we need to maximize:
+$$r+\pi(\mu -r) - \frac {\pi^2 \sigma^2} 2 + \frac {\pi^2 \sigma^2 (1-\gamma)} 2$$
 \pause
-$$ = \frac {W_0^{1-\gamma}} {1-\gamma} \cdot e^{(r+\pi(\mu - r) - \frac {\pi^2 \sigma^2} 2) (1-\gamma) T + \frac {\pi^2 \sigma^2 (1-\gamma)^2 T} 2}$$
+$$= r + \pi(\mu - r) - \frac {\pi^2 \sigma^2 \gamma} 2$$
 \pause
-$$\pderiv{\{\log(\mathbb{E}[\frac {W_T^{1-\gamma}} {1-\gamma}])\}}{\pi} = (1-\gamma) \cdot T \cdot \pderiv{\{r + \pi(\mu - r) - \frac {\pi^2 \sigma^2 \gamma} 2\}}{\pi} = 0$$
-\pause
-$$ \Rightarrow \pi = \frac {\mu - r} {\sigma^2 \gamma}$$
+So optimal investment fraction in risky asset
+$$\pi^* = \frac {\mu - r} {\gamma \sigma^2}$$
 \end{frame}
 
 \end{document}
