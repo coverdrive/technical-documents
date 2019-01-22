@@ -1,0 +1,34 @@
+
+\documentclass[12pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+% See the ``Article customise'' template for come common customisations
+
+\title{Optimal Asset Allocation in Discrete Time}
+\author{Stanford University - CME 241 Assignment Problem}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+
+We are given wealth $W_0$ at time 0. At each of discrete time steps labeled $t = 0, 1, \ldots, T$, we are allowed to allocate the current wealth $W_t$ in a risky asset and a riskless asset in an unconstrained, frictionless manner. The risky asset yields a random rate of return $\sim N(\mu, \sigma^2)$ over each single time step. The riskless asset yields a rate of return denoted by $r$ over each single time step.
+
+Our goal is to maximize the Utility of Wealth at the final time step $t=T$ by dynamically allocating $x_t$ in the risky asset and the remaining $W_t - x_t$ in the riskless asset for each $t = 0, 1, \ldots, T-1$ (assume no transaction costs and no restrictions on going long or short in either asset). Assume the single-time-step discount factor is $\rho$ and the Utility of Wealth at the final time step $t=T$ is $U(W_T) = - \frac {e^{-a W_T}} {a}$ for some fixed $a > 0$.
+
+\begin{itemize}
+\item Formulate this problem as a {\em Continuous States}, {\em Continuous Actions} MDP by specifying it's {\em State Transitions}, {\em Rewards} and {\em Discount Factor}. The problem then is to find the Optimal Policy.
+\item As always, we strive to find the Optimal Value Function. The first step in determining the Optimal Value Function is to write the Bellman Optimality Equation.
+\item Assume the functional form for the Optimal Value Function is $b_t e^{-c_t W_t}$ where $b_t, c_t$ are unknowns functions of only $t$.
+\item Express the Bellman Optimality Equation using the above functional form for the Optimal Value Function.
+\item Since the right-hand-side of the Bellman Optimality Equation involves a $\max$ over $x_t$, we can say that the partial derivative of the term inside the $\max$ with respect to $x_t$ is 0.
+\item This enables us to write the Optimal Allocation $x_t^*$ in terms of $c_{t+1}$
+\item Substituting this maximizing $x_t^*$ in the Bellman Optimality Equation enables us to express $b_t$ and $c_t$ as recursive equations in terms of $b_{t+1}$ and $c_{t+1}$ respectively.
+\item We know $b_T$ and $c_T$ from the knowledge of the MDP {\em Reward} at $t=T$ (Utility of Terminal Wealth), which enables us to unroll the above recursions for $b_t$ and $c_t$.
+\item Solving $b_t$ and $c_t$ yields the Optimal Policy and the Optimal Value Function.
+\end{itemize}
+
+\end{document}
