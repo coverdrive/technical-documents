@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 \mode<presentation> {
 
@@ -114,7 +114,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Informal Problem Statement}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item You will live for (deterministic) $T$ more years
 \item Current Wealth + PV of Future Income (less Debt) is $W_0 > 0$.
 \item You can invest in (allocate to) $n$ risky assets and a riskless asset
@@ -131,7 +132,8 @@ ICME, Stanford University
 \begin{frame}
 \frametitle{Problem Notation}
 For simplicity, we state and solve the problem for 1 risky asset but the solution generalizes easily to $n$ risky assets.
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Riskless asset: $dR_t = r \cdot R_t \cdot dt$
 \item Risky asset: $dS_t = \mu \cdot S_t \cdot dt + \sigma \cdot S_t \cdot dz_t$ (i.e. Geometric Brownian)
 \item $\mu > r > 0, \sigma > 0$ (for $n$ assets, we work with a covariance matrix)
@@ -147,7 +149,8 @@ For simplicity, we state and solve the problem for 1 risky asset but the solutio
 
 \begin{frame}
 \frametitle{Problem Statement}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We write $\pi_t, c_t$ instead of $\pi(t, W_t), c(t, W_t)$ to lighten notation
 \item Balance constraint implies the following process for Wealth $W_t$
 $$dW_t = ((\pi_t \cdot (\mu - r) + r) \cdot W_t - c_t) \cdot dt + \pi_t \cdot \sigma \cdot W_t \cdot dz_t$$
@@ -162,7 +165,8 @@ where $0 < \epsilon \ll 1$, meaning ``no bequest'' (we need this $\epsilon$-form
 
 \begin{frame}
 \frametitle{Continuous-Time Stochastic Control}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Think of this as a continuous-time Stochastic Control problem
 \item The {\em State} is $(t, W_t)$
 \item The {\em Action} is $[\pi_t, c_t]$
@@ -177,7 +181,8 @@ where $0 < \epsilon \ll 1$, meaning ``no bequest'' (we need this $\epsilon$-form
 
 \begin{frame}
 \frametitle{Optimal Discounted Value Function}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Instead of the usual Value Function ({\em Expected Return} from a given {\em State}), we consider the Discounted Value Function
 \item Discounted Value Function is simply the Value Function further discounted to time 0
 \item We focus on the Optimal Discounted Value Function $V^*(t, W_t)$
@@ -189,19 +194,24 @@ $$V^*(t, W_t) = \max_{\pi_t, c_t} E[V^*(t_1, W_{t_1}) + \int_t^{t_1} \frac {e^{-
 
 \begin{frame}
 \frametitle{HJB Equation for Optimal Discounted Value Function}
+\pause
 Rewriting in stochastic differential form, we have the HJB formulation
 $$\max_{\pi_t, c_t} E[dV^*(t, W_t) + \frac {e^{-\rho t} \cdot c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = 0$$
+\pause
 Use Ito's Lemma on $dV^*$, remove the $dz_t$ term since it's a martingale, and divide throughout by $dt$ to produce the HJB Equation in PDE form:
 $$\max_{\pi_t, c_t} [\pderiv{V^*}{t} + \pderiv{V^*}{W_t} ((\pi_t (\mu - r) + r)W_t  - c_t)+ \pderiv[2]{V^*}{W_t} \frac {\pi_t^2 \sigma^2 W_t^2} {2} + \frac { e^{-\rho t} \cdot c_t^{1-\gamma}}{1 - \gamma}] = 0$$
+\pause
 Let us write the above equation more succinctly as:
 $$\max_{\pi_t, c_t} \Phi(t, W_t; \pi_t, c_t) = 0$$
+\pause
 Note: we are working with the constraints $W_t > 0, c_t \geq 0$ for $0 \leq t < T$
 \end{frame}
 
 \begin{frame}
 \frametitle{Optimal Allocation and Consumption}
 Find optimal $\pi_t^*, c_t^*$ by taking partial derivatives of $\Phi(t, W_t; \pi_t, c_t)$ with respect to $\pi_t$ and $c_t$, and equate to 0 (first-order conditions for $\Phi$).
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Partial derivative of $\Phi$ with respect to $\pi_t$:
 $$(\mu -r) \cdot \pderiv{V^*}{W_t} + \pderiv[2]{V^*}{W_t} \cdot \pi_t \cdot \sigma^2 \cdot W_t = 0$$
 $$ \Rightarrow \pi_t^* = \frac {-\pderiv{V^*}{W_t} \cdot (\mu - r)} {\pderiv[2]{V^*}{W_t} \cdot \sigma^2 \cdot W_t}$$
@@ -213,10 +223,14 @@ $$ \Rightarrow c_t^* = (\pderiv{V^*}{W_t} \cdot e^{\rho t})^{\frac {-1} {\gamma}
 
 \begin{frame}
 \frametitle{Optimal Discounted Value Function PDE}
+\pause
 Now substitute $\pi_t^*$ and $c_t^*$ in $\Phi(t, W_t; \pi_t, c_t)$ and set it to 0, which gets us the Optimal Discounted Value Function PDE:
+\pause
 $$\pderiv{V^*}{t} - \frac {(\mu - r)^2}{2 \sigma^2} \cdot \frac {(\pderiv{V^*}{W_t})^2} {\pderiv[2]{V^*}{W_t}}  + \pderiv{V^*}{W_t} \cdot r \cdot W_t + \frac {\gamma} {1 - \gamma} \cdot e^{\frac {-\rho t}{\gamma}} \cdot (\pderiv{V^*}{W_t})^{\frac {\gamma-1} {\gamma}} = 0$$ 
+\pause
 The boundary condition is:
 $$V^*(T, W_T) = e^{-\rho T} \cdot \epsilon^{\gamma} \cdot \frac {W_T^{1-\gamma}} {1- \gamma}$$
+\pause
 The second-order conditions for $\Phi$ are satisfied {\bf under the assumptions} $c^*_t > 0, W_t > 0, \pderiv[2]{V^*}{W_t} < 0$ for all $0 \leq t < T$ (we will later show that these are all satisfied in the solution we derive), and for concave $U(\cdot)$, i.e., $\gamma > 0$
 \end{frame}
 
@@ -224,21 +238,29 @@ The second-order conditions for $\Phi$ are satisfied {\bf under the assumptions}
 
 \begin{frame}
 \frametitle{Solving the PDE with a guess solution}
+\pause
 We surmise with a guess solution
 $$V^*(t, W_t) = f(t)^{\gamma} \cdot e^{-\rho t} \cdot \frac {W_t^{1-\gamma}} {1-\gamma}$$
+\pause
 Then,
 $$\pderiv{V^*}{t} = (\gamma \cdot f(t)^{\gamma-1} \cdot f'(t) -\rho \cdot f(t)^{\gamma}) \cdot e^{-\rho t} \cdot \frac {W_t^{1-\gamma}} {1-\gamma}$$
+\pause
 $$\pderiv{V^*}{W_t} = f(t)^{\gamma} \cdot e^{-\rho t} \cdot W_t^{-\gamma}$$
+\pause
 $$\pderiv[2]{V^*}{W_t} = - f(t)^{\gamma} \cdot e^{-\rho t} \cdot \gamma \cdot W_t^{-\gamma-1}$$
 \end{frame}
 
 \begin{frame}
 \frametitle{PDE reduced to an ODE}
+\pause
 Substituting the guess solution in the PDE, we get the simple ODE:
 $$f'(t) = \nu \cdot f(t) - 1$$
+\pause
 where $$\nu = \frac {\rho - (1 - \gamma) \cdot (\frac {(\mu - r)^2} {2 \sigma^2 \gamma} + r)} {\gamma}$$
+\pause
 with boundary condition $f(T) = \epsilon$.
-
+\pause
+\linebreak
 The solution to this ODE is:
 $$
 f(t) =
@@ -252,8 +274,10 @@ $$
 \section{Optimal Allocation and Consumption}
 \begin{frame}
 \frametitle{Optimal Allocation and Consumption}
+\pause
 Putting it all together (substituting the solution for $f(t)$), we get:
 $$\pi^*(t, W_t) = \frac {\mu - r} {\sigma^2 \gamma}$$
+\pause
 $$
 c^*(t, W_t)= \frac {W_t} {f(t)} = 
 \begin{cases}
@@ -261,6 +285,7 @@ c^*(t, W_t)= \frac {W_t} {f(t)} =
 \frac {W_t} {T-t+\epsilon} & \text{for } \nu = 0\\
 \end{cases}
 $$
+\pause
 $$
 V^*(t, W_t) = 
 \begin{cases}
@@ -268,7 +293,8 @@ e^{-\rho t} \cdot \frac {(1 + (\nu \epsilon - 1) \cdot e^{-\nu (T-t)})^{\gamma}}
 e^{-\rho t} \cdot \frac {(T-t+\epsilon)^\gamma \cdot W_t^{1 - \gamma}} {1-\gamma} & \text{for } \nu = 0\\
 \end{cases}
 $$
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item $f(t) > 0$ for all $0 \leq t < T$ (for all $\nu$) ensures $W_t, c^*_t > 0, \pderiv[2]{V^*}{W_t} < 0$. This ensures the constraints $W_t > 0$ and $c_t \geq 0$ are satisfied and the second-order conditions for $\Phi$ are also satisfied.
 \item The HJB Formulation was key and this solution approach provides a template for similar continuous-time stochastic control problems.
 \end{itemize}
@@ -278,7 +304,8 @@ $$
 
 \begin{frame}
 \frametitle{Gaining Insights into the Solution}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Optimal Allocation $\pi^*(t, W_t)$ is constant (independent of $t$ and $W_t$)
 \item Optimal Fractional Consumption $\frac {c^*(t, W_t)} {W_t}$ depends only on $t$ ($=\frac 1 {f(t)}$)
 \item With Optimal Allocation \& Consumption, the Wealth process is:
@@ -299,7 +326,8 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t
 
 \begin{frame}
 \frametitle{Porting this to Real-World Portfolio Optimization}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Analytical tractability in Merton's formulation was due to:
 \begin{itemize}
 \item Normal distribution of asset returns
