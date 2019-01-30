@@ -1,0 +1,203 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[handout]{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{amsmath}
+
+\newcommand{\vpi}{{\bf v_{\pi}}}
+\newcommand{\vstar}{{\bf v_*}}
+\newcommand{\bbp}{{\bf B}_{\pi}}
+\newcommand{\bbs}{{\bf B}_*}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\pis}{\pi_*}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcounter{sauvegardeenumi}
+\newcommand{\asuivre}{\setcounter{sauvegardeenumi}{\theenumi}}
+\newcommand{\suite}{\setcounter{enumi}{\thesauvegardeenumi}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Discrete versus Continuous MDPs]{Discrete versus Continuous Markov Decision Processes} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ICME, Stanford University
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+
+\begin{frame}
+\frametitle{``Discrete or Continuous'' in States, Actions or Time Steps}
+\pause
+\begin{itemize}[<+->]
+\item When we say Discrete or Continuous MDP, we could be talking of:
+\begin{itemize}
+\item States
+\item Actions
+\item Time Steps
+\end{itemize}
+\item Basic Case: Finite in States \& Actions, Discrete in Time Steps
+\item Classical Dynamic Programming (DP) algorithms cover this case
+\item DP algorithms sweep through all States, consider all State Transitions
+\item Updates a table mapping each State to its Value Function (VF)
+\item We call these (Policy Iteration, Value Iteration) as tabular algorithms
+\item Policy Improvement sweeps though all Actions ($\argmax_a Q(s,a)$)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{States: Value Function Approximations and Simulations}
+\pause
+\begin{itemize}[<+->]
+\item Let's first consider State Space in real-world problems
+\item Real-world problems suffer from the two so-called ``Curses'':
+\begin{itemize}
+\item Curse of Dimensionality (CD): Multi-Dim/Continuous State Space
+\item Curse of Modeling (CM): Transition Probabilities/Rewards too complex
+\end{itemize}
+\item CD leads to Value Function Approximation (eg: Deep Networks)
+\item CM leads to Reinforcement Learning (RL)
+\item RL can be done with a Simulation Model or with Actual Experiences
+\item Simulation Model is often a feasible alternative to Probability Model
+\item Besides, we don't need the precise model dynamics as long as we have a good approximation for the Value Function
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Improvement for Multi-Dim/Continuous Actions}
+\pause
+\begin{itemize}[<+->]
+\item $\argmax_a$ sweep not possible for Multi-Dim/Continuous Actions
+\item So we have to perform an (unconstrained) optimization over Actions
+\item Analytical DP solutions based on partial derivatives of $Q(s,a)$ with respect to the dimensions of Action Space, and setting them to 0
+\item Substitute this solution for optimal actions in Bellman Optimality Eqn
+\item Assuming a suitable functional form (with unknown parameters) for the VF, this gives a recursive formulation for the VF parameters
+\item Knowing boundary condition for the VF, solve for the VF parameters
+\item This gives us the Optimal VF and the Optimal Policy
+\item If we are restricted to doing RL $\Rightarrow$ Policy Gradient Algorithms
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Continuous in States, Actions, Time Steps}
+\pause
+\begin{itemize}[<+->]
+\item Optimal VF expressed in terms of state dimensions $s_t$ and time $t$
+\item In continuous time, we can write Optimal VF as a differential $dV^*$
+$$\max_a \mathbb{E}[dV^*(t,s_t) + R(t,s_t,a_t) \cdot dt] = 0$$
+where $R(t,s_t,a_t)$ is the Reward per unit time
+\item This is called the Hamilton-Jacobi-Bellman (HJB) equation
+\item $dV^*$ is expanded as Taylor series in terms of $t$ and $s_t$ (involving partial derivatives of $V^*$ w.r.t. $t$ and $s_t$)
+\item This is Ito's Lemma if dynamics for $s_t$ based on Brownian motion
+\item We eliminate randomness from the expression due to the $\mathbb{E}$ operation
+\item Let resultant expression (involving partials w.r.t. $t, s_t$) be $\phi(t,s_t,a_t)$
+$$\max_a \phi(t,s_t, a_t) = 0$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Continuous in States and Actions and Time Steps}
+\pause
+\begin{itemize}[<+->]
+\item Setting partial derivatives of $\phi$ w.r.t. $a_t$ to 0 gives optimal $a_t^*$
+\item $a_t^*$ is now in terms of partial derivatives of $V^*$ w.r.t. $t$ and $s_t$
+\item Substituting $a_t^*$ in $\phi$ gives:
+$$\phi(t,s_t,a_t^*) = 0$$
+\item This is a partial differential equation for $V^*$ in terms of $t$ and $s_t$
+\item Boundary condition for PDE obtained from terminal Reward
+\item We would typically solve this PDE numerically
+\item If we seek an analytic solution, use Boundary condition to make a smart guess for functional form of $V^*$ in terms of $t$ and $s_t$
+\item This would lead us to an ODE whose solution provides $V^*$ as well as $a_t^*$ in terms of $t$ and $s_t$
+\end{itemize}
+\end{frame}
+
+
+\end{document}
