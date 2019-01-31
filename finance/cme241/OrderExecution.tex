@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 \mode<presentation> {
 
@@ -121,7 +121,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Basics of Trading Order Book}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Buyers/Sellers express their intent to trade by submitting bids/asks
 \item These are Limit Orders (LO) with a size and price
 \item Order Book (OB) aggregates order sizes for each unique price
@@ -137,7 +138,8 @@ $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 1 \leq i \leq n], P_i^{(a)} < P_j^{
 
 \begin{frame}
 \frametitle{Price Impact and Order Book Dynamics}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item A Sell Market Order $N$ will remove the best bid prices on the OB
 $$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(b)}))) \mid 1 \leq i \leq m]$$
 \item A Buy Market Order $N$ will remove the best ask prices on the OB
@@ -154,7 +156,8 @@ $$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j
 
 \begin{frame}
 \frametitle{Optimal Trade Order Execution Problem}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item The task is to sell a large number $N$ of shares
 \item We are allowed to trade in $T$ discrete time steps
 \item We are only allowed to submit Market Orders
@@ -172,7 +175,8 @@ $$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j
 
 \begin{frame}
 \frametitle{Problem Notation}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Time steps indexed by $t = 1, \ldots, T$
 \item $P_t$ denotes Bid Price at start of time step $t$
 \item $N_t$ denotes number of shares sold in time step $t$
@@ -195,7 +199,8 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 
 \begin{frame}
 \frametitle{Markov Decision Process (MDP) Formulation}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Order of MDP activity in each time step $1 \leq t \leq T$:
 \begin{itemize}
 \item Observe {\em State} $:= (t, P_t, R_t)$
@@ -211,7 +216,8 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 
 \begin{frame}
 \frametitle{A Simple Linear Impact Model with No Risk-Aversion}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We consider a simple model with Linear Price Impact
 \item $N, N_t, P_t$ are all continuous-valued ($\in \mathbb{R}$)
 \item In particular, we allow $N_t$ to be possibly negative (unconstrained)
@@ -228,7 +234,8 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 
 \begin{frame}
 \frametitle{Optimal Value Function and Bellman Equation}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Denote Value Function for policy $\pi$ as: $$V^{\pi}(t, P_t, R_t) = \mathbb{E}_{\pi}[\sum_{t=1}^T N_t (P_t - \beta N_t)|(t,P_t,R_t)]$$
 \item Denote Optimal Value Function as $V^*(t,P_t,R_t) = max_{\pi} V^{\pi}(t,P_t,R_t)$
 \item Optimal Value Function satisfies the Bellman Equation ($\forall 1 \leq t < T$):
@@ -243,7 +250,8 @@ $$=\max_{N_{T-1}} \{ N_{T-1}(P_{T-1} - \beta N_{T-1})  + (R_{T-1} - N_{T-1})(P_{
 
 \begin{frame}
 \frametitle{Optimal Policy and Optimal Value Function}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Differentiating this expression w.r.t. $N_{T-1}$ and setting to 0 gives:
 $$2N^*_{T-1} (\alpha - 2\beta) - R_{T-1}(\alpha - 2\beta) = 0 \Rightarrow N^*_{T-1} = \frac {R_{T-1}} 2$$
 \item Substitute $N^*_{T-1}$ in the expression for $V^*(T-1,P_{T-1},R_{T-1})$:
@@ -256,11 +264,12 @@ $$V^*(t, P_t,R_t) = R_t P_t - \frac {R_t^2} 2 (\frac {2\beta + (T-t)\alpha} {T-t
 
 \begin{frame}
 \frametitle{Interpreting the solution}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Rolling forward in time, we see that $N^*_t = \frac N T$, i.e., uniformly split
 \item Hence, Optimal Policy is a constant (independent of {\em State})
 \item Uniform split makes intuitive sense because Price Impact and Market Movement are both linear and additive, and don't interact
-\item Essentially equivalent to maximizing $\sum_{t=1}^T N_t^2$ with $\sum_{t=1}^T N_t = N$
+\item Essentially equivalent to minimizing $\sum_{t=1}^T N_t^2$ with $\sum_{t=1}^T N_t = N$
 \item Optimal Expected Total Sale Proceeds $= NP_1 - \frac {N^2} 2 (\alpha + \frac {2\beta - \alpha} T)$
 \item So, {\em Implementation Shortfall} from Price Impact is $\frac {N^2} 2 (\alpha + \frac {2\beta - \alpha} T)$
 \item Note that Implementation Shortfall is non-zero ($\frac {\alpha N^2} 2$) when $T\rightarrow \infty$
@@ -271,7 +280,8 @@ $$V^*(t, P_t,R_t) = R_t P_t - \frac {R_t^2} 2 (\frac {2\beta + (T-t)\alpha} {T-t
 
 \begin{frame}
 \frametitle{Models in Bertsimas-Lo paper}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item \href{http://alo.mit.edu/wp-content/uploads/2015/06/Optimal-Control-of-Execution-Costs.pdf}{\underline{\textcolor{blue}{Bertsimas-Lo}}} was the first paper on Optimal Trade Order Execution
 \item They assumed no risk-aversion, i.e. identity Utility function
 \item The first model in their paper is a special case of our simple Linear Impact model, with fully Permanent Impact (i.e., $\alpha = \beta$)
@@ -289,7 +299,8 @@ $$V^*(t,P_t,R_t,X_t) = R_tP_t + \mbox{ quadratic in } (R_t,X_t) + \mbox{ constan
 
 \begin{frame}
 \frametitle{A more Realistic Model: LPT Price Impact}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Next, Bertsimas-Lo present a more realistic model called ``LPT''
 \item {\em Linear-Percentage Temporary} Price Impact model features:
 \begin{itemize}
@@ -311,7 +322,8 @@ V^*(t,P_t,R_t,X_t) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(4)
 
 \begin{frame}
 \frametitle{Incorporating Risk-Aversion/Utility of Proceeds}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item For analytical tractability, Bertsimas-Lo ignored Risk-Aversion
 \item But one is typically wary of {\em Risk of Uncertain Proceeds}
 \item We'd trade some (Expected) Proceeds for lower Variance of Proceeds
@@ -330,7 +342,8 @@ V^*(t,P_t,R_t,X_t) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(4)
 
 \begin{frame}
 \frametitle{Real-world Optimal Trade Order Execution (\& Extensions)}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Arbitrary Price Dynamics $f_t(\cdot)$ and Temporary Price Impact $g_t(\cdot)$
 \item Non-stationarity/non-linear dynamics/impact require (Numerical) DP
 \item Frictions: Discrete Prices/Sizes, Constraints on Prices/Sizes, Fees
