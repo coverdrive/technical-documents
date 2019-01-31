@@ -292,7 +292,7 @@ $$P_{t+1} = P_t - (\alpha N_t + \theta X_t) + \epsilon_t, X_{t+1} = \rho X_t + \
 \item $X_t$ can be thought of as market factor affecting $P_t$ linearly
 \item Bellman Equation on Optimal VF and same approach as before yields:
 $$N^*_t = \frac {R_t} {T-t+1} + h(t, \alpha, \theta, \rho) X_t$$
-$$V^*(t,P_t,R_t,X_t) = R_tP_t + \mbox{ quadratic in } (R_t,X_t) + \mbox{ constant}$$
+$$V^*(t,P_t,R_t,X_t) = R_tP_t - (\mbox{quadratic in } (R_t,X_t) + \mbox{ constant})$$
 \item Seral-correlation predictability ($\rho \neq 0$) alters uniform-split strategy
 \end{itemize}
 \end{frame}
@@ -311,7 +311,7 @@ $$V^*(t,P_t,R_t,X_t) = R_tP_t + \mbox{ quadratic in } (R_t,X_t) + \mbox{ constan
 $$P_{t+1} = P_t e^{Z_t},  X_{t+1} = \rho X_t + \eta_t, Q_t = P_t(1 - \alpha N_t - \theta X_t)$$
 \item $Z_t$ is a random variable with mean $\mu_Z$ and variance $\sigma^2_Z$
 \item With the same derivation as before, we get the solution:
-$$S_t^* = c^{(1)}_t + c^{(2)}_t R_t + c^{(3)}_t X_t $$
+$$N_t^* = c^{(1)}_t + c^{(2)}_t R_t + c^{(3)}_t X_t $$
 \begin{align*}
 V^*(t,P_t,R_t,X_t) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(4)}_t + c^{(5)}_t R_t + c^{(6)}_t X_t \\
 & + c^{(7)}_t R_t^2 + c^{(8)}_t X_t^2 + c^{(9)}_t R_t X_t)\\
