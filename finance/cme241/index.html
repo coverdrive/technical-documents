@@ -43,7 +43,7 @@ th {
     <th>
 	    <ul>
 		    <li>First (Introduction) chapter of Sutton-Barto (pages 1-12)</li>
-		    <li><a href="lecture_slides/rich_sutton_slides/1-admin-and-intro.pdf">Rich Sutton's corresponding slides on Intro to RL</a></li>
+		    <li>Optional: <a href="lecture_slides/rich_sutton_slides/1-admin-and-intro.pdf">Rich Sutton's corresponding slides on Intro to RL</a></li>
 		    <li>Optional: <a href="lecture_slides/david_silver_slides/intro_RL.pdf">David Silver's slides on Intro to RL</a></li>
 		    <li>Optional: <a href="https://www.youtube.com/watch?v=2pWv7GOvuf0">David Silver's corresponding video (youtube) on Intro to RL</a></li>
 	    </ul>
@@ -147,6 +147,8 @@ th {
     <th>
     	<ul>
 			<li>Optional Review: <a href="lecture_slides/StochasticCalculusFoundations.pdf">Stochastic Calculus Foundations</a> (used in setting up HJB)</li>
+		        <li>Reference: <a href="https://arxiv.org/pdf/1706.10059.pdf">A paper on <em>A Deep RL Framework for Optimal Asset Allocation</em></a></li>
+		        <li><a href="lecture_slides/DiscreteVSContinuous.pdf">Some (rough) pointers on Discrete versus Continuous MDPs, and solution techniques</a></li>
 		</ul>
     </th>
     <th>
@@ -154,49 +156,33 @@ th {
 			<li>Model Merton's Portfolio problem as an MDP (write the model in LaTeX)</li>
 			<li>Implement this MDP model in code</li>
 			<li>Try recovering the closed-form solution with a DP algorithm that you implemented previously</li>
+	                <li>Model a real-world Portfolio Allocation+Consumption problem as an MDP (including real-world frictions and constraints)</li>
+			<li><a href="lecture_slides/OptimalAssetAllocationDiscrete.pdf">Exam Practice Problem: Optimal Asset Allocation in Discrete Time (<a href="lecture_slides/OptimalAssetAllocationDiscreteSolution.pdf">Solution</a></li>
 		</ul>
     </th>
   </tr>
   <tr>
     <th>January 30</th>
     <th>
-    	Application Problem 1 - Optimal Asset Allocation/Consumption (Discussion on Real-World modeling and coding)
+    	<a href="lecture_slides/AmericanOptionsRL.pdf">Application Problem 2 - Optimal Exercise of American Options</a>
     </th>
     <th>
     	<ul>
-		<li>Reference: <a href="https://arxiv.org/pdf/1706.10059.pdf">A paper on <em>A Deep RL Framework for Optimal Asset Allocation</em></a></li>
-		<li><a href="lecture_slides/DiscreteVSContinuous.pdf">Some (rough) pointers on Discrete versus Continuous MDPs, and solution techniques</a></li>
+		    <li>Reference: <a href="https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf">Longstaff-Schwartz paper on Pricing American Options (industry-standard approach)</a></li>
+		    <li>Reference: <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">A paper on <em>RL for Optimal Exercise of American Options</em></a> </li>
     	</ul>
     </th>
     <th>
      <ul>
-	     <li>Model a real-world Portfolio Allocation+Consumption problem as an MDP (including real-world frictions and constraints)</li>
-	     <li><a href="lecture_slides/OptimalAssetAllocationDiscrete.pdf">Exam Practice Problem: Optimal Asset Allocation in Discrete Time</li>
+		    <li>Implement Black-Scholes formulas for European Call/Put Pricing</li>
+		    <li>Implement standard binary tree/grid-based numerical algorithm for American Option Pricing and ensure it validates against Black-Scholes formula for Europeans</li>
+		    <li>Implement Longstaff-Schwartz Algorithm and ensure it validates against binary tree/grid-based solution for path-independent options</li>
+		    <li>Explore/Discuss an Approximate Dynamic Programming solution as an alternative to Longstaff-Schwartz Algorithm</li>
      </ul>
     </th>
   </tr>
   <tr>
     <th>February 1</th>
-    <th>
-    	<a href="lecture_slides/AmericanOptionsRL.pdf">Application Problem 2 - Optimal Exercise of American Options</a>
-    </th>
-    <th>
-	    <ul>
-		    <li>Reference: <a href="https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf">Longstaff-Schwartz paper on Pricing American Options (industry-standard approach)</a></li>
-		    <li>Reference: <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">A paper on <em>RL for Optimal Exercise of American Options</em></a> </li>
-	    </ul>
-    </th>
-    <th>
-	    <ul>
-		    <li>Implement Black-Scholes formulas for European Call/Put Pricing</li>
-		    <li>Implement standard binary tree/grid-based numerical algorithm for American Option Pricing and ensure it validates against Black-Scholes formula for Europeans</li>
-		    <li>Implement Longstaff-Schwartz Algorithm and ensure it validates against binary tree/grid-based solution for path-independent options</li>
-		    <li>Explore/Discuss an Approximate Dynamic Programming solution as an alternative to Longstaff-Schwartz Algorithm</li>
-	    </ul>
-    </th>
-  </tr>
-  <tr>
-    <th>February 6</th>
     <th>
     	<a href="lecture_slides/OrderExecution.pdf">Application Problem 3 - Optimal Trade Order Execution</a>
     </th>
@@ -206,22 +192,32 @@ th {
 		    <li>Reference: <a href="https://pdfs.semanticscholar.org/3d2d/773983c5201b58586af463f045befae5bbf2.pdf">Almgren-Chriss paper on Risk-Adjusted Optimal Trade Order Execution</a> </li>
 	    </ul>
     </th>
-    <th></th>
+    <th>
+	    <ul>
+	    <li>Work out (in LaTeX) the solution to the Linear Impact model we covered in class</li>
+	    <li>Model a real-world Optimal Trade Order Execution problem as an MDP (with complete order book included in the State)</li>
+	    </ul>
+    </th>
   </tr>
   <tr>
+  <tr>
+    <th>February 6</th>
+    <th>
+    	 <a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free Prediction (RL for Value Function Estimation)</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional:<a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's corresponding video (youtube) on Model-free Prediction</a></li>
+	    </ul>
+    </th>
+    <th>
+    </th>
+  </tr>
     <th>February 8</th>
     <th colspan="3">Midterm Exam</th>
   </tr>
   <tr>
     <th>February 13 and 15</th>
-    <th>
-    	 <a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free Prediction (RL for Value Function Estimation)</a>
-    </th>
-    <th></th>
-    <th></th>
-  </tr>
-  <tr>
-    <th>February 20 and 22</th>
     <th>
     	<a href="lecture_slides/david_silver_slides/control.pdf">Model-free Control (RL for Optimal Value Function/Policy)</a>
     </th>
@@ -229,7 +225,7 @@ th {
     <th></th>
   </tr>
   <tr>
-    <th>February 27 and March 1</th>
+    <th>February 20 and 22</th>
     <th>
     	<a href="lecture_slides/david_silver_slides/FA.pdf">RL with Function Approximation (including Deep RL)</a>
     </th>
@@ -237,7 +233,7 @@ th {
     <th></th>
   </tr>
   <tr>
-    <th>March 6 and March 8</th>
+    <th>February 27 and March 1</th>
     <th>
     	<a href="lecture_slides/ValueFunctionGeometry.pdf">Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD</a>
     </th>
@@ -245,9 +241,26 @@ th {
     <th></th>
   </tr>
   <tr>
-    <th>March 13 and March 15</th>
+    <th>March 6 and March 8</th>
     <th>
     	<a href="lecture_slides/PolicyGradient.pdf">Policy Gradient Algorithms</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>March 13</th>
+    <th>
+	    <a href="lecture_slides/dyna.pdf">Integrating Learning and Planning</a>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
+  <tr>
+    <th>March 15</th>
+    <th>
+	    <a href="lecture_slides/XX.pdf">Exploration versus Exploitation</a>
     </th>
     <th></th>
     <th></th>
