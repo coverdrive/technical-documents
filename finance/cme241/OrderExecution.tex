@@ -235,11 +235,14 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 \begin{frame}
 \frametitle{Optimal Value Function and Bellman Equation}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item Denote Value Function for policy $\pi$ as: $$V^{\pi}(t, P_t, R_t) = \mathbb{E}_{\pi}[\sum_{t=1}^T N_t (P_t - \beta N_t)|(t,P_t,R_t)]$$
+\pause
 \item Denote Optimal Value Function as $V^*(t,P_t,R_t) = max_{\pi} V^{\pi}(t,P_t,R_t)$
+\pause
 \item Optimal Value Function satisfies the Bellman Equation ($\forall 1 \leq t < T$):
 $$V^*(t,P_t,R_t) = \max_{N_t} (N_t(P_t - \beta N_t)  + \mathbb{E}[V^*(t+1, P_{t+1}, R_{t+1})])$$
+\pause
 $$\mbox{Note: } V^*(T, P_T,R_T) = R_T(P_T - \beta R_T)$$
 \item From the above, we can infer $V^*(T-1,P_{T-1},R_{T-1})$ as:
 $$\max_{N_{T-1}} \{ N_{T-1}(P_{T-1} - \beta N_{T-1})  + \mathbb{E}[R_T(P_T - \beta R_T)] \}$$
@@ -251,13 +254,16 @@ $$=\max_{N_{T-1}} \{ N_{T-1}(P_{T-1} - \beta N_{T-1})  + (R_{T-1} - N_{T-1})(P_{
 \begin{frame}
 \frametitle{Optimal Policy and Optimal Value Function}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
 \item Differentiating this expression w.r.t. $N_{T-1}$ and setting to 0 gives:
 $$2N^*_{T-1} (\alpha - 2\beta) - R_{T-1}(\alpha - 2\beta) = 0 \Rightarrow N^*_{T-1} = \frac {R_{T-1}} 2$$
+\pause
 \item Substitute $N^*_{T-1}$ in the expression for $V^*(T-1,P_{T-1},R_{T-1})$:
 $$V^*(T-1,P_{T-1},R_{T-1}) =  R_{T-1} P_{T-1} - R_{T-1}^2 (\frac {\alpha + 2\beta} 4)$$
+\pause
 \item Continuing backwards in time in this manner gives:
 $$N^*_t = \frac {R_t} {T-t+1}$$
+\pause
 $$V^*(t, P_t,R_t) = R_t P_t - \frac {R_t^2} 2 (\frac {2\beta + (T-t)\alpha} {T-t+1})$$
 \end{itemize}
 \end{frame}
@@ -300,22 +306,32 @@ $$V^*(t,P_t,R_t,X_t) = R_tP_t - (\mbox{quadratic in } (R_t,X_t) + \mbox{ constan
 \begin{frame}
 \frametitle{A more Realistic Model: LPT Price Impact}
 \pause
-\begin{itemize}[<+->]
+\begin{itemize}
+\pause
 \item Next, Bertsimas-Lo present a more realistic model called ``LPT''
+\pause
 \item {\em Linear-Percentage Temporary} Price Impact model features:
+\pause
 \begin{itemize}
 \item Geometric random walk: consistent with real data, \& avoids prices $\leq 0$
+\pause
 \item \% Price Impact $\frac {g_t(P_t,N_t)} {P_t}$ doesn't depend on $P_t$ (validated by real data)
+\pause
 \item Purely Temporary Price Impact
+\pause
 \end{itemize}
 $$P_{t+1} = P_t e^{Z_t},  X_{t+1} = \rho X_t + \eta_t, Q_t = P_t(1 - \alpha N_t - \theta X_t)$$
+\pause
 \item $Z_t$ is a random variable with mean $\mu_Z$ and variance $\sigma^2_Z$
+\pause
 \item With the same derivation as before, we get the solution:
 $$N_t^* = c^{(1)}_t + c^{(2)}_t R_t + c^{(3)}_t X_t $$
+\pause
 \begin{align*}
 V^*(t,P_t,R_t,X_t) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(4)}_t + c^{(5)}_t R_t + c^{(6)}_t X_t \\
 & + c^{(7)}_t R_t^2 + c^{(8)}_t X_t^2 + c^{(9)}_t R_t X_t)\\
 \end{align*}
+\pause
 \item $c^{(k)}_t, 1 \leq k \leq 9$ are independent of $P_t, R_t, X_t$
 \end{itemize}
 \end{frame}

@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 \mode<presentation> {
 
@@ -116,7 +116,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Stopping Time}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Stopping time $\tau$ is a ``random time'' (random variable) interpreted as time at which a given stochastic process exhibits certain behavior
 \item Stopping time often defined by a ``stopping policy'' to decide whether to continue/stop a process based on present position and past events
 \item Random variable $\tau$ such that $Pr[\tau \leq t]$ is in $\sigma$-algebra $\mathcal{F}_t$, for all $t$
@@ -130,7 +131,8 @@ eg: Hitting time of a process to exceed a certain fixed level
 
 \begin{frame}
 \frametitle{Optimal Stopping Problem}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Optimal Stopping problem for Stochastic Process $X_t$: 
 $$V(x) = \max_{\tau} \mathbb{E}[G(X_{\tau})|X_0 = x]$$
  where $\tau$ is a set of stopping times of $X_t$, $V(\cdot)$ is called the Value function, and $G$ is the Reward function.
@@ -150,7 +152,8 @@ is the smallest stopping time achieving the maximum value.
 
 \begin{frame}
 \frametitle{Optimal Stopping Problems as Markov Decision Processes}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We formulate Stopping Time problems as Markov Decision Processes
 \item {\em State} is a suitable function of the history of Stochastic Process $X_t$
 \item {\em Action} is Boolean: Stop or Continue
@@ -163,7 +166,8 @@ is the smallest stopping time achieving the maximum value.
 
 \begin{frame}
 \frametitle{Mainstream approaches to American Option Pricing}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item American Option Pricing is Optimal Stopping, and hence an MDP
 \item So can be tackled with Dynamic Programming or RL algorithms
 \item But let us first review the mainstream approaches
@@ -181,7 +185,8 @@ is the smallest stopping time achieving the maximum value.
 
 \begin{frame}
 \frametitle{Ingredients of Longstaff-Schwartz Algorithm}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item $m$ Monte-Carlo paths indexed $i = 0, 1, \ldots, m-1$
 \item $n+1$ time steps indexed $j = n, n-1, \ldots, 1, 0$ (we move back in time)
 \item Infinitesimal Risk-free rate at time $t_j$ denoted $r_{t_j}$
@@ -198,6 +203,7 @@ is the smallest stopping time achieving the maximum value.
 
 \begin{frame}
 \frametitle{The Longstaff-Schwartz Algorithm}
+\pause
 \begin{pseudocode}{LongstaffSchwartz}{SP[0:m, 0:n+1]}
 \COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
 CF[0:m] \GETS [Payoff(s_{i,n}) \mbox{ for } i \mbox{ in range}(m)]\\
@@ -222,7 +228,8 @@ continue \GETS e^{-r_0(t_1-t_0)} \cdot mean(CF[0:m])\\
 
 \begin{frame}
 \frametitle{RL as an alternative to Longstaff-Schwartz}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item RL is straightforward if we clearly define the MDP
 \item {\em State} is [Current Time, History of Underlying Security Prices]
 \item {\em Action} is Boolean: Exercise (i.e., Stop) or Continue
@@ -242,6 +249,7 @@ continue \GETS e^{-r_0(t_1-t_0)} \cdot mean(CF[0:m])\\
 
 \begin{frame}
 \frametitle{Least Squares Policy Iteration for Continuation Value}
+\pause
 \begin{pseudocode}{LSPI-AmericanPricing}{SP[0:m, 0:n+1]}
 \COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
 \COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
@@ -265,6 +273,7 @@ w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize
 
 \begin{frame}
 \frametitle{Fitted Q-Iteration for Continuation Value}
+\pause
 \begin{pseudocode}{FQI-AmericanPricing}{SP[0:m, 0:n+1]}
 \COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
 \COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
@@ -289,7 +298,8 @@ w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize
 
 \begin{frame}
 \frametitle{Feature functions}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Li, Szepesvari, Schuurmans recommend Laguerre polynomials (first 3)
 \item Over $S' = S_t/K$ where $S_t$ is underlying price and $K$ is strike
 \item $\phi_0(S_t) = 1, \phi_1(S_t) = e^{-\frac {S'} 2}, \phi_2(S_t) = e^{-\frac{S'} 2} \cdot (1-S'), \phi_3(S_t) = e^{-\frac{S'} 2} \cdot (1-2S'+S'^2/2)$
@@ -303,7 +313,8 @@ w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize
 
 \begin{frame}
 \frametitle{Extending LSPI and FQI to model-based settings}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Li, Szepesvari, Schuurmans have shown a model-free solution
 \item But the same algorithms can be extended to model-based settings
 \item Wherein we have explicit knowledge of the transition probabilities
