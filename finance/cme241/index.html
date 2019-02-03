@@ -207,10 +207,19 @@ th {
     </th>
     <th>
 	    <ul>
-	    <li>Optional:<a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's corresponding video (youtube) on Model-free Prediction</a></li>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's corresponding video (youtube) on Model-free Prediction</a></li>
+	    <li>Monte-Carlo and TD (Model-Free) Prediction sections from Sutton-Barto textbook (pages 91-95, 119-128, 141-145)</li>
 	    </ul>
     </th>
     <th>
+	    <ul>
+		    <li>Write code for the interface for tabular RL algorithms. The core of this interface should be a mapping from a (state, action) pair
+			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
+			    or the reward model.</li>
+		    <li>Implement a tabular Monte-Carlo algorithm for Value Function prediction</li>
+		    <li>Implement a tabular TD algorithm for Value Function prediction</li>
+		    <li>Test the above implementation of Monte-Carlo and TD VF prediction algorithms versus DP Policy Evaluation algorithm on an example MDP</li>
+	    </ul>
     </th>
   </tr>
     <th>February 8</th>
