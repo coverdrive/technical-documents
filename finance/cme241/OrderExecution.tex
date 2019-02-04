@@ -236,7 +236,7 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 \frametitle{Optimal Value Function and Bellman Equation}
 \pause
 \begin{itemize}
-\item Denote Value Function for policy $\pi$ as: $$V^{\pi}(t, P_t, R_t) = \mathbb{E}_{\pi}[\sum_{t=1}^T N_t (P_t - \beta N_t)|(t,P_t,R_t)]$$
+\item Denote Value Function for policy $\pi$ as: $$V^{\pi}(t, P_t, R_t) = \mathbb{E}_{\pi}[\sum_{i=t}^T N_i (P_i - \beta N_i)|(t,P_t,R_t)]$$
 \pause
 \item Denote Optimal Value Function as $V^*(t,P_t,R_t) = max_{\pi} V^{\pi}(t,P_t,R_t)$
 \pause
