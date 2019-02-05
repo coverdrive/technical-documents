@@ -124,15 +124,30 @@ ICME, Stanford University
 \pause
 \begin{itemize}[<+->]
 \item Buyers/Sellers express their intent to trade by submitting bids/asks
-\item These are Limit Orders (LO) with a size and price
+\item These are Limit Orders (LO) with a price $P$ and size $N$
+\item Buy LO $(P, N)$ states willingness to buy $N$ shares at a price $\leq P$
+\item Sell  LO $(P, N)$ states willingness to sell $N$ shares at a price $\geq P$
 \item Order Book (OB) aggregates order sizes for each unique price
 \item So we can represent with two sorted lists of (Price, Size) pairs
 $$\mbox{Bids: } [(P_i^{(b)}, N_i^{(b)}) \mid 1 \leq i \leq m], P_i^{(b)} > P_j^{(b)} \mbox{ for } i < j$$
 $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 1 \leq i \leq n], P_i^{(a)} < P_j^{(a)} \mbox{ for } i < j$$
 \item We call $P_1^{(b)}$ as simply {\em Bid}, $P_1^{(a)}$ as {\em Ask}, $\frac {P_1^{(a)} + P_1^{(b)}} 2$ as {\em Mid}
 \item We call $P_1^{(a)} - P_1^{(b)}$ as {\em Spread}, $P_n^{(a)} - P_m^{(b)}$ as {\em Market Depth}
-\item A new Sell LO $(P,N)$ such that $P = P_i^{(b)}$ for some $1\leq i \leq n$ will remove $\min(N, N_i^{(b)})$ from the existing LO (likewise for new Buy LO)
-\item A new LO not matching any current LO Price (of the opposite side) will simply be added to the OB
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Trading Order Book Activity}
+\pause
+\begin{itemize}[<+->]
+\item A new Sell LO $(P,N)$ potentially removes best bid prices on the OB
+$$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(b)}))) \mid (i: P_i^{(b)} \geq P)]$$
+\item After this removal, it will add the following Ask to the OB 
+$$(P, \max(0, N - \sum_{i: P_i^{(b)} \geq P}  N_i^{(b)}))$$
+\item A Sell Market Order $N$ will remove the best bid prices on the OB
+$$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(b)}))) \mid 1 \leq i \leq m]$$
+\item A Buy Market Order $N$ will remove the best ask prices on the OB
+$$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(a)}))) \mid 1 \leq i \leq n]$$
 \end{itemize}
 \end{frame}
 
@@ -140,15 +155,14 @@ $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 1 \leq i \leq n], P_i^{(a)} < P_j^{
 \frametitle{Price Impact and Order Book Dynamics}
 \pause
 \begin{itemize}[<+->]
-\item A Sell Market Order $N$ will remove the best bid prices on the OB
-$$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(b)}))) \mid 1 \leq i \leq m]$$
-\item A Buy Market Order $N$ will remove the best ask prices on the OB
-$$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(a)}))) \mid 1 \leq i \leq n]$$
+\item We focus on how a Market order (MO) alters the order book
 \item A large-sized MO often results in a big {\em Spread} which could soon be replenished by new LOs, potentially from either side
 \item So a large-sized MO moves the Bid/Ask/Mid ({\em Price Impact} of MO)
 \item Subsequent Replenishment activity is part of {\em Order Book Dynamics}
 \item Models for Order Book Dynamics can be quite complex
 \item We will cover a few simple Models in this lecture
+\item Models based on how a Sell MO will move the OB {\em Bid Price}
+\item Models of Buy MO moving the OB {\em Ask Price} are analogous
 \end{itemize}
 \end{frame}
 
