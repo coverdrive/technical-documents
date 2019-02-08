@@ -1,0 +1,35 @@
+
+\documentclass[12pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+% See the ``Article customise'' template for come common customisations
+
+\title{MDPRefined $\rightarrow$ MRP}
+\author{}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+\maketitle
+
+We start with a MDPRefined given by transitions function $\mathcal{P}_{s,s'}^a$ denoting the probability of transition from state $s$ to state $s'$ upon taking action $a$ and given by rewards function $\mathcal{R}_{s's'}^a$ denoting the reward obtained when transitioning from state $s$ to state $s'$ upon taking action $a$.
+
+First we construct an MDP from $(\mathcal{P}, \mathcal{R})$. The reward function of this MDP will be:
+$$\sum_{s'} \mathcal{P}_{s,s'}^a \cdot \mathcal{R}_{s,s'}^a$$
+
+Next we construct an MRPRefined from $(\mathcal{P}, \mathcal{R})$ and a policy $\pi(a|s)$. The transitions function of this MRPRefined will be:
+$$\sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a$$
+The reward function of this MRPRefined will be:
+$$\frac {\sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a \cdot \mathcal{R}_{s,s'}^a} {\sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a}$$
+
+Next we construct MRP1 from the above MDP. The reward function of this MRP1 will be:
+$$\sum_a \pi(a|s) \cdot (\sum_{s'} \mathcal{P}_{s,s'}^a \cdot \mathcal{R}_{s,s'}^a) = \sum_a \sum_{s'} \pi(a|s) \cdot \mathcal{P}_{s,s'}^a \cdot \mathcal{R}_{s,s'}^a = \sum_{s'} \sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a \cdot \mathcal{R}_{s,s'}^a $$
+
+Next we construct MRP2 from the above MRPRefined. The reward function of this MRP2 will be:
+$$\sum_{s'} (\sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a) (\frac {\sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a \cdot \mathcal{R}_{s,s'}^a} {\sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a}) =  \sum_{s'} \sum_a \pi(a|s) \cdot \mathcal{P}_{s,s'}^a \cdot \mathcal{R}_{s,s'}^a $$
+
+Hence, MRP1 and MRP2 are the same MRP.
+
+\end{document}
