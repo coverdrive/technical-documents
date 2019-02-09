@@ -64,28 +64,30 @@ $$q_1(s_1, a_1) = 8.0 + 0.2 * 10.0 + 0.6 * 1.0 = 10.6$$
 $$q_1(s_1, a_2) = 10.0 + 0.1 * 10.0 + 0.2 * 1.0 = 11.2$$
 $$v_1(s_1) = \max(10.6, 11.2) = 11.2$$
 $$\pi_1(s_1) = a_2$$
-$$q_1(s_2, a_1) = 1.0 + 0.3 * 9.0 + 0.3 * 1.0 = 4.0$$
-$$q_1(s_2, a_2) = -1.0 + 0.5 * 9.0 + 0.3 * 1.0 = 3.8$$
-$$v_1(s_2) = \max(4.0, 3.8) = 4.0$$
+$$q_1(s_2, a_1) = 1.0 + 0.3 * 10.0 + 0.3 * 1.0 = 4.3$$
+$$q_1(s_2, a_2) = -1.0 + 0.5 * 10.0 + 0.3 * 1.0 = 4.3$$
+$$v_1(s_2) = \max(4.3, 4.3) = 4.3$$
 $$\pi_1(s_2) = a_1$$
 
-$$q_2(s_1, a_1) = 8.0 + 0.2 * 11.2 + 0.6 * 4.0 = 12.64$$
-$$q_2(s_1, a_2) = 10.0 + 0.1 * 11.2 + 0.2 * 4.0 = 11.92$$
-$$v_2(s_1) = \max(12.64, 11.92) = 11.2$$
+$$q_2(s_1, a_1) = 8.0 + 0.2 * 11.2 + 0.6 * 4.3 = 12.82$$
+$$q_2(s_1, a_2) = 10.0 + 0.1 * 11.2 + 0.2 * 4.3 = 11.98$$
+$$v_2(s_1) = \max(12.82, 11.98) = 12.82$$
 $$\pi_2(s_1) = a_1$$
-$$q_2(s_2, a_1) = 1.0 + 0.3 * 11.2 + 0.3 * 4.0 = 5.56$$
-$$q_2(s_2, a_2) = -1.0 + 0.5 * 11.2 + 0.3 * 4.0 = 5.76$$
-$$v_2(s_2) = \max(5.56, 5.76) = 5.76$$
+$$q_2(s_2, a_1) = 1.0 + 0.3 * 11.2 + 0.3 * 4.3 = 5.65$$
+$$q_2(s_2, a_2) = -1.0 + 0.5 * 11.2 + 0.3 * 4.3 = 5.89$$
+$$v_2(s_2) = \max(5.65, 5.89) = 5.89$$
 $$\pi_2(s_2) = a_2$$
 
 $$q_k(s_1, a_1) - q_k(s_1, a_2) = 8.0 - 10.0 + (0.2 - 0.1) * v_{k-1}(s_1) + (0.6 - 0.2) * v_{k-1}(s_2)$$
 $$ = -2.0 + 0.1 * v_{k-1}(s_1) + 0.4 * v_{k-1}(s_2)\mbox{ for all } k \geq 1$$
 $$q_k(s_2, a_2) - q_k(s_2, a_1) = -1.0 - 1.0 + (0.5 - 0.3) * v_{k-1}(s_1) + (0.3 - 0.3) * v_{k-1}(s_2)$$
 $$ = -2.0 + 0.2 * v_{k-1}(s_1) \mbox{ for all } k \geq 1$$
-Since $v_{k-1}(s_1) \geq 11.2$ and $v_{k-1}(s_2) \geq 5.76 \mbox{ for all } k \geq 3$, we see that:
-$$q_k(s_1, a_1) - q_k(s_1, a_2) \geq -2.0 + 0.1 * 11.2 + 0.4 * 5.76 > 0 \mbox{ for all } k \geq 3$$
-$$q_k(s_2, a_2) - q_k(s_2, a_1) \geq -2.0 + 0.2 * 11.2 > 0 \mbox{ for all } k \geq 3$$
-Hence, $\pi_k(s_1) = a_1, \pi_k(s_2) = a_2$ for all $k \geq 3$.
+Since $v_{k-1}(s_1) \geq 12.82 $ and $v_{k-1}(s_2) \geq 5.89 \mbox{ for all } k \geq 3$, we see that:
+$$q_k(s_1, a_1) - q_k(s_1, a_2) \geq -2.0 + 0.1 * 12.82 + 0.4 * 5.89 > 0 \mbox{ for all } k \geq 3$$
+$$q_k(s_2, a_2) - q_k(s_2, a_1) \geq -2.0 + 0.2 * 12.82 > 0 \mbox{ for all } k \geq 3$$
+Hence, $q_k(s_1, a_1) > q_k(s_1, a_2)$ and $q_k(s_2, a_2) > q_k(s_2, a_2)$ for all $k \geq 3$
+
+Hence, $\pi_k(s_1) = a_1$ and $\pi_k(s_2) = a_2$ for all $k \geq 3$.
 
 \question {\bf Dynamic Price Optimization: Aim to do this Question in 40 minutes}. You own a super-market and you are $T$ days away from Halloween \smiley . You have just received $M$ Halloween masks from your supplier. You want to dynamically set the selling price of the Halloween masks at the start of each day in a manner that maximizes your {\em Expected Total Sales Revenue} for Halloween masks this season (assume no one will buy Halloween masks after Halloween). 
 
@@ -105,11 +107,11 @@ Note that on any given day, the demand could exceed the number of Halloween mask
  $$I_0 = M, I_{t+1} = \max(0, I_t - d_t) \mbox{ for } 0 \leq t < T$$
  where $d_t$ is the random demand on day $t$ governed by $Poisson(\lambda_i)$ if the choice of price on day $t$ is $p_i$ (among $i = 1, 2, \ldots, n$).
  
- 
+ The Bellman Optimality Equation is as follows:
  $$v_*(t, I_t) = \max_{1 <= i <= N} \{ \sum_{k=0}^{\infty} \frac {e^{-\lambda_i} \lambda_i^k} {k!} \cdot (\min(I_t, k) \cdot p_i + v_*(t+1, \max(0, I_t - k))) \}\mbox{ for } 0 \leq t < T$$
- $$v_*(T, I_T) = 0$$
+ The boundary case is: $v_*(T, I_T) = 0$
  
-The code is \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/price_control.py}{here}.
+The Python code that solves this backward recursion is implemented \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/price_control.py}{here}.
 
 \end{questions}
 
