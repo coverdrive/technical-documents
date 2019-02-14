@@ -204,12 +204,12 @@ th {
   <tr>
     <th>February 6</th>
     <th>
-    	 <a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free Prediction (RL for Value Function Estimation)</a>
+    	 <a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free (RL) Prediction With Monte Carlo and Temporal Difference</a>
     </th>
     <th>
 	    <ul>
 	    <li>Optional: <a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's corresponding video (youtube) on Model-free Prediction</a></li>
-	    <li>Monte-Carlo and TD (Model-Free) Prediction sections from Sutton-Barto textbook (pages 91-95, 119-128, 141-145)</li>
+	    <li>Monte-Carlo and TD (Model-Free) Prediction sections from Sutton-Barto textbook (pages 91-95, 119-128)</li>
 	    </ul>
     </th>
     <th>
@@ -217,9 +217,10 @@ th {
 		    <li>Write code for the interface for tabular RL algorithms. The core of this interface should be a mapping from a (state, action) pair
 			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
 			    or the reward model.</li>
-		    <li>Implement a tabular Monte-Carlo algorithm for Value Function prediction</li>
-		    <li>Implement a tabular TD algorithm for Value Function prediction</li>
-		    <li>Test the above implementation of Monte-Carlo and TD VF prediction algorithms versus DP Policy Evaluation algorithm on an example MDP</li>
+		    <li>Implement any tabular Monte-Carlo algorithm for Value Function prediction</li>
+		    <li>Implement tabular 1-step TD algorithm for Value Function prediction</li>
+		    <li>Test the above implementation of Monte-Carlo and TD Value Function prediction algorithms versus DP Policy Evaluation algorithm on an example MDP</li>
+		    <li>Prove that fixed learning rate (step size alpha) for MC is equivalent to an exponentially decaying average of episode returns</li>
 	    </ul>
     </th>
   </tr>
@@ -227,12 +228,41 @@ th {
     <th colspan="3"><a href="lecture_slides/midterm.pdf">Midterm Exam</a> (<a href="lecture_slides/midterm-solutions.pdf">Solutions</a>)</th>
   </tr>
   <tr>
-    <th>February 13 and 15</th>
+    <th>February 13</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free (RL) Prediction with Eligibility Traces (TD(Lambda))</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's corresponding video (youtube) on Model-free Prediction</a></li>
+	    <li>n-Step TD section of Sutton-Barto textbook (pages 141-145)</li>
+            <li>Optional: TD(Lambda) and Eligibility Traces-based Prediction is covered on pages 287-297, but this treatment is for the more general case of function approximation of Value Function (we've only covered tabular RL algorithms so far).</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Implement Forward-View TD(Lambda) algorithm for Value Function Prediction</li>
+		    <li>Implement Backrward View TD(Lambda), i.e., Eligibility Traces algorithm for Value Function algorithm</li>
+		    <li>Implement these algorithms as offline or online algorithms (offline means updates happen only after a full simulation trace, online means updates happen at every time step)</li>
+		    <li>Test these algorithms on some example MDPs, compare them versus DP Policy Evaluation, and plot their accuracy as a function of Lambda</li>
+		    <li>Prove that Offline Forward-View TD(Lambda) and Offline Backward View TD(Lambda) are equivalent. We covered the proof of Lambda = 1 in class. Do the proof for arbitrary Lambda (similar telescoping argument as done in class). Prove for the case where a state appears only once in an episode.</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>February 15</th>
     <th>
     	<a href="lecture_slides/david_silver_slides/control.pdf">Model-free Control (RL for Optimal Value Function/Policy)</a>
     </th>
-    <th></th>
-    <th></th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=0g4j2k_Ggc4&t=2713s">David Silver's corresponding video (youtube) on Model-free Control</a></li>
+	    <li>MC and TD-based Control sections of Sutton-Barto textbook (pages 96-111, 129-134, 146-149)</li>
+	    <li>Optional: SARSA(Lambda) is covered on pages 303-307, but this treatment is for the more general case of function approximation of Value Function (we've only covered tabular RL algorithms so far)</li>
+	    </ul>
+    </th>
+    <th>
+    </th>
   </tr>
   <tr>
     <th>February 20 and 22</th>
