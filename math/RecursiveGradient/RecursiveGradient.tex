@@ -9,7 +9,7 @@
 \usepackage{graphicx}	
 \usepackage{listings}
 
-\title{Recursive Formulation of the Gradient in a Dense Feed-Forward Deep Neural Network}
+\title{Recursive Formulation of Loss Gradient in a Dense Feed-Forward Deep Neural Network}
 \author{Ashwin Rao}
 \date{} % delete this line to display the current date
 
@@ -19,17 +19,21 @@
 \maketitle
 
 \section{Motivation}
-The purpose of this short paper is to derive the recursive formulation of the gradient of the loss function with respect to the parameters of a dense feed-forward deep neural network. We start by setting up the notation and then we state the recursive formulation of the gradient. In the appendices, we derive this formulation of the gradient for the cases of regression as well as classification, and finally we show that {\bf this formulation also applies to the more general case where the supervisory variable has a conditional probability density modeled as an arbitrary Generalized Linear Model(GLM)'s ``standard-form'' probability density, when the output layer's activation function is the GLM canonical link function, and when the loss function is cross-entropy loss} (Regression and Classification are special cases of this generic GLM structure).
+The purpose of this short paper is to derive the recursive formulation of the gradient of the loss function with respect to the parameters of a dense feed-forward deep neural network. We start by setting up the notation and then we state the recursive formulation of the loss gradient. {\bf We derive this formulation for a fairly general case - where the supervisory variable has a conditional probability density modeled as an arbitrary Generalized Linear Model(GLM)'s ``normal-form'' probability density, when the output layer's activation function is the GLM canonical link function, and when the loss function is cross-entropy loss}. Finally, we show that Linear Regression and Softmax Classification are special cases of this generic GLM structure, and so this formulation of the gradient is applicable to the special cases of dense feed-forward deep neural networks whose output layer activation function is linear (for regression) or softmax (for classification).
 
 \section{Notation}
 
 Consider a ``vanilla'' (i.e., dense feed-forward) deep neural network with $L$ layers. Layers $l = 0, 1, \ldots, L - 1$ carry the hidden layer neurons and layer $l = L$ carries the output layer neurons.
 
-Let $I_l$ be the inputs to layer $l$ and let $O_l$ be the outputs of layer $l$ for all $l = 0, 1, \ldots, L$. We know that $I_{l+1} = O_l$ for all $l = 0, 1, \ldots, L - 1$. In the following exposition, we assume that the input to this network is a single training data point (input features) denoted as $X$ and the output of the network is supervised by the supervisory value $Y$ associated with $X$ (we work with a single training data point in this entire paper because the gradient calculation can be independently applied to each training data point and finally summed over the training data points). So, $I_0 = X$ and $O_L$ is the prediction for input $X$ (that will be supervised by $Y$). 
+Let $I_l$ be the inputs to layer $l$ and let $O_l$ be the outputs of layer $l$ for all $l = 0, 1, \ldots, L$. We know that $I_{l+1} = O_l$ for all $l = 0, 1, \ldots, L - 1$. Note that the number of neurons in layer $l$ will be the number of outputs of layer $l$ ($ = | O_l |$. In the following exposition, we assume that the input to this network is a single training data point (input features) denoted as $X$ and the output of the network is supervised by the supervisory value $Y$ associated with $X$ (we work with a single training data point in this entire paper because the gradient calculation can be independently applied to each training data point and finally summed over the training data points). So, $I_0 = X$ and $O_L$ is the network's prediction for input $X$ (that will be supervised by $Y$). 
 
-Note that the number of neurons in layer $l$ will be the number of outputs of layer $l$ ($ = | O_l |$). Note that $| O_L | = 1$ for regression and $| O_L | = K$ for classification where $K$ is the number of classes. We will denote the supervision error on this network as $E$ (for the said training data point). For regression, $E$ is the scalar $O_L - Y$. For classification, $E$ is denoted by the vector $O_L - Y$. For classification, if we assume that the supervisory variable $Y$ takes on the value $k \in [1, \ldots ,K]$ (for the said training data point) and if we denote the $r^{th}$ element of $O_L$ (output of $r^{th}$ neuron in the output layer) as $O_L^{(r)}$ for all $r = 1, \ldots K$, then the $k^{th}$ element of the vector $O_L - Y$ is $O_L^{(k)} - 1$ and the other (non-$k$) elements of the vector $O_L - Y$ are $O_L^{(r)}$ for all $r = 1, \ldots, k - 1, k + 1, \ldots K$.
+We denote $K$ as the number of elements in the supervisory variable $Y$ ($K$ will also be the number of neurons in the output layer as well as the number of outputs produced by the output layer).  So, $|O_L| = |Y| = K$.  We denote the $r^{th}$ element of $O_L$ (output of $r^{th}$ neuron in the output layer) as $O_L^{(r)}$ and the $r^{th}$ element of $Y$ as $Y^{(r)}$ for all $r = 1, \ldots K$.
 
-We denote the parameters (``weights'') for layer $l$ as $W_l$ ($W_l$ is a matrix of size $| O_l | \times | I_l |$). For ease of exposition, we will ignore the bias parameters (as we can always treat $X$ as augmented by a ``fake'' feature that is always 1). We denote the activation function of layer $l$ as $A_l(\cdot)$ for all $l = 0, 1, \ldots, L - 1$ (the activation function for layer $L$ will be the identity function for regression and softmax for classification).
+Note that $K = |O_L| = |Y| = 1$ for regression. For classification, $K$ is the number of classes with $K = |O_L|$ neurons in the output layer. The supervisory variable $Y$ will be have a ``one-hot'' encoding of length $K$ as follows: . If the supervisory variable is meant to represent class $k \in [1, K]$, then $Y^{(k)} = 1$ and $Y^{(r)} = 0$ for all $r = 1, \ldots, k-1, k+1, \ldots K$ (the non-$k$ elements of $Y$ are 0).
+
+The error $E = O_L - Y$ is a scalar for regression. For classification, $E = O_L - Y$ is a vector of length $K$ whose $k^{th}$ element is $O_L^{(k)} - 1$ and the other (non-$k$) elements of $E$ are $O_L^{(r)}$ for all $r = 1, \ldots, k - 1, k + 1, \ldots K$.
+
+We denote the parameters (``weights'') for layer $l$ as $W_l$ ($W_l$ is a matrix of size $| O_l | \times | I_l |$). For ease of exposition, we will ignore the bias parameters (as we can always treat $X$ as augmented by a ``fake'' feature that is always 1). We denote the activation function of layer $l$ as $g_l(\cdot)$ for all $l = 0, 1, \ldots, L - 1$. Let $S_l = I_l \cdot W_l$ for all $l = 0, 1, \ldots, L$, so $O_l = g_l(S_l)$ 
 \begin{center} 
 \begin{tabular}{|c|c|}
 \hline
@@ -47,7 +51,9 @@ $X$ & Input Features to the network for a single training data point \\
  \hline
  $E$ & Error $O_L - Y$ for the single training data point $(X,Y)$ \\
  \hline
- $A_l(\cdot)$ & Activation function for layer $l$ for $l = 0, 1, \ldots, L - 1$ \\
+ $g_l(\cdot)$ & Activation function for layer $l$ for $l = 0, 1, \ldots, L - 1$ \\
+ \hline
+ $S_l$ & $S_l = I_l \cdot W_l$, $O_l = g_l(S_l)$ for all $l = 0, 1, \ldots L$ \\
  \hline
  $P_l$ & ``Proxy Error'' for layer $l$ for all $l = 0, 1, \ldots, L$ \\
  \hline
@@ -60,181 +66,202 @@ $X$ & Input Features to the network for a single training data point \\
 
 We define ``proxy error'' $P_l$ for layer $l$ recursively as follows for all $l = 0, 1, \ldots, L$:
 
-$$P_l = (P_{l+1} \cdot W_{l+1}) \circ A_l'(O_l)$$
+$$P_l = (P_{l+1} \cdot W_{l+1}) \circ g_l'(S_l)$$
 
 with the recursion terminating as:
 
 $$P_L = E = O_L - Y$$
 
-Appendix \ref{appendix:RecursiveDerivation} provides a proof of the above for the 2 layer case for regression (where the activation function of the output layer is the identity function and the loss function is mean-squared-error). Appendix \ref{appendix:ClassificationDerivation} shows that these formulas also hold for classification (where the activation function of the output layer is softmax and the loss function is cross-entropy loss). {\bf Appendix \ref{appendix:CanonicalLink} proves that these formulas are applicable more generically to the case where the supervisory variable has a conditional probability density modeled as the Generalized Linear Model(GLM)'s ``standard-form'' probability density (i.e. fairly generic family of probability distributions), when the output layer's activation function is the GLM canonical link function, and when the loss function is cross-entropy loss.}
+Then, the gradient of the loss function with respect to the parameters of layer $l$ for all $l = 0, 1, \ldots, L$ will be:
 
-Note that $P_{l+1} \cdot W_{l+1}$ is the inner-product of the $| O_{l+1} |$ size vector $P_{l+1}$ and the $| O_{l+1} | \times | I_{l+1} |$ size matrix $W_{l+1}$, and the resultant $| I_{l+1} | = | O_l |$ size vector $P_{l+1} \cdot W_{l+1}$ is multiplied pointwise (Hadamard product) with the $| O_l |$ size vector $A_l'(O_l)$ to yield the $| O_l |$ size vector $P_l$.
+$$ \frac {\partial Loss} {\partial W_l} = P_l \otimes I_l$$
 
-Then, the partial derivative of the loss function with respect to the parameters of layer $l$ for all $l = 0, 1, \ldots, L$ will be:
+{\bf Section \ref{section:CanonicalLink} provides a proof of the above when the supervisory variable has a conditional probability density modeled as the Generalized Linear Model(GLM)'s ``normal-form'' probability density (i.e. fairly generic family of probability distributions), when the output layer's activation function is the GLM canonical link function, and when the loss function is cross-entropy loss}. We show in the final two sections that Linear Regression and Softmax Classification are special cases of this generic GLM structure, and so this formulation of the gradient is applicable to the special cases of dense feed-forward deep neural networks whose output layer activation function is linear (for regression) or softmax (for classification). For now, we give an overview of the proof in the following 3 bullet points:
 
-$$ \frac {\partial Loss}{\partial W_l} = 2 P_l \otimes I_l$$
+\begin{itemize}
+\item ``Proxy Error'' $P_l$ is defined as $\frac {\partial Loss} {\partial S_l}$, and so gradient $\frac {\partial Loss} {\partial W_l} = \frac {\partial Loss}{\partial S_l} \otimes \frac {\partial S_l} {\partial W_l} = P_l \otimes I_l$
+\item The important result $P_L = E = O_L - Y$ is due to the important GLM result $A'(S_L) = g_L(S_L) = O_L$ where $A(\cdot)$ is the key function in the probability density functional form for GLM.
+\item The recursive formulation for $P_l$ has nothing to do with GLM, it is purely due to the structure of the feed-forward network: $S_{l+1} = g_l(S_l) \cdot W_{l+1}$. Differentiation chain rule yields $\frac {\partial Loss} {\partial S_l} = \frac {\partial Loss} {\partial S_{l+1}} \cdot \frac {\partial S_{l+1}} {\partial S_l}$ which gives us the recursive formulation $P_l = (P_{l+1} \cdot W_{l+1}) \circ g_l'(S_l)$
+\end{itemize}
 
-$P_l \otimes I_l$ is the matrix outer-product of the $| O_l |$ size vector $P_L$ and the $| I_l |$ size vector $I_l$. Hence, $\frac{\partial Loss}{\partial W_l}$ is a matrix of size $| O_l | \times | I_l |$
+The detailed proof is in Section \ref{section:CanonicalLink}.
+
+Note that $P_{l+1} \cdot W_{l+1}$ is the inner-product of the $| O_{l+1} |$ size vector $P_{l+1}$ and the $| O_{l+1} | \times | I_{l+1} |$ size matrix $W_{l+1}$, and the resultant $| I_{l+1} | = | O_l |$ size vector $P_{l+1} \cdot W_{l+1}$ is multiplied pointwise (Hadamard product) with the $| O_l |$ size vector $g_l'(S_l)$ to yield the $| O_l |$ size vector $P_l$.
+
+$P_l \otimes I_l$ is the matrix outer-product of the $| O_l |$ size vector $P_L$ and the $| I_l |$ size vector $I_l$. Hence, $\frac {\partial Loss} {\partial W_l}$ is a matrix of size $| O_l | \times | I_l |$
 
 If we do L2 regularization (with $\lambda_l$ as the regularization coefficient in layer $l$), then:
 
-$$ \frac {\partial Loss}{\partial W_l} = 2 P_l \otimes I_l + 2 \lambda_l W_l$$
+$$ \frac {\partial Loss} {\partial W_l} = P_l \otimes I_l + 2 \lambda_l W_l$$
 
 If we do L1 regularization (with $\lambda_l$ as the regularization coefficient in layer $l$), then:
 
-$$ \frac {\partial Loss}{\partial W_l} = 2 P_l \otimes I_l + \lambda_l sign(W_l)$$
+$$ \frac {\partial Loss} {\partial W_l} = P_l \otimes I_l + \lambda_l sign(W_l)$$
 
 where $sign(W_l)$ is the sign operation applied pointwise on the elements of the matrix $W_l$.
 
-\begin{appendices}
+\section{Derivation of Gradient Formulation for GLM conditional probability density and Canonical Link Function} 
+\label{section:CanonicalLink}
 
-\section{Gradient for Regression for a Two Layer Network}
-\label{appendix:RecursiveDerivation}
+Here we show that the formula for gradient shown in the previous section is applicable when the supervisory variable has a conditional probability density modeled as the Generalized Linear Model(GLM)'s ``normal-form'' probability density (i.e., fairly generic family of probability distributions), when the output layer's activation function is the GLM canonical link function, and when the loss function is cross-entropy loss. First, we give a quick summary of GLM ({\em independent of neural networks}).
 
-Here we provide a proof of the gradient formulation in terms of ``proxy error'' for the 2 layer case for regression (where the activation function of the output layer is the identity function and the loss function is mean-squared-error).
+\subsection{The GLM Setting}
+In the GLM setting, the conditional probability density of the supervisory variable $Y$ is modeled as:
 
-Consider a dense feed-forward neural network with two layers (one hidden layer and one output layer). Let the input training data point to this network be denoted by the vector $X = (X_1, X_2, \ldots, X_m)$ and the associated supervisory value be denoted by the scalar $Y$ (regression problem). Let there be $n$ neurons in the hidden layer with the parameters in neuron $j$ denoted by $W_{ji}$ for all $i = 1, 2, \ldots, m$ for all $j = 1, 2, \ldots, n$. Let the parameters in the output layer be denoted by $W_1, W_2, \ldots, W_n$. For ease of exposition, we ignore the bias parameters (as we can always treat $X$ as augmented by a ``fake'' feature that is always 1). So we have $mn + m$ parameters to train. Let the activation function of the hidden layer be denoted by $g(\cdot)$. Let the regularization parameter (assuming L2 regularization) be $\lambda_1$ for the hidden layer and $\lambda_2$ for the output layer.
+$$f(Y | \theta, \tau) = h(Y, \tau) \cdot e^{\frac {b(\theta) \cdot T(Y) - A(\theta)} {d(\tau)}}$$
 
-The Loss function
+where $\theta$ should be thought of as the ``center'' parameter (related to the mean) of the probability distribution and $\tau$ should be thought of as the ``dispersion'' parameter (related to the variance) of the distribution. $h(\cdot, \cdot), b(\cdot), A(\cdot), d(\cdot)$ are general functions whose specializations define the family of distributions that can be modeled in the GLM framework. Note that this form is a generalization of the exponential-family functional form incorporating the ``dispersion'' parameter $\tau$ (for this reason, the above form is known as the ``overdispersed exponential family'' of distributions).
 
-$$Loss(W_{11}, W_{12}, \ldots, W_{1m}, \ldots \ldots, W_{n1}, W_{n2}, \ldots, W_{nm}, W_1, W_2, \ldots W_n)$$
-$$ = (\sum_{j=1}^n W_j g(\sum_{i=1}^m X_i W_{ji}) - Y)^2 + \lambda_1 \sum_{j=1}^n \sum_{i=1}^m W_{ji}^2 + \lambda_2 \sum_{j=1}^n W_j^2$$
+{\bf It is important to mention here that the GLM framework operates even when the supervisory variable $Y$ is multi-dimensional}. We will denote the dimension of $Y$ and $\theta$ as $K$ (eg: for classification, this would mean $K$ classes). Note that $b(\theta) \cdot T(Y)$ is the inner-product between the vectors $b(\theta)$ and $T(Y)$. 
 
-The gradient of the Loss function with respect to the parameters in the output layer is defined by:
-
-$$\frac {\partial Loss}{\partial W_j} = 2 (\sum_{j=1}^n W_j g(\sum_{i=1}^m X_i W_{ji}) - Y) \cdot g(\sum_{i=1}^m X_i W_{ji}) + 2 \lambda_2 W_j$$
-$$ = 2 \cdot LayerProxyError \otimes LayerInput + 2 \cdot LayerLambda \cdot LayerParameters$$
-
-The gradient of the Loss function with respect to the parameters in the hidden layer is defined by:
-
-$$\frac {\partial Loss}{\partial W_{ji}} = 2 (\sum_{j=1}^n W_j g(\sum_{i=1}^m X_i W_{ji}) - Y) \cdot W_j \cdot g'(\sum_{i=1}^m X_i W_{ji}) \cdot X_i + 2 \lambda_1 W_{ji}$$
-$$ = 2 \cdot ((NextLayerProxyError \cdot NextLayerParameters) \circ LayerActivationDerivative) \otimes LayerInput$$
-$$ + 2 \cdot LayerLambda \cdot LayerParameters$$
-$$ = 2 \cdot LayerProxyError \otimes LayerInput + 2 \cdot LayerLambda \cdot LayerParameters$$
-
-If we have more hidden layers, the same differentiation chain-rule structure applies because the network structure/functional forms will be the same across all the hidden layers. Hence, the recursive formulation of the gradient will apply across all the hidden layers.
-
-\vspace{5mm}
-
-\section{Gradient with respect to Output Layer Parameters for Classification}
-\label{appendix:ClassificationDerivation}
-
-Here we show that the formula for gradient with respect to the output layer parameters is the same for classification as the formula we derived for regression in Appendix \ref{appendix:RecursiveDerivation}.
-
-Consider a dense feed-forward neural network for classification where the output layer produces $K$ probability outputs, one for each of the classes $k = 1, 2, \ldots, K$ (the $K$ probabilities summing to 1). Let the output of the final hidden layer (input to the output layer) for a given training data point be denoted by $H = (H_1, H_2, \ldots, H_n)$ and let the corresponding output from the output layer be denoted by $R = (R_1, R_2, \ldots, R_K)$. Let the supervisory value for the said training data point be denoted by $Y \in [1, 2, \ldots, K]$. Define``one-hot" variables $Y_k$ such that $Y_k = 1$ if $Y = k$ and $Y_k = 0$ if $Y \neq k$ for all $k = 1, 2, \ldots K$. Let the parameters in the output layer be denoted by $W_{kj}$ for all $j = 1, 2, \ldots, n$ for all $k = 1, 2, \ldots K$.
-
-The classification cross-entropy loss is given by the Loss function
-
-$$Loss(W_{11}, W_{12}, \ldots, W_{1n}, \ldots \ldots, W_{K1}, W_{K2}, \ldots, W_{Kn}) = - \sum_{k=1}^K (Y_k \cdot \log R_k + (1 - Y_k) \cdot \log (1 - R_k))$$
-
-where
-
-$$R_k  = \frac {e^{S_k}} {\sum_{i=1}^K e^{S_i}}$$
-
-where
-
-$$S_k = \sum_{j=1}^n H_j W_{kj}$$
-
-By the chain rule,
-
-$$\frac {\partial Loss}{\partial W_{kj}} = \frac {\partial Loss}{\partial R_k} \cdot \frac {\partial R_k}{\partial S_k} \cdot \frac {\partial S_k} {\partial W_{kj}}$$
-
-$$\frac {\partial Loss}{\partial R_k} = - \frac {Y_k} {R_k} + \frac {1 - Y_k} {1 - R_k} = \frac {R_k - Y_k} {R_k \cdot (1 - R_k)}$$
-
-Note that $R_k$ can be written as:
-
-$$R_k = \frac {1} {1 + \alpha \cdot e^{-S_k}}$$
-
-where
-
-$$\alpha = \sum_{i \neq k} e^{S_i}$$
-
-Noting that $\alpha$ is independent of $S_k$,
-
-$$\frac {\partial R_k} {\partial S_k} = \frac {\alpha \cdot e^{-S_k}} {(1 + \alpha \cdot e^{-S_k})^2} = \frac {1} {1 + \alpha \cdot e^{-S_k}} \cdot \frac {\alpha \cdot e^{-S_k}} {1 + \alpha \cdot e^{-S_k}} = \frac {1} {1 + \alpha \cdot e^{-S_k}} \cdot (1 - \frac {1} {1 + \alpha \cdot e^{-S_k}}) = R_k \cdot (1 - R_k)$$
-
-$$\frac {\partial S_k} {\partial W_kj} = H_j$$
-
-Hence,
-
-$$\frac {\partial Loss}{\partial W_{kj}} = \frac {\partial Loss}{\partial R_k} \cdot \frac {\partial R_k}{\partial S_k} \cdot \frac {\partial S_k} {\partial W_{kj}} = \frac {R_k - Y_k} {R_k \cdot (1 - R_k)} \cdot R_k \cdot (1 - R_k) \cdot H_j = (R_k - Y_k) \cdot H_j$$
-
-$R_k - Y_k$ is the ``error'' of the output from the output layer and $H_j$ is the input to the output layer. Hence, the gradient of the classification cross-entropy loss function with respect to the  output layer parameters can be expressed as the outer product of the ``error'' of the output from the output layer and the input to the output layer, which is exactly the form of the gradient of the regression loss function with respect to the parameters of its output layer.
-
-Note that the gradient with respect to the hidden-layer parameters will have the same recursive structure as our derivation for the regression case because the structure of the network/functional forms prior to the output layer (hidden layers) is exactly the same as that of regression, and hence, the same differentiation chain-rule structure applies as in the case of our derivation for regression.
-
-% \section{Gradient with respect to Output Layer Parameters with Exponential Activation Function and Conditionally Poisson Supervisory Variable}
-% \label{appendix:PoissonDerivation}
-
-% Here we show that the formula for gradient with respect to the output layer parameters is the same as the formula we derived for regression in Appendix \ref{appendix:RecursiveDerivation} for the case of an exponential activation function on the output layer and when the supervisory variable is poisson-distributed conditional on the output of the network.
-
-% Consider a dense feed-forward neural network where the output layer has an exponential activation function. Let the output of the final hidden layer (input to the output layer) for a given training data point be denoted by $H = (H_1, H_2, \ldots, H_n)$ and let the corresponding output be denoted by the scalar $R$. Let the supervisory value for the said training data point be denoted by $Y \in \mathbb{N}$ and we assume that $Probability(Y|R)$ follows a Poisson distribution with mean $R$. Let the parameters in the output layer be denoted by $W_j$ for all $j = 1, 2, \ldots, n$.
-
-% Since the activation function of the output layer is exponential,
-
-% $$R = e^{\sum_{j=1}^n H_j \cdot W_j}$$
-
-% Since $Probability(Y|R)$ follows a Poisson distribution with mean $R$, the probability of $Y$ is given by:
-
-% $$\frac {e^{-R} \cdot R^Y} {Y!}$$
-
-% The Cross-Entropy Loss (Negative Log-Likelihood) of the training data point is given by:
-
-% $$Loss(W_1, W_2, \ldots, W_n) = - \log (\frac {e^{-e^{\sum_{j=1}^n H_j \cdot W_j}} \cdot (e^{\sum_{j=1}^n H_j \cdot W_j})^Y} {Y!}) = e^{\sum_{j=1}^n H_j \cdot W_j} - Y \cdot (\sum_{j=1}^n H_j \cdot W_j) + \log (Y!)$$
-
-% $$\frac {\partial Loss}{\partial W_j} = e^{\sum_{j=1}^n H_j \cdot W_j} \cdot H_j - Y \cdot H_j = (e^{\sum_{j=1}^n H_j \cdot W_j} - Y) \cdot H_j$$
-
-% $e^{\sum_{j=1}^n H_j \cdot W_j} - Y$ is the ``error'' of the output from the output layer and $H_j$ is the input to the output layer. So, when the output layer's activation function is exponential and when the supervisory variable conditioned on the output of the network is poisson-distributed, the gradient of the cross-entropy loss function with respect to the output layer parameters can be expressed as the outer product of the ``error'' of the output from the output layer and the input to the output layer, which is exactly the form of the gradient of the regression loss function with respect to the parameters of its output layer.
-
-\section{Generalization: GLM conditional probability density and Canonical Link} 
-\label{appendix:CanonicalLink}
-
-Here we show that the formula for gradient with respect to the output layer parameters that we previously derived for regression and classification applies more generically to the case where the supervisory variable has a conditional probability density modeled as the Generalized Linear Model(GLM)'s ``standard-form'' probability density (i.e., fairly generic family of probability distributions), when the output layer's activation function is the GLM canonical link function, and when the loss function is cross-entropy loss.
-
-In the GLM framework, the conditional probability density of the supervisory variable $Y$ is modeled as:
-
-$$f(Y | \theta, \tau) = h(Y, \tau) \cdot e^{\frac {b(\theta) T(Y) - A(\theta)} {d(\tau)}}$$
-
-where $\theta$ should be thought of as the ``location'' parameter of the probability distribution and $\tau$ should be thought of as the ``scale'' parameter of the distribution. $h(\cdot, \cdot), b(\cdot), A(\cdot), d(\cdot)$ are general functions whose specializations define the family of distributions that can be modeled in the GLM framework.
-
-When we specialize the above probability density form to the so-called ``standard-form'', the conditional probability density of the supervisory variable is modeled as:
+When we specialize the above probability density form to the so-called ``normal-form'' (which means both $b(\cdot)$ and $T(\cdot)$ are identity functions), then the conditional probability density of the supervisory variable is (this is the form we work with in this paper):
 
 $$f(Y | \theta, \tau) = h(Y, \tau) \cdot e^{\frac {\theta \cdot Y - A(\theta)} {d(\tau)}}$$
 
-Further, if we specialize the GLM link function $g$ (defined as $g(X \cdot \beta) = Y$ where $X$ is the input vector and $\beta$ is the parameter vector) to be the canonical link function, then we have:
+The GLM link function $q(\cdot)$ is the function that transforms the linear predictor to the mean of the supervisory variable $Y$ conditioned on the linear predictor $\eta$ (linear predictor $\eta$ is the inner-product of the input vector and the parameters matrix). Therefore,
 
-$$\mu = E[Y] = g(\theta)$$
+$$E[Y|\theta] = q(\eta)$$
 
-Let us denote the parameters in the output layer by the vector $W$. Let us assume that the activation function of the output layer is the canonical link function $g(\cdot)$. Let us denote the output of the final hidden layer (input to the output layer) for a given training data point by the vector $H$ and so, the corresponding output of the network would be $g(H \cdot W)$. Let the supervisory value for the said training data point be denoted by $Y$ and we assume that $Probability(Y|g(H \cdot W))$ follows the above-mentioned ``standard-form'' probability density.
+We will specialize the GLM link function $q(\cdot)$ to be the canonical link function (``canonical'' simply means that $\theta$ is equal to the linear predictor $\eta$). So for a canonical link function $q(\cdot)$,
 
-In this setting,
+$$E[Y|\theta] = q(\theta)$$
 
-$$\mu = E[Y] = g(\theta) = g(H \cdot W) = A'(\theta)$$
+Note that $q$ transforms a vector of length $K$ to a vector of length $K$ ($\theta \rightarrow E[Y|\theta]$).
 
-and
+\subsection{Key Result}
 
-$$Var[Y] = A''(\theta) \cdot d(\tau)$$
+Since
 
-The Cross-Entropy Loss (Negative Log-Likelihood) of the training data point is given by:
+$$\int_y f(y | \theta, \tau) dy = 1,$$
 
-$$Loss(W) = - \log (h(Y, \tau) * e^{\frac {H \cdot W * Y - A(H \cdot W)} {d(\tau)}}) = - \log (h(y, \tau)) + \frac {A(H \cdot W) - (H \cdot W) * Y} {d(\tau)}$$
+it's partial derivatives with respect to $\theta$ will be zero. In other words,
 
-$$\nabla_W Loss = \frac {\partial Loss}{\partial \theta} \cdot \nabla_W \theta$$
+$$\frac {\partial (\int_y f(y | \theta, \tau) dy)} {\partial \theta} = 0$$
 
-So all we are left to prove is that $\frac {\partial Loss}{\partial \theta}$ is equal to a constant factor of $g(H \cdot W) - Y$ (the ``error'' in the output from the output layer).
+Hence,
 
-Expressing the loss function in terms of $\theta$,
+$$\frac {\partial (\int_y  h(y, \tau) \cdot e^{\frac {\theta \cdot y - A(\theta)} {d(\tau)}} dy)} {\partial \theta} = 0$$
 
-$$Loss(\theta) = - \log (h(y, \tau)) + \frac {A(\theta) - \theta * Y} {d(\tau)}$$
+Taking the partial derivative inside the integral, we get:
 
-$$\frac {\partial Loss}{\partial \theta} = \frac {A'(\theta) - Y} {d(\tau)} = \frac {\mu - Y} {d(\tau)} = \frac {g(\theta) - Y} {d(\tau)} = \frac {g(H \cdot W) - Y} {d(\tau)}$$
+$$\int_y  h(y, \tau) \cdot e^{\frac {\theta \cdot y - A(\theta)} {d(\tau)}} \cdot \frac {y - \frac {\partial A} {\partial \theta}} {d(\tau)} dy = 0$$
 
-Since $d(\tau)$ is a constant and since $g(H \cdot W) - Y$ is the ``error'' in the output from the output layer, this completes the proof.
+$$\int_y  f(y | \theta, \tau) \cdot (y - \frac {\partial A} {\partial \theta}) dy = 0$$
 
-Note that the gradient with respect to the hidden-layer parameters will have the same recursive structure as our derivation for the regression case because the structure of the network/functional forms prior to the output layer (hidden layers) is exactly the same as that of regression, and hence, the same differentiation chain-rule structure applies as in the case of our derivation for regression.
+$$E[(Y|\theta) - \frac {\partial A} {\partial \theta}] = 0$$
 
-We note that regression is a special case of this GLM formulation because the regression loss function is simply the cross-entropy loss function (negative log likelihood) when the supervisory variable $Y$ follows a conditional normal distribution and the canonical link function for the normal distribution is the identity function. Likewise, classification is a special case of this GLM formulation because the supervisory variable $Y$ follows a conditional Multinoulli distribution and the canonical link function for Multinoulli is softmax.
+This gives us the key result (which we will utilize later in our proof):
 
-\end{appendices}
+$$E[Y|\theta] = \frac {\partial A} {\partial \theta} \mbox{ (which as we know from above is} = q(\theta))$$
+
+As an aside, we want to mention that apart from allowing for a non-linear relationship between the input and the mean of the supervisory variable, GLM allows for heteroskedastic models (i.e., the variance of the supervisory variable is a function of the input variables). Specifically,
+
+$$Variance[Y|\theta] = \frac {\partial^2 A} {\partial \theta^2} \cdot d(\tau) \mbox{ (derivation similar to that of $E[Y|\theta]$ above)}$$
+
+\subsection{Common Examples of GLM}
+Several standard probability distributions paired with their canonical link function are special cases of ``normal-form'' GLM. For example,
+
+\begin{itemize}
+\item Normal distribution $N(\mu, \sigma)$ paired with the identity function ($q(\theta) = \theta$) is Linear Regression ($\theta = \mu, \tau = \sigma, h(Y, \tau) = \frac {e^{\frac {-Y^2} {2 \tau^2}}} {\sqrt{2 \pi} \tau}, A(\theta) = \frac {\theta^2} {2}, d(\tau) = \tau^2$).
+\item Bernoulli distribution parameterized by $p$ paired with the logistic function ($q(\theta) = \frac {1} {1+ e^{-\theta}}$) is Logistic Regression ($\theta = \log{(\frac p {1-p})}, \tau = h(Y, \tau) = d(\tau) = 1, A(\theta) = \log{(1+e^{\theta})}$).
+\item Poisson distribution parameterized by $\lambda$ paired with the exponential function ($q(\theta) = e^{\theta}$) is Log-Linear Regression ($\theta = \log{\lambda}, \tau = d(\tau) = 1, h(Y, \tau) = \frac 1 {Y!}, A(\theta) = e^{\theta}$).
+\end{itemize}
+
+\subsection{GLM in a Dense Feed-Forward Deep Neural Network}
+Now we come to our dense feed-forward deep neural network setting. Let us assume that the supervisory variable $Y$ has a conditional probability distribution of the GLM ``normal-form'' expressed above and let us assume that the activation function of the output layer $g_L(\cdot)$ is the canonical link function $q(\cdot)$. Then, 
+
+$$E[Y|\theta] = \frac {\partial A} {\partial \theta} = q(\theta) = q(I_L \cdot W_L) = g_L(I_L \cdot W_L) = g_L(S_L) = O_L$$
+
+{\bf In the above equation, we note that each of $Y, \theta, S_L, O_L$ is a vector of length $K$}.
+
+The Cross-Entropy Loss (Negative Log-Likelihood) of the training data point $(X, Y)$ is given by:
+
+$$Loss = - \log{(h(Y, \tau))} + \frac {A(\theta) - \theta \cdot Y} {d(\tau)}$$
+
+We define the ``Proxy Error'' $P_l$ for layer $l$ (for all $l = 0, 1, \ldots L$) as:
+
+$$P_l = d(\tau) \cdot \frac {\partial Loss} {\partial S_l}$$
+
+\subsection{Recursion Termination}
+
+We want to first establish the termination of the recursion for $P_l$, i.e., we want to establish that:
+
+$$P_L = d(\tau) \cdot \frac {\partial Loss} {\partial S_L} = d(\tau) \cdot \frac {\partial Loss} {\partial \theta} = O_L - Y = E$$
+
+To calculate $P_L$, we have to evaluate the partial derivatives of $Loss$ with respect to the $\theta$ vector.
+
+$$\frac {\partial Loss} {\partial \theta} = \frac {\frac {\partial A} {\partial \theta} - Y} {d(\tau)}$$
+
+It follows that:
+
+$$P_L = d(\tau) \cdot \frac {\partial Loss} {\partial \theta} = \frac {\partial A} {\partial \theta} - Y = q(\theta) - Y = g_L(\theta) - Y = O_L - Y$$
+
+This establishes the termination of the recursion for $P_l$, i.e. $P_L = O_L - Y = E$ (the ``error'' in the output of the output layer). It pays to re-emphasize that this result ($P_L = E$) owes a Thank You to the key result $\frac {\partial A} {\partial \theta} = q(\theta)$, which is applicable when the conditional probability density of the supervisory variable is in GLM ``normal form'' and when the link function $q(\cdot)$ is canonical. We are fortunate that this is still a fairly general setting and so, it applies to a wide range of regressions and classifications.
+
+\subsection{Recursion}
+
+Next, we want to establish the following recursion for $P_l$ for all $l = 0, 1, \ldots, L - 1$:
+
+$$P_l = (P_{l+1} \cdot W_{l+1}) \circ g_l'(S_l)$$
+
+We note that: 
+
+$$S_{l+1}= g_l(S_l) \cdot W_{l+1}$$
+
+Hence,
+
+$$P_l = d(\tau) \cdot \frac {\partial Loss} {\partial S_l} = d(\tau) \cdot \frac {\partial Loss} {\partial S_{l+1}}  \cdot \frac {\partial S_{l+1}} {\partial S_l} = d(\tau) \cdot \frac {\partial Loss} {\partial S_{l+1}} \cdot W_{l+1} \circ g_l'(S_l) =  (P_{l+1} \cdot W_{l+1}) \circ g_l'(S_l)$$
+
+This establishes the recursion for $P_l$ for all $l = 0, 1, \ldots, L - 1$. Again, it pays to re-emphasize that this recursion has nothing to do with GLM, it only has to do with the structure of the feed-forward network: $S_{l+1} = g_l(S_l) \cdot W_{l+1}$.
+
+\subsection{Loss Gradient Formulation}
+
+Finally, we are ready to express the gradient of the loss function with respect to the parameters of layer $l$ (for all $l = 0, 1, \ldots L$).
+
+$$ \frac {\partial Loss} {\partial W_l} = \frac {\partial Loss} {\partial S_l} \cdot \frac {\partial S_l} {\partial W_l} = P_l \otimes I_l \mbox{ (ignoring the constant factor } d(\tau))$$
+
+\section{Regression on a dense feed-forward deep neural network}
+Linear Regression is a special case of the GLM family because the linear regression loss function is simply the cross-entropy loss function (negative log likelihood) when the supervisory variable $Y$ follows a linear-predictor-conditional normal distribution and the canonical link function for the normal distribution is the identity function. Here we consider a dense feed-forward deep neural network whose output layer activation function is the identity function and we define the loss function to be mean-squared error (as follows):
+
+$$(I_L \cdot W_L - Y)^2$$
+
+The Cross-Entropy Loss (Negative Loss Likelihood) when $Y|(I_L \cdot W_L)$ is a normal distribution $N(\mu, \sigma)$ is as follows:
+
+$$ -\log{(\frac {1} {\sqrt{2 \pi} \sigma} \cdot e^{-\frac {(Y - (I_L \cdot W_L))^2} {2 \sigma^2}})} =  \frac {(Y - (I_L \cdot W_L))^2} {2 \sigma^2} - \log{(\frac {1} {\sqrt{2 \pi} \sigma})}$$
+
+Since $\sigma$ is a constant, the gradient of cross-entropy loss is same as the gradient of mean-squared error up to a constant factor. Hence, the gradient formulation we derived for GLM is applicable here.
+
+\section{Classification on a dense feed-forward deep neural network}
+Softmax Classification is a special case of the GLM family where the supervisory variable $Y$ follows a linear-predictor-conditional Multinoulli distribution and the canonical link function for Multinoulli is Softmax. Here we consider a dense feed-forward deep neural network whose output layer activation function is softmax and we define the loss function to be cross-entropy loss.
+
+We assume $K$ classes. We denote the $r^{th}$ element of $O_L$ (output of $r^{th}$ neuron in the output layer) as $O_L^{(r)}$, the $r^{th}$ element of the training data point $Y$ as $Y^{(r)}$ and the $r^{th}$ element of $S_L$ as $S_L^{(r)}$ for all $r = 1, \ldots K$. The supervisory variable $Y$ will be have a ``one-hot'' encoding of length $K$ as follows: . If the supervisory variable is meant to represent class $k \in [1, K]$, then $Y^{(k)} = 1$ and $Y^{(r)} = 0$ for all $r = 1, \ldots, k-1, k+1, \ldots K$ (the non-$k$ elements of $Y$ are 0).
+
+The softmax classification cross-entropy loss function is given by:
+
+$$ - \sum_{r=1}^K (Y^{(r)} \cdot \log O_L^{(r)})$$
+
+where
+
+$$O_L^{(r)}  = \frac {e^{S_L^{(r)}}} {\sum_{i=1}^K e^{S_L^{(i)}}}$$
+
+We can write the above cross-entropy loss function as the negative log-likelihood of a Multinoulli ($(p_1, p_2, \ldots, p_K)$) distribution that is a special case of a GLM distribution:
+
+$$ - \log{f(Y | \theta, \tau)} = - \log{(h(Y, \tau) \cdot e^{\frac {\theta \cdot Y - A(\theta)} {d(\tau)}})} = -\log{(h(Y, \tau))} \cdot \frac {A(\theta) - \theta \cdot Y} {d(\tau)}$$
+
+with the following specializations:
+
+$$\tau = h(Y, \tau) = d(\tau) = 1$$
+$$\theta^{(r)} = \log{(p_r)} = \log{(O_L^{(r)})} = S_L^{(r)} \mbox{ for all $r = 1, \ldots, K$}$$
+$$A(\theta) = A(\theta^{(1)}, \ldots, \theta^{(K)}) = \log{(\sum_{r=1}^K e^{\theta^{(r)}})}$$
+
+The canonical link function for Multinoulli distribution is the softmax function $g(\theta)$ given by:
+
+$$\frac {\partial A} {\partial \theta} = g(\theta) = g(\theta^{(1)}, \theta^{(2)}, \ldots, \theta^{(K)}) = (\frac {e^{\theta^{(1)}}} {\sum_{r=1}^K e^{\theta^{(r)}}}, \frac {e^{\theta^{(2)}}} {\sum_{r=1}^K e^{\theta^{(r)}}}, \ldots, \frac {e^{\theta^{(K)}}} {\sum_{r=1}^K e^{\theta^{(r)}}})$$
+
+So we can see that:
+
+$$O_L = g(\theta) = g(S_L)$$
+
+Hence, the gradient formulation we derived for GLM is applicable here.
 
 \end{document}
