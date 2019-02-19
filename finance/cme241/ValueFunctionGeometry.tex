@@ -207,7 +207,7 @@ $$d({\bf v_1}, {\bf v_2}) = \sum_{i=1}^n \bmu(s_i) \cdot  ({\bf v_1}(s_i) - {\bf
 where $\bd$ is the square diagonal matrix consisting of $\bmu(s_i), 1 \leq i \leq n$
 \item Projection operator for subspace spanned by $\bphi$ is denoted as $\bpi$
 \item $\bpi$ performs an orthogonal projection of VF vector $\bv$ on subspace $\bphi$
-\item So we need to minimize $d(\bv, \bpi \bv)$
+\item So, $\bpi \bv$ is the VF in subspace $\bphi$ defined by $\argmin_{\bw} d(\bv, \vw)$
 \item This is a weighted least squares regression with solution:
 $$\bw = (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot \bv$$
 \item So, the Projection operator $\bpi$ can be written as:
@@ -220,7 +220,7 @@ $$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \b
 Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
 
 \begin{enumerate}
-\item Projection of $\vpi$: $\bw_{\pi} = \argmin_\bw d(\vpi, \vw)$
+\item Projection $\bpi \vpi$: $\bw_{\pi} = \argmin_\bw d(\vpi, \vw)$
 \begin{itemize}
 \item This is the VF we seek when doing linear function approximation
 \item Because it is the VF vector ``closest'' to $\vpi$ in the $\bphi$ subspace
