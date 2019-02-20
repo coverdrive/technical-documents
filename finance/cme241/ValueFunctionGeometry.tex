@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 \mode<presentation> {
 
@@ -125,7 +125,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Motivation for understanding Value Function Geometry}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Helps us better understand transformations of Value Functions (VFs)
 \item Across the various DP and RL algorithms
 \item Particularly helps when VFs are approximated, esp. with linear approx
@@ -138,7 +139,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Notation}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Assume state space $\mathcal{S}$ consists of $n$ states: $\{s_1, s_2, \ldots, s_n\}$
 \item Action space $\mathcal{A}$ consisting of finite number of actions
 \item This exposition extends easily to continuous state/action spaces too
@@ -157,7 +159,8 @@ $$\vw(s) = \bw^T \cdot {\bf \phi}(s) =  \sum_{j=1}^m w_j \cdot \phi_j(s) \mbox{ 
 
 \begin{frame}
 \frametitle{VF Geometry and VF Linear Approximations}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Consider $n$-dim space $\mathbb{R}^n$, with each dim corresponding to a state in $\mathcal{S}$
 \item Think of a VF (typically denoted $\bv$): $\mathcal{S} \rightarrow \mathbb{R}$ as a vector in this space
 \item Each dimension's coordinate is the VF for that dimension's state
@@ -173,7 +176,8 @@ $$\vw(s) = \bw^T \cdot {\bf \phi}(s) =  \sum_{j=1}^m w_j \cdot \phi_j(s) \mbox{ 
 
 \begin{frame}
 \frametitle{Some more notation}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Denote $r(s,a)$ as the Expected Reward upon action $a$ in state $s$
 \item Denote $p(s,s',a)$ as the probability of transition $s \rightarrow s'$ upon action $a$
 \item Define
@@ -187,7 +191,8 @@ $${\bf P}_{\pi}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot p(s,s',a)$$
 
 \begin{frame}
 \frametitle{Bellman operator $\bb$}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Bellman operator $\bb$ for policy $\pi$ operating on VF vector $\bv$ defined as:
 $$\bb \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
 \item Note that $\vpi$ is the fixed point of operator $\bb$ (meaning $\bb \vpi = \vpi$)
@@ -200,7 +205,8 @@ by Contraction Mapping Theorem, we will reach the fixed point $\vpi$
 
 \begin{frame}
 \frametitle{Projection operator $\bpi$}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item First we define ``distance'' $d({\bf v_1}, {\bf v_2})$ between VF vectors ${\bf v_1}, {\bf v_2}$
 \item Weighted by $\bmu$ across the $n$ dimensions of ${\bf v_1}, {\bf v_2}$
 $$d({\bf v_1}, {\bf v_2}) = \sum_{i=1}^n \bmu(s_i) \cdot  ({\bf v_1}(s_i) - {\bf v_2}(s_i))^2 =  ({\bf v_1} - {\bf v_2})^T \cdot \bd \cdot ({\bf v_1} - {\bf v_2})$$
@@ -218,20 +224,28 @@ $$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \b
 \begin{frame}
 \frametitle{4 VF vectors of interest in the $\bphi$ subspace}
 Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
-
-\begin{enumerate}
+\pause
+\begin{enumerate}[<+->]
 \item Projection $\bpi \vpi$: $\bw_{\pi} = \argmin_\bw d(\vpi, \vw)$
-\begin{itemize}
+\begin{itemize}[<+->]
 \item This is the VF we seek when doing linear function approximation
 \item Because it is the VF vector ``closest'' to $\vpi$ in the $\bphi$ subspace
 \item Monte-Carlo with linear func approx will (slowly) converge to $\bw_{\pi}$
 \end{itemize}
 
 \item Bellman Error (BE)-minimizing: $\bw_{BE} = \argmin_\bw d(\bb \vw, \vw)$
-\begin{itemize}
-\item This is the solution to a linear system (covered later)
-\item In model-free setting, Residual Gradient TD Algorithm (covered later)
+\begin{itemize}[<+->]
+\item This can be expressed as the solution of a linear system ${\bf A w = b}$ 
+\item Matrix ${\bf A}$ and Vector ${\bf b}$ comprises of ${\bf P}_{\pi}, {\bf R}_{\pi}, \bphi, \mu_{\pi}$
+\item In model-free setting, ${\bf A}$ and ${\bf b}$ can be estimated with batch data
+\item For non-linear approx or off-policy, Residual Gradient TD Algorithm
+\item Based on observation: $\bw_{BE} = \argmin_\bw (\mathbb{E}_{\pi} [\delta])^2$, where $\delta$ is TD Error 
 \item Cannot learn if we can only access features, and not underlying states
+\end{itemize}
+
+\item Temporal Difference Error (TDE)-minimizing: ${\bf w}_{TDE} = \argmin_\bw \mathbb{E}_{\pi} [\delta^2]$
+\begin{itemize}
+\item Naive Residual Gradient TD Algorithm
 \end{itemize}
 
 \asuivre
@@ -247,20 +261,14 @@ Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
 \suite
 
 \item Projected Bellman Error (PBE)-minimizing: $\bw_{PBE} = \argmin_\bw d((\bpi \cdot \bb) \vw, \vw)$
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item The minimum is 0, i.e., $\bphi \cdot \bw_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$
-\item This fixed point is the solution to a linear system (covered later)
-\item Alternatively, if we start with an arbitrary $\vw$ and repeatedly apply $\bpi \cdot \bb$, we will converge to $\bphi \cdot \bw_{PBE}$
-\item This is a DP-like process with approximation - repeatedly thrown out of the $\bphi$ subspace (applying Bellman operator $\bb$),
-followed by landing back in the $\bphi$ subspace (applying Projection operator $\bpi$)
-\item In model-free setting, Gradient TD Algorithms (covered later)
-\end{itemize}
-
-\item Temporal Difference Error (TDE)-minimizing: ${\bf w}_{TDE} = \argmin_w \mathbb{E}_{\pi} [\delta^2]$
-\begin{itemize}
-\item $\delta$ is the TD error
-\item Minimizes the expected square of the TD error when following policy $\pi$
-\item Naive Residual Gradient TD Algorithm (covered later)
+\item Starting with an arbitrary VF vector $\bv$ and repeatedly applying $\bb$ (taking it out of the subspace) followed by $\bpi$ (projecting it back to the subspace), we will reach the fixed point $\bphi \cdot \bw_{PBE}$
+\item Also, $\bw_{PBE}$ can be expressed as the solution of a linear system ${\bf A w = b}$
+\item In model-free setting, ${\bf A}$ and ${\bf b}$ can be estimated with batch data
+\item This yields the {\em Least Squares Temporal Difference (LSTD)} algorithm
+\item For non-linear approx or off-policy, Gradient TD Algorithms
 \end{itemize}
 
 \end{enumerate}
@@ -273,77 +281,32 @@ followed by landing back in the $\bphi$ subspace (applying Projection operator $
 \end{frame}
 
 
-\section{Solutions with Linear System Formulations}
+\section{Solution of $\bw_{BE}$ with a Linear System Formulation}
 
 \begin{frame}
 \frametitle{Solution of $\bw_{BE}$ with a Linear System Formulation}
+\pause
 \begin{align*}
 \bw_{BE} & = \argmin_\bw d(\vw, {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \vw) \\
 & = \argmin_\bw d(\bphi \cdot \bw, {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot \bw)\\
 & = \argmin_\bw d(\bphi \cdot \bw - \gamma {\bf P}_{\pi} \cdot \bphi \cdot \bw, {\bf R}_{\pi} )\\
 & = \argmin_\bw d((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot \bw, {\bf R}_{\pi} )\\
 \end{align*}
+\pause
 This is a weighted least-squares linear regression of ${\bf R}_{\pi}$ versus $\bphi - \gamma {\bf P}_{\pi} \cdot \bphi$
 with weights $\bmu$, whose solution is:
+\pause
 $$w_{BE} = ((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot {\bf R}_{\pi}$$
-\end{frame}
-
-\begin{frame}
-\frametitle{Solution of $\bw_{PBE}$ with a Linear System Formulation}
-$\bphi \cdot {\bf w}_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$. We know:
-$$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd$$
-$$\bb \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
-Therefore,
-$$\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) = \bphi \cdot {\bf w}_{PBE}$$
-Since columns of $\bphi$ are assumed to be independent (full rank),
-\begin{align*}
-(\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) & = {\bf w}_{PBE}\\
-\bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) &= \bphi^T \cdot \bd \cdot \bphi \cdot {\bf w}_{PBE}\\
-\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot {\bf w}_{PBE} &= \bphi^T \cdot \bd \cdot {\bf R}_{\pi}\\ 
-\end{align*}
-This is a square linear system of the form ${\bf A} \cdot {\bf w}_{PBE} = {\bf b}$ whose solution is:
-$${\bf w}_{PBE} = {\bf A}^{-1} \cdot {\bf b} = (\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$$
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Model-Free Learning of $\bw_{PBE}$}
-\begin{itemize}
-\item How do we construct matrix ${\bf A} = \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)$ and vector ${\bf b} = \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$ without a model?
-\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of ${\bf A}$ and ${\bf b}$
-\item Estimate of ${\bf A}$ is the outer-product of vectors $\phi(s)$ and $\phi(s) - \gamma \cdot \phi(s')$
-\item Estimate of ${\bf b}$ is scalar $r$ times vector  $\phi(s)$ 
-\item Average these estimates across many such model-free transitions
-\item This algorithm is called Least Squares Temporal Difference (LSTD)
-\item Alternative: Semi-Gradient Temporal Difference (TD) descent
-\item This semi-gradient descent converges to ${\bf w}_{PBE}$ with weight updates:
-$$\Delta w = \alpha \cdot (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)) \cdot \phi(s)$$
-\item $r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)$ is the TD error, denoted $\delta$
-\end{itemize}
 \end{frame}
 
 \section{Residual Gradient TD}
 
 \begin{frame}
-\frametitle{Naive Residual Gradient Algorithm to solve for ${\bf w}_{TDE}$}
-\begin{itemize}
-\item We defined ${\bf w}_{TDE}$ as the vector in the $\bphi$ subspace that minimizes the expected square of the TD error $\delta$ when following policy $\pi$.
-$${\bf w}_{TDE} = \argmin_{{\bf w}} \sum_{s \in \mathcal{S}} \bmu(s) \sum_{r,s'} prob_{\pi}(r, s'|s) \cdot (r + \gamma \cdot {\bf w}^T \cdot \phi(s') - {\bf w}^T \cdot \phi(s))^2$$
-\item To perform SGD, we have to estimate the gradient of the expected square of TD error by sampling
-\item The weight update for each sample in the SGD will be:
-\begin{align*}
-\Delta w & = - \frac{1}{2} \alpha \cdot \nabla_w (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s))^2\\
-& = \alpha \cdot (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)) \cdot (\phi(s) - \gamma \cdot \phi(s'))\\
-\end{align*}
-\item This algorithm (named {\em Naive Residual Gradient}) converges robustly, but not to a desirable place
-\end{itemize}
-\end{frame}
-
-\begin{frame}
 \frametitle{Residual Gradient Algorithm to solve for ${\bf w}_{BE}$}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We defined ${\bf w}_{BE}$ as the vector in the $\bphi$ subspace that minimizes BE
-\item But BE for a state is the expected TD error in that state
+\item But BE for a state is the expected TD error $\delta$ in that state when following policy $\pi$
 \item So we want to do SGD with gradient of square of expected TD error
 \begin{align*}
 \Delta w & = - \frac{1}{2} \alpha \cdot \nabla_w (\mathbb{E}_{\pi}[\delta])^2\\
@@ -358,11 +321,74 @@ $${\bf w}_{TDE} = \argmin_{{\bf w}} \sum_{s \in \mathcal{S}} \bmu(s) \sum_{r,s'}
 \end{itemize}
 \end{frame}
 
+
+
+\begin{frame}
+\frametitle{Naive Residual Gradient Algorithm to solve for ${\bf w}_{TDE}$}
+\pause
+\begin{itemize}[<+->]
+\item We defined ${\bf w}_{TDE}$ as the vector in the $\bphi$ subspace that minimizes the expected square of the TD error $\delta$ when following policy $\pi$
+$${\bf w}_{TDE} = \argmin_{{\bf w}} \sum_{s \in \mathcal{S}} \bmu(s) \sum_{r,s'} prob_{\pi}(r, s'|s) \cdot (r + \gamma \cdot {\bf w}^T \cdot \phi(s') - {\bf w}^T \cdot \phi(s))^2$$
+\item To perform SGD, we have to estimate the gradient of the expected square of TD error by sampling
+\item The weight update for each sample in the SGD will be:
+\begin{align*}
+\Delta w & = - \frac{1}{2} \alpha \cdot \nabla_w (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s))^2\\
+& = \alpha \cdot (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)) \cdot (\phi(s) - \gamma \cdot \phi(s'))\\
+\end{align*}
+\item This algorithm (named {\em Naive Residual Gradient}) converges robustly, but not to a desirable place
+\end{itemize}
+\end{frame}
+
+\section{Solution of $\bw_{PBE}$ with a Linear System Formulation}
+
+\begin{frame}
+\frametitle{Solution of $\bw_{PBE}$ with a Linear System Formulation}
+\pause
+$\bphi \cdot {\bf w}_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$. We know:
+$$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd$$
+$$\bb \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
+\pause
+Therefore,
+$$\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) = \bphi \cdot {\bf w}_{PBE}$$
+\pause
+Since columns of $\bphi$ are assumed to be independent (full rank),
+\begin{align*}
+(\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) & = {\bf w}_{PBE}\\
+\bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) &= \bphi^T \cdot \bd \cdot \bphi \cdot {\bf w}_{PBE}\\
+\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot {\bf w}_{PBE} &= \bphi^T \cdot \bd \cdot {\bf R}_{\pi}\\ 
+\end{align*}
+\pause
+This is a square linear system of the form ${\bf A} \cdot {\bf w}_{PBE} = {\bf b}$ whose solution is:
+$${\bf w}_{PBE} = {\bf A}^{-1} \cdot {\bf b} = (\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$$
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Model-Free Learning of $\bw_{PBE}$}
+\pause
+\begin{itemize}[<+->]
+\item How do we construct matrix ${\bf A} = \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)$ and vector ${\bf b} = \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$ without a model?
+\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of ${\bf A}$ and ${\bf b}$
+\item Estimate of ${\bf A}$ is the outer-product of vectors $\phi(s)$ and $\phi(s) - \gamma \cdot \phi(s')$
+\item Estimate of ${\bf b}$ is scalar $r$ times vector  $\phi(s)$ 
+\item Average these estimates across many such model-free transitions
+\item This algorithm is called Least Squares Temporal Difference (LSTD)
+\item Alternative: Semi-Gradient Temporal Difference (TD) descent
+\item This semi-gradient descent converges to ${\bf w}_{PBE}$ with weight updates:
+$$\Delta w = \alpha \cdot (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)) \cdot \phi(s)$$
+\item $r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)$ is the TD error, denoted $\delta$
+\end{itemize}
+\end{frame}
+
+
+
+
 \section{Gradient TD}
 
 \begin{frame}
 \frametitle{Gradient TD Algorithms to solve for ${\bf w}_{PBE}$}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item For on-policy linear func approx, semi-gradient TD works
 \item For non-linear func approx or off-policy, we need Gradient TD
 \begin{itemize}
@@ -383,37 +409,44 @@ $$= (\bphi^T \cdot \bd \cdot \bdel)^T \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1}
 
 \begin{frame}
 \frametitle{TDC Algorithm to solve for ${\bf w}_{PBE}$}
+\pause
 We derive the TDC Algorithm based on $\nabla_{\bf w} \mathcal{L}({\bf w})$
 $$\nabla_{\bf w} \mathcal{L}({\bf w}) = 2 \cdot (\nabla_{\bf w} (\bphi^T \cdot \bd \cdot \bdel)^T) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
+\pause
 Now we express each of these 3 terms as expectations of model-free transitions $s \stackrel{\mu}\longrightarrow (r,s')$, denoting $r + \gamma \cdot {\bw}^T \cdot \phi(s') - {\bw}^T \cdot \phi(s)$ as $\delta$
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item $\bphi^T \cdot \bd \cdot \bdel = \mathbb{E}[\delta \cdot \phi(s)]$
 \item $\nabla_{\bf w} (\bphi^T \cdot \bd \cdot \bdel)^T = \nabla_{\bf w} (\mathbb{E}[\delta \cdot \phi(s)])^T = \mathbb{E}[(\nabla_{\bf w} \delta) \cdot \phi(s)^T] = \mathbb{E}[(\gamma \cdot \phi(s') - \phi(s)) \cdot \phi(s)^T]$
 \item $\bphi^T \cdot \bd \cdot \bphi = \mathbb{E}[\phi(s) \cdot \phi(s)^T]$
 \end{itemize}
+\pause
 Substituting, we get:
 $$\nabla_{\bf w} \mathcal{L}({\bf w}) = 2 \cdot  \mathbb{E}[(\gamma \cdot \phi(s') - \phi(s)) \cdot \phi(s)^T] \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$$
 \end{frame}
 
 \begin{frame}
 \frametitle{Weight Updates of TDC Algorithm}
+\pause
 $$\Delta w  = - \frac {1} {2} \alpha \cdot \nabla_{\bf w} \mathcal{L}({\bf w})$$
 $$ = \alpha \cdot \mathbb{E}[(\phi(s) - \gamma \cdot \phi(s')) \cdot \phi(s)^T] \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$$
 $$ = \alpha \cdot (\mathbb{E}[\phi(s) \cdot \phi(s)^T] - \gamma \cdot \mathbb{E}[\phi(s') \cdot \phi(s)^T]) \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$$
 $$ = \alpha \cdot (\mathbb{E}[\delta \cdot \phi(s)] - \gamma \cdot \mathbb{E}[\phi(s') \cdot \phi(s)^T] \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)])$$
 $$ = \alpha \cdot (\mathbb{E}[\delta \cdot \phi(s)] - \gamma \cdot \mathbb{E}[\phi(s') \cdot \phi(s)^T] \cdot \theta)$$
-
+\pause
 \vspace*{2mm}
 
 where $\theta = \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$ is the solution to a weighted least-squares linear regression of $\bb \bv - \bv$ against $\bphi$, with weights as $\mu_{\pi}$.
-
+\pause
 \vspace*{3mm}
 
 {\bf Cascade Learning: Update both $w$ and $\theta$} ($\theta$ converging faster)
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item $\Delta w = \alpha \cdot \delta \cdot \phi(s)  - \alpha \cdot \gamma \cdot \phi(s') \cdot (\theta^T \cdot \phi(s))$
 \item $\Delta \theta = \beta \cdot (\delta - \theta^T \cdot \phi(s)) \cdot \phi(s)$
 \end{itemize}
+\pause
 Note: $\theta^T \cdot \phi(s)$ operates as estimate of TD error $\delta$ for current state $s$
 
 \end{frame}
