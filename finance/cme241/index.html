@@ -280,15 +280,34 @@ th.date {
   <tr>
     <th>February 20 and 22</th>
     <th>
-    	<a href="lecture_slides/david_silver_slides/FA.pdf">RL with Function Approximation (including Deep RL)</a>
+    	<a href="lecture_slides/david_silver_slides/FA.pdf">RL with Function Approximation (including Deep RL and Batch Methods)</a>
     </th>
-    <th></th>
-    <th></th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=UoPei5o4fps&t=2120s">David Silver's corresponding video (youtube) on RL with Function Approximation</a></li>
+	    <li>Function Approximation sections of Sutton-Barto textbook (pages 197-210, 222-230, 243-248)</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Write code for the interface for RL algorithms with value function approximation. The core of this interface should be a function from a (state, action) pair
+			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
+			    or the reward model.</li>
+		    <li>Implement any Monte-Carlo Prediction algorithm with Value Function approximation</li>
+		    <li>Implement 1-step TD Prediction algorithm with Value Function approximation</li>
+		    <li>Implement Eligibility-Traces-based TD(lambda) Prediction algorithm with Value Function approximation</li>
+		    <li>Implement SARSA and SARSA(Lambda) with Value Function approximation</li>
+		    <li>Implement Q-Learning with Value Function approximation</li>
+		    <li>Implement LSTD and LSPI</li>
+		    <li>Test the above algorithms versus DP Policy Evaluation and DP Policy Iteration/Value Iteration algorithm on an example MDP</li>
+		    <li>Project Suggestion: Customize the LSPI algorithm for American Option Pricing (see <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">this paper</a>)</li>
+	    </ul>
+    </th>
   </tr>
   <tr>
     <th>February 27 and March 1</th>
     <th>
-    	<a href="lecture_slides/ValueFunctionGeometry.pdf">Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD</a>
+    	<a href="lecture_slides/ValueFunctionGeometry.pdf">Value Function Geometry and Gradient TD</a>
     </th>
     <th></th>
     <th></th>
