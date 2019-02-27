@@ -299,6 +299,21 @@ with weights $\bmu$, whose solution is:
 $$w_{BE} = ((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot {\bf R}_{\pi}$$
 \end{frame}
 
+\begin{frame}
+\frametitle{Model-Free Learning of $\bw_{BE}$}
+\pause
+\begin{itemize}[<+->]
+\item Let us refer to $(\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)$ as ${\bf A}$
+\item Let us refer to $(\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot {\bf R}_{\pi}$ as ${\bf b}$ 
+\item So that $w_{BE} = {\bf A}^{-1} \cdot {\bf b}$
+\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of ${\bf A}$ and ${\bf b}$
+\item Estimate of ${\bf A}$ is the outer-product of vector $\phi(s) - \gamma \cdot \phi(s')$ with itself
+\item Estimate of ${\bf b}$ is scalar $r$ times vector $\phi(s) - \gamma \cdot \phi(s')$ 
+\item Average these estimates across many such model-free transitions
+\end{itemize}
+\end{frame}
+
+
 \section{Residual Gradient TD}
 
 \begin{frame}
@@ -373,10 +388,11 @@ $${\bf w}_{PBE} = {\bf A}^{-1} \cdot {\bf b} = (\bphi^T \cdot \bd \cdot (\bphi -
 \item Estimate of ${\bf b}$ is scalar $r$ times vector  $\phi(s)$ 
 \item Average these estimates across many such model-free transitions
 \item This algorithm is called Least Squares Temporal Difference (LSTD)
-\item Alternative: Semi-Gradient Temporal Difference (TD) descent
-\item This semi-gradient descent converges to ${\bf w}_{PBE}$ with weight updates:
+\item Alternative: Our usual Semi-Gradient TD descent with updates:
 $$\Delta w = \alpha \cdot (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)) \cdot \phi(s)$$
-\item $r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)$ is the TD error, denoted $\delta$
+\item This converges to ${\bf w}_{PBE}$ because $\mathbb{E}_{\pi}[\Delta w] = 0$ yields
+$$ \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w} - \bphi \cdot {\bf w}) = 0$$
+$$ \Rightarrow \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot {\bf w} = \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$$ 
 \end{itemize}
 \end{frame}
 

@@ -119,7 +119,7 @@
 \begin{itemize}[<+->]
 \item Let us review how we got here
 \item We started with Markov Decision Processes and Bellman Equations
-\item We then studied several variants of DP and RL algorithms
+\item Next we studied several variants of DP and RL algorithms
 \item We noted that the idea of {\em Generalized Policy Iteration} (GPI) is key
 \item Policy Improvement step: $\pi(a|s)$ derived from $\argmax_a Q(s, a)$
 \item How do we do $\argmax$ when action space is large or continuous?
@@ -206,12 +206,12 @@ PG coverage will be quite similar for non-discounted non-episodic, by considerin
 \begin{frame}
 \frametitle{``Expected Returns" Objective}
 \pause
-Now we formalize the ``Expected Returns'' Objective $J(\pi(\cdot, \cdot; \theta))$
-$$J(\theta) = E[\sum_{t=0}^\infty \gamma^t r_t|\pi]$$
+Now we formalize the ``Expected Returns'' Objective $J(\theta)$
+$$J(\theta) = \mathbb{E}_{\pi}[\sum_{t=0}^\infty \gamma^t r_t]$$
 \pause
 Value Function $V^{\pi}(s)$ and Action Value function $Q^{\pi}(s,a)$ defined as:
-$$V^{\pi}(s) = E[\sum_{k=t}^\infty \gamma^{k-t} r_k|s_t=s, \pi], \forall t \in \{0, 1, 2, \ldots\}$$
-$$Q^{\pi}(s,a) = E[\sum_{k=t}^\infty \gamma^{k-t} r_k|s_t=s, a_t=a, \pi], \forall t \in \{0, 1, 2, \ldots\}$$
+$$V^{\pi}(s) = \mathbb{E}_{\pi}[\sum_{k=t}^\infty \gamma^{k-t} r_k|s_t=s], \forall t \in \{0, 1, 2, \ldots\}$$
+$$Q^{\pi}(s,a) = \mathbb{E}_{\pi}[\sum_{k=t}^\infty \gamma^{k-t} r_k|s_t=s, a_t=a], \forall t \in \{0, 1, 2, \ldots\}$$
 \pause
 $$\mbox{Advantage Function } A^{\pi}(s,a) = Q^{\pi}(s,a) - V^{\pi}(s)$$
 \pause
@@ -221,7 +221,7 @@ Also, $p(s \rightarrow s', t, \pi)$ will be a key function for us - it denotes t
 \begin{frame}
 \frametitle{Discounted State Visitation Measure}
 \pause
-$$J(\theta) = E[\sum_{t=0}^\infty \gamma^t r_t|\pi] = \sum_{t=0}^\infty \gamma^t E[r_t|\pi]$$
+$$J(\theta) = \mathbb{E}_{\pi}[\sum_{t=0}^\infty \gamma^t r_t] = \sum_{t=0}^\infty \gamma^t \mathbb{E}_{\pi}[r_t]$$
 \pause
 $$ = \sum_{t=0}^\infty \gamma^t \int_{\mathcal{S}} (\int_{\mathcal{S}}  p_0(s_0) \cdot p(s_0 \rightarrow s, t, \pi) \cdot ds_0) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot \mathcal{R}_s^a \cdot da \cdot ds$$
 \pause
@@ -394,11 +394,11 @@ $$\Delta \theta_t = \alpha \cdot \gamma^t \cdot \nabla_{\theta} \log \pi(s_t, a_
 
 \begin{pseudocode}{REINFORCE}{\cdot}
 \mbox{Initialize } \theta \mbox{ arbitrarily}\\
-\FOR \mbox{each episode } \{s_0, a_0, r_0, \ldots, s_{T-1}, a_{T-1}, r_{T-1}\} \sim \pi(\cdot, \cdot; \theta) \DO
+\FOR \mbox{each episode } \{s_0, a_0, r_0, \ldots, s_T, a_T, r_T\} \sim \pi(\cdot, \cdot; \theta) \DO
 \BEGIN
-\FOR t \GETS 0 \TO T-1 \DO
+\FOR t \GETS 0 \TO T \DO
 \BEGIN
-G \GETS \sum_{k=t}^{T-1} \gamma^{k-t} \cdot r_k\\
+G \GETS \sum_{k=t}^{T} \gamma^{k-t} \cdot r_k\\
 \theta \GETS \theta + \alpha \cdot \gamma^t \cdot \nabla_{\theta} \log \pi(s_t, a_t; \theta) \cdot G\\
 \END\\
 \END\\
@@ -556,7 +556,7 @@ P \GETS \gamma P, s \GETS s'\\
 \item $A(s,a;w, v)$
 \item $\delta(s,s',r;v)$
 \end{itemize}
-\item Turns out there is indeed.a way to overcome bias
+\item Turns out there is indeed a way to overcome bias
 \item It is called the  {\em Compatible Function Approximation Theorem}
 \end{itemize}	
 \end{frame}
