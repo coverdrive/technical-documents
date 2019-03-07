@@ -170,6 +170,7 @@
 \frametitle{Advantages and Disadvantages of Policy Gradient approach}
 \pause
 {\bf Advantages:}
+\pause
 \begin{itemize}[<+->]
 \item Finds the best {\em Stochastic} Policy (Optimal Deterministic Policy, produced by other RL algorithms, can be unsuitable for POMDPs)
 \item Naturally {\em explores} due to Stochastic Policy representation
@@ -177,7 +178,9 @@
 \item Small changes in $\theta \Rightarrow$ small changes in $\pi$, and in state distribution
 \item This avoids the convergence issues seen in $\argmax$-based algorithms 
 \end{itemize}
+\pause
 {\bf Disadvantages:}
+\pause
 \begin{itemize}[<+->]
 \item Typically converge to a local optimum rather than a global optimum
 \item Policy Evaluation is typically inefficient and has high variance
@@ -391,7 +394,7 @@ $$\mathbb{Q.E.D.}$$
 \item Using $G_t = \sum_{k=t}^T \gamma^{k-t} \cdot r_k$ as an unbiased sample of $Q^{\pi}(s_t,a_t)$
 $$\Delta \theta_t = \alpha \cdot \gamma^t \cdot \nabla_{\theta} \log \pi(s_t, a_t; \theta) \cdot G_t$$
 \end{itemize}
-
+\pause
 \begin{pseudocode}{REINFORCE}{\cdot}
 \mbox{Initialize } \theta \mbox{ arbitrarily}\\
 \FOR \mbox{each episode } \{s_0, a_0, r_0, \ldots, s_T, a_T, r_T\} \sim \pi(\cdot, \cdot; \theta) \DO
