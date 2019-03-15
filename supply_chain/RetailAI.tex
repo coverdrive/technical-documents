@@ -354,6 +354,32 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Perspective from the Trenches (to solve real-world MDPs)}
+\pause
+\begin{itemize}[<+->]
+\item I always start with a simple version of problem to develop intuition
+\item My first line of attack is DP customized to the problem structure
+\item RL Algorithms that are my personal favorites (links to lectures):
+\begin{itemize}
+\item Deep Q-Network (DQN): Experience Replay, 2nd Target Network
+\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/ValueFunctionGeometry.pdf}{\underline{\textcolor{blue}{Least Squares Policy Iteration (LSPI) - Batch Linear System}}}
+\item \href {https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/ValueFunctionGeometry.pdf}{\underline{\textcolor{blue}{Exact Gradient Temporal-Difference (GTD)}}}
+\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient (esp. Natural Gradient, TRPO)}}}
+\end{itemize}
+\item Separate Model Estimation from Policy Optimization
+\item So we could customize RL algorithms to take advantage of:
+\begin{itemize}
+\item Knowledge of transition probabilities
+\item Knowledge of reward function
+\item Any problem-specific structure that simplifies the algorithm
+\end{itemize}
+\item Feature Engineering based on known closed-form approximations
+\item Many real-world, large-scale problems ultimately come down to
+suitable choices of DNN architectures and hyperparameter tuning
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Inputs to these MDPs (other than the costs)}
@@ -381,39 +407,27 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \item Network Planning (for Lead Time)
 \item Labor Planning
 \end{itemize}
-\item Some of these planning problems based on Inventory Control solution
-\item Chicken-and-egg issues resolvable by Simulations
-\item Very important to design the interfaces consistently
-\item Clean software framework for overall system design is vital to success
+\item Some planning problems need as input solution to Inventory Control
+\item How do we resolve this Chicken-and-egg situation?
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Perspective from the Trenches (to solve MDPs)}
+\frametitle{The {\em Fixed-Point} of Planning and Control}
 \pause
 \begin{itemize}[<+->]
-\item I always start with a simple version of problem to develop intuition
-\item My first line of attack is DP customized to the problem structure
-\item RL Algorithms that are my personal favorites (links to lectures):
-\begin{itemize}
-\item Deep Q-Network (DQN): Experience Replay, 2nd Target Network
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/ValueFunctionGeometry.pdf}{\underline{\textcolor{blue}{Least Squares Policy Iteration (LSPI) - Batch Linear System}}}
-\item \href {https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/ValueFunctionGeometry.pdf}{\underline{\textcolor{blue}{Exact Gradient Temporal-Difference (GTD)}}}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient (esp. Natural Gradient, TRPO)}}}
-\end{itemize}
-\item Separate Model Estimation from Policy Optimization
-\item So we could customize RL algorithms to take advantage of:
-\begin{itemize}
-\item Knowledge of transition probabilities
-\item Knowledge of reward function
-\item Any problem-specific structure that simplifies the algorithm
-\end{itemize}
-\item Feature Engineering based on known closed-form approximations
-\item Many real-world, large-scale problems ultimately come down to
-suitable choices of DNN architectures and hyperparameter tuning
+\item Planning problems are optimizations over parameter choices $p$
+\item For example, a set of Shelf-size choices or casepack choices
+\item Denote the Inventory Control MDP as $D_p$ ($p$ is input to MDP)
+\item Denote the Solution (Optimal Policy) to $D_p$ as $\pi^*_p$
+\item Solve the planning problems (optimization) with input $\pi^*_p$
+\item The solution is the optimal parameter set $p^*$
+\item Feed $p^*$ back into the MDP to solve for policy $\pi^*_{p^*}$
+\item Iterate this until we get stable $p^*$ and $\pi^*_{p^*}$
+\item Very important to design the interfaces consistently
+\item Clean software framework for overall system design is vital to success
 \end{itemize}
 \end{frame}
-
 
 
 \end{document}
