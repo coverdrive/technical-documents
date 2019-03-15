@@ -108,7 +108,7 @@ ICME, Stanford University
 \begin{itemize}[<+->]
 \item Mathematical Economics is a vast and diverse area, consisting of different flavors of Optimization and Prediction problems
 \item We focus on a subset of these problems which are pertinent to running a real-world Retail Business
-\item In particular, many retail problems involve Stochastic Optimization
+\item In particular, many Retail problems involve Stochastic Optimization
 \item ... that can be viewed from the abstract lens of Mathematical Econ.
 \item We can model these as Markov Decision Processes, eg:
 \begin{itemize}
@@ -124,14 +124,15 @@ ICME, Stanford University
 \frametitle{Inventory Control}
 \pause
 \begin{itemize}[<+->]
-\item The fundamental problem in retail is Inventory Control
+\item A fundamental problem in Retail is Inventory Control
 \item How to move inventory optimally from suppliers to shoppers
 \item Let us view this from the lens of Mathematical Economics
 \item Abstracting to a Supply $\Rightarrow$ Demand optimization problem
-\item The two key foundations are the following simple problems:
+\item Nirvana is when Supply appears ``just in time'' to satisfy demand
+\item We start with an exposition of two classical simple problems:
 \begin{itemize}
 \item Economic Order Quantity (EOQ) problem
-\item Newsvendor Problem
+\item Newsvendor problem
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -140,7 +141,8 @@ ICME, Stanford University
 \frametitle{Economic Order Quantity (EOQ)}
 \pause
 \begin{itemize}[<+->]
-\item Demand for an item is a constant rate of $\mu$ units/year
+\item Assumption: Demand for an item is at a constant rate of $\mu$ units/year
+\item Note the big assumption of deterministic demand
 \item A new order is delivered in full when inventory reaches 0
 \item Fixed cost $K$ for each order of non-zero units
 \item Holding cost $h$/unit/year for storage in store 
@@ -172,7 +174,6 @@ $$Q^* = \sqrt{\frac {2 \mu K} h}$$
 \frametitle{Newsvendor Problem}
 \pause
 \begin{itemize}[<+->]
-\item Newsvendor problem is a single-period Inventory Control problem
 \item Daily demand for newspapers is a random variable $x$
 \item The newsvendor has an estimate of the PDF $f(x)$ of daily demand
 \item For each newspaper that stays unsold, we suffer a {\em Holding Cost} $h$
@@ -208,7 +209,7 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \end{frame}
 
 \begin{frame}
-\frametitle{Multi-period: Single-store, Single-item Inventory Control}
+\frametitle{Single-store, Single-item Inventory Control}
 \pause
 \begin{itemize}[<+->]
 \item The store experiences random daily demand given by PDF $f(x)$
@@ -225,7 +226,7 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \end{frame}
 
 \begin{frame}
-\frametitle{Optimal Ordering Policy (with Ordering Cost included)}
+\frametitle{Optimal Ordering Policy}
 \includegraphics[width=12cm, height=8cm]{op_otl.png}
 \end{frame}
 
@@ -318,8 +319,7 @@ where $F(y) = \int_0^y f(x) dx$ is the CDF of daily demand
 \item {\em State} is joint inventory across all nodes (and between nodes)
 \item {\em Action} is recommended movements of inventory between nodes
 \item {\em Reward} is the aggregate of daily costs across the network
-\item In addition, we have multi-item constraints
-\item Space and Throughput constraints are multi-item constraints
+\item Space and Throughput constraints are multi-item costs/constraints
 \item So, real-world problem is multi-node and multi-item (giant MDP)
 \end{itemize}
 \end{frame}
@@ -397,7 +397,7 @@ suitable choices of DNN architectures and hyperparameter tuning
 \pause
 \begin{itemize}[<+->]
 \item From solutions to various other Forecasting and Planning problems
-\item Demand Forecasting is a statistical learning problem
+\item Demand Forecasting is a supervised learning problem (DNNs!)
 \item Planning problems are Optimization problems
 \item Some Planning Problems:
 \begin{itemize}
