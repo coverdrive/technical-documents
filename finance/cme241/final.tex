@@ -1,0 +1,143 @@
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{pseudocode}
+\usepackage{MnSymbol,wasysym}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} 
+\newgeometry{vmargin={20mm}, hmargin={14mm,18mm}}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+ 
+\begin{document}
+\begin{center}
+{\large {\bf Stanford CME 241 (Winter 2019) - Final Exam}}
+\end{center}
+\vspace{5mm}
+ 
+\begin{questions}
+\question {\bf 5 points}: Assume you have data in the form of just the following 5 complete episodes for an MRP. Non-terminal {\em State}s are labeled A and B, the numbers in the episodes denote {\em Reward}s, and all states end in a terminal state $T$.
+\begin{itemize}
+\item A 2 A 6 B 1 B 0 T
+\item A 3 B 2 A 4 B 2 B 0 T
+\item B 3 B 6 A 1 B 0 T
+\item A 0 B 2 A 4 B 4 B 2 B 0 T
+\item B 8 B 0 T
+\end{itemize}
+Given only this data and experience replay (repeatedly and endlessly drawing an episode at random from this pool of 5 episodes), what is the Value Function {\em Every-Visit Monte-Carlo} will converge to, and what is the Value Function TD(0) (i.e., one-step TD) will converge to? Assume discount factor $\gamma = 1$. Note that your answer (Value Function at convergence) should be independent of step size.
+\vspace{10mm}
+
+%\question {\bf 10 points}: Consider an MDP with states $\{1,2,3,4,5\}$ where state $s=1$ is the starting state and state $s=5$ is the terminal state (assume terminal state has a deterministic reward of 0). We have three actions $A$, $B$ and $C$. States $s \leq 4$ allow action $a=A$ with transition probabilities $P(s+1|s,A) = 1$. States $s \leq 3$ also allow action $a=B$ with transition probabilities $P(s+1|s,B) = P(s+2|s,B) = \frac 1 2$. States $s \leq 2$ also allow action $C$ with transition probabilities $P(s+1|s,C) = P(s+2|s,C) = P(s+3|s,C) = \frac 1 3$. The reward function is defined as $R(s,a,s') = (s-s')^2$ for all $(s,a,s')$. Let discount factor $\gamma = \frac 1 2$.
+%\begin{itemize}
+%\item Compute the optimal state-value function $V^*(2)$ for state $s=2$.
+%\item Compute the optimal action $\pi^*(3)$ for state $s=3$.
+%\item Now modify the MDP to have infinite states $\{1,2,3, \ldots\}$ and no terminal state (note: $\gamma = \frac 1 2$). All states allow all three of the actions $\{A, B, C\}$ with transition probabilities $P(s+1|s,A) = 1$, $P(s+1|s,B) = P(s+2|s,B) = \frac 1 2$, $P(s+1|s,C) = P(s+2|s,C) = P(s+3|s,C) = \frac 1 3$. The reward function is defined as $R(s,a,s') = (s-s')^2$ for all $(s,a,s')$. Compute the optimal Value Function and an optimal deterministic policy.
+%\item In the infinite-states MDP above, now assume that an agent, instead of following an optimal policy, decides to follow the stochastic policy $\pi(A|s) = \pi(B|s) = \pi(C|s) = \frac 1 3$ for all states $s$. What is the Value Function $V^{\pi}$ for this policy $\pi$?
+%\end{itemize}
+%\pagebreak
+
+%\question {\bf 4 points}: In class, we covered Policy Gradient Theorem for the case of the ``Expected Returns'' objective $$J(\theta) = \mathbb{E}_{\pi}[\sum_{t=0}^\infty \gamma^t r_t]$$ with the Policy function approximation denoted as $\pi(s,a;\theta) = Pr(a_t=a|s_t=s,\theta)$. We expressed the objective $J(\theta)$ as:
+%$$J(\theta) =  \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \pi(s,a; \theta) \cdot \mathcal{R}_s^a \cdot da \cdot ds$$
+%where $\rho^{\pi}(s) = \int_{\mathcal{S}}  \sum_{t=0}^\infty \gamma^t \cdot p_0(s_0) \cdot p(s_0 \rightarrow s, t, \pi) \cdot ds_0$ was the all-important {\em Discounted State Visitation Measure}. Policy Gradient Theorem was then expressed as:
+%$$\nabla_{\theta} J(\theta) = \int_{\mathcal{S}} \rho^{\pi}(s) \int_{\mathcal{A}} \nabla_{\theta} \pi(s,a; \theta) \cdot Q^{\pi}(s,a) \cdot da \cdot ds$$
+%where $Q^{\pi}(s,a)$ was defined as the action-value function:
+%$$Q^{\pi}(s,a) = \mathbb{E}_{\pi}[\sum_{k=t}^\infty \gamma^{k-t} r_k|s_t=s, a_t=a], \forall t \in \{0, 1, 2, \ldots\}$$
+%
+%There is an alternative formulation where instead of the ``Expected Returns'' objective, we use the ``Average Rewards'' objective:
+%$$J(\theta) = \lim_{n\rightarrow \infty} \frac 1 n \mathbb{E}_{\pi}[\sum_{t=0}^{n-1} r_t]$$
+%Even in this formulation, we can express $J(\theta)$ and $\nabla_{\theta} J(\theta)$ with the same expressions as the above case of ``Expected Returns'' objective, except that $Q^{\pi}(s,a)$ is now defined as: 
+%$$Q^{\pi}(s,a) = \sum_{k=t}^\infty \mathbb{E}_{\pi}[ r_k - J(\theta)|s_t=s, a_t=a], \forall t \in \{0, 1, 2, \ldots\}$$
+%
+%and $\rho^{\pi}(s)$ now represents something else (not the {\em Discounted State Visitation Measure}).
+%
+%Your only task in this question is to identify/guess what $\rho^{\pi}(s)$ represents in the case of ``Average Rewards'' objective (no need for formal arguments or justifications, simply express clearly what $\rho^{\pi}(s)$ represents).
+
+\question {\bf 5 points}: Consider an MDP with an infinite set of states $\mathcal{S} = \{1,2,3,\ldots \}$. The start state is $s=1$. Each state $s$ allows a continuous set of actions $a \in [0,1]$. The transition probabilities are given by: $$\Pr[s+1 \mid s, a] = a, Pr[s \mid s, a] = 1 - a \mbox{ for all } s \in \mathcal{S} \mbox{ for all } a \in [0,1]$$
+ For all states $s \in \mathcal{S}$ and actions $a \in [0,1]$, transitioning from $s$ to $s+1$ results in a reward of $1+a$ and transitioning from $s$ to $s$ results in a reward of $1-a$. The discount factor $\gamma=0.5$.
+\begin{itemize}
+\item Calculate the Optimal Value Function $V^*(s)$ for all $s \in \mathcal{S}$
+\item Calculate an Optimal Deterministic Policy $\pi^*(s)$ for all $s \in \mathcal{S}$
+\end{itemize}
+\vspace{10mm}
+
+%\question Prove that the sum of offline updates is identical for forward-view and backward-view $TD(\lambda)$, in the context of Value Function Prediction for a fixed policy in an episodic (terminating) MDP, i.e., prove that for any $\lambda$ and for any states $s$:
+%$$\sum_{t=1}^T \alpha \delta_t E_t(s) = \sum_{t=1}^T \alpha (G_t^{\lambda} - V(s_t)) \bf{1}_{s_t=s}$$
+%where $\alpha$ is the step-size, $\delta_t$ is the one-step TD error at time $t$, $E_t(s)$ is the eligibility-trace for state $s$ at time $t$, $G_t^{\lambda}$ is the forward-view $\lambda$-return at time $t$.
+%\vspace{3mm}
+
+\question {\bf 3 points}: Tabular Monte-Carlo RL update for the $n^{th}$ sample of a state $s$ is given by:
+$$V_n(s) \leftarrow V_{n-1}(s) + \alpha(G_n - V_{n-1}(s))$$
+where $G_n$ is the sample episode return following the $n^{th}$ sample of state $s$, $V_n(s)$ is the Value Function estimate after the $n^{th}$ update, and $\alpha$ is the step-size of the update. Assume that we initialize with $V_0(s) = 0$.
+
+Show that as $n\rightarrow \infty$, $V_n(s)$ can be formulated as an exponentially-decaying weighted average of the sample returns $G_n, G_{n-1}, \ldots G_1$. What are the precise weights associated with the sample returns in the weighted average? Show that the weights indeed sum to 1 as $n\rightarrow \infty$.
+\pagebreak
+
+\question {\bf 7 points}: Consider a finite MDP with the set of states denoted as $\mathcal{S}$ and a set of actions denoted as $\mathcal{A}$. Let $\pi$ be an $\epsilon$-greedy policy. Let $\pi'$ be the $\epsilon$-greedy policy imputed from the Action-Value function $Q_{\pi}$ ($\epsilon$-greedy {\em Policy Improvement} from $\pi$ to $\pi'$), i.e.,
+$$
+\pi'(a \mid s) =
+\begin{cases}
+1 - \epsilon + \frac \epsilon {|\mathcal{A}|} & \text{ if } a = \argmax_{b \in \mathcal{A}} Q_{\pi}(s, b)\\
+\frac \epsilon {|\mathcal{A}|} & \text{ otherwise}\\
+\end{cases}
+$$
+
+Prove that:
+$$\sum_{a \in \mathcal{A}} \pi'(a \mid s) \cdot Q_{\pi}(s,a) \geq V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$$
+where $V_{\pi}$ is the State-Value function for policy $\pi$.
+\vspace{10mm}
+
+\question {\bf 3 points}: I've mentioned in class that RL with tabular Value Function is a special case of RL with linear function approximation for the Value Function. Linear function approximation can be expressed as: $V(s) = \sum_{i=1}^n \phi_i(s) \cdot w_i$ where $w_i, 1\leq i \leq n$, are the parameters of the linear function approximation and $\phi_i(\cdot), 1 \leq i \leq n$, are the feature functions. For the case of RL with tabular Value Function, what are the values of parameters $w_i$ and what are the feature functions $\phi_i(\cdot)$ ?
+\vspace{10mm}
+
+\question {\bf 5 points}: Assume we have a finite action space $\mathcal{A}$. Let $\phi(s,a) = (\phi_1(s,a), \phi_2(s,a), \ldots, \phi_n(s,a))$ be the features vector for any $s \in \mathcal{S}, a \in \mathcal{A}$. Let $\theta = (\theta_1, \theta_2, \ldots, \theta_n)$ be an $n$-vector of parameters. Let the action probabilities conditional on a given state $s$ and given parameter vector $\theta$ be defined by the softmax function on the linear combination of features: $\theta^T \cdot \phi(s,a)$, i.e.,
+$$\pi(a \mid s;\theta) = \frac {e^{\theta^T \cdot \phi(s,a)}} {\sum_{b \in \mathcal{A}} e^{\theta^T \cdot \phi(s,b)}}$$
+\begin{itemize}
+\item Evaluate the score function $\nabla_{\theta} \log \pi(a \mid s,\theta)$
+\item Construct the Action-Value function approximation $Q(s,a; w)$ so that the following key constraint of the Compatible Function Approximation Theorem (for Policy Gradient) is satisfied:
+ $$\nabla_w Q(s,a;w) = \nabla_{\theta} \log \pi(a \mid s;\theta)$$
+ where $w$ defines the parameters of the function approximation of the Action-Value function.
+ \item Show that $Q(s,a;w)$ has zero mean for any state $s$, i.e. show that
+ $$\mathbb{E}_{\pi} [Q(s,a;w)] \mbox{ defined as } \sum_{a \in \mathcal{A}} \pi(s,a) \cdot Q(s,a;w) = 0$$
+\end{itemize}
+\pagebreak
+
+
+\question {\bf 12 points}: We want to develop a model to validate the classical Theory of Derivatives Pricing/Hedging empirically (using Reinforcement Learning) for the simple case of an European Derivative expiring at time $T$ with payoff $g(S_T)$, where $S_t$ is the underlying stock price at time $t$. Specifically, we want to identify the appropriate portfolio (at any time $t$) of the stock $S_t$ (with holding $\alpha_t$) and a risk-free asset $R_t$ (with holding $\beta_t$) that would replicate the Derivative payoff. Formally, this replication requirement is:
+$$\alpha_T S_T + \beta_T R_T = g(S_T) \mbox{ for all values of } S_T$$
+Assume that $R_t = e^{rt}$ for a given constant risk-free rate $r$. Assume current stock price $S_0$ and expiration time $T$ are given. Assume you don't have a formulaic description of the stochastic process for $S_t$, but you have a simulator for generating $S_u$, given $S_t$, for any $u > t \geq 0$. Assume the payoff function $g(\cdot)$ is given (eg: payoff for European Call Option is $g(S_T) = \max(S_T - K, 0)$ where $K$ is the strike price).
+
+We make a key assumption (from knowledge of Pricing Theory) that the Derivative can be replicated by a dynamic continuous-time rebalancing of holdings $\alpha_t, \beta_t$ (as the stock price evolves stochastically) without any addition or removal of wealth at any time $t > 0$, specified formally as the following {\em Balance Constraint}: 
+$$\alpha_t S_{t+dt} + \beta_t R_{t+dt} = \alpha_{t+dt} S_{t+dt} + \beta_{t+dt} R_{t+dt} \mbox{ for all } 0 \leq t < T$$
+
+Our goal is to identify (using Reinforcement Learning):
+\begin{itemize}
+\item  Initial Holdings $(\alpha_0, \beta_0)$, and
+\item Dynamic Rebalancing Rule $(\alpha_t, \beta_t) \rightarrow (\alpha_{t+dt}, \beta_{t+dt})$ for all
+$0 \leq t < T$ under satisfaction of the {\em Balance Constraint}
+\end{itemize}
+so that the option payoff $g(S_T)$ is replicated by $\alpha_T S_T + \beta_T R_T$ {\em for all values of $S_T$}. Achieving this goal means the Option Price is $\alpha_0 S_0 + \beta_0 R_0$ and the dynamic holdings $(\alpha_t, \beta_t)$ provide the Dynamic Hedging Strategy, that can be validated against the results from Derivatives Pricing/Hedging Theory (up to a time-discretized approximation).
+
+For the purposes of this exam question, you have the following two tasks:
+
+\begin{itemize}
+\item {\bf MDP Modeling}: Provide a precise description of a continuous-time, continuous-states, continuous-actions MDP $(\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma)$, whose Optimal Policy would yield the above-mentioned Initial Holdings and Dynamic Rebalancing Rule.
+\item {\bf Algorithm for Optimal Policy}:  Describe the technical details of an Optimal Control RL algorithm customized to a time-discretized version of this MDP (you don't need to write Python code, but provide sufficient details of the algorithm).
+\end{itemize}
+
+ 
+
+%\question {\bf 12 points}: Assume you are the owner of a bank where customers come in randomly everyday to make cash deposits and to withdraw cash from their accounts. Regulators will impose a penalty if you do not maintain a minimum cash amount $C$ in your bank at the start of each day. If the cash amount in your bank at the start of a day is $x < C$, you will need to pay a penalty of $\frac K x$ (for a given constant $K$) at the end of that day. At the end of each day, you can borrow (from another bank) any cash amount $y > 0$ at a constant daily interest rate $R$, meaning you will need to pay back a cash amount of $y(1+R)$ at the end of the next day. Also, at the end of each day, you can invest a portion of your bank's cash in a risky (high return, high risk) asset that follows some stochastic process $S_t$. Assume you can change the amount of your investment in the risky asset each day, with negligible transaction costs (this is your mechanism to turn any amount of cash into risky investment or vice-versa). The key point here is that once you make a decision to invest a portion of your cash in the risky asset at the end of a day, you will not have access to this invested amount as cash that otherwise could have been made available to customers who come in the next day for withdrawals. 
+%
+%\begin{itemize}
+%\item Your first task is to model an MDP so you can run the bank in the most optimal manner, i.e., maximizing the Expected Value of future assets less liabilities, from any situation of current assets and liabilities. Assume your bank will run for infinite time and assume a constant risk-free rate of $r$ for discounting future cash flows. Assume that the deposit rate customers earn on their deposits is so small that it can be ignored in this model. Specify the states, actions, transition probabilities, reward function, discount factor.
+%\item In a practical setting, we do not know the exact probability distributions of the customer deposits and withdrawals. Neither do we know the exact stochastic process of the risky asset. But assume we have access to a large set of historical data detailing daily customer deposits and withdrawals, as well as daily historical market valuations of the risky asset. Describe your approach to solve this problem with Reinforcement Learning by using the historical data described above.
+%\item Write Python-like pseudo-code for a Reinforcement Learning algorithm you believe would be a good choice for this problem, looking to customize the RL algorithm to the specifics of this problem.
+%\end{itemize}
+
+\end{questions}
+
+\end{document}
