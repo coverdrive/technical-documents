@@ -101,7 +101,7 @@ $$\pi(a \mid s;\theta) = \frac {e^{\theta^T \cdot \phi(s,a)}} {\sum_{b \in \math
  $$\nabla_w Q(s,a;w) = \nabla_{\theta} \log \pi(a \mid s;\theta)$$
  where $w$ defines the parameters of the function approximation of the Action-Value function.
  \item Show that $Q(s,a;w)$ has zero mean for any state $s$, i.e. show that
- $$\mathbb{E}_{\pi} [Q(s,a;w)] \mbox{ defined as } \sum_{a \in \mathcal{A}} \pi(s,a) \cdot Q(s,a;w) = 0$$
+ $$\mathbb{E}_{\pi} [Q(s,a;w)] \mbox{ defined as } \sum_{a \in \mathcal{A}} \pi(a \mid s;\theta) \cdot Q(s,a;w) = 0$$
 \end{itemize}
 \pagebreak
 
