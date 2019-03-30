@@ -380,12 +380,30 @@ suitable choices of DNN architectures and hyperparameter tuning
 \end{itemize}
 \end{frame}
 
-
 \begin{frame}
-\frametitle{Inputs to these MDPs (other than the costs)}
+\frametitle{Forecasting}
 \pause
 \begin{itemize}[<+->]
-\item Daily Demand Forecast probability distribution function
+\item The core forecasting problem is Customer Demand Forecasting
+\item Demand Forecasting is a supervised learning problem (DNNs!)
+\item Assume Inventory+Price Control jointly outputs following Policy:
+$$f: (Time, Inventory, Price) \rightarrow (Inventory Moves, Price Changes)$$
+\item Assume Demand Forecasting outputs following function:
+$$g:(Time, Price) \rightarrow \mbox{Demand PDF}$$
+\item We can write a simple simulator that takes as input functions $f$ and $g$ and produces as output future projections of Expected Demand
+\item This time-series of Demand can be aggregated by items/location/time
+\item Another simulator might produce future projections of Sales/Profits
+\item Or future projections of Labor/Trucks/Boxes/Backroom Overflow etc.
+\item Note: Function $g$ is an input to Inventory+Price Control MDP
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Inputs to Inventory Control MDPs (other than the costs)}
+\pause
+\begin{itemize}[<+->]
+\item Demand Forecast function (function $g$ on previous slide)
 \item Shelf Capacity
 \item Casepack size
 \item Lead Time (time from replenishment order to arrival on shelf)
@@ -396,8 +414,8 @@ suitable choices of DNN architectures and hyperparameter tuning
 \frametitle{Where do these inputs come from?}
 \pause
 \begin{itemize}[<+->]
-\item From solutions to various other Forecasting and Planning problems
-\item Demand Forecasting is a supervised learning problem (DNNs!)
+\item We've already discussed Demand Forecast function
+\item The other inputs come from outputs of Planning problems
 \item Planning problems are Optimization problems
 \item Some Planning Problems:
 \begin{itemize}
