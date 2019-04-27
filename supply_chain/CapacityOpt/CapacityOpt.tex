@@ -1,0 +1,89 @@
+
+\documentclass[12pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+% See the ``Article customise'' template for come common customisations
+
+\title{MDP for Under-/Over-Capacity Optimization}
+\author{}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+$\mathbb{Z}$ refers to the set of integers, $\mathbb{R}$ refers to the set of real numbers. We will subscript $\mathbb{Z}$ and $\mathbb{R}$ to denote appropriate subsets of $\mathbb{Z}$ and $\mathbb{R}$. $\mathbb{I}_{b}$ is the indicator function (for $b \in Boolean$) whose value is 1 if $b$ is True and 0 if $b$ is False.
+ 
+We consider a single store and single item served inventory from a supplier with infinite inventory and lead time of $L \in \mathbb{Z}_{\geq 0}$ epochs. Review period is assumed to be 1 epoch. There is a fixed space capacity of $P \in \mathbb{Z}_{> 0}$ units for the item at the store ($P$ refers to the Planogram size). The item can only be replenished in multiples of $C \in \mathbb{Z}_{> 0}$ units ($C$ refers to the casepack size). Our goal is to identify a replenishment policy that minimizes the expected cost of inventory movements (defined by fixed cost $K \in \mathbb{R}_{\geq 0}$ and variable cost $J \in \mathbb{R}_{\geq 0}$), of store inventory going below the capacity of $P$ (defined by a convex under-capacity cost function $f$) and of store inventory going above the capacity of $P$ (defined by a convex over-capacity cost function $g$).
+
+\section{Costs}
+\begin{itemize}
+\item If the on-hand inventory in the store is $x < P$, there is a cost of $f(P-x)$ where $f(0) = 0$ and $f : \mathbb{Z}_{\geq 0} \rightarrow \mathbb{R}_{\geq 0}$ is a convex function ($f$ provided as input to this problem).
+\item If the on-hand inventory in the store is $x > P$, there is a cost of $g(x-P)$ where $g(0) = 0$ and $g : \mathbb{Z}_{\geq 0} \rightarrow \mathbb{R}_{\geq 0}$ is a convex function ($g$ provided as input to this problem).
+\item The cost of moving $y \in \mathbb{Z}_{\geq 0}$ casepacks of inventory from supplier to store is $K \mathbb{I}_{y > 0} + J y$ for $K, J \in \mathbb{R}_{\geq 0}$.
+\end{itemize}
+
+Note that this formulation doesn't have any notion of holding costs (it can be absorbed into definition of functions $f$ and $g$), doesn't have any notion of stockout cost (it can be absorbed into definition of function $f$, noting that on-hand inventory can go negative due to unmet demand in the below formulation), and doesn't have any notion of presentation-minimum (it can be absorbed into definition of function $f$).
+
+\section{Inventory}
+\begin{itemize}
+\item Denote on-hand inventory (a.k.a. Inventory Level) at the store at the start of epoch $t$ as: $IL_t \in \mathbb{Z}$ (note: $IL_t$ is allowed to go negative if demand is unmet at the store, leading to back-ordering).
+\item Denote on-order inventory arriving in $k$ epochs ($1 \leq k \leq L$) at the start of epoch $t$ as $OO_{t,k} \in \mathbb{Z}_{\geq 0}$
+\end{itemize}
+
+\section{Inventory Movements}
+Denote number of casepacks of inventory ordered in epoch $t$ as $q_t \in \mathbb{Z}_{\geq 0}$. The store will receive that inventory of $q_t  C$ in epoch $t + L$. Denote $R_t \in \mathbb{Z}_{\geq 0}$ as the inventory received in epoch $t$. Following the epoch $t$ of inventory ordering and until the epoch $t+L$ of inventory receipt, this quantity $q_t C$ will appear in the flow equations (see below) as on-order $OO_{t+j,L-j+1}, 1 \leq j \leq L$. For the special case where $L = 0$, $R_t = q_t C$ (Sequence of Events below illustrates that within an epoch, receipt of inventory happens after ordering of inventory).
+
+Demand at store in epoch $t$ is denoted by random variable $D_t$.
+
+\section{States and Actions}
+The MDP {\em State} in epoch $t$ is defined by the vector:
+ $$[IL_t, OO_{t,1}, \ldots OO_{t,L}]$$
+ The MDP {\em Action} in epoch $t$ is the number of casepacks ordered, i.e., $q_t$
+
+
+\section{Sequence of events in an epoch}
+
+\begin{enumerate}
+\item Observe {\em State} (observation of the inventory level $IL_t$  and of the on-orders $OO_{t,1}, \ldots, OO_{t,L}$).
+\item Perform {\em Action} (ordering of inventory as number of casepacks $q_t$).
+\item Calculate movement cost  $K \mathbb{I}_{q_t > 0} + J q_t$.
+\item Receipt of inventory $R_t$ at the store.
+\item Calculate over-capacity cost $g(\max(0, IL_t + R_t - P))$.
+\item Occurrence of demand at the store (including missed sales, i.e., stockouts at the store).
+\item Calculate under-capacity cost $f(\max(0, P - IL_{t+1}))$.
+\end{enumerate}
+
+\section{Equations defining Inventory Flow}
+The following equations define the inventory flow in any epoch $t$:
+$$R_t =
+\begin{cases}
+OO_{t,1} & \text{ if } L > 0\\
+q_t C & \text{ if } L = 0\\
+\end{cases}
+\mbox{ for all } t$$
+$$IL_{t+1} = IL_{t} + R_t - D_t \mbox{ for all } t$$
+$$OO_{t+1,k} = OO_{t,k+1} \mbox{ for all } t, \mbox{ for all } 1 \leq k < L$$
+$$OO_{t+1,L} = q_t C  \mbox{ for all } t$$
+
+\section{Cost Equations}
+The MDP {\em Reward} in epoch $t$ is defined by the following cost components:
+\begin{itemize}
+\item Movement Cost:
+$$K \mathbb{I}_{q_t > 0} + J q_t$$
+\item Over-capacity Cost:
+$$ g(\max(0, IL_t + R_t -  P)$$ 
+\item Under-capacity Cost:
+$$f(\max(0, P - IL_{t+1}))$$
+\end{itemize}
+
+\section{A Presentation-Minimum Model}
+{\em Presentation-Minimum} is the idea that we'd like to have at least $PM \in \mathbb{Z}_{>0}$ units of inventory on our shelf with high probability. So one possible model that accommodates the {\em Presentation-Minimum} idea is to set $f(x) = 0$ if $x < P - PM$ and otherwise $f(x)$ is a high enough value (to prohibit inventory from going below {\em Presentation-Minimum}). Also, we set $g(x) = x$. This way we ensure that the inventory will not fall below the {\em Presentation-Minimum} with high probability while minimizing the inventory in the backroom.
+
+
+\end{document}
