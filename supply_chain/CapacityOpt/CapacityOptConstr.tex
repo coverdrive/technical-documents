@@ -19,36 +19,36 @@
 
 $\mathbb{Z}$ refers to the set of integers, $\mathbb{R}$ refers to the set of real numbers. We will subscript $\mathbb{Z}$ and $\mathbb{R}$ to denote appropriate subsets of $\mathbb{Z}$ and $\mathbb{R}$. 
  
-We consider a single store and single item served inventory from a supplier with infinite inventory and lead time of $L \in \mathbb{Z}_{\geq 0}$ epochs. Review period is assumed to be 1 epoch. There is a fixed capacity of $P \in \mathbb{Z}_{> 0}$ units for the item on the shelf (planogram) at the store. The item can only be replenished in multiples of $C \in \mathbb{Z}_{> 0}$ units ($C$ refers to the casepack size). Our goal is to identify a replenishment policy that minimizes the ``average backroom inventory'' (backroom inventory refers to the store inventory that is in excess of $P$) while ensuring that the shelf inventory in every epoch is at least a specified fraction $\alpha \in [0,1]$ of $P$ with probability at least $\beta \in [0,1]$.
+We consider a single store and single item served inventory from a supplier with infinite inventory and lead time of $L \in \mathbb{Z}_{\geq 0}$ epochs. Review period is assumed to be 1 epoch. The  customer demand (as units of the item) experienced at the store in epoch $t$ is denoted by random variable $D_t \in \mathbb{Z}_{\geq 0}$.There is a fixed capacity of $P \in \mathbb{Z}_{> 0}$ units for the item on the shelf (planogram) at the store. The item can only be replenished in multiples of $C \in \mathbb{Z}_{> 0}$ units ($C$ refers to the casepack size). Our goal is to identify an ordering policy that minimizes the ``average backroom inventory'' (backroom inventory refers to the store inventory that is in excess of $P$) while ensuring that the shelf inventory in every epoch is at least a specified fraction $\alpha \in [0,1]$ of $P$ with probability at least $\beta \in [0,1]$.
 
 \section{Inventory}
 \begin{itemize}
 \item Denote on-hand inventory (a.k.a. Inventory Level) at the store at the start of epoch $t$ as: $IL_t \in \mathbb{Z}$ (note: $IL_t$ is allowed to go negative if demand is unmet at the store, leading to back-ordering).
-\item Denote on-order inventory arriving in $k$ epochs ($1 \leq k \leq L$) at the start of epoch $t$ as $OO_{t,k} \in \mathbb{Z}_{\geq 0}$
+\item Denote on-order inventory at the start of epoch $t$ to arrive in $k$ epochs ($1 \leq k \leq L$)  as $OO_{t,k} \in \mathbb{Z}_{\geq 0}$
 \end{itemize}
 
 \section{Inventory Movements}
-Denote number of casepacks of inventory ordered in epoch $t$ as $q_t \in \mathbb{Z}_{\geq 0}$. The store will receive that inventory of $q_t  C$ in epoch $t + L$. Denote $R_t \in \mathbb{Z}_{\geq 0}$ as the inventory received in epoch $t$. Following the epoch $t$ of inventory ordering and until the epoch $t+L$ of inventory receipt, this quantity $q_t C$ will appear in the flow equations (see below) as on-order $OO_{t+j,L-j+1}, 1 \leq j \leq L$. For the special case where $L = 0$, $R_t = q_t C$ (Sequence of Events below illustrates that within an epoch, receipt of inventory happens after ordering of inventory).
+Denote number of casepacks of inventory ordered in epoch $t$ as $q_t \in \mathbb{Z}_{\geq 0}$. The store will receive that inventory of $q_t  C$ in epoch $t + L$. Denote $R_t \in \mathbb{Z}_{\geq 0}$ as the inventory received in epoch $t$. Following the epoch $t$ of inventory ordering and until the epoch $t+L$ of inventory receipt, this quantity $q_t C$ will appear in the flow equations (see below) as on-order $OO_{t+j,L-j+1}, 1 \leq j \leq L$. For the special case where $L = 0$, $R_t = q_t C$ (Sequence of Events below illustrates that within an epoch, inventory receipt is after inventory ordering).
 
-Demand at store in epoch $t$ is denoted by random variable $D_t$.
+
 
 \section{Constrained Dynamic Program}
 The {\em State} in epoch $t$ is defined by the vector:
  $$[IL_t, OO_{t,1}, \ldots OO_{t,L}]$$
  The {\em Action} in epoch $t$ is the number of casepacks ordered, i.e., $q_t$.
  
-The {\em Cost} in epoch $t$ is defined as the backroom inventory upon receipt of inventory at the store, i.e., $\max(0, IL_t + R_t - P)$. We set up the problem as an Average-Cost Dynamic Program with the requirements (constraints) that post-demand on-hand inventory $\max(0, IL_t + R_t - D_t) \geq \alpha P$ with probability $\geq \beta$ for all epochs $t$.
+The {\em Cost} in epoch $t$ is defined as the backroom inventory upon receipt of inventory at the store, i.e., $\max(0, IL_t + R_t - P)$. We set up the problem as an Average-Cost Dynamic Program with the requirements (constraints) that on-hand inventory $IL_t \geq \alpha P$ with probability $\geq \beta$ for all epochs $t$.
 
 
 \section{Sequence of events in an epoch}
 
 \begin{enumerate}
 \item Observe {\em State} (observation of the inventory level $IL_t$  and of the on-orders $OO_{t,1}, \ldots, OO_{t,L}$).
+\item Check if $IL_t \geq \alpha P$.
 \item Perform {\em Action} (ordering of inventory as number of casepacks $q_t$).
 \item Receipt of inventory $R_t$ at the store.
 \item Calculate {\em Cost} as the backroom inventory, i.e., $\max(0, IL_t + R_t - P)$.
-\item Occurrence of demand at the store (including missed sales, i.e., stockouts at the store).
-\item Check if shelf inventory is above requisite threshold, i.e., check if $\max(0, IL_t + R_t - D_t) \geq \alpha P$.
+\item Occurrence of demand $D_t$ at the store (including missed sales, i.e., stockouts at the store).
 \end{enumerate}
 
 \section{Equations defining Inventory Flow}
@@ -63,5 +63,16 @@ $$IL_{t+1} = \max(0, IL_{t} + R_t - D_t) \mbox{ for all } t$$
 $$OO_{t+1,k} = OO_{t,k+1} \mbox{ for all } t, \mbox{ for all } 1 \leq k < L$$
 $$OO_{t+1,L} = q_t C  \mbox{ for all } t$$
 
+\section{A Heuristic Policy}
+We want to order ``enough'' in epoch $t$ so that epoch $t+L+1$ on-hand inventory $IL_{t+L+1} \geq \alpha P$ with probability $\geq \beta$. If we assume backordering, then this can be written as:
+$$Pr[IL_t + \sum_{k=1}^L OO_{t,k} + q_t C - \sum_{k=0}^L D_{t+k} \geq \alpha P] \geq \beta$$.
+
+If we also assume that ordering can be in continuous quantities (rather than casepacks), then ordering ``just enough'' in epoch $t$ to satisfy the constraint $Pr[IL_{t+L+1} \geq \alpha P] \geq \beta$ would automatically minimize expected backroom inventory in epoch $t+L$. This ``just enough'' order quantity is given by:
+$$\max(0, \alpha P + F_{t,L}^{-1}(\beta) - (IL_t + \sum_{k=1}^L OO_{t,k}))$$
+where $F_{t,L}(\cdot)$ is the inverse cumulative mass function of the discrete random variable $\sum_{k=0}^L D_{t+k}$
+
+So we could start with this heuristic as an approximation to the optimal policy for our case of ``no-backordering'' and ``ordering in casepacks'' as follows:
+
+$$q_t = \max(0, \lceil \frac {\alpha P + F_{t,L}^{-1}(\beta) - (IL_t + \sum_{k=1}^L OO_{t,k})} C \rceil)$$
 
 \end{document}
