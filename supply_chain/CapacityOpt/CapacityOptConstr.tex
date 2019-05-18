@@ -19,7 +19,7 @@
 
 $\mathbb{Z}$ refers to the set of integers, $\mathbb{R}$ refers to the set of real numbers. We will subscript $\mathbb{Z}$ and $\mathbb{R}$ to denote appropriate subsets of $\mathbb{Z}$ and $\mathbb{R}$. 
  
-We consider a single store and single item served inventory from a supplier with infinite inventory and lead time of $L \in \mathbb{Z}_{\geq 0}$ epochs. Review period is assumed to be 1 epoch. The  customer demand (as units of the item) experienced at the store in epoch $t$ is denoted by random variable $D_t \in \mathbb{Z}_{\geq 0}$.There is a fixed capacity of $P \in \mathbb{Z}_{> 0}$ units for the item on the shelf (planogram) at the store. The item can only be replenished in multiples of $C \in \mathbb{Z}_{> 0}$ units ($C$ refers to the casepack size). Our goal is to identify an ordering policy that minimizes the ``average backroom inventory'' (backroom inventory refers to the store inventory that is in excess of $P$) while ensuring that the shelf inventory in every epoch is at least a specified fraction $\alpha \in [0,1]$ of $P$ with probability at least $\beta \in [0,1]$.
+We consider a single store and single item served inventory from a supplier with infinite inventory and lead time of $L \in \mathbb{Z}_{\geq 0}$ epochs. Review period is assumed to be 1 epoch. The  customer demand (as units of the item) experienced at the store in epoch $t$ is denoted by random variable $D_t \in \mathbb{Z}_{\geq 0}$.There is a fixed capacity of $P \in \mathbb{Z}_{> 0}$ units for the item on the shelf (planogram) at the store. The item can only be replenished in multiples of $C \in \mathbb{Z}_{> 0}$ units ($C$ refers to the casepack size). Our goal is to identify an ordering policy that minimizes the ``average backroom inventory'' (backroom inventory refers to the store inventory that is in excess of $P$) while ensuring that the shelf inventory in every epoch is at least a specified fraction $\alpha \in [0,1]$ of $P$ with probability at least $\beta \in [0,1]$ (PresMin condition).
 
 \section{Inventory}
 \begin{itemize}
@@ -74,5 +74,41 @@ where $F_{t,L}(\cdot)$ is the inverse cumulative mass function of the discrete r
 So we could start with this heuristic as an approximation to the optimal policy for our case of ``no-backordering'' and ``ordering in casepacks'' as follows:
 
 $$q_t = \max(0, \lceil \frac {\alpha P + F_{t,L}^{-1}(\beta) - (IL_t + \sum_{k=1}^L OO_{t,k})} C \rceil)$$
+
+\section{Continuous-Time, Continuous-Inventory, Deterministic Demand}
+Now we consider a simple setting where demand happens at a constant deterministic rate in continuous time and in continuous quantity (call the demand rate $\lambda \in \mathbb{R}$ units per time). In this setting, we can adapt the lead time, POG and casepack to be continuous, i.e. $L, P, C \in \mathbb{R}$. 
+
+In this setting, the inventory level at the store follows an EOQ-like sawtooth function with the height of the sawtooth equal to $C$ and the width of the sawtooth equal to $\frac C \lambda$. Our task is to determine the bottom of the sawtooth (denoted $B$) so that the fraction of time the inventory level $IL_t$ goes below $\alpha P$ is no more than $1-\beta$ (adaption of the PresMin condition). Once we establish the bottom of the sawtooth $B$, we will immediately have the top of the sawtooth (denoted $T$) as $B + C$, and consequently, we will have the backroom units per time, and the Order Point.
+
+Due to the constant rate of demand, ensuring that the fraction of time the inventory level $IL_t$ goes below $\alpha P$ is no more than $1-\beta$ is equivalent to ensuring that inventory consumed in a cycle when below the level $\alpha P$ is no more than $(1-\beta)C$ (because inventory consumed in the entire cycle is $C$). So, the PresMin condition can be written as: $B \geq \alpha P - (1-\beta)C$.
+
+We consider two cases:
+\begin{itemize}
+\item $C \leq (1-\alpha)P + (1-\beta)C$ meaning the casepack is small enough to avoid backroom: if we set $T = P$ (hence, no backroom), $B = P - C \geq \alpha P - (1-\beta)C$ (PresMin condition satisfied)
+\item $C > (1-\alpha)P + (1-\beta)C$ meaning the casepack is not small enough to avoid backroom: if we set $B =  \alpha P - (1-\beta)C$, $T = C + \alpha P - (1- \beta)C = \alpha P + \beta C > P$ which means we will have some backroom inventory.
+\end{itemize}
+
+Combining the two cases, we can succinctly write $B$ and $T$ as follows:
+
+$$B = \max(P - C, \alpha P - (1-\beta)C)$$
+$$T = \max(P, \alpha P + \beta C)$$
+
+The maximum backroom inventory
+$$E =T - P = \max(0, \beta C  - (1-\alpha)P)$$
+
+In a given cycle, the time for which there is backroom inventory is $\frac E \lambda$ and so, the aggregate backroom units in any cycle is: $$\frac 1 2 \cdot E \cdot \frac E \lambda$$
+
+Since, each cycle is of duration $\frac C \lambda$, the backroom units per time is:
+$$\frac {\frac 1 2 \cdot E \cdot \frac E \lambda} {\frac C \lambda} = \frac {E^2} {2C} = \frac {(\max(0, \beta C  - (1-\alpha)P))^2} {2C}$$
+
+Since the lead time is $L$, we need to place the order exactly $L$ units of time before the inventory level $IL_t = B$. Given the cyclic and regular nature of the sawtooth, we can simply consider the nearest ordering time point before $IL_t = B$. The amount of time between this ordering time point and the time when $IL_t = B$ is:
+$$L - \lfloor \frac {L \lambda} C \rfloor \cdot \frac C \lambda$$
+and hence, the inventory level at the time of ordering (denoted as Inventory Level Order Point $ILOP$) is:
+$$B + \lambda (L - \lfloor \frac {L \lambda} C \rfloor \cdot \frac C \lambda) = \max(P - C, \alpha P - (1- \beta)C) + \lambda (L - \lfloor \frac {L \lambda} C \rfloor \cdot \frac C \lambda)$$
+At the time of ordering, the number of casepacks on-order is $\lfloor \frac {L \lambda} C \rfloor$ and so, the number of units of inventory on-order is: $\lfloor \frac {L \lambda} C \rfloor \cdot C$.
+So, we can say that at the time of ordering, the inventory position $IP_t$ (defined as $IL_t$ plus the number of units of inventory on-order) is: $$\max(P - C, \alpha P - (1- \beta)C) + \lambda (L - \lfloor \frac {L \lambda} C \rfloor \cdot \frac C \lambda) + \lfloor \frac {L \lambda} C \rfloor \cdot C$$
+We can refer to the above expression as the Inventory Position Order Point $IPOP$.
+
+
 
 \end{document}
