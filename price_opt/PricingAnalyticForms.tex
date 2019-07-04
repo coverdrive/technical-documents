@@ -10,7 +10,7 @@
    
    % See the ``Article customise'' template for come common customisations
    
-   \title{Analytic Forms for Clearance Price Optimization}
+   \title{Analytic Forms for Discrete-Time Clearance Price Optimization}
    \author{Ashwin Rao}
    \date{} % delete this line to display the current date
    
@@ -19,7 +19,7 @@
    
    \maketitle 
    \section{Introduction}
-   This is a brief article to derive analytic forms for Clearance Price Optimization.    
+   This is a brief article to derive analytic forms for Clearance Price Optimization when the Price actions can be performed at discrete and regular time steps. Clearance Price Optimization has some neat analytic forms for the case of continuous-time, eg: the landmark paper by Gallego and Ryzin in 1994. But discrete time-steps pose some challenges that we investigate in this article.    
    \section{Bellman Equation}
     The {\em State} at time $t \in \{0, 1, \ldots, T\}$ is the Inventory $I_t \in \mathbb{Z}_{\geq 0}$. The {\em Action} at time $t$ is the Price $p_t \in \mathbb{R}_{\geq 0}$ set at time $t$. Assume the probability mass function (PMF) of demand $k_t \in \mathbb{Z}_{\geq 0}$ at time $t$ has mean $f(p_t)$ and variance $g(p_t)$ for some given functions $f, g : \mathbb{R}_{\geq 0} \rightarrow \mathbb{R}_{\geq 0}$. The {\em Reward} at time $t$ is $p_t \cdot \min(k_t, I_t)$. Then, for all $t = 0, 1, \ldots, T-1$, we have the following Bellman Equation:
     
@@ -185,7 +185,7 @@ V_t^*(I_t) =
 \end{cases}
 $$
 
-The interesting aspect of this result is that {\bf there are only two possible optimal prices for the deterministic case} (separated by the line $I_t = \frac {(T-t) \alpha} e$ which we will refer to as the ``Optimal Pricing Frontier'').
+The interesting aspect of this result is that {\bf there are only two possible optimal prices for the deterministic case} (separated by the line $I_t = \frac {(T-t) \alpha} e$ which we will refer to as the ``Optimal Pricing Frontier''). We will refer to the Optimal Price above the ``Optimal Pricing Frontier'' as the {\em Above Price} and the Optimal Price below the ``Optimal Pricing Frontier'' as the {\em Below Price'}
 
 \begin{figure}[H]
   \includegraphics[width=0.82\textwidth]{frontier.jpg}
@@ -194,17 +194,15 @@ The interesting aspect of this result is that {\bf there are only two possible o
 
 We note that:
 \begin{itemize}
-\item Above the ``Optimal Pricing Frontier'', Demand (under Optimal Pricing) occurs at the rate of $\frac \alpha e$ per time step (i.e., inventory trajectory is a straight line parallel to the ``Optimal Pricing Frontier'')
-\item Below the ``Optimal Pricing Frontier'', Demand (under Optimal Pricing) occurs at the rate of $\frac {I_t} {T-t}$ per time step (i.e., inventory trajectory is a straight line taking the inventory to exactly 0 at $t=T$).
+\item Above the ``Optimal Pricing Frontier'', Demand (under Optimal Pricing) occurs at the rate of $\frac \alpha e$ per time step (i.e., inventory trajectory is a straight line parallel to the ``Optimal Pricing Frontier''). We will refer to this Demand rate as the {\em Above Demand Rate}. Note that each unit of inventory above the ``Optimal Pricing Frontier'' is a unit that will remain unsold at the end of the clearance program.
+\item Below the ``Optimal Pricing Frontier'', Demand (under Optimal Pricing) occurs at the rate of $\frac {I_t} {T-t}$ per time step (i.e., inventory trajectory is a straight line taking the inventory to exactly 0 at $t=T$). We will refer to this Demand rate as the {\em Below Demand Rate}.
 \end{itemize}
 
 Hence, the demand rate (under Optimal Pricing) is higher above the ``Optimal Pricing Frontier'', and correspondingly Optimal Price is lower above the ``Optimal Pricing Frontier'' (as expected). 
-
-
    
-   \section{Calibration to ``Demand Lift''}
+ \section{Calibration to ``Demand Lift'' (for Deterministic case)}
    
-   Let us assume that the ``base price'' is 1, for which the demand is $D_0$. Let us assume that the demand for ``half price off'' (i.e., for price of 0.5) is $D_{0.5} = (1+L)\cdot D_0$ (we will refer to $L$ as the ``Demand Lift''). Let us calibrate the function $f(p) = \alpha \cdot e^{-\beta \cdot p}$ to these values:
+Let us assume that the ``base price'' is 1, for which the demand is $D_0$ (we will refer to $D_0$ as the {\em Base Demand}). Let us assume that the demand for ``half price off'' (i.e., for price of 0.5) is $D_{0.5} = (1+L)\cdot D_0$ (we will refer to $L$ as the {\em Demand Lift}). Let us calibrate the function $f(p) = \alpha \cdot e^{-\beta \cdot p}$ to these values:
    
 $$D_0 = \alpha \cdot e^{-\beta}, D_{0.5} = \alpha \cdot e^{-\frac {\beta} 2}$$
 Solving for $\alpha$ and $\beta$:
@@ -221,6 +219,17 @@ $$V_t^*(I_t) = \frac {(T-t) \cdot D_0 \cdot (1+L)^2} {2 \cdot e \cdot \log{(1+L)
 Below the ``Optimal Price Frontier'', we have:
 $$p_t^*(I_t) = 1 + \frac {\log \frac {(T-t)D_0} {I_t}} {2 \log (1+L)}$$
 $$V_t^*(I_t) = I_t(1 + \frac {\log \frac {(T-t)D_0} {I_t}} {2 \log (1+L)}) $$
+
+\section{Qualitative Insights (for Deterministic case)}
+
+\begin{itemize}
+\item The {\em Above Price} is independent of inventory, independent of the {\em Base Demand}, and independent of time. The {\em Above Price} only depends on the {\em Demand Lift}. The greater the {\em Demand Lift}, the deeper the clearance price cuts.
+\item The {\em Below Price} depends on the ratio of {\em Base Demand} to inventory and on the {\em Demand Lift}. The greater the inventory, the deeper the clearance price cuts. The smaller the {\em Base Demand}, the deeper the clearance price cuts. The greater the {\em Demand Lift}, the deeper the clearance price cuts.
+\item The {\em Above Demand Rate} is independent of inventory and independent of time. The {\em Above Demand Rate} is linear in the {\em Base Demand} and quadratic in the {\em Demand Lift}.
+\item The {\em Below Demand Rate} is independent of the {\em Base Demand} and independent of the {\em Demand Lift}. The {\em Below Demand Rate} is simply the ratio of inventory to remaining time (since we sell down to 0 exactly at the end of the clearance program).
+\item The Optimal Value Function (Optimal Revenue in clearance program) above the ``Optimal Pricing Frontier'' is independent of inventory, linear in {\em Base Demand for the course of the program} and is an increasing function of the {\em Demand Lift}. So for a 10\% increase in {\em Base Demand}, we will get a 10\% increase in Revenue. For a practical value of {\em Demand Lift} $L = 1$ (i.e., 100\% increase in demand for a 50\% price cut), a 10\% increase in {\em Demand Lift} will fetch us a 3\% increase in Revenue.
+\item The Optimal Value Function (Optimal revenue in clearance program) below the ``Optimal Pricing Frontier'' is an increasing function of inventory, an increasing function of the {\em Base Demand for the course of the program} (more demand results in lesser price cuts without lowering sales), and a decreasing function of {\em Demand Lift} (more lift results in greater price cuts without raising sales).
+\end{itemize}
    
      
    \end{document}
