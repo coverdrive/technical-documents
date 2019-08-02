@@ -9,7 +9,7 @@
 \usepackage{graphicx}	
 \usepackage{listings}
 
-\title{An Intuitive Perspective of Vendor Lead Times and Ordering Frequency}
+\title{Technical Note on Purchasing}
 \date{} % delete this line to display the current date
 
 %%% BEGIN DOCUMENT
@@ -19,19 +19,19 @@
 
 \section{Purpose of this Note}
 
-I'm writing this brief note to provide a simple and intuitive perspective of vendor lead time and ordering frequency. Here are some questions pertaining to Purchasing that we've been thinking about lately:
+I'm writing this brief note to provide a simple and intuitive perspective of vendor lead time and ordering frequency. Here are some questions pertaining to Purchasing:
 
 \begin{itemize}
-\item Can we define a notion of ``Ideal Inventory Position'' for the most upstream nodes in our network (nodes that receive inventory from vendors)?
-\item Is the current structure of lead times and order frequencies/quantities (from vendors) defective in meeting aggregate downstream demand (covering requisite guest availability for each SKU)?  
-\item How do we ensure that the structure of Purchasing (lead times and order frequencies/quantities) required to meet downstream demand doesn't lead to space overflow at our most upstream nodes?
+\item Can we define a notion of ``Ideal Inventory Position'' for the most upstream nodes in a supply-chain network (nodes that receive inventory from vendors)?
+\item Can one identify if lead times and order frequencies/quantities (from vendors) is defective in meeting aggregate downstream demand (covering requisite customer availability for a given item)?  
+\item Can one ensure that the structure of Purchasing (lead times and order frequencies/quantities) required to meet downstream demand doesn't lead to space overflow at the most upstream nodes?
 \end{itemize}
 
-To answer the above questions, we start by stating the goal of purchasing and show some simple formulas to help develop intuition (and avoid mathematical complexity). This is not to say that our full-blown Purchasing Algorithm will compromise on mathematical rigor. We simply relax the setting here to help explain Purchasing in simple and intuitive terms.
+To answer the above questions, we start by stating the goal of purchasing and show some simple formulas to help develop intuition (and avoid mathematical complexity). 
 
 \section{Purchasing 101}
 
-The goal of Purchasing is to order from vendors with the appropriate speed and frequency that meets requisite downstream demand in the most cost-optimal manner. With a simple and intuitive setting, we define the notion of ``Ideal inventory Position'' at the most upstream nodes in our network, and use this notion of ``Ideal Inventory Position'' to drive the explanations and address questions pertaining to lead times and ordering frequencies. We will refer to the most upstream node in our network as $U$. Assume that node $U$ serves a large set of stores, say 50-200 stores. RDC 551 is a good example. Node $U$ will keep some safety stock (to account for downstream withdrawal uncertainty) and will also buffer some inventory due to transport-cost considerations, constrained ordering cadence, minimum order quantities, casepacks etc.
+The goal of Purchasing is to order from vendors with the appropriate speed and frequency that meets requisite downstream demand in the most cost-optimal manner. With a simple and intuitive setting, we define the notion of ``Ideal inventory Position'' at the most upstream nodes, and use this notion of ``Ideal Inventory Position'' to drive the explanations and address questions pertaining to lead times and ordering frequencies. We will refer to the most upstream node in the network as $U$. Assume that node $U$ serves a large set of stores, say 50-200 stores. Node $U$ will keep some safety stock (to account for downstream withdrawal uncertainty) and will also buffer some inventory due to transport-cost considerations, constrained ordering cadence, minimum order quantities, casepacks etc.
  
 Let the aggregate single-epoch withdrawal from all the stores served by node $U$ be defined by a normal distribution with mean $\mu$ and standard deviation $\sigma$ (normal distribution is not a bad assumption because Central Limit Theorem is our friend here). We get nice risk-pooling benefits at node $U$, so while $\mu$ is additive over the individual stores' mean demands, $\sigma$ grows (as a function of stores) much slower than additive (eg: $\sqrt{stores}$ if correlation between stores is 0). Appendix \ref{appendix:MeanStdevFormulas} provides some mathematical detail on estimating $\mu$ and $\sigma$ from demand probabilities at the stores.
  
@@ -45,13 +45,13 @@ $$\mu * (L + R - i) + \Phi^{-1}(\alpha) * \sigma * \sqrt{L+R-i}$$
 
 where $\alpha$ is the Type-1 service level provided by node $U$ to the aggregate withdrawal demand from the stores, and $\Phi$ is standard normal Gaussian Cumulative Density Function.
  
-Note that $\mu$ and $\sigma$ are given to us (from guest demand forecast), and $\alpha$ can be obtained from our middle-mile Clark-Scarf algorithm for requisite guest availability (eg: if requisite guest availability is 98\%, then $\alpha$ will be roughly 99.5\% for typical assumptions of holding costs and lead times). 
+Note that $\mu$ and $\sigma$ are inputs (from customer demand forecast), and $\alpha$ can be identified based on requisite customer demand availability (eg: if requisite customer availability is 98\%, then $\alpha$ will be roughly 99.5\% for typical assumptions of holding costs and lead times). 
 
 Our levers are $R$ and $L$. So we will treat the Ideal Inventory Position as a function of $L$ and $R$, denoted as $IIP_i(L, R)$.
 
 $$IIP_i(L, R) = \mu * (L + R - i) + \Phi^{-1}(\alpha) * \sigma * \sqrt{L+R-i}$$
 
-How do we interpret the above formula? This formula says that for any choice of $L$ and $R$, you can meet the downstream aggregate withdrawal (to meet requisite guest availability) by maintaining an average inventory position of $IIP_i(L,R)$ at node $U$ in epoch $i$ of the $R$-epochs-cycle. And you can maintain the average inventory position of $IIP_i(L,R)$ by structuring a vendor lead time of $L$, an ordering-cadence period of $R$, and an average order quantity of $\mu * R$. But note that high values of $L$ or $R$ will yield high values of $IIP_i(L,R)$. So our job should be to keep $L$ and $R$ as low as possible. So let us understand the factors influencing $L$ and $R$ so we know how low we can get on $L$ and $R$.
+How do we interpret the above formula? This formula says that for any choice of $L$ and $R$, you can meet the downstream aggregate withdrawal (to meet requisite customer availability) by maintaining an average inventory position of $IIP_i(L,R)$ at node $U$ in epoch $i$ of the $R$-epochs-cycle. And you can maintain the average inventory position of $IIP_i(L,R)$ by structuring a vendor lead time of $L$, an ordering-cadence period of $R$, and an average order quantity of $\mu * R$. But note that high values of $L$ or $R$ will yield high values of $IIP_i(L,R)$. So our job should be to keep $L$ and $R$ as low as possible. So let us understand the factors influencing $L$ and $R$ so we know how low we can get on $L$ and $R$.
 
 \section{Factors influencing $L$}
 Note that vendor lead time is the time from placing an order to physically receiving the requested inventory. So it includes the transportation time plus the processing time. The factors affecting $L$ are:
@@ -66,19 +66,19 @@ Note that vendor lead time is the time from placing an order to physically recei
 \item Constraints on shipment days and delivery days would constrain $R$.
 \item Vendor Casepack (VCP) creates a constraint on $R$. $R$ can be approximated as $\lfloor \frac {VCP} {\mu} \rfloor$.
 \item Minimum Order Quantities will also create a constraint on $R$.
-\item Transport costs might prevent $R$ from getting too small (indeed, our Purchasing algorithm essentially solves for the optimal $R$, balancing transport costs against the inventory costs at node $U$).
+\item Transport costs might prevent $R$ from getting too small (indeed, a Purchasing algorithm essentially solves for the optimal $R$, balancing transport costs against the inventory costs at node $U$).
 \item On the flip side, space constraints at node $U$ will force $R$ to be small enough because large $R$ can lead to overflow of inventory at node $U$.
 \end{itemize}
 
 \section{Insights and Analysis associated with Purchasing}
 
-The simple formula for Ideal Inventory Position serves as an excellent base for performing quick analyses and deriving valuable insights into various questions we would ask pertaining to purchasing. Let us look at two such questions to illustrate the point.
+The simple formula for Ideal Inventory Position serves as an excellent base for performing quick analyses and deriving valuable insights into various questions one would ask pertaining to purchasing. Let us look at two such questions to illustrate the point.
 
 \begin{enumerate}
 
-\item {\bf Is the current structure of lead times and order frequencies/quantities at node $U$ defective in meeting aggregate downstream demand (covering requisite guest availability for each SKU)?} Here's how we can tackle this problem: Set up an equation that equates the formula for Ideal Inventory Position in epoch $i$ ($ = \mu * (L + R - i) + \Phi^{-1}(\alpha) * \sigma * \sqrt{L+R-i}$) to the observed Inventory Position at node $U$ in epoch $i$. In this equation, set the parameters $L$ and $R$ to the lead times and ordering cadence-periods observed in recent data on vendor ordering. Set the parameters $\mu$ and $\sigma$ based on the calculation in Appendix \ref{appendix:MeanStdevFormulas}. Now, solve for the free parameter $\alpha$. Let us denote the solved-for value of $\alpha$ as $\hat{\alpha}$ (we call this the ``Implied service level provided by node $U$ to the aggregate withdrawal demand from the stores'', shortened to simply "Implied Service Level"). If the Implied Service Level $\hat{\alpha}$ turns out to be lower than the appropriate service level to meet requisite guest availability (the translation from guest availability to node $U$'s service level is directly obtained from Clark-Scarf), then the current structure of lead times and order frequencies/quantities are defective in meeting aggregate downstream demand. Moreover, we are able to quantify the degree of the defect.
+\item {\bf Is a certain structure of lead times and order frequencies/quantities at node $U$ defective in meeting aggregate downstream demand (covering requisite customer availability for each items)?} Here's how we can tackle this problem: Set up an equation that equates the formula for Ideal Inventory Position in epoch $i$ ($ = \mu * (L + R - i) + \Phi^{-1}(\alpha) * \sigma * \sqrt{L+R-i}$) to the observed Inventory Position at node $U$ in epoch $i$. In this equation, set the parameters $L$ and $R$ to the lead times and ordering cadence-periods observed in recent data on vendor ordering. Set the parameters $\mu$ and $\sigma$ based on the calculation in Appendix \ref{appendix:MeanStdevFormulas}. Now, solve for the free parameter $\alpha$. Let us denote the solved-for value of $\alpha$ as $\hat{\alpha}$ (we call this the ``Implied service level provided by node $U$ to the aggregate withdrawal demand from the stores'', shortened to simply "Implied Service Level"). If the Implied Service Level $\hat{\alpha}$ turns out to be lower than the appropriate service level to meet requisite customer availability (with translation from customer availability to node $U$'s service level), then a given structure of lead times and order frequencies/quantities are defective in meeting aggregate downstream demand. Moreover, we are able to quantify the degree of the defect.
 
-\item {\bf How do we ensure that the structure of Purchasing (lead times and order frequencies/quantities) required to meet downstream demand doesn't lead to space overflow at our most upstream nodes?} We consider the maximum Expected Beginning-on-Hand Inventory at node $U$ across the $R$-epochs-cycle. As established in Appendix \ref{appendix:IPOHOOFormulas}, $Max EBOH =  \mu * R + \Phi^{-1}(\alpha) * \sigma * \sqrt{L+R}$. Based on the structure of lead times and order frequencies, we know $L$ and $R$. We derive $\alpha$ from the requisite guest availability, and we get $\mu$ and $\sigma$ from the formulas in Appendix \ref{appendix:MeanStdevFormulas}. Now simply plug in $L, R, \alpha, \mu, \sigma$ in the above formula for $ Max EBOH$, and convert the units to cubic volume. Then sum up this calculated cubic volume across all the SKUs served by node $U$. If this aggregate cubic volume is within the space available at node $U$, then we know that the structure of Purchasing required to meet downstream demand will not lead to space overflow at node $U$.
+\item {\bf Can one ensure that a certain structure of Purchasing (lead times and order frequencies/quantities) required to meet downstream demand doesn't lead to space overflow at our most upstream nodes?} We consider the maximum Expected Beginning-on-Hand Inventory at node $U$ across the $R$-epochs-cycle. As established in Appendix \ref{appendix:IPOHOOFormulas}, $Max EBOH =  \mu * R + \Phi^{-1}(\alpha) * \sigma * \sqrt{L+R}$. Based on the structure of lead times and order frequencies, we know $L$ and $R$. We derive $\alpha$ from the requisite customer availability, and we get $\mu$ and $\sigma$ from the formulas in Appendix \ref{appendix:MeanStdevFormulas}. Now simply plug in $L, R, \alpha, \mu, \sigma$ in the above formula for $ Max EBOH$, and convert the units to cubic volume. Then sum up this calculated cubic volume across all the items served by node $U$. If this aggregate cubic volume is within the space available at node $U$, then we know that the structure of Purchasing required to meet downstream demand will not lead to space overflow at node $U$.
 
 \end{enumerate}
 
