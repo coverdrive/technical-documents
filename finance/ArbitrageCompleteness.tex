@@ -1,0 +1,583 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Fundamental Theorems of Asset Pricing]{A Simple and Intuitive Coverage of \\ The Fundamental Theorems of Asset Pricing} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ICME, Stanford University
+% Your institution for the title page
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+\section{Simple Setting for Intuitive Understanding}
+
+\begin{frame}
+\frametitle{Simple Setting for Intuitive Understanding}
+\begin{itemize}
+\item Single-period setting (two time points $t=0$ and $t=1$)
+\item $t=0$ has a single state (we'll call it ``Spot'' state)
+\item $t=1$ has $n$ random states represented by $\Omega = \{\omega_1, \ldots, \omega_n\}$
+\item With probability distribution $\mu: \Omega \rightarrow [0,1]$, i.e, $\sum_{i=1}^n \mu(\omega_i) = 1$
+\item $m + 1$ fundamental assets $A_0, A_1, \ldots, A_m$
+\item Spot Price (at $t=0$) of $A_j$ denoted $S_j^{(0)}$ for all $j = 0, 1, \ldots, m$
+\item Price of $A_j$ in state $\omega_i$ denoted $S_j^{(i)}$ for all $j = 0, \ldots, m, i = 1, \ldots, n$
+\item All asset prices are assumed to be positive real numbers, i.e. in $\mathbb{R}^+$
+\item $A_0$ is a special asset known as risk-free asset with $S_0^{(0)}$ normalized to 1
+\item $S_0^{(i)}= e^r$ for all $i = 1, \ldots, n$ where $r$ is the constant risk-free rate
+\item $e^{-r}$ is the risk-free discount factor to represent ``time value of money''
+\end{itemize}
+\end{frame}
+
+\section{Portfolios, Arbitrage and Risk-Neutral Measure}
+\begin{frame}
+\frametitle{Portfolios}
+\begin{itemize}
+\item A portfolio is a vector $\theta = (\theta_0, \theta_1, \ldots, \theta_m) \in \mathbb{R}^{m+1}$
+\item $\theta_j$ is the number of units held in asset $A_j$ for all $j = 0, 1, \ldots, m$
+\item Spot Value (at $t=0$) of portfolio $\theta$ denoted $V_{\theta}^{(0)}$ is:
+$$V_{\theta}^{(0)} = \sum_{j=0}^m \theta_j \cdot S_j^{(0)}$$
+\item Value of portfolio $\theta$ in state $\omega_i$ (at $t=1$) denoted $V_{\theta}^{(i)}$ is:
+$$V_{\theta}^{(i)} = \sum_{j=0}^m \theta_j \cdot S_j^{(i)} \mbox{ for all } i = 1, \ldots, n$$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Arbitrage Portfolio}
+\begin{itemize}
+\item An Arbitrage Portfolio $\theta$ is one that ``makes money from nothing''
+\item Formally, a portfolio $\theta$ such that:
+\begin{itemize}
+\item $V_{\theta}^{(0)} \leq 0$
+\item $V_{\theta}^{(i)} \geq 0 \mbox{ for all } i = 1, \ldots,n$
+\item $\exists i$ in $1, \ldots, n$ such that $\mu(\omega_i) > 0$ and $V_{\theta}^{(i)} > 0$
+\end{itemize}
+\item So we never end with less value than what we start with and we end with expected value greater than what we start with
+\item Arbitrage allows market participants to make infinite returns
+\item In an efficient market, arbitrage disappears as participants exploit it
+\item Hence, Finance Theory typically assumes ``arbitrage-free'' markets
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Risk-Neutral Probability Measure}
+\begin{itemize}
+\item Consider a Probability Distribution $\pi : \Omega \rightarrow [0,1]$ such that 
+$$\pi(\omega_i) = 0 \mbox{ if and only if } \mu(\omega_i) = 0 \mbox{ for all } i = 1, \ldots, n$$
+\item Then, $\pi$ is a Risk-Neutral Probability Measure if:
+\begin{equation}
+S_j^{(0)} = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot S_j^{(i)} \mbox{ for all } j = 0, 1, \ldots, m \label{eq:assetdiscexp}
+\end{equation}
+\item So for each of the $m+1$ assets, the asset spot price (at $t=0$) is the discounted expectation (under $\pi$) of the asset price at $t=1$
+\item $\pi$ is an artificial construct to connect expectation of asset prices at $t=1$ to their spot prices by the risk-free discount factor $e^{-r}$
+\end{itemize}
+\end{frame}
+
+\section{First Fundamental Theorem of Asset Pricing}
+\begin{frame}
+\frametitle{1st Fundamental Theorem of Asset Pricing (1st FTAP)}
+\begin{theorem}
+1st FTAP: Our simple setting will not admit arbitrage portfolios if and only if there exists a Risk-Neutral Probability Measure.
+\end{theorem}
+\begin{itemize}
+\item First we prove the easy implication: \\Existence of Risk-Neutral Measure $\Rightarrow$ Arbitrage-free
+\item Assume there is a risk-neutral measure $\pi$
+\item Then, for each portfolio $\theta = (\theta_0, \theta_1, \ldots, \theta_m)$,
+\begin{align*}
+V_{\theta}^{(0)} & = \sum_{j=0}^m \theta_j \cdot S_j^{(0)} = \sum_{j=0}^m \theta_j \cdot e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot S_j^{(i)} \\
+& = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot \sum_{j=0}^m \theta_j \cdot S_j^{(i)} = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_{\theta}^{(i)}
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{1st Fundamental Theorem of Asset Pricing (1st FTAP)}
+\begin{itemize}
+\item So the portfolio spot value is the discounted expectation (under $\pi$) of the portfolio value at $t=1$
+\item For any portfolio $\theta$, if the following two conditions are satisfied:
+\begin{itemize}
+\item $V_{\theta}^{(i)} \geq 0 \mbox{ for all } i = 1, \ldots,n$
+\item $\exists i$ in $1, \ldots, n$ such that $\mu(\omega_i) > 0 (\Rightarrow \pi(\omega_i) > 0)$ and $V_{\theta}^{(i)} > 0$
+\end{itemize}
+Then, $$V_{\theta}^{(0)} = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_{\theta}^{(i)} > 0$$
+\item This eliminates the the possibility of arbitrage for any portfolio $\theta$
+\item The other implication (Arbitrage-free $\Rightarrow$ Existence of Risk-Neutral Measure) is harder to prove and covered in Appendix 1
+\end{itemize}
+\end{frame}
+
+\section{Derivatives, Replicating Portfolios and Hedges}
+
+\begin{frame}
+\frametitle{Derivatives, Replicating Portfolios and Hedges}
+\begin{itemize}
+\item A Derivative $D$ (in this simple setting) is a vector payoff at $t=1$:
+$$(V_D^{(1)}, V_D^{(2)}, \ldots, V_D^{(n)})$$
+where $V_D^{(i)}$ is the payoff of the derivative in state $\omega_i$ for all $i = 1, \ldots, n$
+\item Portfolio $\theta \in \mathbb{R}^{m+1}$ is a {\em Replicating Portfolio} for derivative $D$ if:
+\begin{equation}
+V_D^{(i)} = \sum_{j=0}^m \theta_j \cdot S_j^{(i)} \mbox{ for all } i = 1, \ldots, n \label{eq:endreplport}
+\end{equation}
+\item The components $(\theta_0, \theta_1, \ldots, \theta_m)$ are known as the {\em hedges} for $D$ since they can be used to offset 
+the risk in the payoff of $D$ at $t=1$
+\end{itemize}
+\end{frame}
+
+\section{Second Fundamental Theorem of Asset Pricing}
+
+\begin{frame}
+\frametitle{2nd Fundamental Theorem of Asset Pricing (2nd FTAP)}
+An arbitrage-free market is said to be {\em Complete} if every derivative in the market has a replicating portfolio.
+\begin{theorem}
+2nd FTAP: A market is Complete in our simple setting if and only if there is a unique risk-neutral probability measure.
+\end{theorem}
+Proof in Appendix 2. Together, the FTAPs classify markets into:
+\begin{enumerate} 
+\item Complete (arbitrage-free) market $\Leftrightarrow$ Unique risk-neutral measure
+\item Market with arbitrage $\Leftrightarrow$ No risk-neutral measure
+\item Incomplete (arbitrage-free) market $\Leftrightarrow$ Multiple risk-neutral measures
+\end{enumerate}
+The next topic is derivatives pricing that is based on the concepts of {\em replication of derivatives} and {\em risk-neutral measures}, and so is tied to the concepts of {\em arbitrage} and {\em completeness}.
+\end{frame}
+
+\section{Derivatives Pricing}
+
+\begin{frame}
+\frametitle{Positions involving a Derivative}
+\begin{itemize}
+\item Before getting into Derivatives Pricing, we need to define a {\em Position}
+\item We define a {\em Position} involving a derivative $D$ as the combination of holding some units in $D$ and some units in $A_0, A_1, \ldots, A_m$
+\item {\em Position} is an extension of the Portfolio concept including a derivative
+\item Formally denoted as $\gamma_D = (\alpha, \theta_0, \theta_1, \ldots, \theta_m) \in \mathbb{R}^{m+2}$
+\item $\alpha$ is the units held in derivative $D$
+\item $\theta_j$ is the units held in $A_j$ for all $j = 0, 1, \ldots, m$
+\item Extend the definition of Portfolio Value to Position Value 
+\item Extend the definition of Arbitrage Portfolio to Arbitrage Position
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Derivatives Pricing: Elimination of candidate prices}
+\begin{itemize}
+\item We will consider candidate prices (at $t=0$) for a derivative $D$
+\item Let $	\theta = (\theta_0, \theta_1, \ldots, \theta_m)$ be a replicating portfolio for $D$
+\item Consider the candidate price $\sum_{j=0}^m \theta_j \cdot S_j^{(0)} - x$ for $D$ for any $x > 0$
+\item Position $(1, -\theta_0 + x, -\theta_1, \ldots, -\theta_m)$ has value $x \cdot e^r > 0$ in each of the states at $t=1$
+\item But this position has spot ($t=0$) value of 0, which means this is an Arbitrage Position, rendering this candidate price invalid
+\item Consider the candidate price $\sum_{j=0}^m \theta_j \cdot S_j^{(0)} + x$ for $D$ for any $x > 0$
+\item Position $(-1, \theta_0 + x, \theta_1, \ldots, \theta_m)$ has value $x \cdot e^r > 0$ in each of the states at $t=1$
+\item But this position has spot ($t=0$) value of 0, which means this is an Arbitrage Position, rendering this candidate price invalid
+\item So every candidate price for $D$ other than $\sum_{j=0}^m \theta_j \cdot S_j^{(0)}$ is invalid
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Derivatives Pricing: Remaining candidate price}
+\begin{itemize}
+\item Having eliminated various candidate prices for $D$, we now aim to {\em establish} the remaining candidate price:
+\begin{equation}
+V_D^{(0)} = \sum_{j=0}^m \theta_j \cdot S_j^{(0)} \label{eq:remcandidateprice}
+\end{equation}
+where $\theta = (\theta_0, \theta_1, \ldots, \theta_m)$ is a replicating portfolio for $D$
+\item To eliminate prices, our only assumption was that $D$ can be replicated
+\item This can happen in a complete market or in an arbitrage market
+\item To establish remaining candidate price $V_D^{(0)}$, we need to assume market is complete, i.e., there is a unique risk-neutral measure $\pi$
+\item Candidate price $V_D^{(0)}$ can be expressed as the discounted expectation (under $\pi$) of the payoff of $D$ at $t=1$, i.e.,
+\begin{equation}
+V_D^{(0)} = \sum_{j=0}^m \theta_j \cdot e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot S_j^{(i)} = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)} \label{eq:derivdiscexp}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Derivatives Pricing: Establishing remaining candidate price}
+\begin{itemize}
+\item Now consider an {\em arbitrary portfolio} $\beta = (\beta_0, \beta_1, \ldots, \beta_m)$
+\item Define a position $\gamma_D = (\alpha, \beta_0, \beta_1, \ldots, \beta_m)$
+\item Spot Value (at $t=0$) of position $\gamma_D$ denoted $V_{\gamma_D}^{(0)}$ is:
+\begin{equation}
+V_{\gamma_D}^{(0)} = \alpha \cdot V_D^{(0)} + \sum_{j=0}^m \beta_j \cdot S_j^{(0)} \label{eq:startpositionval}
+\end{equation}
+where $V_D^{(0)}$ is the remaining candidate price
+\item Value of position $\gamma_D$ in state $\omega_i$ (at $t=1$), denoted $V_{\gamma_D}^{(i)}$, is:
+\begin{equation}
+V_{\gamma_D}^{(i)} = \alpha \cdot V_D^{(i)} + \sum_{j=0}^m \beta_j \cdot S_j^{(i)} \mbox{ for all } i = 1, \ldots, n \label{eq:endpositionval}
+\end{equation}
+\item Combining the linearity in equations (\ref{eq:assetdiscexp}), (\ref{eq:derivdiscexp}), (\ref{eq:startpositionval}), (\ref{eq:endpositionval}), we get:
+\begin{equation}
+V_{\gamma_D}^{(0)} = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_{\gamma_D}^{(i)} \label{eq:positiondiscexp}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Derivatives Pricing: Establishing remaining candidate price}
+\begin{itemize}
+\item So the position spot value is the discounted expectation (under $\pi$) of the position value at $t=1$
+\item For any $\gamma_D$ (containing any arbitrary portfolio $\beta$) and with $V_D^{(0)}$ as the candidate price for $D$, if the following two conditions are satisfied:
+\begin{itemize}
+\item $V_{\gamma_D}^{(i)} \geq 0 \mbox{ for all } i = 1, \ldots,n$
+\item $\exists i$ in $1, \ldots, n$ such that $\mu(\omega_i) > 0 (\Rightarrow \pi(\omega_i) > 0)$ and $V_{\gamma_D}^{(i)} > 0$
+\end{itemize}
+Then, $$V_{\gamma_D}^{(0)} = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_{\gamma_D}^{(i)} > 0$$
+\item This eliminates arbitrage possibility for remaining candidate price $V_D^{(0)}$
+\item So we have eliminated all prices other than $V_D^{(0)}$, and we have established the price $V_D^{(0)}$, proving that it should be {\em the} price of $D$
+\item The above arguments assumed a complete market, but what about an incomplete market or a market with arbitrage?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Incomplete Market (Multiple Risk-Neutral Measures)}
+\begin{itemize}
+\item Recall: Incomplete market means some derivatives can't be replicated
+\item Absence of replicating portfolio precludes usual arbitrage arguments
+\item 2nd FTAP says there are multiple risk-neutral measures
+\item So, multiple derivative prices (each consistent with no-arbitrage)
+\item The market ``chooses'' a risk-neutral measure
+\item ... reflecting the risk preference of the market
+\item ... that determines the market price of the derivative
+\item So we calibrate a model of ``market-implied'' risk-neutral measure
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Multiple Replicating Portfolios (Arbitrage Market)}
+\begin{itemize}
+\item Assume there are replicating portfolios $\alpha$ and $\beta$ for $D$
+with $$\sum_{j=0}^m \alpha_j \cdot S_j^{(0)} -  \sum_{j=0}^m \beta_j \cdot S_j^{(0)} = x > 0$$
+\item Consider portfolio $\theta = (\beta_0 - \alpha_0 + x, \beta_1 - \alpha_1, \ldots, \beta_m - \alpha_m)$
+$$V_{\theta}^{(0)} = \sum_{j=0}^m (\beta_j - \alpha_j) \cdot S_j^{(0)} + x \cdot S_0^{(0)} = -x + x = 0$$
+$$V_{\theta}^{(i)} = \sum_{j=0}^m (\beta_j - \alpha_j) \cdot S_j^{(i)} + x \cdot S_0^{(i)} = x \cdot e^r > 0 \mbox{ for all } i = 1, \ldots, n$$
+\item So $\theta$ is an Arbitrage Portfolio $\Rightarrow$ market with no risk-neutral measure
+\item Also note from previous elimination argument that every candidate price other than $\sum_{j=0}^m \alpha_j \cdot S_j^{(0)}$ is invalid and every candidate price other than $\sum_{j=0}^m \beta_j \cdot S_j^{(0)}$ is invalid, so $D$ has no valid price at all
+ \end{itemize}
+ \end{frame}
+
+\section{Examples}
+
+\begin{frame}
+\frametitle{Market with 2 states and 1 Risky Asset}
+\begin{itemize}
+\item Consider a market with $m = 1$ and $n = 2$
+\item Assume $S_1^{(1)} < S_1^{(2)}$
+\item No-arbitrage requires $S_1^{(1)} \leq S_1^{(0)} \cdot e^r \leq S_1^{(2)}$
+\item Assuming absence of arbitrage and invoking 1st FTAP, there exists a risk-neutral probability measure $\pi$ such that:
+$$S_1^{(0)} = e^{-r} \cdot (\pi(\omega_1) \cdot S_1^{(1)} + \pi(\omega_2) \cdot S_1^{(2)})$$
+$$\pi(\omega_1) + \pi(\omega_2) = 1$$
+\item This implies:
+$$\pi(\omega_1) = \frac {S_1^{(2)} - S_1^{(0)} \cdot e^r} {S_1^{(2)} - S_1^{(1)}}$$
+$$\pi(\omega_2) = \frac {S_1^{(0)} \cdot e^r - S_1^{(1)}} {S_1^{(2)} - S_1^{(1)}}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Market with 2 states and 1 Risky Asset (continued)}
+\begin{itemize}
+\item We can use these probabilities to price a derivative $D$ as:
+$$V_D^{(0)} = e^{-r} \cdot (\pi(\omega_1) \cdot V_D^{(1)} + \pi(\omega_2) \cdot V_D^{(2)})$$
+\item Now let us try to form a replicating portfolio $(\theta_0, \theta_1)$ for $D$
+$$V_D^{(1)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(1)}$$
+$$V_D^{(2)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(2)}$$ 
+\item Solving this yields hedges $(\theta_0, \theta_1)$ as follows:
+$$\theta_0 = e^{-r} \cdot \frac {V_D^{(1)} \cdot S_1^{(2)} - V_D^{(2)} \cdot S_1^{(1)}} {S_1^{(2)} - S_1^{(1)}} \mbox{ and } \theta_1 = \frac {V_D^{(2)} - V_D^{(1)}} {S_1^{(2)} - S_1^{(1)}}$$
+\item This means this is a Complete Market
+\item Note that the derivative price can also be expressed as:
+$$V_D^{(0)} = \theta_0 + \theta_1 \cdot S_1^{(0)}$$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Market with 3 states and 1 Risky Asset}
+\begin{itemize}
+\item Consider a market with $m = 1$ and $n = 3$
+\item Assume $S_1^{(1)} < S_1^{(2)} < S_1^{(3)}$
+\item No-arbitrage requires $S_1^{(1)} \leq S_1^{(0)} \cdot e^r \leq S_1^{(3)}$
+\item Assuming absence of arbitrage and invoking 1st FTAP, there exists a risk-neutral probability measure $\pi$ such that:
+$$S_1^{(0)} = e^{-r} \cdot (\pi(\omega_1) \cdot S_1^{(1)} + \pi(\omega_2) \cdot S_1^{(2)} + \pi(\omega_3) \cdot S_1^{(3)})$$
+$$\pi(\omega_1) + \pi(\omega_2) + \pi(\omega_3) = 1$$
+\item 2 equations \& 3 variables $\Rightarrow$ multiple solutions for $\pi$
+\item Each of these solutions for $\pi$ provides a valid price for a derivative $D$
+$$V_D^{(0)} = e^{-r} \cdot (\pi(\omega_1) \cdot V_D^{(1)} + \pi(\omega_2) \cdot V_D^{(2)} + \pi(\omega_3) \cdot V_D^{(3)})$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Market with 3 states and 1 Risky Asset (continued)}
+\begin{itemize}
+\item Now let us try to form a replicating portfolio $(\theta_0, \theta_1)$ for $D$
+$$V_D^{(1)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(1)}$$
+$$V_D^{(2)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(2)}$$ 
+$$V_D^{(3)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(3)}$$
+\item 3 equations \& 2 variables $\Rightarrow$ no replication for {\em some} $D$
+\item This means this is an Incomplete Market 
+\item Don't forget that we have multiple risk-neutral probability measures
+\item Meaning we have multiple valid prices for derivatives
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Market with 2 states and 2 Risky Assets}
+\begin{itemize}
+\item Consider a market with $m = 2$ and $n = 3$
+\item Assume $S_1^{(1)} < S_1^{(2)}$ and $S_2^{(1)} < S_2^{(2)}$
+\item Let us try to determine a risk-neutral probability measure $\pi$:
+$$S_1^{(0)} = e^{-r} \cdot (\pi(\omega_1) \cdot S_1^{(1)} + \pi(\omega_2) \cdot S_1^{(2)})$$
+$$S_2^{(0)} = e^{-r} \cdot (\pi(\omega_1) \cdot S_2^{(1)} + \pi(\omega_2) \cdot S_2^{(2)})$$
+$$\pi(\omega_1) + \pi(\omega_2) = 1$$
+\item 3 equations \& 2 variables $\Rightarrow$ no risk-neutral measure $\pi$
+\item Let's try to form a replicating portfolio $(\theta_0, \theta_1, \theta_2)$ for a derivative $D$
+$$V_D^{(1)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(1)} + \theta_2 \cdot S_2^{(1)}$$
+$$V_D^{(2)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(2)} + \theta_2 \cdot S_2^{(2)}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Market with 2 states and 2 Risky Assets (continued)}
+\begin{itemize}
+\item 2 equations \& 3 variables $\Rightarrow$ multiple replicating portfolios
+\item Each such replicating portfolio yields a price for $D$ as:
+$$V_D^{(0)} = \theta_0 + \theta_1 \cdot S_1^{(0)} + \theta_2 \cdot S_2^{(0)}$$
+\item Select two such replicating portfolios with different $V_D^{(0)}$
+\item Combination of these replicating portfolios is an Arbitrage Portfolio
+\begin{itemize}
+\item They cancel off each other's price in each $t=1$ states
+\item They have a combined negative price at $t=0$
+\end{itemize}
+\item So this is a market that admits arbitrage (no risk-neutral measure)
+\end{itemize}
+\end{frame}
+
+\section{Summary and General Theory}
+
+\begin{frame}
+\frametitle{Summary}
+3 cases:
+\begin{enumerate}
+\item {\em Complete market}
+\begin{itemize}
+\item Unique replicating portfolio for derivatives
+\item Unique risk-neutral measure, meaning we have unique derivatives prices
+\end{itemize}
+\item {\em Arbitrage-free but incomplete market}
+\begin{itemize}
+\item Not all derivatives can be replicated
+\item Multiple risk-neutral measures, meaning we can have multiple valid prices for derivatives
+\end{itemize}
+\item {\em Market with Arbitrage}
+\begin{itemize}
+\item Derivatives have multiple replicating portfolios (that when combined causes arbitrage)
+\item No risk-neutral measure, meaning derivatives cannot be priced
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{General Theory for Derivatives Pricing}
+\begin{itemize}
+\item The theory for our simple setting extends nicely to the general setting
+\item Instead of $t=0,1$, we consider $t=0, 1, \ldots, T$
+\item The model is a ``recombining tree'' of state transitions across time
+\item The idea of Arbitrage applies over multiple time periods
+\item Risk-neutral measure for each state at each time period
+\item Over multiple time periods, we need a {\em Dynamic Replicating Portfolio} to rebalance asset holdings (``self-financing trading strategy'')
+\item We obtain hedges and prices at each time period at each state
+\item By making time period smaller and smaller, the model turns into a stochastic process (in continuous time)
+\item Classical Financial Math theory based on stochastic calculus but has essentially the same ideas we developed for our simple setting
+\end{itemize}
+\end{frame}
+
+\appendix
+\begin{frame}
+\frametitle{Appendix 1: Arbitrage-free $\Rightarrow \exists$ a risk-neutral measure}
+\begin{itemize}
+\item We will prove that if a risk-neutral probability measure doesn't exist, there exists an arbitrage portfolio
+\item Let $\mathbb{V} \subset \mathbb{R}^m$ be the set of vectors $(s_1, \ldots, s_m)$ such that
+$$s_j = e^{-r} \cdot \sum_{i=1}^n \mu(\omega_i) \cdot S_j^{(i)} \mbox{ for all } j = 1, \ldots, m$$
+spanning over all possible probability distributions $\mu: \Omega \rightarrow [0,1]$
+\item $\mathbb{V}$ is a bounded, closed, convex polytope in $\mathbb{R}^m$
+\item If a risk-neutral measure doesn't exist, $(S_1^{(0)}, \ldots, S_m^{(0)}) \not\in \mathbb{V}$
+\item Hyperplane Separation Theorem implies that there exists a non-zero vector $(\theta_1, \ldots, \theta_m)$ such that
+for any $v = (v_1, \ldots, v_m) \in \mathbb{V}$,
+$$\sum_{j=1}^m \theta_j \cdot v_j > \sum_{j=1}^m \theta_j \cdot S_j^{(0)}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 1: Arbitrage-free $\Rightarrow \exists$ a risk-neutral measure}
+\begin{itemize}
+\item In particular, consider vectors $v$ corresponding to the corners of $\mathbb{V}$, those for which the full probability
+ mass is on a particular $\omega_i \in \Omega$, i.e.,
+ $$\sum_{j=1}^m \theta_j \cdot (e^{-r} \cdot S_j^{(i)}) > \sum_{j=1}^m \theta_j \cdot S_j^{(0)} \mbox{ for all } i = 1, \ldots, n$$
+ \item Choose a $\theta_0 \in \mathbb{R}$ such that:
+ $$\sum_{j=1}^m \theta_j \cdot (e^{-r} \cdot S_j^{(i)}) > -\theta_0 > \sum_{j=1}^m \theta_j \cdot S_j^{(0)} \mbox{ for all } i = 1, \ldots, n$$
+ \item Therefore,
+ $$e^{-r} \cdot \sum_{j=0}^m \theta_j \cdot S_j^{(i)} > 0 > \sum_{j=0}^m \theta_j \cdot S_j^{(0)} \mbox{ for all } i = 1, \ldots, n$$
+ \item This means $(\theta_0, \theta_1, \ldots, \theta_m)$ is an arbitrage portfolio
+ \qed
+\end{itemize}
+\end{frame}
+
+\appendix
+\begin{frame}
+\frametitle{Appendix 2: Proof of 2nd FTAP}
+\begin{itemize}
+\item We will first prove that in an arbitrage-free market, if every derivative has a replicating portfolio, there is a unique risk-neutral measure $\pi$
+\item We define $n$ special derivatives (known as {\em Arrow-Debreu securities}), one for each random state in $\Omega$ at $t=1$
+\item We define the time $t=1$ payoff of {\em Arrow-Debreu security} $D_k$ (for each of $k = 1, \ldots, n$) in state $\omega_i$ as $\mathbb{I}_{i=k}$ for all $i = 1, \ldots, n$.
+\item Since each derivative has a replicating portfolio, let $\theta^{(k)} = (\theta_0^{(k)}, \theta_1^{(j)}, \ldots, \theta_m^{(k)})$ be the replicating 
+portfolio for $D_k$.
+\item With usual no-arbitrage argument, the price (at $t=0$) of $D_k$ is 
+$$\sum_{j=0}^m \theta_j^{(k)} \cdot S_j^{(0)} \mbox{ for all } k = 1, \ldots, n$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 2: Proof of 2nd FTAP}
+\begin{itemize}
+\item Now let us try to solve for an unknown risk-neutral probability measure $\pi : \Omega \rightarrow [0, 1]$, given the above prices for $D_k, k = 1, \ldots, n$
+$$e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot \mathbb{I}_{i=k} = e^{-r} \cdot \pi(\omega_k) = \sum_{j=0}^m \theta_j^{(k)} \cdot S_j^{(0)} \mbox{ for all } k = 1, \ldots, n$$
+$$\Rightarrow \pi(\omega_k) = e^r \cdot \sum_{j=0}^m \theta_j^{(k)} \cdot S_j^{(0)} \mbox{ for all } k = 1, \ldots, n$$
+\item This yields a unique solution for the risk-neutral probability measure $\pi$
+\item Next, we prove the other direction of the 2nd FTAP
+\item  To prove: if there exists a risk-neutral measure $\pi$ and if there exists a derivative $D$ 
+with no replicating portfolio, we can construct a risk-neutral measure different than $\pi$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 2: Proof of 2nd FTAP}
+\begin{itemize}
+\item Consider the following vectors in the vector space $\mathbb{R}^n$
+$$v = (V_D^{(1)}, \ldots, V_D^{(n)}) \mbox{ and } s_j = (S_j^{(1)}, \ldots, S_j^{(n)}) \mbox{ for all } j = 0, 1, \ldots, m$$
+\item Since $D$ does not have a replicating portfolio, $v$ is not in the span of $s_0, s_1, \ldots, s_m$, which 
+means $s_0, s_1, \ldots, s_m$ do not span $\mathbb{R}^n$
+\item Hence $\exists$ a non-zero vector $u = (u_1, \ldots, u_n) \in \mathbb{R}^n$ orthogonal to each of $s_0, s_1, \ldots, s_m$, i.e.,
+\begin{equation}
+\sum_{i=1}^n u_i \cdot S_j^{(i)} = 0 \mbox{ for all } j = 0,1, \ldots, n \label{eq:orthogonal}
+\end{equation}
+\item Note that $S_0^{(i)} = e^r$ for all $i = 1, \ldots, n$ and so,
+\begin{equation}
+\sum_{i=1}^n u_i = 0 \label{eq:partitionunity}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 2: Proof of 2nd FTAP}
+\begin{itemize}
+\item Define $\pi' : \Omega \rightarrow \mathbb{R}$ as follows (for some $\epsilon > 0 \in \mathbb{R})$:
+\begin{equation}
+\pi'(\omega_i) = \pi(\omega_i) + \epsilon \cdot u_i \mbox{ for all } i = 1, \ldots, n \label{eq:newmeasure}
+\end{equation}
+\item To establish $\pi'$ as a risk-neutral measure different than $\pi$, note:
+\begin{itemize}
+\item Since $\sum_{i=1}^n \pi(\omega_i) = 1$ and since $\sum_{i=1}^n u_i = 0$, $\sum_{i=1}^n \pi'(\omega_i) = 1$
+\item Construct $\pi'(\omega_i) > 0$ for each $i$ where $\pi(\omega_i) > 0$ by making $\epsilon > 0$ sufficiently small, and set $\pi'(\omega_i) = 0$ for each $i$ 
+where $\pi(\omega_i) = 0$
+\item From Eq (\ref{eq:orthogonal}) and Eq (\ref{eq:newmeasure}), we derive:
+$$\sum_{i=1}^n \pi'(\omega_i) \cdot S_j^{(i)} = \sum_{i=1}^n \pi(\omega_i) \cdot S_j^{(i)} = e^r \cdot S_j^{(0)} \mbox{ for all } j = 0, 1, \ldots, m$$
+\end{itemize}
+\qed
+\end{itemize}
+\end{frame}
+
+
+
+\end{document}
