@@ -1,0 +1,223 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Deep Hedging]{Real-world Derivatives Hedging with \\ Deep Reinforcement Learning} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ICME, Stanford University
+% Your institution for the title page
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Classical Pricing and Hedging of Derivatives}
+\begin{itemize}
+\item Classical Pricing/Hedging Theory assumes frictionless markets
+\item Frictionless := continuous trading, any volume, no transaction costs
+\item Assumptions of \href{https://github.com/coverdrive/technical-documents/blob/master/finance/ArbitrageCompleteness.pdf}{\underline{\textcolor{blue}{arbitrage-free and completeness}}}
+lead to (dynamic and exact) replication of derivatives with {\em basic} market securities
+\item Replication strategy gives us the pricing and hedging solutions
+\item This is the foundation of the famous Black-Scholes formulas
+\item However, the real-world has many frictions $\Rightarrow$ {\em Incomplete Market}
+\item ... where Derivatives cannot be exactly replicated
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Pricing and Hedging in an Incomplete Market}
+\begin{itemize}
+\item In an incomplete market, we have multiple risk-neutral measures
+\item So, multiple derivative prices (each consistent with no-arbitrage)
+\item The market/trader ``chooses'' a risk-neutral measure (hence, price)
+\item Based on a specified preference for trading risk versus return
+\item This preference is equivalent to specifying a \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Utility function}}}
+\item Maximizing ``risk-adjusted return'' of the derivative plus hedges
+\item Reminiscent of the \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MertonPortfolio.pdf}{\underline{\textcolor{blue}{Portfolio Optimization problem}}}
+\item Likewise, we can set this up as a stochastic control (MDP) problem
+\item Where the decision at each time step is: {\em Trades in the hedges}
+\item So what's the best way to solve this MDP?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Deep Reinforcement Learning (DRL)}
+\begin{itemize}
+\item Dynamic Programming not suitable in practice due to:
+\begin{itemize}
+\item Curse of Dimensionality
+\item Curse of Modeling
+\end{itemize}
+\item So we solve the MDP with {\em Deep Reinforcement Learning} (DRL)
+\item The idea is to use real market data and real market frictions
+\item Developing realistic simulations to derive the optimal policy
+\item The optimal policy gives us the (practical) hedging strategy
+\item The optimal value function gives us the price (valuation)
+\item Formulation based on \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3355706}{\underline{\textcolor{blue}{Deep Hedging paper}}} by J.P.Morgan researchers
+\item More details in the \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3355706}{\underline{\textcolor{blue}{prior paper}}} by some of the same authors
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Problem Formulation}
+\begin{itemize}
+\item We will simplify the problem setup a bit for ease of exposition
+\item This model works for more complex, more frictionful markets too
+\item Assume time is in discrete and finite steps $t = 0, 1, \ldots, T$
+\item Given a portfolio $D$ of $m$ derivatives, all expiring within time $T$
+\item Portfolio-aggregated {\em Contingent Cashflows} at time $t$ denoted $X_t \in \mathbb{R}$
+\item Assume we have $n$ basic market securities as potential hedges
+\item Hedge positions (units held) at time $t$ denoted $\alpha_t \in \mathbb{R}^n$
+\item We assume initial hedge positions are 0 ($\alpha_0 = 0$)
+\item Cashflows per unit of hedges held at time $t$ denoted $Y_t \in \mathbb{R}^n$
+\item Prices per unit of hedges at time $t$ denoted $P_t \in \mathbb{R}^n$
+\item Problem is to determine hedging strategy and valuation of portfolio $D$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{States and Actions}
+\begin{itemize}
+\item Denote state space at time $t$ as $\mathcal{S}_t$, state at time $t$ as $s_t \in \mathcal{S}_t$
+\item Among other things, $s_t$ contains $t, \alpha_t, P_t$ (perhaps also past prices)
+\item $s_t$ will include any market information relevant to trading actions
+\item Denote action space at time $t$ as $\mathcal{A}_t$, action at time $t$ as $a_t \in \mathcal{A}_t$
+\item $a_t$ represents units of hedges traded (positive for buy, negative for sell)
+$$\alpha_t = \alpha_{t-1} + a_{t-1} \mbox{ for } t = 1, \ldots, T$$
+\item Trading restrictions (eg: no short-selling) define $\mathcal{A}_t$ as a function of $s_t$
+\item Force-liquidation at termination $T$ means $a_T = -\alpha_T$
+\item State transitions available from a {\em simulator}, whose internals are estimated from real market data and realistic assumptions
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Rewards, Utility, Hedging/Valuation}
+\begin{itemize}
+\item Cashflows materialize at time $t$ in three ways:
+\begin{itemize}
+\item Cashflows emitted from holding positions $= X_t + \alpha_t \cdot Y_t$
+\item Trading PnL $= -a_t \cdot P_t$
+\item Transaction Costs, as an example could be $= - \gamma P_t \cdot |a_t|$ for some $\gamma > 0$
+\end{itemize}
+\item Rewards $r_t$ at time $t$ is the Utility of the sum of above quantities, i.e.
+$$r_t = U(X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t \cdot |a_t|)$$
+\item For an appropriate concave \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Utility function $U$ (based on risk-aversion)}}}
+\item Hedging Strategy for Portfolio $D$ at time $t$ given by Optimal Policy $\pi_* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
+\item Valuation of Portfolio $D$ at time $t$ given by Optimal Value Function $V_* : \mathcal{S}_t \rightarrow \mathbb{R}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{DRL Approach a Breakthrough for Practical Trading?}
+\begin{itemize}
+\item The industry practice/tradition has been to start with {\em Complete Market} assumption, and then layer ad-hoc/unsatisfactory adjustments
+\item There is some past work on pricing/hedging amidst frictions
+\item But they are mostly theoretical and not usable in real trading
+\item My opinion: This DRL approach a breakthrough for practical trading
+\item Key advantages of this DRL approach:
+\begin{itemize}
+\item Algorithm for pricing/hedging independent of market dynamics
+\item Computational cost scales efficiently with size $m$ of derivatives portfolio
+\item Enables one to faithfully capture practical trading situations/constraints
+\item Deep Neural Networks provide great function approximation for RL 
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\end{document}
