@@ -1,0 +1,201 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{pseudocode}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Evolutionary Strategies]{Evolutionary Strategies: A Simple and Often-Viable \\Alternative to Reinforcement Learning} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+ICME, Stanford University
+% Your institution for the title page
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Introduction to Evolutionary Strategies}
+\begin{itemize}
+\item Evolutionary Strategies (ES) are a type of Black-Box Optimization
+\item Popularized in the 1970s as {\em Heuristic Search Methods}
+\item Loosely inspired by natural evolution of living beings
+\item We focus on a subclass called Natural Evolution Strategies (NES)
+\item The original setting was generic and nothing to do with MDPs or RL
+\item Given an objective function $F(\psi)$, where $\psi$ refers to parameters
+\item We consider a probability distribution $p_{\theta}(\psi)$ over $\psi$
+\item Where $\theta$ refers to the parameters of the probability distribution
+\item We want to maximize the average objective $\mathbb{E}_{\psi \sim p_{\theta}}[F(\psi)]$
+\item We search for optimal $\theta$ with stochastic gradient ascent as follows:
+$$\nabla_{\theta} (\mathbb{E}_{\psi \sim p_{\theta}}[F(\psi)]) = \nabla_{\theta} (\int_{\psi} p_{\theta}(\psi) \cdot F(\psi) \cdot d\psi)$$
+$$=\int_{\psi} \nabla_{\theta}(p_{\theta}(\psi)) \cdot F(\psi) \cdot d\psi = \int_{\psi} p_{\theta}(\psi) \cdot \nabla_{\theta}(\log{p_{\theta}(\psi)}) \cdot F(\psi) \cdot d\psi $$
+$$ = \mathbb{E}_{\psi \sim p_{\theta}}[\nabla_{\theta}(\log{p_{\theta}(\psi)}) \cdot F(\psi)]$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NES applied to solving Markov Decision Processes (MDPs)}
+\begin{itemize}
+\item We set $F(\cdot)$ to be the (stochastic) {\em Return} of a MDP
+\item $\psi$ refers to the parameters of a policy $\pi_{\psi} : \mathcal{S} \rightarrow \mathcal{A}$
+\item $\psi$ will be drawn from an isotropic multivariate Gaussian distribution
+\item Gaussian with mean vector $\theta$ and fixed diagonal covariance matrix $\sigma^2 I$
+\item The average objective ({\em Expected Return}) can then be written as:
+$$\mathbb{E}_{\psi \sim p_{\theta}}[F(\psi)] = \mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[F(\theta + \sigma \cdot \epsilon)]$$
+\item The gradient ($\nabla_{\theta}$) of {\em Expected Return} can be written as:
+$$\mathbb{E}_{\psi \sim p_{\theta}}[\nabla_{\theta}(\log{p_{\theta}(\psi)}) \cdot F(\psi)]$$
+$$ = \mathbb{E}_{\psi \sim \mathcal{N}(\theta,\sigma^2 I)}[\nabla_{\theta} ( \frac {-(\psi - \theta)^T \cdot (\psi - \theta)} {2\sigma^2}) \cdot F(\psi)]$$
+$$=\frac 1 {\sigma} \cdot \mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[\epsilon \cdot F(\theta + \sigma \cdot \epsilon)]$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{A sampling-based algorithm to solve the MDP}
+\begin{itemize}
+\item The above formula helps estimate gradient of {\em Expected Return}
+\item By sampling several $\epsilon$ (each $\epsilon$ represents a {\em Policy} $\pi_{\theta + \sigma \cdot \epsilon}$)
+\item And averaging $\epsilon \cdot F(\theta + \sigma \cdot \epsilon)$ across a large set ($n$) of $\epsilon$ samples
+\item Note $F(\theta + \sigma \cdot \epsilon)$ involves playing an episode for a given sampled $\epsilon$, \\ and obtaining that episode's {\em Return} $F(\theta + \sigma \cdot \epsilon)$
+\item Hence, $n$ values of $\epsilon$, $n$ {\em Policies} $\pi_{\theta + \sigma \cdot \epsilon}$, and $n$ {\em Returns} $F(\theta + \sigma \cdot \epsilon)$
+\item Given gradient estimate, we update $\theta$ in this gradient direction
+\item Which in turn leads to new samples of $\epsilon$ (new set of {\em Policies} $\pi_{\theta + \sigma \cdot \epsilon}$)
+\item And the process repeats until $\mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[F(\theta + \sigma \cdot \epsilon)]$ is maximized
+\item The key inputs to the algorithm will be:
+\begin{itemize}
+\item Learning rate (SGD Step Size) $\alpha$
+\item Standard Deviation $\sigma$
+\item Initial value of parameter vector $\theta_0$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Algorithm}
+\begin{pseudocode}{Natural Evolution Strategies}{\alpha, \sigma, \theta_0}
+\FOR t \GETS 0, 1, 2, \ldots \DO
+\BEGIN
+\mbox{Sample } \epsilon_1, \epsilon_2, \ldots \epsilon_n \sim \mathcal{N}(0, I)\\
+\mbox{Compute Returns } F_i \GETS F(\theta_t + \sigma \cdot \epsilon_i) \mbox{ for } i = 1,2, \ldots, n\\
+\theta_{t+1} \GETS \theta_t + \frac {\alpha} {n \sigma} \sum_{i=1}^n \epsilon_i \cdot F_i
+\END\\
+\end{pseudocode}
+\end{frame}
+
+\begin{frame}
+\frametitle{Resemblance to Policy Gradient?}
+\begin{itemize}
+\item On the surface, this NES algorithm looks like \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient}}} (PG)
+\item Because it's not Value Function-based (it's Policy-based, like PG)
+\item Also, similar to PG, it uses a gradient to move towards optimality
+\item But, ES does not interact with the environment (like PG/RL does)
+\item ES operates at a high-level, ignoring (state,action,reward) interplay
+\item Specifically, does not aim to assign credit to actions in specific states
+\item Hence, ES doesn't have the core essence of RL: {\em Estimating the Q-Value Function of a Policy and using it to Improve the Policy}
+\item Therefore, we don't classify ES as Reinforcement Learning
+\item We consider ES to be an alternative approach to RL Algorithms
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ES versus RL}
+\begin{itemize}
+\item Traditional view has been that ES won't work on high-dim problems
+\item Specifically, ES has been shown to be data-inefficient relative to RL
+\item Because ES resembles simple hill-climbing based only on finite differences along a few random directions at each step
+\item However, ES is very simple to implement (no Value Function approx. or back-propagation needed), and is highly parallelizable
+\item ES has the benefits of being indifferent to distribution of rewards and to action frequency, and is tolerant of long horizons
+\item \href{https://arxiv.org/pdf/1703.03864.pdf}{\underline{\textcolor{blue}{This paper from OpenAI Researchers}}} shows techniques to make NES more robust and more data-efficient, and they demonstrate that NES has more exploratory behavior than advanced PG algorithms
+\item I'd always recommend trying NES before attempting to solve with RL
+
+\end{itemize}
+\end{frame}
+
+
+\end{document}
