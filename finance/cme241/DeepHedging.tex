@@ -150,19 +150,19 @@ lead to (dynamic and exact) replication of derivatives with {\em basic} market s
 \end{frame}
 
 \begin{frame}
-\frametitle{Problem Formulation}
+\frametitle{Problem Setup}
 \begin{itemize}
 \item We will simplify the problem setup a bit for ease of exposition
 \item This model works for more complex, more frictionful markets too
-\item Assume time is in discrete and finite steps $t = 0, 1, \ldots, T$
-\item Given a portfolio $D$ of $m$ derivatives, all expiring within time $T$
+\item Assume time is in discrete (finite) steps $t = 0, 1, \ldots, T$
+\item Assume we have a position (portfolio) $D$ in $m$ derivatives
+\item Assume each of these $m$ derivatives expires in time $ \leq T$
 \item Portfolio-aggregated {\em Contingent Cashflows} at time $t$ denoted $X_t \in \mathbb{R}$
 \item Assume we have $n$ basic market securities as potential hedges
 \item Hedge positions (units held) at time $t$ denoted $\alpha_t \in \mathbb{R}^n$
-\item We assume initial hedge positions are 0 ($\alpha_0 = 0$)
 \item Cashflows per unit of hedges held at time $t$ denoted $Y_t \in \mathbb{R}^n$
 \item Prices per unit of hedges at time $t$ denoted $P_t \in \mathbb{R}^n$
-\item Problem is to determine hedging strategy and valuation of portfolio $D$
+\item PnL position at time $t$ is denoted as $\beta_t \in \mathbb{R}$
 \end{itemize}
 \end{frame}
 
@@ -170,31 +170,40 @@ lead to (dynamic and exact) replication of derivatives with {\em basic} market s
 \frametitle{States and Actions}
 \begin{itemize}
 \item Denote state space at time $t$ as $\mathcal{S}_t$, state at time $t$ as $s_t \in \mathcal{S}_t$
-\item Among other things, $s_t$ contains $t, \alpha_t, P_t$ (perhaps also past prices)
+\item Among other things, $s_t$ contains $t, \alpha_t, P_t, \beta_t, D$
 \item $s_t$ will include any market information relevant to trading actions
+\item For simplicity, we assume $s_t$ is just the tuple $(t, \alpha_t, P_t, \beta_t, D)$
 \item Denote action space at time $t$ as $\mathcal{A}_t$, action at time $t$ as $a_t \in \mathcal{A}_t$
 \item $a_t$ represents units of hedges traded (positive for buy, negative for sell)
-$$\alpha_t = \alpha_{t-1} + a_{t-1} \mbox{ for } t = 1, \ldots, T$$
 \item Trading restrictions (eg: no short-selling) define $\mathcal{A}_t$ as a function of $s_t$
-\item Force-liquidation at termination $T$ means $a_T = -\alpha_T$
-\item State transitions available from a {\em simulator}, whose internals are estimated from real market data and realistic assumptions
+\item State transitions $P_{t+1}|P_t$ available from a {\em simulator}, whose internals are estimated from real market data and realistic assumptions
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Rewards, Utility, Hedging/Valuation}
+\frametitle{Sequence of events at each time step $t=0, \ldots, T$}
+\begin{enumerate}
+\item Observe state $s_t = (t, \alpha_t, P_t, \beta_t, D)$
+\item Realize cashflows (from holding positions) $=X_t + \alpha_t \cdot Y_t$
+\item Perform action (trades) $a_t$ to produce trading PnL $= - a_t \cdot P_t$
+\item Trading transaction costs, example $= - \gamma P_t \cdot |a_t|$ for some $\gamma > 0$
+\item Update $\alpha_t$ as: $\alpha_{t+1} = \alpha_t + a_t$ for $t = 0, \ldots, T$ \\(force-liquidation at termination means $a_T= \alpha_T$)
+\item Update PnL $\beta_t$ as:
+$$\beta_{t+1} = \beta_t + X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t \cdot |a_t| \mbox{ for } t = 0, \ldots, T$$
+\item Reward $r_t = 0$ for all $t = 0, \ldots, T-1$ and $r_T = U(\beta_{T+1})$ for an appropriate concave \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Utility function $U$ (based on risk-aversion)}}}
+\item Simulator evolves hedge prices from $P_t$ to $P_{t+1}$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Pricing and Hedging Problem Statement}
 \begin{itemize}
-\item Cashflows materialize at time $t$ in three ways:
-\begin{itemize}
-\item Cashflows emitted from holding positions $= X_t + \alpha_t \cdot Y_t$
-\item Trading PnL $= -a_t \cdot P_t$
-\item Transaction Costs, as an example could be $= - \gamma P_t \cdot |a_t|$ for some $\gamma > 0$
-\end{itemize}
-\item Rewards $r_t$ at time $t$ is the Utility of the sum of above quantities, i.e.
-$$r_t = U(X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t \cdot |a_t|)$$
-\item For an appropriate concave \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Utility function $U$ (based on risk-aversion)}}}
-\item Hedging Strategy for Portfolio $D$ at time $t$ given by Optimal Policy $\pi_* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
-\item Valuation of Portfolio $D$ at time $t$ given by Optimal Value Function $V_* : \mathcal{S}_t \rightarrow \mathbb{R}$
+\item Assume we now want to enter into an incremental position (portfolio) $D'$ in $m'$ derivatives (denote the combined position as $D \cup D'$)
+\item We want to determine the valuation (pricing) of the incremental position $D'$, as well as the hedging strategy for $D'$
+\item Denote the Optimal Value Function at time $t$ as $V_t^* : \mathcal{S}_t \rightarrow \mathbb{R}$
+\item The Valuation of $D'$ is based on the breakeven Optimal Value Function for $D \cup D'$ relative to $D$, i.e., it's the value $x$ such that
+$$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0, D))$$
+\item The hedging strategy at time $t$ is given by the Optimal Policy $\pi_t^* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
 \end{itemize}
 \end{frame}
 
@@ -202,8 +211,8 @@ $$r_t = U(X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t \cdot |a_t|)$$
 \frametitle{DRL Approach a Breakthrough for Practical Trading?}
 \begin{itemize}
 \item The industry practice/tradition has been to start with {\em Complete Market} assumption, and then layer ad-hoc/unsatisfactory adjustments
-\item There is some past work on pricing/hedging amidst frictions
-\item But they are mostly theoretical and not usable in real trading
+\item There is some past work on pricing/hedging in incomplete markets
+\item But it's theoretical and not usable in real trading (eg: Superhedging)
 \item My opinion: This DRL approach a breakthrough for practical trading
 \item Key advantages of this DRL approach:
 \begin{itemize}
