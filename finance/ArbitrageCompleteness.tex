@@ -329,10 +329,12 @@ Then, $$V_{\gamma_D}^{(0)} = e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_{\g
 \item Absence of replicating portfolio precludes usual arbitrage arguments
 \item 2nd FTAP says there are multiple risk-neutral measures
 \item So, multiple derivative prices (each consistent with no-arbitrage)
-\item The market ``chooses'' a risk-neutral measure
-\item ... reflecting the risk preference of the market
-\item ... that determines the market price of the derivative
-\item So we calibrate a model of ``market-implied'' risk-neutral measure
+\item {\em Superhedging} (outline in Appendix 3) provides bounds for the prices
+\item But often these bounds are not tight and so, not useful in practice
+\item The alternative approach is to identify hedges that maximize Expected Utility of the derivative together with the hedges
+\item For an appropriately chosen market/trader \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Utility function}}} 
+\item Utility function is a specification of reward-versus-risk preference that effectively chooses the risk-neutral measure and (hence, Price)
+\item We outline the Expected Utility approach in Appendix 4
 \end{itemize}
 \end{frame}
 
@@ -575,6 +577,76 @@ where $\pi(\omega_i) = 0$
 $$\sum_{i=1}^n \pi'(\omega_i) \cdot S_j^{(i)} = \sum_{i=1}^n \pi(\omega_i) \cdot S_j^{(i)} = e^r \cdot S_j^{(0)} \mbox{ for all } j = 0, 1, \ldots, m$$
 \end{itemize}
 \qed
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 3: Superhedging}
+\begin{itemize}
+\item Superhedging is a technique to price in incomplete markets
+\item Where one cannot replicate \& there are multiple risk-neutral measures
+\item The idea is to create a portfolio of fundamental assets whose Value {\em dominates} the derivative payoff in {\em all} states at $t=1$
+\item Superhedge Price is the smallest possible Portfolio Spot ($t=0$) Value among all such Derivative-Payoff-Dominating portfolios
+\item This is a constrained linear optimization problem:
+\begin{equation}
+\min_{\theta} \sum_{j=0}^m \theta_j \cdot S_j^{(0)} \mbox{ such that } \sum_{j=0}^m \theta_j \cdot S_j^{(i)} \geq V_D^{(i)} \mbox{ for all } i = 1, \ldots, n \label{eq:superhedging}
+\end{equation}
+\item Let $\theta^* = (\theta_0^*, \theta_1^*, \ldots, \theta_m^*)$ be the solution to Equation (\ref{eq:superhedging})
+\item Let $SP$ be the Superhedge Price $\sum_{j=0}^m \theta_j^* \cdot S_j^{(0)}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 3: Superhedging}
+\begin{itemize}
+\item Establish feasibility and define Lagrangian $J(\theta, \lambda)$
+$$J(\theta, \lambda) = \sum_{j=0}^m \theta_j \cdot S_j^{(0)} + \sum_{i=1}^n \lambda_i \cdot (V_D^{(i)} - \sum_{j=0}^m \theta_j \cdot S_j^{(i)})$$
+\item So there exists $\lambda = (\lambda_1, \ldots, \lambda_n)$ that satisfy these KKT conditions:
+$$\lambda_i \geq 0 \mbox{ for all } i = 1, \ldots, n$$
+$$\lambda_i \cdot (V_D^{(i)} - \sum_{j=0}^m \theta_j^* \cdot S_j^{(i)}) \mbox{ for all } i = 1, \ldots, n \mbox{ (Complementary Slackness)}$$
+$$\nabla_{\theta} J(\theta^*, \lambda) = 0 \Rightarrow S_j^{(0)} = \sum_{i=1}^n \lambda_i \cdot S_j^{(i)} \mbox{ for all } j = 0, 1, \ldots, m$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 3: Superhedging}
+\begin{itemize}
+\item This implies $\lambda_i = e^{-r} \cdot \pi(\omega_i)$ for all $i = 1, \ldots, n$ for a risk-neutral probability measure $\pi : \Omega \rightarrow [0,1]$ ($\lambda$ is ``discounted probabilities'')
+\item Define Lagrangian Dual $L(\lambda) = \inf_{\theta} J(\theta, \lambda)$. Then, Superhedge Price
+$$SP = \sum_{j=0}^m \theta_j^* \cdot S_j^{(0)} = \sup_{\lambda} L(\lambda) = \sup_{\lambda} \inf_{\theta} J(\theta, \lambda)$$
+\item Complementary Slackness and some linear algebra over the space of risk-neutral measures $\pi : \Omega \rightarrow [0,1]$ enables us to argue that:
+$$SP = \sup_{\pi} \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 3: Superhedging}
+\begin{itemize}
+\item Likewise, the {\em Subhedging} price $SB$ is defined as:
+\begin{equation}
+\max_{\theta} \sum_{j=0}^m \theta_j \cdot S_j^{(0)} \mbox{ such that } \sum_{j=0}^m \theta_j \cdot S_j^{(i)} \leq V_D^{(i)} \mbox{ for all } i = 1, \ldots, n
+\end{equation}
+\item Likewise arguments enable us to establish:
+$$SB = \inf_{\pi} \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}$$
+\item This gives a lower bound of $SB$ and an upper bound of $SP$, meaning:
+\begin{itemize}
+\item A price outside these bounds leads to an arbitrage 
+\item Valid prices must be established within these bounds
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 4: Maximization of Expected Utility}
+\begin{itemize}
+\item {\em Maximization of Expected Utility} is a technique to establish pricing and hedging in incomplete markets
+\item Based on a concave Utility function $U : \mathbb{R} \rightarrow \mathbb{R}$ applied to the Value in each state $\omega_i, i = 1, \ldots n$, at $t=1$
+\item An example: $U(x) = \frac {-e^{-ax}} {a}$ where $a \in \mathbb{R}$ is the degree of risk-aversion
+\item Let the real-world probabilities be given by $\mu: \Omega \rightarrow [0,1]$
+\item {\em Price} is defined as the ``breakeven value'' $z$ such that:
+$$\sup_{\theta} \sum_{i=1}^n \mu(\omega_i) \cdot U(V_D^{(i)} + \sum_{j=0}^m \theta_j \cdot (S_j^{(i)} - S_j^{(0)} - z))$$
+$$ = \sup_{\theta} \sum_{i=1}^n \mu(\omega_i) \cdot U(\sum_{j=0}^m \theta_j \cdot (S_j^{(i)} - S_j^{(0)})$$
+\item $\theta = (\theta_0, \theta_1, \ldots, \theta_m)$ defines the hedges
 \end{itemize}
 \end{frame}
 
