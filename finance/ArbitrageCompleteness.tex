@@ -214,7 +214,7 @@ where $V_D^{(i)}$ is the payoff of the derivative in state $\omega_i$ for all $i
 \begin{equation}
 V_D^{(i)} = \sum_{j=0}^m \theta_j \cdot S_j^{(i)} \mbox{ for all } i = 1, \ldots, n \label{eq:endreplport}
 \end{equation}
-\item The components $(\theta_0, \theta_1, \ldots, \theta_m)$ are known as the {\em hedges} for $D$ since they can be used to offset 
+\item The negatives of the components $(\theta_0, \theta_1, \ldots, \theta_m)$ are known as the {\em hedges} for $D$ since they can be used to offset 
 the risk in the payoff of $D$ at $t=1$
 \end{itemize}
 \end{frame}
@@ -377,7 +377,7 @@ $$V_D^{(0)} = e^{-r} \cdot (\pi(\omega_1) \cdot V_D^{(1)} + \pi(\omega_2) \cdot 
 \item Now let us try to form a replicating portfolio $(\theta_0, \theta_1)$ for $D$
 $$V_D^{(1)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(1)}$$
 $$V_D^{(2)} = \theta_0 \cdot e^r + \theta_1 \cdot S_1^{(2)}$$ 
-\item Solving this yields hedges $(\theta_0, \theta_1)$ as follows:
+\item Solving this yields Replicating  Portfolio $(\theta_0, \theta_1)$ as follows:
 $$\theta_0 = e^{-r} \cdot \frac {V_D^{(1)} \cdot S_1^{(2)} - V_D^{(2)} \cdot S_1^{(1)}} {S_1^{(2)} - S_1^{(1)}} \mbox{ and } \theta_1 = \frac {V_D^{(2)} - V_D^{(1)}} {S_1^{(2)} - S_1^{(1)}}$$
 \item This means this is a Complete Market
 \item Note that the derivative price can also be expressed as:
@@ -479,7 +479,7 @@ $$V_D^{(0)} = \theta_0 + \theta_1 \cdot S_1^{(0)} + \theta_2 \cdot S_2^{(0)}$$
 \item The idea of Arbitrage applies over multiple time periods
 \item Risk-neutral measure for each state at each time period
 \item Over multiple time periods, we need a {\em Dynamic Replicating Portfolio} to rebalance asset holdings (``self-financing trading strategy'')
-\item We obtain hedges and prices at each time period at each state
+\item We obtain prices and replicating portfolio at each time in each state
 \item By making time period smaller and smaller, the model turns into a stochastic process (in continuous time)
 \item Classical Financial Math theory based on stochastic calculus but has essentially the same ideas we developed for our simple setting
 \end{itemize}
@@ -643,10 +643,35 @@ $$SB = \inf_{\pi} \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}$$
 \item Based on a concave Utility function $U : \mathbb{R} \rightarrow \mathbb{R}$ applied to the Value in each state $\omega_i, i = 1, \ldots n$, at $t=1$
 \item An example: $U(x) = \frac {-e^{-ax}} {a}$ where $a \in \mathbb{R}$ is the degree of risk-aversion
 \item Let the real-world probabilities be given by $\mu: \Omega \rightarrow [0,1]$
-\item {\em Price} is defined as the ``breakeven value'' $z$ such that:
-$$\sup_{\theta} \sum_{i=1}^n \mu(\omega_i) \cdot U(V_D^{(i)} + \sum_{j=0}^m \theta_j \cdot (S_j^{(i)} - S_j^{(0)} - z))$$
-$$ = \sup_{\theta} \sum_{i=1}^n \mu(\omega_i) \cdot U(\sum_{j=0}^m \theta_j \cdot (S_j^{(i)} - S_j^{(0)})$$
-\item $\theta^* = (\theta_0^*, \theta_1^*, \ldots, \theta_m^*)$ that achieves the maximum defines the hedges
+\item Denote $V_D = (V_D^{(1)}, \ldots, V_D^{(n)})$ as the payoff of Derivative $D$ at $t=1$
+\item Let $x$ be the candidate price for $D$, which means receiving cash of $-x$ (at $t=0$) as compensation for taking position $D$
+\item We refer to the candidate hedge by Portfolio $\theta = (\theta_0, \theta_1, \ldots, \theta_n)$ as the holdings in the fundamental assets
+\item Our goal is to solve for the appropriate values of $x$ and $\theta$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 4: Maximization of Expected Utility}
+\begin{itemize}
+\item Consider Utility of the combination of $D, -x, \theta$ in state $i$ at $t=1$:
+$$U(V_D^{(i)} -x + \sum_{j=0}^m \theta_j \cdot (S_j^{(i)} - S_j^{(0)}))$$
+\item So, the Expected Utility $f(V_D,x, \theta)$ at $t=1$ is given by:
+$$f(V_D, x, \theta) = \sum_{i=1}^n \mu(\omega_i) \cdot U(V_D^{(i)} -x + \sum_{j=0}^m \theta_j \cdot (S_j^{(i)} - S_j^{(0)})) $$
+\item Find $\theta$ that maximizes $f(V_D,x,\theta)$ with balance constraint at $t=0$
+$$\max_{\theta} f(V_D, x, \theta) \mbox{ such that } x = - \sum_{j=0}^m \theta_j \cdot S_j^{(0)}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Appendix 4: Maximization of Expected Utility}
+\begin{itemize}
+\item Re-write as unconstrained optimization (over $\theta' = (\theta_1, \ldots, \theta_m)$)
+$$\max_{\theta'} g(V_D,x,\theta')$$
+$$ \mbox{ where } g(V_D, x, \theta') = \sum_{i=1}^n \mu(\omega_i) \cdot U(V_D^{(i)} - x \cdot e^r + \sum_{j=1}^m \theta_j \cdot (S_j^{(i)} - e^r \cdot S_j^{(0)}))$$
+\item {\em Price} of $D$ is defined as the ``breakeven value'' $z$ such that:
+$$\sup_{\theta'} g(V_D, z, \theta') = \sup_{\theta'} g(0, 0, \theta')$$
+\item This principle is that introducing a position of $V_D$ together with a cash receipt of $-x$ shouldn't change the Maximum Expected Utility
+\item $(\theta_1^*, \ldots, \theta_m^*)$ that achieves $\sup_{\theta'} g(V_D, z, \theta')$ and $\theta_0^* = -(z  + \sum_{j=1}^m \theta_j^* \cdot S_j^{(0)})$ define the associated hedges
 \end{itemize}
 \end{frame}
 
