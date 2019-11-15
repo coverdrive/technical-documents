@@ -196,12 +196,13 @@ $$\beta_{t+1} = \beta_t + X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t 
 \end{frame}
 
 \begin{frame}
-\frametitle{Pricing and Hedging Problem Statement}
+\frametitle{Pricing and Hedging}
 \begin{itemize}
 \item Assume we now want to enter into an incremental position (portfolio) $D'$ in $m'$ derivatives (denote the combined position as $D \cup D'$)
-\item We want to determine the valuation (pricing) of the incremental position $D'$, as well as the hedging strategy for $D'$
+\item We want to determine the {\em Price} of the incremental position $D'$, as well as the hedging strategy for $D'$
 \item Denote the Optimal Value Function at time $t$ as $V_t^* : \mathcal{S}_t \rightarrow \mathbb{R}$
-\item The Valuation of $D'$ is based on the breakeven Optimal Value Function for $D \cup D'$ relative to $D$, i.e., it's the value $x$ such that
+\item Pricing of $D'$ is based on the principle that introducing the incremental position of $D'$ together with a calibrated cashflow at $t=0$ should leave the Optimal Value (at $t=0$) unchanged
+\item Precisely, Price of $D'$ is the value $x$ such that
 $$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0, D))$$
 \item The hedging strategy at time $t$ is given by the Optimal Policy $\pi_t^* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
 \end{itemize}
@@ -213,7 +214,7 @@ $$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0,
 \item The industry practice/tradition has been to start with {\em Complete Market} assumption, and then layer ad-hoc/unsatisfactory adjustments
 \item There is some past work on pricing/hedging in incomplete markets
 \item But it's theoretical and not usable in real trading (eg: Superhedging)
-\item My opinion: This DRL approach a breakthrough for practical trading
+\item My view: This DRL approach is a breakthrough for practical trading
 \item Key advantages of this DRL approach:
 \begin{itemize}
 \item Algorithm for pricing/hedging independent of market dynamics
