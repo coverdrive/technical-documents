@@ -670,8 +670,9 @@ $$\max_{\theta'} g(V_D,x,\theta')$$
 $$ \mbox{ where } g(V_D, x, \theta') = \sum_{i=1}^n \mu(\omega_i) \cdot U(V_D^{(i)} - x \cdot e^r + \sum_{j=1}^m \theta_j \cdot (S_j^{(i)} - e^r \cdot S_j^{(0)}))$$
 \item {\em Price} of $D$ is defined as the ``breakeven value'' $z$ such that:
 $$\sup_{\theta'} g(V_D, z, \theta') = \sup_{\theta'} g(0, 0, \theta')$$
-\item This principle is that introducing a position of $V_D$ together with a cash receipt of $-x$ shouldn't change the Maximum Expected Utility
-\item $(\theta_1^*, \ldots, \theta_m^*)$ that achieves $\sup_{\theta'} g(V_D, z, \theta')$ and $\theta_0^* = -(z  + \sum_{j=1}^m \theta_j^* \cdot S_j^{(0)})$ define the associated hedges
+\item Principle: Introducing a position of $V_D$ together with a cash receipt of $-z$ keeps the Maximum Expected Utility unchanged
+\item $(\theta_1^*, \ldots, \theta_m^*)$ that achieves $\sup_{\theta'} g(V_D, z, \theta')$ and $\theta_0^* = -(z  + \sum_{j=1}^m \theta_j^* \cdot S_j^{(0)})$ are the associated hedges
+\item Note that the Price of $V_D$ will NOT be the negative of the Price of $-V_D$, hence these prices serve as bounds/bid-ask prices
 \end{itemize}
 \end{frame}
 
