@@ -91,7 +91,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[Optimal Order Execution]{Stochastic Control of Optimal Trade Order Execution} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[Optimal Trade Order Execution]{Stochastic Control for Optimal Trade Order Execution} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Ashwin Rao} % Your name
 \institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -112,58 +112,59 @@ ICME, Stanford University
 \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 \end{frame}
 
-\section{Order Book and Price Impact}
+\section{Trading Order Book and Price Impact}
 
 \begin{frame}
-\frametitle{Trading Order Book}
+\frametitle{Trading Order Book (TOB)}
 \includegraphics[width=11.5cm, height=7cm]{order_book.png}
 \end{frame}
 
 \begin{frame}
-\frametitle{Basics of Trading Order Book}
+\frametitle{Basics of Trading Order Book (TOB)}
 \pause
 \begin{itemize}[<+->]
 \item Buyers/Sellers express their intent to trade by submitting bids/asks
 \item These are Limit Orders (LO) with a price $P$ and size $N$
 \item Buy LO $(P, N)$ states willingness to buy $N$ shares at a price $\leq P$
 \item Sell  LO $(P, N)$ states willingness to sell $N$ shares at a price $\geq P$
-\item Order Book (OB) aggregates order sizes for each unique price
+\item Trading Order Book aggregates order sizes for each unique price
 \item So we can represent with two sorted lists of (Price, Size) pairs
 $$\mbox{Bids: } [(P_i^{(b)}, N_i^{(b)}) \mid 1 \leq i \leq m], P_i^{(b)} > P_j^{(b)} \mbox{ for } i < j$$
 $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 1 \leq i \leq n], P_i^{(a)} < P_j^{(a)} \mbox{ for } i < j$$
 \item We call $P_1^{(b)}$ as simply {\em Bid}, $P_1^{(a)}$ as {\em Ask}, $\frac {P_1^{(a)} + P_1^{(b)}} 2$ as {\em Mid}
 \item We call $P_1^{(a)} - P_1^{(b)}$ as {\em Spread}, $P_n^{(a)} - P_m^{(b)}$ as {\em Market Depth}
-\item A Market Order (MO) states intent to buy/sell $N$ shares at the {\em best possible price(s)} available on the OB at the time of MO submission
+\item A Market Order (MO) states intent to buy/sell $N$ shares at the {\em best possible price(s)} available on the TOB at the time of MO submission
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Trading Order Book Activity}
+\frametitle{Trading Order Book (TOB) Activity}
 \pause
 \begin{itemize}[<+->]
-\item A new Sell LO $(P,N)$ potentially removes best bid prices on the OB
+\item A new Sell LO $(P,N)$ potentially removes best bid prices on the TOB
 $$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(b)}))) \mid (i: P_i^{(b)} \geq P)]$$
-\item After this removal, it will add the following to the asks side of the OB 
+\item After this removal, it adds the following to the asks side of the TOB 
 $$(P, \max(0, N - \sum_{i: P_i^{(b)} \geq P}  N_i^{(b)}))$$
-\item A Sell Market Order $N$ will remove the best bid prices on the OB
+\item A new Buy MO operates analogously (on the other side of the TOB)
+\item A Sell Market Order $N$ will remove the best bid prices on the TOB
 $$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(b)}))) \mid 1 \leq i \leq m]$$
-\item A Buy Market Order $N$ will remove the best ask prices on the OB
+\item A Buy Market Order $N$ will remove the best ask prices on the TOB
 $$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(a)}))) \mid 1 \leq i \leq n]$$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Price Impact and Order Book Dynamics}
+\frametitle{Price Impact and Trading Order Book Dynamics}
 \pause
 \begin{itemize}[<+->]
-\item We focus on how a Market order (MO) alters the order book
+\item We focus on how a Market order (MO) alters the TOB
 \item A large-sized MO often results in a big {\em Spread} which could soon be replenished by new LOs, potentially from either side
 \item So a large-sized MO moves the Bid/Ask/Mid ({\em Price Impact} of MO)
-\item Subsequent Replenishment activity is part of {\em Order Book Dynamics}
-\item Models for Order Book Dynamics can be quite complex
+\item Subsequent Replenishment activity is part of {\em TOB Dynamics}
+\item Models for TOB Dynamics can be quite complex
 \item We will cover a few simple Models in this lecture
-\item Models based on how a Sell MO will move the OB {\em Bid Price}
-\item Models of Buy MO moving the OB {\em Ask Price} are analogous
+\item Models based on how a Sell MO will move the TOB {\em Bid Price}
+\item Models of Buy MO moving the TOB {\em Ask Price} are analogous
 \end{itemize}
 \end{frame}
 
@@ -378,16 +379,13 @@ V^*(t,P_t,R_t,X_t) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(4)
 \item Arbitrary Price Dynamics $f_t(\cdot)$ and Temporary Price Impact $g_t(\cdot)$
 \item Non-stationarity/non-linear dynamics/impact require (Numerical) DP
 \item Frictions: Discrete Prices/Sizes, Constraints on Prices/Sizes, Fees
-\item Large State space to incorporate various external factors in the State
-\item Need to utilize methods in Approximate Dynamic Programming
-\item And if model is unknown/to be learnt, Reinforcement Learning
-\item This problem can be extended in two important ways:
-\begin{itemize}
-\item State is {\em Complete Order Book} (Model of Order Book Dynamics)
-\item Optimal Execution of a {\em Portfolio} (Cross-Asset Impact Modeling)
-\end{itemize}
-\item Can this be combined with Portfolio Optimization problem?
-\item Can we exploit recent advances in Deep Reinforcement Learning?
+\item Large State space incorporate various external factors in the State
+\item We could also represent the entire TOB within the State
+\item So then we'd have to develop a simulator capturing all of the above
+\item Simulator is a {\em Data-learnt Sampling Model} of TOB Dynamics 
+\item In practice, we'd need to also capture {\em Cross-Asset Market Impact}
+\item Using this simulator and neural-networks func approx, we can do RL
+\item References: \href{https://www.cis.upenn.edu/~mkearns/papers/rlexec.pdf}{\underline{\textcolor{blue}{Nevmyvaka, Feng, Kearns; 2006}}} and \href{https://arxiv.org/pdf/1906.02312.pdf}{\underline{\textcolor{blue}{Vyetrenko, Xu; 2019}}}
 \item Exciting area for Future Research as well as Engineering Design
 \end{itemize}
 \end{frame}
