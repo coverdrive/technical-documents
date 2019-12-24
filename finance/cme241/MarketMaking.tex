@@ -143,7 +143,7 @@ $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 1 \leq i \leq n], P_i^{(a)} < P_j^{
 \begin{itemize}[<+->]
 \item A new Sell LO $(P,N)$ potentially removes best bid prices on the TOB
 $$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=1}^{i-1} N_j^{(b)}))) \mid (i: P_i^{(b)} \geq P)]$$
-\item After this removal, it will add the following to the asks side of the TOB 
+\item After this removal, it adds the following to the asks side of the TOB 
 $$(P, \max(0, N - \sum_{i: P_i^{(b)} \geq P}  N_i^{(b)}))$$
 \item A new Buy MO operates analogously (on the other side of the TOB)
 \item A Sell Market Order $N$ will remove the best bid prices on the TOB
@@ -165,9 +165,9 @@ $$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j
 \item But there are also other market participants that trade with LOs
 \item Complex interplay between market-makers \& other mkt participants
 \item Hence, TOB Dynamics tend to be quite complex
-\item We view the TOB from the perspective of a single market-make who aims to gain with Buy/Sell LOs of appropriate width/size
+\item We view the TOB from the perspective of a single market-maker who aims to gain with Buy/Sell LOs of appropriate width/size
 \item By anticipating TOB Dynamics \& dynamically adjusting Buy/Sell LOs
-\item Goal is to maximize {\em Utility of Gains} at end of a suitable horizon
+\item Goal is to maximize {\em Utility of Gains} at the end of a suitable horizon
 \item If Buy/Sell LOs are too narrow, more frequent but small gains
 \item If Buy/Sell LOs are too wide, less frequent but large gains
 \item Market-maker also needs to manage potential unfavorable inventory (long or short) buildup and consequent unfavorable liquidation
@@ -182,7 +182,7 @@ $$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j
 \begin{itemize}[<+->]
 \item We simplify the setting for ease of exposition
 \item Assume finite time steps indexed by $t= 0, 1, \ldots, T$
-\item Denote $W_t \in \mathbb{R}$ as Market-maker's wealth at time $t$
+\item Denote $W_t \in \mathbb{R}$ as Market-maker's trading PnL at time $t$
 \item Denote $I_t \in \mathbb{Z}$ as Market-maker's inventory of shares at time $t$ ($I_0 = 0$)
 \item $S_t \in \mathbb{R}^+$ is the TOB Mid Price at time $t$ (assume stochastic process)
 \item $P_t^{(b)} \in \mathbb{R}^+, N_t^{(b)} \in \mathbb{Z}^+$ are market maker's Bid Price, Bid Size at time $t$
@@ -192,7 +192,7 @@ $$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=1}^{i-1} N_j
 \item Random var $X_t^{(b)} \in \mathbb{Z}_{\geq 0}$ denotes bid-shares ``hit'' {\em up to} time $t$
 \item Random var $X_t^{(a)} \in \mathbb{Z}_{\geq 0}$ denotes ask-shares ``lifted'' {\em up to} time $t$
 $$W_{t+1} = W_t + P_t^{(a)} \cdot (X_{t+1}^{(a)} - X_t^{(a)}) - P_t^{(b)} \cdot (X_{t+1}^{(b)} - X_t^{(b)}) \mbox{ , } I_t = X_t^{(b)} - X_t^{(a)}$$
-\item Goal to maximize $E[U(W_T + I_T \cdot S_T)]$ for appropriate concave $U(\cdot)$
+\item Goal to maximize $\mathbb{E}[U(W_T + I_T \cdot S_T)]$ for appropriate concave $U(\cdot)$
 \end{itemize}
 \end{frame}
 
@@ -237,12 +237,222 @@ $$\pi^*(t, S_t, W_t, I_t) = (P_t^{(b)}, N_t^{(b)}, P_t^{(a)}, N_t^{(a)}) \mbox{ 
 $$dX_t^{(b)} \sim Poisson(\lambda_t^{(b)} \cdot dt) \mbox{ , } dX_t^{(a)} \sim Poisson(\lambda_t^{(a)} \cdot dt)$$
 $$\lambda_t^{(b)} = f^{(b)}(\delta_t^{(b)}) \mbox{ , } \lambda_t^{(a)} = f^{(a)}(\delta_t^{(a)}) \mbox{ for decreasing functions } f^{(b)}, f^{(a)}$$
 $$dW_t = P_t^{(a)} \cdot dX_t^{(a)} - P_t^{(b)} \cdot dX_t^{(b)} \mbox{ , } I_t = X_t^{(b)} - X_t^{(a)} \mbox{ (note: } I_0 = 0 \mbox{)}$$
-\item Since infinitesimal Poisson random variables $dX_t^{(b)}$ (shares hit in time $dt$) and $dX_t^{(a)}$ (shares lifted in time $dt$) have zero probability mass for values greater than 1, choices of $N_t^{(b)}$ and $N_t^{(a)}$ are irrelevant
+\item Since infinitesimal Poisson random variables $dX_t^{(b)}$ (shares hit in time $dt$) and $dX_t^{(a)}$ (shares lifted in time $dt$) are Bernoulli (shares hit/lifted in time $dt$ are 0 or 1), $N_t^{(b)}$ and $N_t^{(a)}$ can be assumed to be 1
 \item This simplifies the {\em Action} at time $t$ to be just the pair: $(\delta_t^{(b)}, \delta_t^{(a)})$
 \item TOB Mid Price Dynamics: $dS_t = \sigma \cdot dz_t$ (scaled brownian motion)
 \item Utility function $U(x) = -e^{-\gamma x}$ where $\gamma$ is coefficient of risk-aversion  
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Hamilton-Jacobi-Bellman (HJB) Equation}
+\pause
+\begin{itemize}[<+->]
+\item We denote the Optimal Value function as $V^*(t, S_t, W_t, I_t)$
+$$V^*(t, S_t, W_t, I_t) = \max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[-e^{-\gamma \cdot (W_T + I_t \cdot S_T)}]$$
+\item $V^*(t, S_t, W_t, I_t)$ satisfies a recursive formulation for $0 \leq t < t_1 < T$:
+$$V^*(t, S_t, W_t, I_t) = \max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[V^*(t_1, S_{t_1}, W_{t_1}, I_{t_1})]$$
+\item Rewriting in stochastic differential form, we have the HJB Equation
+$$\max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[dV^*(t, S_t, W_t, I_t)] = 0 \mbox{ for } t < T$$
+$$V^*(T, S_T, W_T, I_T) = -e^{-\gamma \cdot (W_T + I_T \cdot S_T)}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Converting HJB to a Partial Differential Equation}
+\pause
+\begin{itemize}[<+->]
+\item Change to $V^*(t, S_t, W_t, I_t)$ is comprised of 3 components:
+\begin{itemize}
+\item Due to pure movement in time $t$
+\item Due to randomness in LOB Mid-Price $S_t$
+\item Due to randomness in hitting/lifting the Bid/Ask
+\end{itemize}
+\item With this, we can expand $dV^*(t, S_t, W_t, I_t)$ and rewrite HJB as:
+\begin{equation*}
+\begin{split}
+\max_{\delta_t^{(b)}, \delta_t^{(a)}} \{ & \pderiv{V^*}{t} dt + \mathbb{E}[\sigma \pderiv{V^*}{S_t} dz_t + \frac {\sigma^2} 2 \pderiv[2]{V^*}{S_t} (dz_t)^2] \\
+& + \lambda_t^{(b)} \cdot dt \cdot V^*(t, S_t, W_t - S_t + \delta_t^{(b)}, I_t + 1) \\
+& + \lambda_t^{(a)} \cdot dt \cdot V^*(t, S_t, W_t + S_t + \delta_t^{(a)}, I_t - 1)  \\
+& + (1 - \lambda_t^{(b)} \cdot dt - \lambda_t^{(a)} \cdot dt) \cdot V^*(t, S_t, W_t, I_t) \\
+&  - V^*(t, S_t, W_t, I_t) \} = 0
+\end{split}
+\end{equation*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Converting HJB to a Partial Differential Equation}
+\pause
+We can simplify this equation with a few observations:
+\begin{itemize}[<+->]
+\item $\mathbb{E}[dz_t] = 0$
+\item $\mathbb{E}[(dz_t)^2] = dt$
+\item Organize the terms involving $\lambda_t^{(b)}$ and $\lambda_t^{(a)}$ better with some algebra
+\item Divide throughout by $dt$ 
+\end{itemize}
+\pause
+\begin{equation*}
+\begin{split}
+\max_{\delta_t^{(b)}, \delta_t^{(a)}} \{ & \pderiv{V^*}{t} + \frac {\sigma^2} 2 \pderiv[2]{V^*}{S_t} \\
+& + \lambda_t^{(b)} \cdot (V^*(t, S_t, W_t - S_t + \delta_t^{(b)}, I_t + 1) - V^*(t, S_t, W_t, I_t)) \\
+& + \lambda_t^{(a)} \cdot (V^*(t, S_t, W_t + S_t + \delta_t^{(a)}, I_t - 1) - V^*(t, S_t, W_t, I_t)) \} = 0
+\end{split}
+\end{equation*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Converting HJB to a Partial Differential Equation}
+\pause
+Next, note that $\lambda_t^{(b)} = f^{(b)}(\delta_t^{(b)})$ and  $\lambda_t^{(a)} = f^{(a)}(\delta_t^{(a)})$, and apply the $\max$ only on the relevant terms
+\pause
+\begin{equation*}
+\begin{split}
+& \pderiv{V^*}{t} + \frac {\sigma^2} 2 \pderiv[2]{V^*}{S_t} \\
+& + \max_{\delta_t^{(b)}}  \{ f^{(b)}(\delta_t^{(b)}) \cdot (V^*(t, S_t, W_t - S_t + \delta_t^{(b)}, I_t + 1) - V^*(t, S_t, W_t, I_t)) \} \\
+& + \max_{\delta_t^{(a)}} \{ f^{(a)}(\delta_t^{(a)}) \cdot (V^*(t, S_t, W_t + S_t + \delta_t^{(a)}, I_t - 1) - V^*(t, S_t, W_t, I_t)) \} = 0
+\end{split}
+\end{equation*}
+This combines with the boundary condition:
+$$V^*(T, S_T, W_T, I_T) = -e^{-\gamma \cdot (W_T + I_T \cdot S_T)}$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Converting HJB to a Partial Differential Equation}
+\pause
+\begin{itemize}[<+->]
+\item We make an ``educated guess'' for the structure of $V^*(t,S_t,W_t,I_t)$:
+\begin{equation}
+V^*(t,S_t,W_t,I_t) = -e^{-\gamma (W_t + \theta(t,S_t,I_t))} \label{eq:thetaform}
+\end{equation}
+and reduce the problem to a PDE in terms of $\theta(t,S_t,I_t)$
+\item Substituting this into the above PDE for $V^*(t,S_t,W_t,I_t)$ gives:
+\begin{equation*}
+\begin{split}
+& \pderiv{\theta}{t} + \frac {\sigma^2} {2} (\pderiv[2]{\theta}{S_t} - \gamma (\pderiv{\theta}{S_t})^2) \\
+& + \max_{\delta_t^{(b)}} \{ \frac {f^{(b)}(\delta_t^{(b)})} {\gamma} \cdot (1 - e^{-\gamma(\delta_t^{(b)} - S_t + \theta(t,S_t,I_t + 1) - \theta(t,S_t,I_t))}) \} \\
+& + \max_{\delta_t^{(a)}} \{ \frac {f^{(a)}(\delta_t^{(a)})} {\gamma} \cdot (1 - e^{-\gamma(\delta_t^{(a)} + S_t + \theta(t,S_t,I_t - 1) - \theta(t,S_t,I_t))}) \} = 0
+\end{split}
+\end{equation*}
+\item The boundary condition is:
+$$\theta(T,S_T,I_T) = I_T \cdot S_T$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Indifference Bid/Ask Price}
+\pause
+\begin{itemize}[<+->]
+\item It turns out that $\theta(t,S_t,I_t + 1) - \theta(t,S_t,I_t)$ and $\theta(t,S_t,I_t) - \theta(t,S_t,I_t - 1)$ are equal to financially meaningful quantities known as {\em Indifference Bid and Ask Prices}
+\item Indifference Bid Price $Q^{(b)}(t,S_t,I_t)$ is defined as:
+\begin{equation}
+V^*(t,S_t,W_t - Q^{(b)}(t,S_t,I_t),I_t+1) = V^*(t,S_t,W_t,I_t) \label{eq:indiffbid}
+\end{equation}
+\item $Q^{(b)}(t,S_t,I_t)$ is the price to buy a share with {\em guarantee of immediate purchase} that results in Optimum Expected Utility being unchanged
+\item Likewise, Indifference Ask Price $Q^{(a)}(t,S_t,I_t)$ is defined as:
+\begin{equation}
+V^*(t,S_t,W_t + Q^{(a)}(t,S_t,I_t),I_t-1) = V^*(t,S_t,W_t,I_t) \label{eq:indiffask}
+\end{equation}
+\item $Q^{(a)}(t,S_t,I_t)$ is the price to sell a share with {\em guarantee of immediate sale} that results in Optimum Expected Utility being unchanged
+\item We abbreviate $Q^{(b)}(t,S_t,I_t)$ as $Q_t^{(b)}$ and $Q^{(a)}(t,S_t,I_t)$ as $Q_t^{(a)}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Indifference Bid/Ask Price in the PDE for $\theta$}
+\pause
+\begin{itemize}[<+->]
+\item Express $V^*(t,S_t,W_t - Q_t^{(b)},I_t+1) = V^*(t,S_t,W_t,I_t)$ in terms of $\theta$:
+$$-e^{-\gamma(W_t - Q_t^{(b)} + \theta(t,S_t,I_t+1))} = -e^{-\gamma(W_t + \theta(t,S_t,I_t))}$$
+\begin{equation}
+\Rightarrow Q_t^{(b)} = \theta(t,S_t,I_t + 1) - \theta(t,S_t,I_t) \label{eq:indiffbidtheta}
+\end{equation}
+\item Likewise for $Q_t^{(a)}$, we get:
+\begin{equation}
+Q_t^{(a)} = \theta(t,S_t,I_t) - \theta(t,S_t,I_t - 1) \label{eq:indiffasktheta}
+\end{equation}
+\item Using equations (\ref{eq:indiffbidtheta}) and (\ref{eq:indiffasktheta}), bring $Q_t^{(b)}$ and $Q_t^{(a)}$ in the PDE for $\theta$
+$$\pderiv{\theta}{t} + \frac {\sigma^2} {2} (\pderiv[2]{\theta}{S_t} - \gamma (\pderiv{\theta}{S_t})^2) + \max_{\delta_t^{(b)}} g(\delta_t^{(b)}) + \max_{\delta_t^{(a)}} h(\delta_t^{(b)}) = 0$$
+$$ \mbox{ where } g(\delta_t^{(b)}) = \frac {f^{(b)}(\delta_t^{(b)})} {\gamma} \cdot (1 - e^{-\gamma(\delta_t^{(b)} - S_t + Q_t^{(b)})})$$
+$$ \mbox{ and } h(\delta_t^{(a)}) =  \frac {f^{(a)}(\delta_t^{(a)})} {\gamma} \cdot (1 - e^{-\gamma(\delta_t^{(a)} + S_t - Q_t^{(a)})})$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Bid Spread and Optimal Ask Spread}
+\pause
+\begin{itemize}[<+->]
+\item To maximize $g(\delta_t^{(b)})$, differentiate $g$ with respect to $\delta_t^{(b)}$ and set to 0
+$$e^{-\gamma({\delta_t^{(b)}}^* - S_t + Q_t^{(b)})} \cdot (\gamma \cdot f^{(b)}({\delta_t^{(b)}}^*) - \pderiv{f^{(b)}}{\delta_t^{(b)}}({\delta_t^{(b)}}^*)) + \pderiv{f^{(b)}}{\delta_t^{(b)}}({\delta_t^{(b)}}^*) = 0$$
+\begin{equation}
+\Rightarrow {\delta_t^{(b)}}^* = S_t - Q_t^{(b)} + \frac 1 {\gamma} \cdot \ln{(1 - \gamma \cdot \frac {f^{(b)}({\delta_t^{(b)}}^*)} {\pderiv{f^{(b)}}{\delta_t^{(b)}}({\delta_t^{(b)}}^*)})} \label{eq:bidspread}
+\end{equation}
+\item To maximize $g(\delta_t^{(a)})$, differentiate $g$ with respect to $\delta_t^{(a)}$ and set to 0
+$$e^{-\gamma({\delta_t^{(a)}}^* + S_t - Q_t^{(a)})} \cdot (\gamma \cdot f^{(a)}({\delta_t^{(a)}}^*) - \pderiv{f^{(a)}}{\delta_t^{(a)}}({\delta_t^{(a)}}^*)) + \pderiv{f^{(a)}}{\delta_t^{(a)}}({\delta_t^{(a)}}^*) = 0$$
+\begin{equation}
+\Rightarrow {\delta_t^{(a)}}^* = Q_t^{(a)} - S_t + \frac 1 {\gamma} \cdot \ln{(1 - \gamma \cdot \frac {f^{(a)}({\delta_t^{(a)}}^*)} {\pderiv{f^{(a)}}{\delta_t^{(a)}}({\delta_t^{(a)}}^*)})} \label{eq:askspread}
+\end{equation}
+\item (\ref{eq:bidspread}) and (\ref{eq:askspread}) are implicit equations for ${\delta_t^{(b)}}^*$ and ${\delta_t^{(a)}}^*$ respectively
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Solving for $\theta$ and for Optimal Bid/Ask Spreads}
+\pause
+\begin{itemize}[<+->]
+\item Let us write the PDE in terms of the Optimal Bid and Ask Spreads
+\begin{equation}
+\begin{split}
+& \pderiv{\theta}{t} + \frac {\sigma^2} {2} (\pderiv[2]{\theta}{S_t} - \gamma (\pderiv{\theta}{S_t})^2) \\
+& + \frac {f^{(b)}({\delta_t^{(b)}}^*)} {\gamma} \cdot (1 - e^{-\gamma({\delta_t^{(b)}}^* - S_t + \theta(t,S_t,I_t + 1) - \theta(t,S_t,I_t))}) \\
+& + \frac {f^{(a)}({\delta_t^{(a)}}^*)} {\gamma} \cdot (1 - e^{-\gamma({\delta_t^{(a)}}^* + S_t + \theta(t,S_t,I_t - 1) - \theta(t,S_t,I_t))}) = 0 \\
+& \mbox{ with boundary condition } \theta(T,S_T,I_T) = I_T \cdot S_T
+\end{split}
+\label{eq:pde}
+\end{equation}
+\item First we solve PDE (\ref{eq:pde}) for $\theta$ in terms of ${\delta_t^{(b)}}^*$ and ${\delta_t^{(a)}}^*$
+\item In general, this would be a numerical PDE solution
+\item Using  (\ref{eq:indiffbidtheta}) and (\ref{eq:indiffasktheta}), we have $Q_t^{(b)}$ and $Q_t^{(a)}$ in terms of ${\delta_t^{(b)}}^*$ and ${\delta_t^{(a)}}^*$
+\item Substitute above-obtained $Q_t^{(b)}$ and $Q_t^{(a)}$ in equations (\ref{eq:bidspread}) and (\ref{eq:askspread})
+\item Solve implicit equations for ${\delta_t^{(b)}}^*$ and ${\delta_t^{(a)}}^*$ (in general, numerically) 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Building Intuition}
+\pause
+\begin{itemize}[<+->]
+\item Define {\em Indifference Mid Price} $Q_t^{(m)} = \frac {Q_t^{(b)} + Q_t^{(a)}} {2}$
+\item To develop intuition for Indifference Prices, consider a simple case where the market-maker doesn't supply any bids or asks. Then,
+$$V^*(t,S_t,W_t,I_t) = \mathbb{E}[-e^{-\gamma(W_t + I_t \cdot S_T)}]$$
+\item Combining this with the diffusion $dS_t = \sigma \cdot dz_t$, we get:
+$$V^*(t,S_t,W_t,I_t) = -e^{-\gamma(W_t + I_t \cdot S_t - \frac {\gamma \cdot I_t^2 \cdot \sigma^2(T-t)} {2})}$$
+\item Combining this with equations (\ref{eq:indiffbid}) and (\ref{eq:indiffask}), we get:
+$$Q_t^{(b)} = S_t + (1-2I_t) \frac {\gamma \sigma^2(T-t)} {2}$$
+$$Q_t^{(a)} = S_t + (-1-2I_t) \frac {\gamma \sigma^2(T-t)} {2}$$
+$$Q_t^{(m)} = S_t - I_t \gamma \sigma^2(T-t)$$
+$$Q_t^{(a)} - Q_t^{(b)} = \gamma \sigma^2(T-t)$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Building Intuition}
+\pause
+\begin{itemize}[<+->]
+\item Think of $Q_t^{(m)}$ as {\em inventory-risk-adjusted} mid-price (adjustment to $S_t$)
+\item If market-maker is long inventory ($I_t > 0$), $Q_t^{(m)} < S_t$ indicating inclination to sell than buy, and if market-maker is short inventory, $Q_t^{(m)} > S_t$ indicating inclination to buy than sell
+\item Armed with this intuition, we come back to optimal market-making, observing from eqns (\ref{eq:bidspread}) and (\ref{eq:askspread}): ${P_t^{(b)}}^* < Q_t^{(b)} < Q_t^{(m)} < Q_t^{(a)} < {P_t^{(a)}}^*$
+\item Think of $[{P_t^{(b)}}^*, {P_t^{(a)}}^*]$ as ``centered'' at $Q_t^{(m)}$ (rather than at $S_t$), i.e., $[{P_t^{(b)}}^*, {P_t^{(a)}}^*]$ will (together) move up/down in tandem with $Q_t^{(m)}$ moving up/down (as a function of inventory position $I_t$)
+\begin{equation}
+Q_t^{(m)} - {P_t^{(b)}}^* = \frac {Q_t^{(a)} - Q_t^{(b)}} {2} + \frac 1 {\gamma} \cdot \ln{(1 - \gamma \cdot \frac {f^{(b)}({\delta_t^{(b)}}^*)} {\pderiv{f^{(b)}}{\delta_t^{(b)}}({\delta_t^{(b)}}^*)})}\label{eq:bidcentering}
+\end{equation}
+\begin{equation}
+{P_t^{(a)}}^* - Q_t^{(m)} = \frac {Q_t^{(a)} - Q_t^{(b)}} {2} + \frac 1 {\gamma} \cdot \ln{(1 - \gamma \cdot \frac {f^{(a)}({\delta_t^{(a)}}^*)} {\pderiv{f^{(a)}}{\delta_t^{(a)}}({\delta_t^{(a)}}^*)})}\label{eq:askcentering}
+\end{equation}
+\end{itemize}
+\end{frame}
+
 
 \section{Real-world Optimal Market-Making and Reinforcement Learning}
 
