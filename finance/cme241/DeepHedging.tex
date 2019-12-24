@@ -201,9 +201,10 @@ $$\beta_{t+1} = \beta_t + X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t 
 \item Assume we now want to enter into an incremental position (portfolio) $D'$ in $m'$ derivatives (denote the combined position as $D \cup D'$)
 \item We want to determine the {\em Price} of the incremental position $D'$, as well as the hedging strategy for $D'$
 \item Denote the Optimal Value Function at time $t$ as $V_t^* : \mathcal{S}_t \rightarrow \mathbb{R}$
-\item Pricing of $D'$ is based on the principle that introducing the incremental position of $D'$ together with a calibrated cashflow at $t=0$ should leave the Optimal Value (at $t=0$) unchanged
+\item Pricing of $D'$ is based on the principle that introducing the incremental position of $D'$ together with a calibrated cashflow (Price) at $t=0$ should leave the Optimal Value (at $t=0$) unchanged
 \item Precisely, Price of $D'$ is the value $x$ such that
 $$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0, D))$$
+\item This Pricing principle is known as the principle of {\em Indifference Pricing}
 \item The hedging strategy at time $t$ is given by the Optimal Policy $\pi_t^* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
 \end{itemize}
 \end{frame}
