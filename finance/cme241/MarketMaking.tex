@@ -231,9 +231,9 @@ $$\pi^*(t, S_t, W_t, I_t) = (P_t^{(b)}, N_t^{(b)}, P_t^{(a)}, N_t^{(a)}) \mbox{ 
 \pause
 \begin{itemize}[<+->]
 \item We go over the \href{https://www.math.nyu.edu/faculty/avellane/HighFrequencyTrading.pdf}{\underline{\textcolor{blue}{landmark paper by Avellaneda and Stoikov in 2006}}}
-\item They derive a simple, clean and intuitive analytical solution
+\item They derive a simple, clean and intuitive solution
 \item We adapt our discrete-time notation to their continuous-time setting
-\item $X_t^{(b)}, X_t^{(a)}$ are {\em Poisson processes} with {\em arrival-rate} means $\lambda_t^{(b)}, \lambda_t^{(a)}$
+\item $X_t^{(b)}, X_t^{(a)}$ are {\em Poisson processes} with {\em hit/lift-rate} means $\lambda_t^{(b)}, \lambda_t^{(a)}$
 $$dX_t^{(b)} \sim Poisson(\lambda_t^{(b)} \cdot dt) \mbox{ , } dX_t^{(a)} \sim Poisson(\lambda_t^{(a)} \cdot dt)$$
 $$\lambda_t^{(b)} = f^{(b)}(\delta_t^{(b)}) \mbox{ , } \lambda_t^{(a)} = f^{(a)}(\delta_t^{(a)}) \mbox{ for decreasing functions } f^{(b)}, f^{(a)}$$
 $$dW_t = P_t^{(a)} \cdot dX_t^{(a)} - P_t^{(b)} \cdot dX_t^{(b)} \mbox{ , } I_t = X_t^{(b)} - X_t^{(a)} \mbox{ (note: } I_0 = 0 \mbox{)}$$
@@ -424,15 +424,14 @@ $$e^{-\gamma({\delta_t^{(a)}}^* + S_t - Q_t^{(a)})} \cdot (\gamma \cdot f^{(a)}(
 \pause
 \begin{itemize}[<+->]
 \item Define {\em Indifference Mid Price} $Q_t^{(m)} = \frac {Q_t^{(b)} + Q_t^{(a)}} {2}$
-\item To develop intuition for Indifference Prices, consider a simple case where the market-maker doesn't supply any bids or asks. Then,
+\item To develop intuition for Indifference Prices, consider a simple case where the market-maker doesn't supply any bids or asks
 $$V^*(t,S_t,W_t,I_t) = \mathbb{E}[-e^{-\gamma(W_t + I_t \cdot S_T)}]$$
 \item Combining this with the diffusion $dS_t = \sigma \cdot dz_t$, we get:
 $$V^*(t,S_t,W_t,I_t) = -e^{-\gamma(W_t + I_t \cdot S_t - \frac {\gamma \cdot I_t^2 \cdot \sigma^2(T-t)} {2})}$$
 \item Combining this with equations (\ref{eq:indiffbid}) and (\ref{eq:indiffask}), we get:
-$$Q_t^{(b)} = S_t + (1-2I_t) \frac {\gamma \sigma^2(T-t)} {2}$$
-$$Q_t^{(a)} = S_t + (-1-2I_t) \frac {\gamma \sigma^2(T-t)} {2}$$
-$$Q_t^{(m)} = S_t - I_t \gamma \sigma^2(T-t)$$
-$$Q_t^{(a)} - Q_t^{(b)} = \gamma \sigma^2(T-t)$$
+$$Q_t^{(b)} = S_t + (1-2I_t) \frac {\gamma \sigma^2(T-t)} {2} \mbox{ , } Q_t^{(a)} = S_t + (-1-2I_t) \frac {\gamma \sigma^2(T-t)} {2}$$
+$$Q_t^{(m)} = S_t - I_t \gamma \sigma^2(T-t) \mbox{ , } Q_t^{(a)} - Q_t^{(b)} = \gamma \sigma^2(T-t)$$
+\item  These results for the simple case of no-market-making serve as approximations for our problem of optimal market-making
 \end{itemize}
 \end{frame}
 
@@ -452,6 +451,199 @@ Q_t^{(m)} - {P_t^{(b)}}^* = \frac {Q_t^{(a)} - Q_t^{(b)}} {2} + \frac 1 {\gamma}
 \end{equation}
 \end{itemize}
 \end{frame}
+
+
+\begin{frame}
+\frametitle{Simple Functional Form for Hitting/Lifting Rate Means}
+\pause
+\begin{itemize}[<+->]
+\item The PDE for $\theta$ and the implicit equations for ${\delta_t^{(b)}}^*, {\delta_t^{(a)}}^*$ are messy
+\item We make some assumptions, simplify, derive analytical approximations
+\item First we assume a fairly standard functional form for $f^{(b)}$ and $f^{(a)}$
+$$f^{(b)}(\delta) = f^{(a)}(\delta) = c \cdot e^{-k \cdot \delta}$$
+\item This reduces equations (\ref{eq:bidspread}) and (\ref{eq:askspread}) to:
+\begin{equation}
+{\delta_t^{(b)}}^* = S_t - Q_t^{(b)} + \frac 1 {\gamma} \ln{(1 + \frac {\gamma} {k})} \label{eq:bidspreadsimple}
+\end{equation}
+\begin{equation}
+{\delta_t^{(a)}}^* = Q_t^{(a)} - S_t + \frac 1 {\gamma} \ln{(1 + \frac {\gamma} {k})} \label{eq:askspreadsimple}
+\end{equation}
+$ \Rightarrow {P_t^{(b)}}^*$ and ${P_t^{(a)}}^*$ are equidistant from $Q_t^{(m)}$
+\item Substituting these simplified ${\delta_t^{(b)}}^*, {\delta_t^{(a)}}^*$ in (\ref{eq:pde}) reduces the PDE to:
+\begin{equation}
+\begin{split}
+& \pderiv{\theta}{t} + \frac {\sigma^2} {2} (\pderiv[2]{\theta}{S_t} - \gamma (\pderiv{\theta}{S_t})^2) + \frac {c} {k + \gamma}(e^{-k\cdot {\delta_t^{(b)}}^*} + e^{-k \cdot {\delta_t^{(a)}}^*}) = 0 \\
+& \mbox{ with boundary condition } \theta(T,S_T,I_T) = I_T \cdot S_T \label{eq:pdesimple1}
+\end{split}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Simplifying the PDE with Approximations}
+\pause
+\begin{itemize}[<+->]
+\item Note that this PDE (\ref{eq:pdesimple1}) involves ${\delta_t^{(b)}}^*$ and ${\delta_t^{(a)}}^*$
+\item However, equations (\ref{eq:bidspreadsimple}), (\ref{eq:askspreadsimple}), (\ref{eq:indiffbidtheta}), (\ref{eq:indiffasktheta}) enable expressing
+${\delta_t^{(b)}}^*$ and ${\delta_t^{(a)}}^*$ in terms of $\theta(t,S_t,I_t-1), \theta(t,S_t,I_t), \theta(t,S_t,I_t+1)$
+\item This would give us a PDE just in terms of $\theta$
+\item Solving that PDE for $\theta$ would not only give us $V^*(t,S_t,W_t,I_t)$ but also ${\delta_t^{(b)}}^*$ and ${\delta_t^{(a)}}^*$ (using equations (\ref{eq:bidspreadsimple}), (\ref{eq:askspreadsimple}), (\ref{eq:indiffbidtheta}), (\ref{eq:indiffasktheta}) )
+\item To solve the PDE, we need to make a couple of  approximations
+\item First we make a linear approx for $e^{-k\cdot {\delta_t^{(b)}}^*}$ and $e^{-k \cdot {\delta_t^{(a)}}^*}$ in PDE (\ref{eq:pdesimple1}):
+\begin{equation}
+\pderiv{\theta}{t} + \frac {\sigma^2} {2} (\pderiv[2]{\theta}{S_t} - \gamma (\pderiv{\theta}{S_t})^2) + \frac {c} {k + \gamma}(1 - k\cdot {\delta_t^{(b)}}^* + 1 - k \cdot {\delta_t^{(a)}}^*) = 0 \label{eq:pdesimple2}
+\end{equation}
+\item Equations (\ref{eq:bidspreadsimple}), (\ref{eq:askspreadsimple}), (\ref{eq:indiffbidtheta}), (\ref{eq:indiffasktheta}) tell us that:
+$$ {\delta_t^{(b)}}^* + {\delta_t^{(a)}}^* = \frac 2 {\gamma} \ln{(1 + \frac {\gamma} {k})} + 2 \theta(t,S_t,I_t) - \theta(t,S_t,I_t+1) - \theta(t,S_t,I_t-1)$$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Asymptotic Expansion of $\theta$ in $I_t$}
+\pause
+\begin{itemize}[<+->]
+\item With this expression for ${\delta_t^{(b)}}^* + {\delta_t^{(a)}}^*$, PDE (\ref{eq:pdesimple2}) takes the form:
+\begin{equation}
+\begin{split}
+\pderiv{\theta}{t} + \frac {\sigma^2} {2} (\pderiv[2]{\theta}{S_t} - \gamma (\pderiv{\theta}{S_t})^2) + \frac {c} {k + \gamma} & (2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} {k})} -k(2 \theta(t,S_t,I_t) \\
+&  - \theta(t,S_t,I_t+1) - \theta(t,S_t,I_t-1)))=0
+\end{split}
+\label{eq:pdesimple3}
+\end{equation}
+\item To solve PDE (\ref{eq:pdesimple3}), we consider this asymptotic expansion of $\theta$ in $I_t$:
+$$\theta(t,S_t,I_t) = \sum_{n=0}^\infty \frac {I_t^n} {n!} \cdot \theta^{(n)}(t,S_t)$$
+\item So we need to determine the functions $\theta^{(n)}(t,S_t)$ for all $n = 0, 1, 2, \ldots$
+\item For tractability, we approximate this expansion to the first 3 terms:
+$$\theta(t,S_t,I_t) \approx \theta^{(0)}(t,S_t) + I_t \cdot \theta^{(1)}(t,S_t) + \frac {I_t^2} {2} \cdot \theta^{(2)}(t,S_t)$$
+
+
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Approximation of the Expansion of $\theta$ in $I_t$}
+\pause
+\begin{itemize}[<+->]
+\item We note that the Optimal Value Function $V^*$ depends on $S_t$ only through the current value of the inventory (i.e., through $I_t \cdot S_t$), and not through $S_t$ independent of $I_t$
+\item This means $V^*(t,S_t,W_t,0) = -e^{-\gamma(W_t + \theta^{(0)}(t,S_t))}$ is independent of $S_t$
+\item This mean $\theta^{(0)}(t,S_t)$ is independent of $S_t$
+\item So, we can write it as simply $\theta^{(0)}(t)$, meaning $\pderiv{\theta^{(0)}}{S_t}$ and $\pderiv[2]{\theta^{(0)}}{S_t}$ are 0
+\item Therefore, we can write the approximate expansion for $\theta(t,S_t,I_t)$ as:
+\begin{equation}
+\theta(t,S_t,I_t) = \theta^{(0)}(t) + I_t \cdot \theta^{(1)}(t,S_t) + \frac {I_t^2} {2} \cdot \theta^{(2)}(t,S_t) \label{eq:thetaapprox}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Solving the PDE}
+\pause
+\begin{itemize}[<+->]
+\item Substitute this approximation (\ref{eq:thetaapprox}) for $\theta(t,S_t,I_t)$ in PDE (\ref{eq:pdesimple3})
+\begin{equation}
+\begin{split}
+& \pderiv{\theta^{(0)}}{t} + I_t \pderiv{\theta^{(1)}}{t} + \frac {I_t^2} 2 \pderiv{\theta^{(2)}}{t} + \frac {\sigma^2} 2 (I_t \pderiv[2]{\theta^{(1)}}{S_t} + \frac {I_t^2} 2 \pderiv[2]{\theta^{(2)}}{S_t}) \\
+& - \frac {\gamma \sigma^2} 2 (I_t \pderiv{\theta^{(1)}}{S_t} + \frac {I_t^2} 2 \pderiv{\theta^{(2)}}{S_t})^2 + \frac c {k + \gamma} (2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} k)} + k \cdot \theta^{(2)}) = 0 \\
+& \mbox{ with boundary condition: } \\
+& \theta^{(0)}(T) + I_T \cdot \theta^{(1)}(T,S_T) + \frac {I_T^2} 2 \cdot \theta^{(2)}(T,S_T) = I_T \cdot S_T  \label{eq:pdeapprox}
+\end{split}
+\end{equation}
+\item We will separately collect terms involving specific powers of $I_t$, each yielding a separate PDE:
+\begin{itemize}
+ \item Terms devoid of $I_t$ (i.e., $I_t^0$)
+ \item Terms involving $I_t$ (i.e., $I_t^1$)
+ \item Terms involving $I_t^2$
+ \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Solving the PDE}
+\pause
+\begin{itemize}[<+->]
+\item We start by collecting terms involving $I_t$
+\begin{equation*}
+\pderiv{\theta^{(1)}}{t} + \frac {\sigma^2} 2 \cdot \pderiv[2]{\theta^{(1)}}{S_t} = 0 \mbox{ with boundary condition } \theta^{(1)}(T,S_T) = S_T
+\end{equation*}
+\item The solution to this PDE is:
+\begin{equation}
+\theta^{(1)}(t,S_t) = S_t \label{eq:pdesolve1}
+\end{equation}
+\item Next, we collect terms involving $I_t^2$
+\begin{equation*}
+\pderiv{\theta^{(2)}}{t} + \frac {\sigma^2} 2 \cdot \pderiv[2]{\theta^{(2)}}{S_t} - \gamma \sigma^2 \cdot (\pderiv{\theta^{(1)}} {S_t})^2 = 0 \mbox{ with boundary } \theta^{(2)}(T,S_T) = 0
+\end{equation*}
+\item Noting that $\theta^{(1)}(t,S_t) = S_t$, we solve this PDE as:
+\begin{equation}
+\theta^{(2)}(t,S_t) = -\gamma \sigma^2(T-t) \label{eq:pdesolve2}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Solving the PDE}
+\pause
+\begin{itemize}[<+->]
+\item Finally, we collect the terms devoid of $I_t$
+\begin{equation*}
+\pderiv{\theta^{(0)}}{t} + \frac c {k + \gamma} (2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} k)} + k \cdot \theta^{(2)}) = 0 \mbox{ with boundary } \theta^{(0)}(T) = 0
+\end{equation*}
+\item Noting that $\theta^{(2)}(t,S_t) = -\gamma \sigma^2(T-t)$, we solve as:
+\begin{equation}
+\theta^{(0)}(t) = \frac c {k + \gamma} ((2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} k)})(T-t) - \frac {k \gamma \sigma^2} 2 (T-t)^2) \label{eq:pdesolve3}
+\end{equation}
+\item This completes the PDE solution for $\theta(t,S_t,I_t)$ and hence, for $V^*(t,S_t,W_t,I_t)$
+\item Lastly, we derive formulas for $Q_t^{(b)}, Q_t^{(a)}, Q_t^{(m)}, {\delta_t^{(b)}}^*, {\delta_t^{(a)}}^*$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Formulas for Prices and Spreads}
+\pause
+\begin{itemize}[<+->]
+\item Using equations (\ref{eq:indiffbidtheta}) and (\ref{eq:indiffasktheta}), we get:
+\begin{equation}
+Q_t^{(b)} = \theta^{(1)}(t,S_t) + (2I_t+1)\cdot \theta^{(2)}(t,S_t) = S_t - (2I_t + 1) \frac {\gamma \sigma^2(T-t)} {2} \label{eq:indiffbidsolve}
+\end{equation}
+\begin{equation}
+Q_t^{(a)} = \theta^{(1)}(t,S_t) + (2I_t-1) \cdot \theta^{(2)}(t,S_t) =  S_t - (2I_t - 1) \frac {\gamma \sigma^2(T-t)} {2} \label{eq:indiffasksolve}
+\end{equation}
+\item Using equations  (\ref{eq:bidspreadsimple}) and (\ref{eq:askspreadsimple}), we get:
+\begin{equation}
+{\delta_t^{(b)}}^* =  \frac {(2I_t+1)\gamma \sigma^2(T-t)} {2} + \frac 1 {\gamma} \ln{(1 + \frac {\gamma} k)} \label{eq: bidspreadsolve}
+\end{equation}
+\begin{equation}
+{\delta_t^{(a)}}^*  = \frac {(1-2I_t)\gamma \sigma^2(T-t)} {2} + \frac 1 {\gamma} \ln{(1 + \frac {\gamma} k)} \label{eq: askspreadsolve}
+\end{equation}
+\begin{equation}
+\mbox{Optimal Bid-Ask Spread } {\delta_t^{(b)}}^* + {\delta_t^{(a)}}^* = \gamma \sigma^2(T-t) + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} k)} \label{eq:bidaskspreadsolve}
+\end{equation}
+\begin{equation}
+\mbox{Optimal ``Mid'' } Q_t^{(m)} = \frac {Q_t^{(b)} + Q_t^{(a)}} 2 = \frac {{P_t^{(b)}}^* + {P_t^{(a)}}^*} 2 = S_t - I_t \gamma \sigma^2(T-t) \label{eq:indiffmidsolve}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Back to Intuition}
+\pause
+\begin{itemize}[<+->]
+\item Think of $Q_t^{(m)}$ as {\em inventory-risk-adjusted} mid-price (adjustment to $S_t$)
+\item If market-maker is long inventory ($I_t > 0$), $Q_t^{(m)} < S_t$ indicating inclination to sell than buy, and if market-maker is short inventory, $Q_t^{(m)} > S_t$ indicating inclination to buy than sell
+\item Think of $[{P_t^{(b)}}^*, {P_t^{(a)}}^*]$ as ``centered'' at $Q_t^{(m)}$ (rather than at $S_t$), i.e., $[{P_t^{(b)}}^*, {P_t^{(a)}}^*]$ will (together) move up/down in tandem with $Q_t^{(m)}$ moving up/down (as a function of inventory position $I_t$)
+\item Note from equation (\ref{eq:bidaskspreadsolve}) that the Optimal Bid-Ask Spread is independent of inventory $I_t$
+\item Useful view: ${P_t^{(b)}}^* < Q_t^{(b)} < Q_t^{(m)} < Q_t^{(a)} < {P_t^{(a)}}^*$, with these spreads:
+$$\mbox{ Outer Spreads } {P_t^{(a)}}^* - Q_t^{(a)} = Q_t^{(b)}  - {P_t^{(b)}}^* = \frac 1 {\gamma} \ln{(1 + \frac {\gamma} k)}$$
+$$\mbox{ Inner Spreads } Q_t^{(a)} - Q_t^{(m)} = Q_t^{(m)} - Q_t^{(b)} = \frac {\gamma \sigma^2(T-t)} 2$$
+\end{itemize}
+\end{frame}
+
+
+
 
 
 \section{Real-world Optimal Market-Making and Reinforcement Learning}
