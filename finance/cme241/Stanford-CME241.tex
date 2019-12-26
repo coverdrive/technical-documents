@@ -157,9 +157,9 @@
 \begin{itemize}[<+->]
 \item Grade based on:
 \begin{itemize}
-\item 30\% Mid-Term Exam (on Theory, Modeling, Algorithms)
+\item 25\% Mid-Term Exam (on Theory, Modeling, Algorithms)
 \item 40\% Final Exam (on Theory, Modeling, Algorithms)
-\item 30\% {\em Assignments}: Programming,  Technical Writing, Theory Problems
+\item 35\% {\em Assignments}: Programming,  Technical Writing, Theory Problems
 \end{itemize}
 \item Lectures Wed \& Fri 4:30pm - 5:50pm, Jan 8  - March 13
 \item Classes in \href{https://campus-map.stanford.edu/?srch=380-380W}{\underline{\textcolor{blue}{Bldg 380 (Sloan Mathematics Ctr) - Room 380w}}}
@@ -409,7 +409,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item Pricing and Hedging of Derivatives in an Incomplete Market
 \item Optimal Exercise/Stopping of Path-dependent American Options
 \item Optimal Trade Order Execution (managing Price Impact)
-\item Optimal Market-Making (Bid/Ask managing Inventory Risk)
+\item Optimal Market-Making (Bids and Asks managing Inventory Risk)
 \end{itemize}
 \item By treating each of the problems as MDPs (i.e., Stochastic Control)
 \item We will go over classical/analytical solutions to these problems
@@ -449,6 +449,36 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \end{frame}
 
 \begin{frame}
+\frametitle{Derivatives Pricing and Hedging in an Incomplete Market}
+\pause
+\begin{itemize}[<+->]
+\item Classical Pricing/Hedging Theory assumes frictionless market
+\item It also assumes \href{https://github.com/coverdrive/technical-documents/blob/master/finance/ArbitrageCompleteness.pdf}{\underline{\textcolor{blue}{arbitrage-free and complete market}}}
+\item These assumptions allow for perfect replication of derivatives
+\item But real markets are incomplete where classical theory doesn't fit
+\item In an incomplete market, we need to ``choose'' a risk-neutral measure
+\item Which amounts of specifying a Utility function
+\item Maximizing ``risk-adjusted-return'' of the derivative plus hedges
+\item Similar to Asset Allocation, this is a stochastic control problem
+\item Deep Reinforcement Learning helps solve when framed as an MDP 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{MDP for Pricing/Hedging in an Incomplete Market}
+\pause
+\begin{itemize}[<+->]
+\item {\em State} is [Current Time, PnL, Hedge Qtys, Hedge Prices]
+\item {\em Action} is Units of Hedges to be traded at each time step
+\item {\em Reward} only at termination, equal to Utility of terminal PnL
+\item {\em State}-transitions governed by evolution of hedge prices
+\item Optimal Policy $\Rightarrow$ Derivative Hedging Strategy
+\item Optimal Value Function $\Rightarrow$ Derivative Price
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Optimal Exercise of Path-dependent American Options}
 \pause
 \begin{itemize}[<+->]
@@ -464,7 +494,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \end{frame}
 
 \begin{frame}
-\frametitle{MDP for Optimal Options Exercise}
+\frametitle{MDP for Optimal American Options Exercise}
 \pause
 \begin{itemize}[<+->]
 \item {\em State} is [Current Time, History of Underlying Security Prices]
@@ -499,7 +529,35 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item {\em Action} is Quantity of Stock to Sell at current time
 \item {\em Reward} is Utility of Sales Proceeds (i.e., Variance-adjusted-Proceeds)
 \item {\em Reward} \& {\em State}-transitions governed by {\em Price Impact Model}
-\item Real-world {\em Model} can be quite complex (Order Book Dynamics)
+\item Real-world {\em Model} can be quite complex (Limit Order Book Dynamics)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Market-Making (controlling Inventory Buildup)}
+\pause
+\begin{itemize}[<+->]
+\item Market-maker's job is to submit bid and ask prices (and sizes)
+\item On the Limit Order Book (which moves due to other players)
+\item Market-maker needs to adjust bid/ask prizes/sizes appropriately
+\item By anticipating the Limit Order Book Dynamics
+\item Goal is to maximize {\em Utility of Gains} at the end of a suitable horizon
+\item If Buy/Sell LOs are too narrow, more frequent but small gains
+\item If Buy/Sell LOs are too wide, less frequent but large gains
+\item Market-maker also needs to manage potential unfavorable inventory (long or short) buildup and consequent unfavorable liquidation
+\item This is a classical stochastic control problem
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{MDP for Optimal Market-Making}
+\pause
+\begin{itemize}[<+->]
+\item {\em State} is [Current Time, Mid-Price, PnL, Inventory of Stock Held]
+\item {\em Action} is Bid \& Ask Prices \& Sizes at each time step
+\item {\em Reward} is Utility of Gains at termination
+\item {\em State}-transitions governed by probabilities of hitting/lifting Bid/Ask
+\item Also governed by Limit Order Book Dynamics (can be quite complex)
 \end{itemize}
 \end{frame}
 
@@ -510,9 +568,9 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \begin{itemize}[<+->]
 \item W1: Markov Decision Processes \& Overview of Finance Problems
 \item W2: Bellman Equations \& Dynamic Programming Algorithms
-\item W3: Optimal Asset Allocation and Derivatives Pricing Problems
-\item W4: American Option Pricing and Optimal Trade Execution Problems
-\item W5: Optimal Market-Making problem, and Mid-Term Exam
+\item W3: Optimal Asset Allocation \& Derivatives Pricing/Hedging
+\item W4: American Options Exercise \& Optimal Trade Order Execution
+\item W5: Optimal Market-Making, and Mid-Term Exam
 \item W6: Model-free Prediction (RL for Value Function Estimation)
 \item W7: Model-Free Control (RL for Optimal Value Function/Policy)
 \item W8: RL with Function Approximation (including Deep RL)
@@ -523,39 +581,45 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \end{frame}
 
 \begin{frame}
-\frametitle{Sneak Peek into a few lectures in this course}
+\frametitle{Getting a sense of the style and content of the lectures}
+A sampling of lectures to browse through and get a sense ...
 \begin{itemize}
+\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Understanding Risk-Aversion through Utility Theory}}}
 \item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MertonPortfolio.pdf}{\underline{\textcolor{blue}{HJB Equation and Merton's Portfolio Problem}}}
+\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/DeepHedging.pdf}{\underline{\textcolor{blue}{Derivatives Pricing and Hedging with Deep Reinforcement Learning}}}
+\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MarketMaking.pdf}{\underline{\textcolor{blue}{Stochastic Control for Optimal Market-Making}}}
 \item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient Theorem and Compatible Approximation Theorem}}}
 \item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/ValueFunctionGeometry.pdf}{\underline{\textcolor{blue}{Value Function Geometry and Gradient TD}}}
+\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/AdaptiveMultistageSampling.pdf}{\underline{\textcolor{blue}{Adapative Multistage Sampling Algorithm (Origins of MCTS)}}}
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Landmark Papers we will cover in detail}
+\frametitle{Some Landmark Papers we cover in this course}
 \begin{itemize}
 \item \href{https://www.jstor.org/stable/1926560}{\underline{\textcolor{blue}{Merton's solution for Optimal Portfolio Allocation/Consumption}}}
 \item \href{https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf}{\underline{\textcolor{blue}{Longstaff-Schwartz Algorithm for Pricing American Options}}}
-\item \href{http://alo.mit.edu/wp-content/uploads/2015/06/Optimal-Control-of-Execution-Costs.pdf}{\underline{\textcolor{blue}{Bertsimas-Lo paper on Optimal Execution Cost}}}
-\item \href{https://pdfs.semanticscholar.org/3d2d/773983c5201b58586af463f045befae5bbf2.pdf}{\underline{\textcolor{blue}{Almgren-Chriss paper on Optimal Risk-Adjusted Execution Cost}}}
+\item \href{https://pdfs.semanticscholar.org/3d2d/773983c5201b58586af463f045befae5bbf2.pdf}{\underline{\textcolor{blue}{Almgren-Chriss paper on Optimal Order Execution}}}
+\item \href{https://www.math.nyu.edu/faculty/avellane/HighFrequencyTrading.pdf}{\underline{\textcolor{blue}{Avellaneda-Stoikov paper on Optimal Market-Making}}}
 \item \href{https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf}{\underline{\textcolor{blue}{Original DQN paper}}} and \href{https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf}{\underline{\textcolor{blue}{Nature DQN paper}}}
 \item \href{http://www.jmlr.org/papers/volume4/lagoudakis03a/lagoudakis03a.pdf}{\underline{\textcolor{blue}{Lagoudakis-Parr paper on Least Squares Policy Iteration}}}
-\item \href{http://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf}{\underline{\textcolor{blue}{Sutton et al's paper on Policy Gradient}}}
+\item \href{http://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf}{\underline{\textcolor{blue}{Sutton, McAllester, Singh, Mansour's Policy Gradient Theorem}}}
+\item \href{https://pdfs.semanticscholar.org/a378/b2895a3e3f6a19cdff1a0ad404b301b5545f.pdf}{\underline{\textcolor{blue}{Chang, Fu, Hu, Marcus' AMS origins of Monte Carlo Tree Search}}}
 \end{itemize}
 \end{frame}
 
 
-%\begin{frame}
-%\frametitle{Similar Courses offered at Stanford}
-%\begin{itemize}
-%\item AA 228/CS 238 (Mykel Kochenderfer - Autumn 2019)
-%\item CS 234 (Emma Brunskill - Winter 2020)
-%\item MS\&E 251 (Edison Tse - Spring 2019)
-%\item CS 332 (Emma Brunskill - Autumn 2020)
-%\item MS\&E 338 (Ben Van Roy - Spring 2020)
-%\item MS\&E 348 (Gerd Infanger - Winter 2020)
-%\item MS\&E 351 (Ben Van Roy - Winter 2020)
-%\end{itemize}
-%\end{frame}
+\begin{frame}
+\frametitle{Similar Courses offered at Stanford}
+\begin{itemize}
+\item AA 228/CS 238 (Mykel Kochenderfer)
+\item CS 234 (Emma Brunskill)
+\item MS\&E 251 (Edison Tse)
+\item CS 332 (Emma Brunskill)
+\item MS\&E 338 (Ben Van Roy)
+\item MS\&E 348 (Gerd Infanger)
+\item MS\&E 351 (Ben Van Roy)
+\end{itemize}
+\end{frame}
 
 \end{document}
