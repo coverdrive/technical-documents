@@ -265,7 +265,7 @@ $$V^*(T, S_T, W_T, I_T) = -e^{-\gamma \cdot (W_T + I_T \cdot S_T)}$$
 \item Change to $V^*(t, S_t, W_t, I_t)$ is comprised of 3 components:
 \begin{itemize}
 \item Due to pure movement in time $t$
-\item Due to randomness in LOB Mid-Price $S_t$
+\item Due to randomness in TOB Mid-Price $S_t$
 \item Due to randomness in hitting/lifting the Bid/Ask
 \end{itemize}
 \item With this, we can expand $dV^*(t, S_t, W_t, I_t)$ and rewrite HJB as:
@@ -526,9 +526,9 @@ $$\theta(t,S_t,I_t) \approx \theta^{(0)}(t,S_t) + I_t \cdot \theta^{(1)}(t,S_t) 
 \frametitle{Approximation of the Expansion of $\theta$ in $I_t$}
 \pause
 \begin{itemize}[<+->]
-\item We note that the Optimal Value Function $V^*$ depends on $S_t$ only through the current value of the inventory (i.e., through $I_t \cdot S_t$), and not through $S_t$ independent of $I_t$
+\item We note that the Optimal Value Function $V^*$ can depend on $S_t$ only through the current {\em Value of the Inventory} (i.e., through $I_t \cdot S_t$), i.e., it cannot depend on $S_t$ in any other way
 \item This means $V^*(t,S_t,W_t,0) = -e^{-\gamma(W_t + \theta^{(0)}(t,S_t))}$ is independent of $S_t$
-\item This mean $\theta^{(0)}(t,S_t)$ is independent of $S_t$
+\item This means $\theta^{(0)}(t,S_t)$ is independent of $S_t$
 \item So, we can write it as simply $\theta^{(0)}(t)$, meaning $\pderiv{\theta^{(0)}}{S_t}$ and $\pderiv[2]{\theta^{(0)}}{S_t}$ are 0
 \item Therefore, we can write the approximate expansion for $\theta(t,S_t,I_t)$ as:
 \begin{equation}
@@ -635,15 +635,12 @@ Q_t^{(a)} = \theta^{(1)}(t,S_t) + (2I_t-1) \cdot \theta^{(2)}(t,S_t) =  S_t - (2
 \item Think of $Q_t^{(m)}$ as {\em inventory-risk-adjusted} mid-price (adjustment to $S_t$)
 \item If market-maker is long inventory ($I_t > 0$), $Q_t^{(m)} < S_t$ indicating inclination to sell than buy, and if market-maker is short inventory, $Q_t^{(m)} > S_t$ indicating inclination to buy than sell
 \item Think of $[{P_t^{(b)}}^*, {P_t^{(a)}}^*]$ as ``centered'' at $Q_t^{(m)}$ (rather than at $S_t$), i.e., $[{P_t^{(b)}}^*, {P_t^{(a)}}^*]$ will (together) move up/down in tandem with $Q_t^{(m)}$ moving up/down (as a function of inventory position $I_t$)
-\item Note from equation (\ref{eq:bidaskspreadsolve}) that the Optimal Bid-Ask Spread is independent of inventory $I_t$
+\item Note from equation (\ref{eq:bidaskspreadsolve}) that the Optimal Bid-Ask Spread ${P_t^{(a)}}^* - {P_t^{(b)}}^*$ is independent of inventory $I_t$
 \item Useful view: ${P_t^{(b)}}^* < Q_t^{(b)} < Q_t^{(m)} < Q_t^{(a)} < {P_t^{(a)}}^*$, with these spreads:
 $$\mbox{ Outer Spreads } {P_t^{(a)}}^* - Q_t^{(a)} = Q_t^{(b)}  - {P_t^{(b)}}^* = \frac 1 {\gamma} \ln{(1 + \frac {\gamma} k)}$$
 $$\mbox{ Inner Spreads } Q_t^{(a)} - Q_t^{(m)} = Q_t^{(m)} - Q_t^{(b)} = \frac {\gamma \sigma^2(T-t)} 2$$
 \end{itemize}
 \end{frame}
-
-
-
 
 
 \section{Real-world Optimal Market-Making and Reinforcement Learning}
@@ -652,16 +649,15 @@ $$\mbox{ Inner Spreads } Q_t^{(a)} - Q_t^{(m)} = Q_t^{(m)} - Q_t^{(b)} = \frac {
 \frametitle{Real-world Market-Making and Reinforcement Learning}
 \pause
 \begin{itemize}[<+->]
-\item Arbitrary Price Dynamics $f_t(\cdot)$ and Temporary Price Impact $g_t(\cdot)$
-\item Non-stationarity/non-linear dynamics/impact require (Numerical) DP
+\item Real-world TOB dynamics are non-stationarity, non-linear, complex
 \item Frictions: Discrete Prices/Sizes, Constraints on Prices/Sizes, Fees
-\item Large State space incorporate various external factors in the State
-\item We could also represent the entire TOB within the State
-\item So then we'd have to develop a simulator capturing all of the above
-\item Simulator is a {\em Data-learnt Sampling Model} of TOB Dynamics 
-\item In practice, we'd need to also capture {\em Cross-Asset Market Impact}
+\item Need to capture various market factors in the {\em State} \& TOB Dynamics
+\item This leads to Curse of Dimensionality and Curse of Modeling
+\item The practical route is to develop a simulator capturing all of the above
+\item Simulator is a {\em Market-Data-learnt Sampling Model} of TOB Dynamics 
 \item Using this simulator and neural-networks func approx, we can do RL
-\item References: \href{https://www.cis.upenn.edu/~mkearns/papers/rlexec.pdf}{\underline{\textcolor{blue}{Nevmyvaka, Feng, Kearns; 2006}}} and \href{https://arxiv.org/pdf/1906.02312.pdf}{\underline{\textcolor{blue}{Vyetrenko, Xu; 2019}}}
+\item References: \href{https://arxiv.org/pdf/1804.04216.pdf}{\underline{\textcolor{blue}{2018 Paper from University of Liverpool}}} and 
+\href{https://arxiv.org/pdf/1911.05892.pdf}{\underline{\textcolor{blue}{2019 Paper from JP Morgan Research}}}
 \item Exciting area for Future Research as well as Engineering Design
 \end{itemize}
 \end{frame}
