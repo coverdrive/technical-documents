@@ -92,7 +92,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[RL for Finance]{CME 241: Reinforcement Learning for Stochastic Control Problems in Finance} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[RL for Finance]{CME 241: Reinforcement Learning for Stochastic Control Problems in Finance (Winter 2020)} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Ashwin Rao} % Your name
 \institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -124,7 +124,7 @@
 \item I've been teaching short/medium-length courses for 25 years
 \item Topics across Pure \& Applied Math, CS, Programming, Finance
 \item Current Interest: A.I. for Dynamic Decisioning under Uncertainty
-\item V.P. Data Science at Target focused on Optimal Inventory Control
+\item Current Industry Job: V.P. of A.I. at Target
 \item Joined Stanford ICME as Adjunct in Fall 2018
 \item Apart from CME 241, I am a technical mentor to ICME students
 \end{itemize}
@@ -139,7 +139,7 @@
 \begin{itemize}
 \item Undergraduate-level background in Applied Mathematics (Linear Algebra, Probability Theory, Optimization)
 \item Background in Data Structures \& Algorithms, with programming experience in numpy/scipy
-\item Basic background in Pricing and Portfolio Theory, but we will do an overview of the requisite Finance/Economics
+\item Basic familiarity with Pricing, Portfolio Mgmt and Algo Trading, but we will do an overview of the requisite Finance/Economics
 \item No background required in MDP, DP, RL (we will cover these topics from scratch)
 \end{itemize}
 \item Install Python 3 and supporting IDE/tools (eg: PyCharm, Jupyter)
@@ -157,17 +157,16 @@
 \begin{itemize}[<+->]
 \item Grade based on:
 \begin{itemize}
-\item 25\% Mid-Term Exam (on Theory, Modeling, Algorithms)
+\item 30\% Mid-Term Exam (on Theory, Modeling, Algorithms)
 \item 40\% Final Exam (on Theory, Modeling, Algorithms)
-\item 35\% {\em Assignments}: Programming,  Technical Writing, Theory Problems
+\item 30\% {\em Assignments}: Programming,  Technical Writing, Theory Problems
 \end{itemize}
-\item Lectures Wed \& Fri 4:30pm - 5:50pm, Jan 9  - March 15
-\item Classes in \href{https://campus-map.stanford.edu/?srch=200-203}{\underline{\textcolor{blue}{Building 200 (Lane History Corner) - Room 203}}}
-\item Office Hours 2-4pm Fri (or by appointment) in my office (ICME M09)
+\item Lectures Wed \& Fri 4:30pm - 5:50pm, Jan 8  - March 13
+\item Classes in \href{https://campus-map.stanford.edu/?srch=380-380W}{\underline{\textcolor{blue}{Bldg 380 (Sloan Mathematics Ctr) - Room 380w}}}
+\item Office Hours 2-4pm Fri (or by appointment) in my office (ICME M05)
 \item Course Web Site: \href{http://cme241.stanford.edu}{\underline{\textcolor{blue}{cme241.stanford.edu}}}
-\item Ask Questions and engage in Discussions on \href{https://piazza.com/stanford/winter2019/cme241/home}{\underline{\textcolor{blue}{Piazza}}}
-\item Course Assistant (CA) is Jeffrey Gu (ICME student)
-\item My e-mail: \href{mailto:ashwin.rao@stanford.edu}{\underline{\textcolor{blue}{ashwin.rao@stanford.edu}}}, CA e-mail: \href{mailto:jeffgu@stanford.edu}{\underline{\textcolor{blue}{jeffgu@stanford.edu}}}
+\item Ask Questions and engage in Discussions on \href{piazza.com/stanford/winter2020/cme241/home}{\underline{\textcolor{blue}{Piazza}}}
+\item My e-mail: \href{mailto:ashwin.rao@stanford.edu}{\underline{\textcolor{blue}{ashwin.rao@stanford.edu}}}
 \end{itemize}
 \end{frame}
 
@@ -204,7 +203,7 @@
 \item I will follow the structure of \href{http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html}{\underline{\textcolor{blue}{David Silver's RL course}}}
 \begin{itemize}
 \item I encourage you to augment my lectures with David's lecture videos
-\item Occasionally, I will wear away or speed up/slow down from this flow
+\item Occasionally, I will veer away or speed up/slow down from this flow
 \end{itemize}
 \item We will do a bit more Theory \& a lot more coding (relative to above)
 \item You can freely use my \href{https://github.com/coverdrive/MDP-DP-RL}{\underline{\textcolor{blue}{open-source code}}} for your coding work
@@ -226,7 +225,7 @@
 \item Let's browse some terms used to characterize this branch of A.I.
 \item {\em Stochastic}: Uncertainty in key quantities, evolving over time
 \item {\em Optimization}: A well-defined metric to be maximized (``The Goal'')
-\item {\em Dynamic}:  Decisions need to a function of the changing situations
+\item {\em Dynamic}:  Decisions need to be a function of the changing situations
 \item {\em Control}: Overpower uncertainty by persistent steering towards goal
 \item Jargon overload due to confluence of Control Theory, O.R. and A.I.
 \item For language clarity, let's just refer to this area as {\em Stochastic Control}
@@ -273,7 +272,7 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \item Rewards $R_t \in \mathbb{R}$ denoting numerical feedback\
 \item Transitions $p(s',r|s,a) = Pr\{S_{t+1}=s',R_{t+1}=r|S_t=s,A_t=a\}$
 \item $\gamma \in [0,1]$ is the Discount Factor for Reward when defining {\em Return}
-\item Return $G_t = R_t + \gamma \cdot R_{t+1} + \gamma^2 \cdot R_{t+1} + \ldots$
+\item Return $G_t = R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \ldots$
 \item Policy $\pi(a|s)$ is probability that Agent takes action $a$ in states $s$
 \item The goal is find a policy that maximizes  $\mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
 \end{itemize}
@@ -404,11 +403,13 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item Dynamic Programming (DP) Algorithms
 \item Reinforcement Learning (RL) Algorithms
 \item Plenty of Python implementations of models and algorithms
-\item Apply these algorithms to 3 Financial/Trading problems:
+\item Apply these algorithms to 5 Financial/Trading problems:
 \begin{itemize}
 \item (Dynamic) Asset-Allocation to maximize Utility of Consumption
+\item Pricing and Hedging of Derivatives in an Incomplete Market
 \item Optimal Exercise/Stopping of Path-dependent American Options
 \item Optimal Trade Order Execution (managing Price Impact)
+\item Optimal Market-Making
 \end{itemize}
 \item By treating each of the problems as MDPs (i.e., Stochastic Control)
 \item We will go over classical/analytical solutions to these problems
@@ -508,14 +509,14 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \begin{itemize}[<+->]
 \item W1: Markov Decision Processes \& Overview of Finance Problems
 \item W2: Bellman Equations \& Dynamic Programming Algorithms
-\item W3: Optimal Asset Allocation problem
-\item W4: Optimal Exercise of American Options problem
-\item W5: Optimal Trade Order Execution problem, and Mid-Term Exam
+\item W3: Optimal Asset Allocation and Derivatives Pricing Problems
+\item W4: American Option Pricing and Optimal Trade Execution Problems
+\item W5: Optimal Market-Making problem, and Mid-Term Exam
 \item W6: Model-free Prediction (RL for Value Function Estimation)
 \item W7: Model-Free Control (RL for Optimal Value Function/Policy)
 \item W8: RL with Function Approximation (including Deep RL)
 \item W9: Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD
-\item W10: Policy Gradient Algorithms
+\item W10: Policy Gradient Algorithms and Explore v/s Exploit
 \item W11: Final Exam
 \end{itemize}
 \end{frame}
@@ -543,17 +544,17 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \end{frame}
 
 
-\begin{frame}
-\frametitle{Similar Courses offered at Stanford}
-\begin{itemize}
-\item AA 228/CS 238 (Mykel Kochenderfer - Autumn 2018)
-\item CS 234 (Emma Brunskill - Winter 2019)
-\item MS\&E 251 (Edison Tse - Spring 2019)
-\item CS 332 (Emma Brunskill - Autumn 2018)
-\item MS\&E 338 (Ben Van Roy - Spring 2019)
-\item MS\&E 348 (Gerd Infanger - Winter 2020)
-\item MS\&E 351 (Ben Van Roy - Winter 2019)
-\end{itemize}
-\end{frame}
+%\begin{frame}
+%\frametitle{Similar Courses offered at Stanford}
+%\begin{itemize}
+%\item AA 228/CS 238 (Mykel Kochenderfer - Autumn 2019)
+%\item CS 234 (Emma Brunskill - Winter 2020)
+%\item MS\&E 251 (Edison Tse - Spring 2019)
+%\item CS 332 (Emma Brunskill - Autumn 2020)
+%\item MS\&E 338 (Ben Van Roy - Spring 2020)
+%\item MS\&E 348 (Gerd Infanger - Winter 2020)
+%\item MS\&E 351 (Ben Van Roy - Winter 2020)
+%\end{itemize}
+%\end{frame}
 
 \end{document}
