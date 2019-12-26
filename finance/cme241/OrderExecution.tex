@@ -379,10 +379,10 @@ V^*(t,P_t,R_t,X_t) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(4)
 \item Arbitrary Price Dynamics $f_t(\cdot)$ and Temporary Price Impact $g_t(\cdot)$
 \item Non-stationarity/non-linear dynamics/impact require (Numerical) DP
 \item Frictions: Discrete Prices/Sizes, Constraints on Prices/Sizes, Fees
-\item Large State space incorporate various external factors in the State
+\item Incorporating various markets factors in the State bloats State Space
 \item We could also represent the entire TOB within the State
-\item So then we'd have to develop a simulator capturing all of the above
-\item Simulator is a {\em Data-learnt Sampling Model} of TOB Dynamics 
+\item Practical route is to develop a simulator capturing all of the above
+\item Simulator is a {\em Market-Data-learnt Sampling Model} of TOB Dynamics 
 \item In practice, we'd need to also capture {\em Cross-Asset Market Impact}
 \item Using this simulator and neural-networks func approx, we can do RL
 \item References: \href{https://www.cis.upenn.edu/~mkearns/papers/rlexec.pdf}{\underline{\textcolor{blue}{Nevmyvaka, Feng, Kearns; 2006}}} and \href{https://arxiv.org/pdf/1906.02312.pdf}{\underline{\textcolor{blue}{Vyetrenko, Xu; 2019}}}
