@@ -429,7 +429,7 @@ $$V^*(t,S_t,W_t,I_t) = \mathbb{E}[-e^{-\gamma(W_t + I_t \cdot S_T)}]$$
 \item Combining this with the diffusion $dS_t = \sigma \cdot dz_t$, we get:
 $$V^*(t,S_t,W_t,I_t) = -e^{-\gamma(W_t + I_t \cdot S_t - \frac {\gamma \cdot I_t^2 \cdot \sigma^2(T-t)} {2})}$$
 \item Combining this with equations (\ref{eq:indiffbid}) and (\ref{eq:indiffask}), we get:
-$$Q_t^{(b)} = S_t + (1-2I_t) \frac {\gamma \sigma^2(T-t)} {2} \mbox{ , } Q_t^{(a)} = S_t + (-1-2I_t) \frac {\gamma \sigma^2(T-t)} {2}$$
+$$Q_t^{(b)} = S_t - (2I_t+1) \frac {\gamma \sigma^2(T-t)} {2} \mbox{ , } Q_t^{(a)} = S_t - (2I_t-1) \frac {\gamma \sigma^2(T-t)} {2}$$
 $$Q_t^{(m)} = S_t - I_t \gamma \sigma^2(T-t) \mbox{ , } Q_t^{(a)} - Q_t^{(b)} = \gamma \sigma^2(T-t)$$
 \item  These results for the simple case of no-market-making serve as approximations for our problem of optimal market-making
 \end{itemize}
@@ -506,8 +506,8 @@ $$ {\delta_t^{(b)}}^* + {\delta_t^{(a)}}^* = \frac 2 {\gamma} \ln{(1 + \frac {\g
 \item With this expression for ${\delta_t^{(b)}}^* + {\delta_t^{(a)}}^*$, PDE (\ref{eq:pdesimple2}) takes the form:
 \begin{equation}
 \begin{split}
-\pderiv{\theta}{t} + \frac {\sigma^2} {2} (\pderiv[2]{\theta}{S_t} - \gamma (\pderiv{\theta}{S_t})^2) + \frac {c} {k + \gamma} & (2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} {k})} -k(2 \theta(t,S_t,I_t) \\
-&  - \theta(t,S_t,I_t+1) - \theta(t,S_t,I_t-1)))=0
+\pderiv{\theta}{t} + \frac {\sigma^2} {2} & (\pderiv[2]{\theta}{S_t}  - \gamma (\pderiv{\theta}{S_t})^2)  +  \frac {c} {k + \gamma} (2 - \frac {2k} {\gamma} \ln{(1 + \frac {\gamma} {k})} \\
+& -k(2 \theta(t,S_t,I_t) - \theta(t,S_t,I_t+1) - \theta(t,S_t,I_t-1)))=0
 \end{split}
 \label{eq:pdesimple3}
 \end{equation}
@@ -546,7 +546,7 @@ $$\theta(t,S_t,I_t) \approx \theta^{(0)}(t,S_t) + I_t \cdot \theta^{(1)}(t,S_t) 
 \begin{equation}
 \begin{split}
 & \pderiv{\theta^{(0)}}{t} + I_t \pderiv{\theta^{(1)}}{t} + \frac {I_t^2} 2 \pderiv{\theta^{(2)}}{t} + \frac {\sigma^2} 2 (I_t \pderiv[2]{\theta^{(1)}}{S_t} + \frac {I_t^2} 2 \pderiv[2]{\theta^{(2)}}{S_t}) \\
-& - \frac {\gamma \sigma^2} 2 (I_t \pderiv{\theta^{(1)}}{S_t} + \frac {I_t^2} 2 \pderiv{\theta^{(2)}}{S_t})^2 + \frac c {k + \gamma} (2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} k)} + k \cdot \theta^{(2)}) = 0 \\
+& - \frac {\gamma \sigma^2} 2 (I_t \pderiv{\theta^{(1)}}{S_t} + \frac {I_t^2} 2 \pderiv{\theta^{(2)}}{S_t})^2 + \frac c {k + \gamma} (2 - \frac {2k} {\gamma} \ln{(1 + \frac {\gamma} k)} + k \cdot \theta^{(2)}) = 0 \\
 & \mbox{ with boundary condition: } \\
 & \theta^{(0)}(T) + I_T \cdot \theta^{(1)}(T,S_T) + \frac {I_T^2} 2 \cdot \theta^{(2)}(T,S_T) = I_T \cdot S_T  \label{eq:pdeapprox}
 \end{split}
@@ -590,11 +590,11 @@ $$\theta(t,S_t,I_t) \approx \theta^{(0)}(t,S_t) + I_t \cdot \theta^{(1)}(t,S_t) 
 \begin{itemize}[<+->]
 \item Finally, we collect the terms devoid of $I_t$
 \begin{equation*}
-\pderiv{\theta^{(0)}}{t} + \frac c {k + \gamma} (2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} k)} + k \cdot \theta^{(2)}) = 0 \mbox{ with boundary } \theta^{(0)}(T) = 0
+\pderiv{\theta^{(0)}}{t} + \frac c {k + \gamma} (2 - \frac {2k} {\gamma} \ln{(1 + \frac {\gamma} k)} + k \cdot \theta^{(2)}) = 0 \mbox{ with boundary } \theta^{(0)}(T) = 0
 \end{equation*}
 \item Noting that $\theta^{(2)}(t,S_t) = -\gamma \sigma^2(T-t)$, we solve as:
 \begin{equation}
-\theta^{(0)}(t) = \frac c {k + \gamma} ((2 + \frac 2 {\gamma} \ln{(1 + \frac {\gamma} k)})(T-t) - \frac {k \gamma \sigma^2} 2 (T-t)^2) \label{eq:pdesolve3}
+\theta^{(0)}(t) = \frac c {k + \gamma} ((2 - \frac {2k} {\gamma} \ln{(1 + \frac {\gamma} k)})(T-t) - \frac {k \gamma \sigma^2} 2 (T-t)^2) \label{eq:pdesolve3}
 \end{equation}
 \item This completes the PDE solution for $\theta(t,S_t,I_t)$ and hence, for $V^*(t,S_t,W_t,I_t)$
 \item Lastly, we derive formulas for $Q_t^{(b)}, Q_t^{(a)}, Q_t^{(m)}, {\delta_t^{(b)}}^*, {\delta_t^{(a)}}^*$
@@ -649,7 +649,7 @@ $$\mbox{ Inner Spreads } Q_t^{(a)} - Q_t^{(m)} = Q_t^{(m)} - Q_t^{(b)} = \frac {
 \frametitle{Real-world Market-Making and Reinforcement Learning}
 \pause
 \begin{itemize}[<+->]
-\item Real-world TOB dynamics are non-stationarity, non-linear, complex
+\item Real-world TOB dynamics are non-stationary, non-linear, complex
 \item Frictions: Discrete Prices/Sizes, Constraints on Prices/Sizes, Fees
 \item Need to capture various market factors in the {\em State} \& TOB Dynamics
 \item This leads to Curse of Dimensionality and Curse of Modeling
