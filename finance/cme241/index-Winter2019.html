@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+	width: 100%;
+}
+th {
+	text-align: left;
+}
+th.date {
+	width: 10%;
+}
+</style>
+<title>CME 241: Reinforcement Learning for Stochastic Control Problems in Finance </title>
+</head>
+
+<body>
+<h1>Welcome to CME 241: Reinforcement Learning for Stochastic Control Problems in Finance</h1>
+<h1>Instructor: <a href="mailto:ashwin.rao@stanford.edu">Ashwin Rao</a></h1>
+<h2>&#8226; Winter 2019 Classes: Wed & Fri 4:30-5:50pm. <a href="https://campus-map.stanford.edu/?srch=200-203">Bldg 200 (Lane History Corner), Room 203</a>
+<h2>&#8226; Ashwin's Office Hours: Fri 2-4pm (or by appointment) in ICME M09 (Ashwin's office room)</h2>
+<h2>&#8226; Course Assistant (CA) <a href="mailto:jeffgu@stanford.edu">Jeffrey Gu</a>'s Office Hours: Mon 2-3pm in Huang Engg. Basement</h2>
+<h2>Grade will be based on</h2>
+<ul>
+	<li>25% Mid-Term Exam (on Theory, Modeling and Algorithms)</li>
+	<li>40% Final Exam (on Theory, Modeling and Algorithms)</li>
+	<li>35% Assignments: Programming, Technical Writing and Theory Problem-Solving (to be done throughout the course)</li>
+</ul>
+<h2>Learning Material will be a combination of</h2>
+<ul>
+	<li><a href="lecture_slides/">Technical Documents/Lecture Slides I have prepared specifically for this course</a></li>
+	<li><a href="https://github.com/coverdrive/MDP-DP-RL">Python codebase I have developed for this course</a> to help you "learn through coding"</li>
+	<li><a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html">Slides and Videos from David Silver's UCL course on RL</a></li>
+	<li>For deeper self-study and reference, augment the above content with <a href="http://incompleteideas.net/book/the-book-2nd.html">The Sutton-Barto RL Book and Sutton's accompanying teaching material</a></li>
+</ul>
+
+<h2>Lecture-by-Lecture (tentative) schedule with corresponding lecture slides, reading/videos, and assignments</h2>
+<table border="1">
+  <tr>
+    <th class="date">Date</th>
+    <th>Lecture Slides</th>
+    <th>Reading/Videos</th>
+    <th>Suggested Assignments</th>
+  </tr>
+  <tr>
+    <th>January 9</th>
+    <th><a href="course_details.pdf">Course Overview</a></th>
+    <th>
+	    <ul>
+		    <li>First (Introduction) chapter of Sutton-Barto (pages 1-12)</li>
+		    <li>Optional: <a href="lecture_slides/rich_sutton_slides/1-admin-and-intro.pdf">Rich Sutton's corresponding slides on Intro to RL</a></li>
+		    <li>Optional: <a href="lecture_slides/david_silver_slides/intro_RL.pdf">David Silver's slides on Intro to RL</a></li>
+		    <li>Optional: <a href="https://www.youtube.com/watch?v=2pWv7GOvuf0">David Silver's corresponding video (youtube) on Intro to RL</a></li>
+	    </ul>
+    </th>
+    <th>
+    	<ul>
+				<li>Install/Setup on your laptop with LaTeX, Python 3 (and optionally Jupyter notebook)</li>
+				<li>Create a git repo for this course where you can upload and organize all the code and technical writing you will do as part of assignments and self-learning</li>
+				<li>Let the Course Assistant (CA) know of your git repo, so we can periodically review your assignments and other self-learning work</li>
+		</ul>
+	</th>
+  </tr>
+  <tr>
+    <th>January 11</th>
+    <th><a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Processes (MP) and Markov Reward Processes (MRP)</a></th>
+    <th>
+    	<ul>
+		<li>Optional: <a href="https://www.youtube.com/watch?v=lfHX2hHRMVQ">David Silver's corresponding video (on youtube) on MPs/MRPs/MDPs</a></li>
+	</ul>
+    </th>
+    <th>
+			<ul>
+				<li>Write out the MP/MRP definitions and MRP Value Function definition (in LaTeX) in your own style/notation (so you really internalize these concepts)</li>
+				<li>Think about the data structures/class design (in Python 3) to represent MP/MRP and implement them with clear type declarations</li>
+				<li>Remember your data structure/code design must resemble the Mathematical/notational formalism as much as possible</li>
+				<li>Specifically the data structure/code design of MRP should be incremental (and not independent) to that of MP
+				<li>Separately implement the r(s,s') and the R(s) = \sum_{s'} p(s,s') * r(s,s') definitions of MRP</li>
+				<li>Write code to convert/cast the r(s,s') definition of MRP to the R(s) definition of MRP (put some thought into code design here)</li>
+				<li>Write code to generate the stationary distribution for an MP</li>
+			</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 16</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Decision Processes (MDP), Value Function, and Bellman Equations</a>
+    </th>
+    <th>
+	    <ul>	
+		<li>Third (MDP) chapter of Sutton-Barto book (pages 47-67)</li>
+		<li>Optional: <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Rich Sutton's corresponding slides on MDPs</a></li>
+		<li><a href="lecture_slides/mdp_mrp_commute.pdf">Two ways of arriving at the identical MRP from an MDPRefined (r(s,s',a) definition)</a></li>
+	    </ul>
+    </th>
+    <th>
+    	<ul>
+		<li>Write the Bellman equation for MRP Value Function and code to calculate MRP Value Function (based on Matrix inversion method you learnt in this lecture)</li>
+		<li>Write out the MDP definition, Policy definition and MDP Value Function definition (in LaTeX) in your own style/notation (so you really internalize these concepts)</li>
+		<li>Think about the data structure/class design (in Python 3) to represent MDP, Policy, Value Function, and implement them with clear type definitions</li>
+		<li>The data struucture/code design of MDP should be incremental (and not independent) to that of MRP</li>
+		<li>Separately implement the r(s,s',a) and R(s,a) = \sum_{s'} p(s,s',a) * r(s,s',a) definitions of MDP</li>
+		<li>Write code to convert/cast the r(s,s',a) definition of MDP to the R(s,a) definition of MDP (put some thought into code design here)</li>
+		<li>Write code to create a MRP given a MDP and a Policy</li>
+		<li>Write out all 8 MDP Bellman Equations and also the transformation from Optimal Action-Value function to Optimal Policy (in LaTeX)</li>
+		</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 18</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/DP.pdf">Dynamic Programming Algorithms</a>
+    </th>
+    <th>
+    	<ul>
+		<li>Fourth (Dynamic Programming) chapter of Sutton-Barto book (pages 73-88)</li>
+		<li><a href="lecture_slides/BellmanOperators.pdf">Understanding Dynamic Programming through Bellman Operators</a></li>
+		<li>Optional: <a href="lecture_slides/rich_sutton_slides/7-8-DP.pdf">Rich Sutton's corresponding slides on Dynamic Programming</a></li>
+        	<li>Optional: <a href="https://www.youtube.com/watch?v=Nd1-UUMVfz4&t=3110s">David Silver's video (on youtube) on Dynamic Programming</a></li>
+	</ul>
+    </th>
+    <th>
+        <ul>
+    	        <li>Write code for Policy Evaluation (tabular) algorithm</li>
+    	        <li>Write code for Policy Iteration (tabular) algorithm</li>
+    	        <li>Write code for Value Iteration (tabular) algorithm</li>
+    	        <li>Those familiar with function approximation (deep networks, or simply linear in featues) can try writing code for the above algorithms with function approximation (a.k.a. Approximate DP)</li>
+        </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 23</th>
+    <th>
+    	<a href="lecture_slides/UtilityTheoryForRisk.pdf">Understanding Risk-Aversion through Utility Theory</a>(as a pre-req to Application Problem 1)
+    </th>
+    <th>
+    	<ul>
+			<li>Optional (Related) Reading: <a href="lecture_slides/EfficientFrontier.pdf">A Terse Introduction to Efficient Frontier Mathematics</a></li>
+	    </ul>
+    </th>
+    <th>
+    	<ul>
+			<li>Work out (in LaTeX) the equations for Absolute/Relative Risk Premia for CARA/CRRA respectively</li>
+			<li>Write the solutions to Portfolio Applications covered in class with precise notation (in LaTeX)</li> 
+		</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 25</th>
+    <th>
+    	<a href="lecture_slides/MertonPortfolio.pdf">Application Problem 1 - Optimal Asset Allocation/Consumption (Merton's 1969 Portfolio Problem)</a>
+    </th>
+    <th>
+    	<ul>
+			<li>Optional Review: <a href="lecture_slides/StochasticCalculusFoundations.pdf">Stochastic Calculus Foundations</a> (used in setting up HJB)</li>
+		        <li>Reference: <a href="https://arxiv.org/pdf/1706.10059.pdf">A paper on <em>A Deep RL Framework for Optimal Asset Allocation</em></a></li>
+		        <li><a href="lecture_slides/DiscreteVSContinuous.pdf">Some (rough) pointers on Discrete versus Continuous MDPs, and solution techniques</a></li>
+		</ul>
+    </th>
+    <th>
+    	<ul>
+			<li>Model Merton's Portfolio problem as an MDP (write the model in LaTeX)</li>
+			<li>Implement this MDP model in code</li>
+			<li>Try recovering the closed-form solution with a DP algorithm that you implemented previously</li>
+	                <li>Model a real-world Portfolio Allocation+Consumption problem as an MDP (including real-world frictions and constraints)</li>
+			<li><a href="lecture_slides/OptimalAssetAllocationDiscrete.pdf">Exam Practice Problem: Optimal Asset Allocation in Discrete Time</a> (<a href="lecture_slides/OptimalAssetAllocationDiscreteSolution.pdf">Solution</a>)</li>
+		</ul>
+    </th>
+  </tr>
+  <tr>
+    <th>January 30</th>
+    <th>
+    	<a href="lecture_slides/AmericanOptionsRL.pdf">Application Problem 2 - Optimal Exercise of American Options</a>
+    </th>
+    <th>
+    	<ul>
+		    <li>Reference: <a href="https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf">Longstaff-Schwartz paper on Pricing American Options (industry-standard approach)</a></li>
+		    <li>Reference: <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">A paper on <em>RL for Optimal Exercise of American Options</em></a> </li>
+    	</ul>
+    </th>
+    <th>
+     <ul>
+		    <li>Implement Black-Scholes formulas for European Call/Put Pricing</li>
+		    <li>Implement standard binary tree/grid-based numerical algorithm for American Option Pricing and ensure it validates against Black-Scholes formula for Europeans</li>
+		    <li>Implement Longstaff-Schwartz Algorithm and ensure it validates against binary tree/grid-based solution for path-independent options</li>
+		    <li>Explore/Discuss an Approximate Dynamic Programming solution as an alternative to Longstaff-Schwartz Algorithm</li>
+     </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>February 1</th>
+    <th>
+    	<a href="lecture_slides/OrderExecution.pdf">Application Problem 3 - Optimal Trade Order Execution</a>
+    </th>
+    <th>
+	    <ul>
+		    <li>Reference: <a href="http://alo.mit.edu/wp-content/uploads/2015/06/Optimal-Control-of-Execution-Costs.pdf">Bertsimas-Lo paper on Optimal Trade Order Execution</a> </li>
+		    <li>Reference: <a href="https://pdfs.semanticscholar.org/3d2d/773983c5201b58586af463f045befae5bbf2.pdf">Almgren-Chriss paper on Risk-Adjusted Optimal Trade Order Execution</a> </li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+	    <li>Work out (in LaTeX) the solution to the Linear Impact model we covered in class</li>
+	    <li>Model a real-world Optimal Trade Order Execution problem as an MDP (with complete order book included in the State)</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>February 6</th>
+    <th>
+    	 <a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free (RL) Prediction With Monte Carlo and Temporal Difference</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's corresponding video (youtube) on Model-free Prediction</a></li>
+	    <li>Monte-Carlo and TD (Model-Free) Prediction sections from Sutton-Barto textbook (pages 91-95, 119-128)</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Write code for the interface for tabular RL algorithms. The core of this interface should be a mapping from a (state, action) pair
+			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
+			    or the reward model.</li>
+		    <li>Implement any tabular Monte-Carlo algorithm for Value Function prediction</li>
+		    <li>Implement tabular 1-step TD algorithm for Value Function prediction</li>
+		    <li>Test the above implementation of Monte-Carlo and TD Value Function prediction algorithms versus DP Policy Evaluation algorithm on an example MDP</li>
+		    <li>Prove that fixed learning rate (step size alpha) for MC is equivalent to an exponentially decaying average of episode returns</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>February 8</th>
+    <th colspan="3"><a href="lecture_slides/midterm.pdf">Midterm Exam</a> (<a href="lecture_slides/midterm-solutions.pdf">Solutions</a>)</th>
+  </tr>
+  <tr>
+    <th>February 13</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/MC-TD.pdf">Model-free (RL) Prediction with Eligibility Traces (TD(Lambda))</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's corresponding video (youtube) on Model-free Prediction</a></li>
+	    <li>n-Step TD section of Sutton-Barto textbook (pages 141-145)</li>
+            <li>Optional: TD(Lambda) and Eligibility Traces-based Prediction is covered on pages 287-297, but this treatment is for the more general case of function approximation of Value Function (we've only covered tabular RL algorithms so far).</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Implement Forward-View TD(Lambda) algorithm for Value Function Prediction</li>
+		    <li>Implement Backward View TD(Lambda), i.e., Eligibility Traces algorithm for Value Function Prediction</li>
+		    <li>Implement these algorithms as offline or online algorithms (offline means updates happen only after a full simulation trace, online means updates happen at every time step)</li>
+		    <li>Test these algorithms on some example MDPs, compare them versus DP Policy Evaluation, and plot their accuracy as a function of Lambda</li>
+		    <li>Prove that Offline Forward-View TD(Lambda) and Offline Backward View TD(Lambda) are equivalent. We covered the proof of Lambda = 1 in class. Do the proof for arbitrary Lambda (similar telescoping argument as done in class) for the case where a state appears only once in an episode.</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>February 15</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/control.pdf">Model-free Control (RL for Optimal Value Function/Policy)</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=0g4j2k_Ggc4&t=2713s">David Silver's corresponding video (youtube) on Model-free Control</a></li>
+	    <li>MC and TD-based Control sections of Sutton-Barto textbook (pages 96-111, 129-134, 146-149)</li>
+	    <li>Optional: SARSA(Lambda) is covered on pages 303-307, but this treatment is for the more general case of function approximation of Value Function (we've only covered tabular RL algorithms so far)</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Prove the Epsilon-Greedy Policy Improvement Theorem (we sketched the proof in Class)</li>
+		    <li>Provide (with clear mathematical notation) the defintion of GLIE (Greedy in the Limit with Infinite Exploration)</li>
+		    <li>Implement the tabular SARSA and tabular SARSA(Lambda) algorithms</li>
+		    <li>Implement the tabular Q-Learning algorithm</li>
+		    <li>Test the above algorithms on some example MDPs by using DP Policy Iteration/Value Iteration solutions as a benchmark</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>February 20 and 22</th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/FA.pdf">RL with Function Approximation (including Deep RL and Batch Methods)</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=UoPei5o4fps&t=2120s">David Silver's corresponding video (youtube) on RL with Function Approximation</a></li>
+	    <li>Function Approximation sections of Sutton-Barto textbook (pages 197-210, 222-230, 243-248)</li>
+	    <li>Optional: <a href="https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf">Original DQN paper</a> and <a href="https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf">Nature DQN paper</a></li>
+	    <li>Optional: <a href="http://www.jmlr.org/papers/volume4/lagoudakis03a/lagoudakis03a.pdf">Lagoudakis-Parr paper on Least Squares Policy Iteration (LSPI)</a></li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Write code for the interface for RL algorithms with value function approximation. The core of this interface should be a function from a (state, action) pair
+			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
+			    or the reward model.</li>
+		    <li>Implement any Monte-Carlo Prediction algorithm with Value Function approximation</li>
+		    <li>Implement 1-step TD Prediction algorithm with Value Function approximation</li>
+		    <li>Implement Eligibility-Traces-based TD(lambda) Prediction algorithm with Value Function approximation</li>
+		    <li>Implement SARSA and SARSA(Lambda) with Value Function approximation</li>
+		    <li>Implement Q-Learning with Value Function approximation</li>
+		    <li>Optional: Implement LSTD and LSPI</li>
+		    <li>Test the above algorithms versus DP Policy Evaluation and DP Policy Iteration/Value Iteration algorithm on an example MDP</li>
+		    <li>Project Suggestion: Customize the LSPI algorithm for American Option Pricing (see <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">this paper</a>)</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>February 27 and March 1</th>
+    <th>
+    	<a href="lecture_slides/ValueFunctionGeometry.pdf">Value Function Geometry and Gradient TD</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>This week, aim to catch up on all the non-optional reading from previous weeks</li>
+	    <li>Optional: Those of you who have made more progress on reading can aim to do some of the Optional reading from previous weeks (eg: DQN paper and LSPI paper)</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+	    <li>This week, aim to catch up on the coding assignments from previous weeks. Aim to do the basic algorithms</li>
+	    <li>Those of you who have made more progress on coding can try implementing the more advanced algorithms in my suggested assignment work from previous weeks (eg: LSTD/LSPI)</li>
+	    <li>Write with proper notation, the derivations to solutions of Linear Systems for Bellman Error-minimization and Projected Bellman Error-minimization (lecture slides have the derivation, but aim to do it yourself)</li>
+	    <li>Optional: Write with proper notation, the derivation of Gradient TD (the last two slides of the lecture have the derivation, but aim to do it yourself)</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>March 6</th>
+    <th>
+    	<a href="lecture_slides/PolicyGradient.pdf">Policy Gradient Algorithms</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=KHZVXao4qXs&t=1s">David Silver's corresponding video (youtube) on Policy Gradient Algorithms</a></li>
+	    <li>Policy Gradient chapter of Sutton-Barto textbook (pages 321-332, 335-336)</li>
+	    <li>Optional: <a href="https://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf">Original Paper on Policy Gradient</a></li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Write Proof (with precise notation) of the Policy Gradient Theorem</li>
+		    <li>Derive the score function for softmax policy (for finite set of actions)</li>
+		    <li>Derive the score function for gaussian policy (for continuous actions)</li>
+		    <li>Write code for the REINFORCE Algoithm (Monte-Carlo Policy Gradient Algorithm, i.e., no Critic)</li>
+		    <li>Optional: Write code for Actor-Critic Policy Gradient Algorithms (with TD(0) and with Eligiblity-Traces-based TD(Lambda))</li>
+		    <li>Write Proof (with proper notation) of the Compatible Function Approximation Theorem</li>
+		    <li>Optional: Write code for Natural Policy Gradient Algorithm based on Compatible Linear Function Appeoximation for Critic</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+    <th>March 8</th>
+    <th>
+	    <a href="lecture_slides/david_silver_slides/dyna.pdf">Integrating Learning and Planning</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=ItMutbeOHtc">David Silver's corresponding video (youtube) on Integrating Learning and Planning</a></li>
+	    <li>Chapter of Sutton-Barto textbook on Integrating Learning and Planning (pages 159-188)</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Aim to catch up on the coding assignment of trying to solve the finance problem of your choice with an RL Algorithm</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+  <tr>
+    <th>March 13</th>
+    <th>
+	    <a href="lecture_slides/david_silver_slides/XX.pdf">Exploration versus Exploitation</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=sGuiWX07sKw&t=4570s">David Silver's corresponding video (youtube) on Exploration versus Exploitation</a></li>
+	    <li>Chapter of Sutton-Barto textbook on Multi-Armed Bandits (pages 25-41)</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Aim to catch up on the coding assignment of trying to solve the finance problem of your choice with an RL Algorithm</li>
+	    </ul>
+    </th>
+  </tr>
+  <tr>
+  <tr>
+    <th>March 15</th>
+    <th>
+	    <a href="lecture_slides/RetailAI.pdf">Case Study on Planning, Control and Pricing in Real-World Retail Industry</a>
+    </th>
+    <th>
+	    <ul>
+		    <li>Review all of the course material to prepare for the Final Exam</li>
+	    </ul>
+    </th>
+    <th>
+	    <ul>
+		    <li>Upload all of your assignment work on the github account you had created at the start of the course</li>
+		    <li>Inform the Course Assistant that you have uploaded all of your work</li>
+		    <li>Ensure that all of your assignment work can be accessed by the Course Assistant at github.com (make sure you have pushed and not just commited)</li>
+	    </ul>
+    </th>
+  </tr>
+    <th>March 22 (3:30pm-6:30pm in <a href="https://campus-map.stanford.edu/?srch=200-203">Bldg 200 (Lane History Corner), Room 203</a>
+ )</th>
+    <th colspan="3"><a href="lecture_slides/final.pdf">Final Exam</a> (<a href="lecture_slides/final-solutions.pdf">Solutions</a>)</th>
+  </tr>
+</table>
+<h2>Purpose and Grading of Assignments</h2>
+<ul>
+	<li>Assignments are not to be treated as "tests/exams" with a right/wrong answer</li>
+	<li>Rather, they should be treated as part of your learning experience</li>
+	<li>You will TRULY understand ideas/models/algorithms only when you WRITE down the Mathematics and the Code precisely</li>
+	<li>In other words, simply reading the Mathematics or the Code gives you a false sense of understanding things</li>
+	<li>Take the initiative to make up your own assignments, especially on topics you feel you don't quite understand</li>
+	<li>Individual assignments won't get a grade and there are no due dates for the assignments</li>
+	<li>Rather, the entire body of assignments work throughout the course will be graded (upload regularly on your course git repo)</li>
+	<li>It will be graded less on correctness and completeness, and more on:
+		<ul>
+			<li>Coding and Technical Writing style that is clear and modular</li>
+			<li>Demonstration of curiosity and commitment to learning through the overall body of assignments work</li>
+			<li>Extent of engagement in asking questions and seeking feedback for improvements</li>
+		</ul>
+	</li>
+</ul>
+</body>
+</html>
