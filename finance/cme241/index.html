@@ -89,7 +89,7 @@ th.date {
 			<ul>
 				<li>Write out the MP/MRP definitions and MRP Value Function definition (in LaTeX) in your own style/notation (so you really internalize these concepts)</li>
 				<li>Think about the data structures/class design (in Python 3) to represent MP/MRP and implement them with clear type declarations</li>
-				<li>Remember your data structure/code design must resemble the Mathematical/notational formalism as much as possible</li>
+				<li>Remember - your data structure/code design must resemble the Mathematical/notational formalism as much as possible</li>
 				<li>Specifically the data structure/code design of MRP should be incremental (and not independent) to that of MP
 				<li>Separately implement the r(s,s') and the R(s) = \sum_{s'} p(s,s') * r(s,s') definitions of MRP</li>
 				<li>Write code to convert/cast the r(s,s') definition of MRP to the R(s) definition of MRP (put some thought into code design here)</li>
@@ -114,7 +114,7 @@ th.date {
 		<li>Write the Bellman equation for MRP Value Function and code to calculate MRP Value Function (based on Matrix inversion method you learnt in this lecture)</li>
 		<li>Write out the MDP definition, Policy definition and MDP Value Function definition (in LaTeX) in your own style/notation (so you really internalize these concepts)</li>
 		<li>Think about the data structure/class design (in Python 3) to represent MDP, Policy, Value Function, and implement them with clear type definitions</li>
-		<li>The data struucture/code design of MDP should be incremental (and not independent) to that of MRP</li>
+		<li>The data structure/code design of MDP should be incremental (and not independent) to that of MRP</li>
 		<li>Separately implement the r(s,s',a) and R(s,a) = \sum_{s'} p(s,s',a) * r(s,s',a) definitions of MDP</li>
 		<li>Write code to convert/cast the r(s,s',a) definition of MDP to the R(s,a) definition of MDP (put some thought into code design here)</li>
 		<li>Write code to create a MRP given a MDP and a Policy</li>
@@ -136,12 +136,6 @@ th.date {
 	</ul>
     </th>
     <th>
-        <ul>
-    	        <li>Write code for Policy Evaluation (tabular) algorithm</li>
-    	        <li>Write code for Policy Iteration (tabular) algorithm</li>
-    	        <li>Write code for Value Iteration (tabular) algorithm</li>
-    	        <li>Those familiar with function approximation (deep networks, or simply linear in featues) can try writing code for the above algorithms with function approximation (a.k.a. Approximate DP)</li>
-        </ul>
     </th>
   </tr>
   <tr>
@@ -155,10 +149,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-    	<ul>
-			<li>Work out (in LaTeX) the equations for Absolute/Relative Risk Premia for CARA/CRRA respectively</li>
-			<li>Write the solutions to Portfolio Applications covered in class with precise notation (in LaTeX)</li> 
-		</ul>
     </th>
   </tr>
   <tr>
@@ -174,13 +164,6 @@ th.date {
 		</ul>
     </th>
     <th>
-    	<ul>
-			<li>Model Merton's Portfolio problem as an MDP (write the model in LaTeX)</li>
-			<li>Implement this MDP model in code</li>
-			<li>Try recovering the closed-form solution with a DP algorithm that you implemented previously</li>
-	                <li>Model a real-world Portfolio Allocation+Consumption problem as an MDP (including real-world frictions and constraints)</li>
-			<li><a href="lecture_slides/OptimalAssetAllocationDiscrete.pdf">Exam Practice Problem: Optimal Asset Allocation in Discrete Time</a> (<a href="lecture_slides/OptimalAssetAllocationDiscreteSolution.pdf">Solution</a>)</li>
-		</ul>
     </th>
   </tr>
   <tr>
@@ -199,12 +182,6 @@ th.date {
     	</ul>
     </th>
     <th>
-     <ul>
-		    <li>Implement Black-Scholes formulas for European Call/Put Pricing</li>
-		    <li>Implement standard binary tree/grid-based numerical algorithm for American Option Pricing and ensure it validates against Black-Scholes formula for Europeans</li>
-		    <li>Implement Longstaff-Schwartz Algorithm and ensure it validates against binary tree/grid-based solution for path-independent options</li>
-		    <li>Explore/Discuss an Approximate Dynamic Programming solution as an alternative to Longstaff-Schwartz Algorithm</li>
-     </ul>
     </th>
   </tr>
   <tr>
@@ -222,10 +199,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-	    <li>Work out (in LaTeX) the solution to the Linear Impact model we covered in class</li>
-	    <li>Model a real-world Optimal Trade Order Execution problem as an MDP (with complete order book included in the State)</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -240,15 +213,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-		    <li>Write code for the interface for tabular RL algorithms. The core of this interface should be a mapping from a (state, action) pair
-			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
-			    or the reward model.</li>
-		    <li>Implement any tabular Monte-Carlo algorithm for Value Function prediction</li>
-		    <li>Implement tabular 1-step TD algorithm for Value Function prediction</li>
-		    <li>Test the above implementation of Monte-Carlo and TD Value Function prediction algorithms versus DP Policy Evaluation algorithm on an example MDP</li>
-		    <li>Prove that fixed learning rate (step size alpha) for MC is equivalent to an exponentially decaying average of episode returns</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -268,13 +232,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-		    <li>Implement Forward-View TD(Lambda) algorithm for Value Function Prediction</li>
-		    <li>Implement Backward View TD(Lambda), i.e., Eligibility Traces algorithm for Value Function Prediction</li>
-		    <li>Implement these algorithms as offline or online algorithms (offline means updates happen only after a full simulation trace, online means updates happen at every time step)</li>
-		    <li>Test these algorithms on some example MDPs, compare them versus DP Policy Evaluation, and plot their accuracy as a function of Lambda</li>
-		    <li>Prove that Offline Forward-View TD(Lambda) and Offline Backward View TD(Lambda) are equivalent. We covered the proof of Lambda = 1 in class. Do the proof for arbitrary Lambda (similar telescoping argument as done in class) for the case where a state appears only once in an episode.</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -290,13 +247,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-		    <li>Prove the Epsilon-Greedy Policy Improvement Theorem (we sketched the proof in Class)</li>
-		    <li>Provide (with clear mathematical notation) the defintion of GLIE (Greedy in the Limit with Infinite Exploration)</li>
-		    <li>Implement the tabular SARSA and tabular SARSA(Lambda) algorithms</li>
-		    <li>Implement the tabular Q-Learning algorithm</li>
-		    <li>Test the above algorithms on some example MDPs by using DP Policy Iteration/Value Iteration solutions as a benchmark</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -313,19 +263,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-		    <li>Write code for the interface for RL algorithms with value function approximation. The core of this interface should be a function from a (state, action) pair
-			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
-			    or the reward model.</li>
-		    <li>Implement any Monte-Carlo Prediction algorithm with Value Function approximation</li>
-		    <li>Implement 1-step TD Prediction algorithm with Value Function approximation</li>
-		    <li>Implement Eligibility-Traces-based TD(lambda) Prediction algorithm with Value Function approximation</li>
-		    <li>Implement SARSA and SARSA(Lambda) with Value Function approximation</li>
-		    <li>Implement Q-Learning with Value Function approximation</li>
-		    <li>Optional: Implement LSTD and LSPI</li>
-		    <li>Test the above algorithms versus DP Policy Evaluation and DP Policy Iteration/Value Iteration algorithm on an example MDP</li>
-		    <li>Project Suggestion: Customize the LSPI algorithm for American Option Pricing (see <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">this paper</a>)</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -334,18 +271,8 @@ th.date {
     	<a href="lecture_slides/ValueFunctionGeometry.pdf">Value Function Geometry and Gradient TD</a>
     </th>
     <th>
-	    <ul>
-	    <li>This week, aim to catch up on all the non-optional reading from previous weeks</li>
-	    <li>Optional: Those of you who have made more progress on reading can aim to do some of the Optional reading from previous weeks (eg: DQN paper and LSPI paper)</li>
-	    </ul>
     </th>
     <th>
-	    <ul>
-	    <li>This week, aim to catch up on the coding assignments from previous weeks. Aim to do the basic algorithms</li>
-	    <li>Those of you who have made more progress on coding can try implementing the more advanced algorithms in my suggested assignment work from previous weeks (eg: LSTD/LSPI)</li>
-	    <li>Write with proper notation, the derivations to solutions of Linear Systems for Bellman Error-minimization and Projected Bellman Error-minimization (lecture slides have the derivation, but aim to do it yourself)</li>
-	    <li>Optional: Write with proper notation, the derivation of Gradient TD (the last two slides of the lecture have the derivation, but aim to do it yourself)</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -361,15 +288,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-		    <li>Write Proof (with precise notation) of the Policy Gradient Theorem</li>
-		    <li>Derive the score function for softmax policy (for finite set of actions)</li>
-		    <li>Derive the score function for gaussian policy (for continuous actions)</li>
-		    <li>Write code for the REINFORCE Algoithm (Monte-Carlo Policy Gradient Algorithm, i.e., no Critic)</li>
-		    <li>Optional: Write code for Actor-Critic Policy Gradient Algorithms (with TD(0) and with Eligiblity-Traces-based TD(Lambda))</li>
-		    <li>Write Proof (with proper notation) of the Compatible Function Approximation Theorem</li>
-		    <li>Optional: Write code for Natural Policy Gradient Algorithm based on Compatible Linear Function Appeoximation for Critic</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -384,9 +302,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-		    <li>Aim to catch up on the coding assignment of trying to solve the finance problem of your choice with an RL Algorithm</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -402,9 +317,6 @@ th.date {
 	    </ul>
     </th>
     <th>
-	    <ul>
-		    <li>Aim to catch up on the coding assignment of trying to solve the finance problem of your choice with an RL Algorithm</li>
-	    </ul>
     </th>
   </tr>
   <tr>
@@ -417,7 +329,6 @@ th.date {
 	    <ul>
 		    <li>Reference: <a href="https://pdfs.semanticscholar.org/a378/b2895a3e3f6a19cdff1a0ad404b301b5545f.pdf">Chang, Fu, Hu, Marcus paper on Adapative Multistage Sampling</a></li>
 		    <li>Reference: <a href="https://arxiv.org/pdf/1703.03864.pdf">OpenAI Research paper on Evolutionary Strategies as an Alternative to RL</a></li>
-		    <li>Review all of the course material to prepare for the Final Exam</li>
 	    </ul>
     </th>
     <th>
