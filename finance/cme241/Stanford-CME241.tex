@@ -360,7 +360,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item In the Language of A.I, DP is a type of {\em Planning Algorithm}
 \item When Probabilities Model unknown $\Rightarrow$ {\em Reinforcement Learning} (RL)
 \item RL Algorithms interact with the Environment and incrementally learn
-\item Environment interaction could be real interaction or a simulator
+\item Environment interaction could be {\em real} or {\em simulated} interaction
 \item RL approach: Try different actions \& learn what works, what doesn't
 \item RL Algorithms' key challenge is to tradeoff ``explore'' versus ``exploit''
 \item DP or RL, Good approximation of Value Function is vital to success
@@ -374,8 +374,9 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \pause
 \begin{itemize}[<+->]
 \item RL solves MDP problem when {\em Environment Probabilities} are unknown
-\item RL interacts with {\em Actual Environment} or with {\em Environment Simulator}
-\item The above two situations are typical in real-world problems
+\item This is typical in real-world problems (complex/unknown probabilities)
+\item RL interacts with {\em Actual Environment} or with {\em Simulated Environment}
+
 \item {\bf Promise of modern A.I. is based on success of RL algorithms}
 \item Potential for automated decision-making in many industries
 \item In 10-20 years: Bots that act or behave more optimal than humans
