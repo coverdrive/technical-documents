@@ -354,11 +354,11 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \frametitle{Dynamic Programming versus Reinforcement Learning}
 \pause
 \begin{itemize}[<+->]
-\item When Model is known $\Rightarrow$ {\em Dynamic Programming} (DP)
+\item When Probabilities Model is known $\Rightarrow$ {\em Dynamic Programming} (DP)
 \item DP Algorithms take advantage of knowledge of probabilities
 \item So, DP Algorithms do not require interaction with the environment
-\item Model-based/DP algorithms often refered to as {\em Planning Algorithms}
-\item When Model is unknown $\Rightarrow$ {\em Reinforcement Learning} (RL)
+\item These algorithms are often refered to as {\em Planning Algorithms}
+\item When Probabilities Model unknown $\Rightarrow$ {\em Reinforcement Learning} (RL)
 \item RL Algorithms interact with the Environment and incrementally learn
 \item Environment interaction could be real interaction or a simulator
 \item RL approach: Try different actions \& learn what works, what doesn't
@@ -373,15 +373,15 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \frametitle{Why is RL interesting/useful to learn about?}
 \pause
 \begin{itemize}[<+->]
-\item RL solves MDP problem when {\em Environment Model} is unknown
-\item Or when only an {\em Environment Simulator} is available
+\item RL solves MDP problem when {\em Environment Probabilities} are unknown
+\item RL interacts with {\em Actual Environment} or with {\em Environment Simulator}
 \item The above two situations are typical in real-world problems
 \item {\bf Promise of modern A.I. is based on success of RL algorithms}
 \item Potential for automated decision-making in many industries
 \item In 10-20 years: Bots that act or behave more optimal than humans
 \item RL already solves various low-complexity real-world problems
 \item RL might soon be the most-desired skill in the technical job-market
-\item Possibilities in Finance are endless (we cover 3 important problems)
+\item Possibilities in Finance are endless (we cover 5 important problems)
 \item Learning RL is a lot of fun! (interesting in theory as well as coding)
 \end{itemize}
 \end{frame}
@@ -425,7 +425,8 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \begin{itemize}[<+->]
 \item You can invest in (allocate wealth to) a collection of assets
 \item Investment horizon is a fixed length of time
-\item Each risky asset has an unknown distribution of returns
+\item Each risky asset characterized by a probability distribution of returns
+\item Periodically, you are re-allocate your wealth to the various assets
 \item Transaction Costs \& Constraints on trading hours/quantities/shorting
 \item Allowed to consume a fraction of your wealth at specific times
 \item Dynamic Decision: Time-Sequenced Allocation \& Consumption
@@ -453,12 +454,13 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \frametitle{Derivatives Pricing and Hedging in an Incomplete Market}
 \pause
 \begin{itemize}[<+->]
-\item Classical Pricing/Hedging Theory assumes frictionless market
-\item It also assumes \href{https://github.com/coverdrive/technical-documents/blob/master/finance/ArbitrageCompleteness.pdf}{\underline{\textcolor{blue}{arbitrage-free and complete market}}}
-\item These assumptions allow for perfect replication of derivatives
-\item But real markets are incomplete where classical theory doesn't fit
+\item Classical Pricing/Hedging Theory assumes ``frictionless market''
+\item Technically, refered to as \href{https://github.com/coverdrive/technical-documents/blob/master/finance/ArbitrageCompleteness.pdf}{\underline{\textcolor{blue}{arbitrage-free and complete market}}}
+\item {\em Complete market} means derivatives can be perfectly replicated
+\item But real world has transaction costs and trading constraints
+\item So real markets are incomplete where classical theory doesn't fit
 \item In an incomplete market, we need to ``choose'' a risk-neutral measure
-\item Which amounts of specifying a Utility function
+\item This amounts to specifying a Utility function
 \item Maximizing ``risk-adjusted-return'' of the derivative plus hedges
 \item Similar to Asset Allocation, this is a stochastic control problem
 \item Deep Reinforcement Learning helps solve when framed as an MDP 
