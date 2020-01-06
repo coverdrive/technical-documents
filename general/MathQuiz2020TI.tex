@@ -1,0 +1,178 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[handout]{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\usetikzlibrary{positioning}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Mathematics Quiz]{Annual Mathematics Quiz 2020} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Hosts: Ajay Nerurkar \& Ashwin Rao} % Your name
+\institute[Target India] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Target India
+ % Your institution for the title page
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Rules of the Quiz}
+\pause
+\begin{itemize}[<+->]
+\item The Quiz has 6 problems with a single problem presented at a time
+\item You will be given 12 minutes (720 seconds) to solve each problem 
+\item Wrong answer or submission after 12 minutes fetches 0 points
+\item Points for correct answer : $15 - \frac S {72}$ where $S$ is {\em Time Taken} in seconds
+\item {\em Time Taken} is recorded as the time at which the designated host receives the answer on Slack
+\item You can make multiple submissions, only the last submission will be considered
+\item You cannot use a browser/google/wiki/calculator etc. or write any code for the duration of the Quiz (blank sheets and pens are provided)
+\item Along with math skills, take Strategic Risks with speed of submission
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Problem 1}
+What is the remainder when $2^{123456789}$ is divided by 11?
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Problem 2}
+You have to send 100 letters to 100 distinct people, all of whose addresses you have. So you prepare 100 envelopes with the 100 unique addresses. However, accidentally, you randomly put the letters in the envelopes. What is the expected number of recipients who get the letter intended for them?
+\end{frame}
+
+\begin{frame}
+\frametitle{Problem 3}
+If $c = a+b$ and the diagnonal of this square is $a+c$, what is the angle marked as ``?''
+\includegraphics[width=11cm, height=6cm]{./square.jpg}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Problem 4}
+%\begin{itemize}
+%\item Time Allowed: 600 seconds
+%\item Points for correct answer $=20 - \frac S {60}$
+%\item What is the value of $\alpha$ that minimizes
+%$$\mathbb{E}_x[e^{-\alpha x}]$$ where $x$ follows a normal distribution with mean 8 and variance 4, i.e.,
+%$$x \sim \mathcal{N}(8, 4)$$
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}
+\frametitle{Problem 4}
+What is the integer closest to $100*(12 - \sqrt{143})$?
+\end{frame}
+
+\begin{frame}
+\frametitle{Problem 5}
+If $\frac n {810} = 0.d25d25d25 \ldots \ldots$ where $n$ is an integer and $d$ is a digit, what is the value of $n$?
+\end{frame}
+
+%\begin{frame}
+% \frametitle{Problem 6}
+%In a small pond, there are 6 lily pads in a row labeled $0$ through $5$. A frog is sitting on pad $1$. When the frog is on pad $N$ (for $1\leq N \leq 4$), it will jump to pad $N-1$ with probability $\frac{N}{5}$ and to pad $N+1$ with probability $1-\frac{N}{5}$. Each jump is independent of the previous jumps. If the frog reaches pad $0$ it will be eaten by a snake. If the frog reaches pad $5$ it will escape the pond, never to return. What is the probability that the frog will escape before being eaten by the snake?
+%\end{frame}
+
+\begin{frame}
+\frametitle{Problem 6}
+$$f_0(x) = \frac 1 {1-x}$$
+$$f_n(x) = f_0(f_{n-1}(x)) \mbox{ for all } n \geq 1$$
+$$\mbox{What is } f_{2020}(2020) \mbox{ ?}$$
+Note: The answer is a rational number (to be submitted as $\frac p q)$
+\end{frame}
+
+
+\end{document}
