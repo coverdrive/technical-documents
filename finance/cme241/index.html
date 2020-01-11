@@ -88,51 +88,34 @@ th.assignments {
   </tr>
   <tr>
     <th>January 10</th>
-    <th><a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Processes (MP) and Markov Reward Processes (MRP)</a></th>
+    <th>
+    	<a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Decision Processes (MDP), Value Function, and Bellman Equations</a>
+    </th>
     <th>
     	<ul>
 		<li>Optional: <a href="https://www.youtube.com/watch?v=lfHX2hHRMVQ">David Silver's corresponding video (on youtube) on MPs/MRPs/MDPs</a></li>
+		<li>Third (MDP) chapter of Sutton-Barto book (pages 47-67)</li>
+		<li>Optional: <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Rich Sutton's corresponding slides on MDPs</a></li>
+		<li><a href="lecture_slides/mdp_mrp_commute.pdf">Two ways of arriving at the identical MRP from an MDPRefined (r(s,s',a) definition)</a></li>
 	</ul>
     </th>
     <th>
 			<ul>
-				<li>Write out the MP/MRP definitions and MRP Value Function definition (in LaTeX) in your own style/notation (so you really internalize these concepts)</li>
-				<li>Think about the data structures/class design (in Python 3) to represent MP/MRP and implement them with clear type declarations</li>
+				<li>Write out the MP/MRP/MDP/Policy definitions and MRP/MDP Value Function definitions in your own style/notation (so you really internalize these concepts)</li>
+				<li>Think about the data structures/class design to represent MP/MRP/MDP/Policy/Value Functions and implement them with clear type declarations</li>
 				<li>Remember - your data structure/code design must resemble the Mathematical/notational formalism as much as possible</li>
-				<li>Specifically the data structure/code design of MRP should be incremental (and not independent) to that of MP
+				<li>Specifically the data structure/code design of MRP/MDP should be incremental (and not independent) to that of MP/MRP
 				<li>Separately implement the r(s,s') and the R(s) = \sum_{s'} p(s,s') * r(s,s') definitions of MRP</li>
 				<li>Write code to convert/cast the r(s,s') definition of MRP to the R(s) definition of MRP (put some thought into code design here)</li>
+		<li>Write code to create a MRP given a MDP and a Policy</li>
+		<li>Write out the MDP/MRP Bellman Equations</li>
+		<li>Write code to calculate MRP Value Function (based on Matrix inversion method you learnt in this lecture)
 				<li>Write code to generate the stationary distribution for an MP</li>
 			</ul>
     </th>
   </tr>
   <tr>
     <th>January 15</th>
-    <th>
-    	<a href="lecture_slides/david_silver_slides/MDP.pdf">Markov Decision Processes (MDP), Value Function, and Bellman Equations</a>
-    </th>
-    <th>
-	    <ul>	
-		<li>Third (MDP) chapter of Sutton-Barto book (pages 47-67)</li>
-		<li>Optional: <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Rich Sutton's corresponding slides on MDPs</a></li>
-		<li><a href="lecture_slides/mdp_mrp_commute.pdf">Two ways of arriving at the identical MRP from an MDPRefined (r(s,s',a) definition)</a></li>
-	    </ul>
-    </th>
-    <th>
-    	<ul>
-		<li>Write the Bellman equation for MRP Value Function and code to calculate MRP Value Function (based on Matrix inversion method you learnt in this lecture)</li>
-		<li>Write out the MDP definition, Policy definition and MDP Value Function definition (in LaTeX) in your own style/notation (so you really internalize these concepts)</li>
-		<li>Think about the data structure/class design (in Python 3) to represent MDP, Policy, Value Function, and implement them with clear type definitions</li>
-		<li>The data structure/code design of MDP should be incremental (and not independent) to that of MRP</li>
-		<li>Separately implement the r(s,s',a) and R(s,a) = \sum_{s'} p(s,s',a) * r(s,s',a) definitions of MDP</li>
-		<li>Write code to convert/cast the r(s,s',a) definition of MDP to the R(s,a) definition of MDP (put some thought into code design here)</li>
-		<li>Write code to create a MRP given a MDP and a Policy</li>
-		<li>Write out all 8 MDP Bellman Equations and also the transformation from Optimal Action-Value function to Optimal Policy (in LaTeX)</li>
-		</ul>
-    </th>
-  </tr>
-  <tr>
-    <th>January 17</th>
     <th>
     	<a href="lecture_slides/david_silver_slides/DP.pdf">Dynamic Programming Algorithms</a>
     </th>
@@ -145,11 +128,16 @@ th.assignments {
 	</ul>
     </th>
     <th>
-	    Further assignment suggestions will show up here as the course progresses ...
+	    <ul>
+    	        <li>Write code for Policy Evaluation (tabular) algorithm</li>
+    	        <li>Write code for Policy Iteration (tabular) algorithm</li>
+    	        <li>Write code for Value Iteration (tabular) algorithm</li>
+    	        <li>Those familiar with function approximation (deep networks, or simply linear in featues) can try writing code for the above algorithms with function approximation (a.k.a. Approximate DP)</li>
+	    </ul>
     </th>
   </tr>
   <tr>
-    <th>January 22</th>
+    <th>January 17</th>
     <th>
     	<a href="lecture_slides/UtilityTheoryForRisk.pdf">Understanding Risk-Aversion through Utility Theory</a> (as a pre-req for Finance Applications)
     </th>
@@ -159,10 +147,11 @@ th.assignments {
 	    </ul>
     </th>
     <th>
+	    Further assignment suggestions will show up here as the course progresses ...
     </th>
   </tr>
   <tr>
-    <th>January 24</th>
+    <th>January 22</th>
     <th>
     	<a href="lecture_slides/MertonPortfolio.pdf">Application Problem 1 - Optimal Asset Allocation/Consumption (Merton's 1969 Portfolio Problem)</a>
     </th>
@@ -177,7 +166,7 @@ th.assignments {
     </th>
   </tr>
   <tr>
-    <th>January 29</th>
+    <th>January 24</th>
     <th>
 	<a href="lecture_slides/DeepHedging.pdf">Application Problem 2 - Pricing and Hedging of Derivatives in Incomplete Markets</a>
  and 
@@ -195,16 +184,25 @@ th.assignments {
     </th>
   </tr>
   <tr>
-    <th>Januuary 31</th>
+    <th>Januuary 29</th>
     <th>
     	<a href="lecture_slides/OrderExecution.pdf">Application Problem 4 - Optimal Trade Order Execution</a>
-	and
-    	<a href="lecture_slides/MarketMaking.pdf">Application Problem 5 - Optimal Market-Making</a>
     </th>
     <th>
 	    <ul>
 		    <li>Reference: <a href="http://alo.mit.edu/wp-content/uploads/2015/06/Optimal-Control-of-Execution-Costs.pdf">Bertsimas-Lo paper on Optimal Trade Order Execution</a> </li>
 		    <li>Reference: <a href="https://pdfs.semanticscholar.org/3d2d/773983c5201b58586af463f045befae5bbf2.pdf">Almgren-Chriss paper on Risk-Adjusted Optimal Trade Order Execution</a> </li>
+	    </ul>
+    </th>
+    <th>
+    </th>
+  </tr>
+    <th>Januuary 31</th>
+    <th>
+    	<a href="lecture_slides/MarketMaking.pdf">Application Problem 5 - Optimal Market-Making</a>
+    </th>
+    <th>
+	    <ul>
 		    <li>Reference: <a href="https://www.math.nyu.edu/faculty/avellane/HighFrequencyTrading.pdf">Avellaneda-Stoikov paper on Optimal Market-Making</a></li>
 	    </ul>
     </th>
