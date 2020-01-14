@@ -1,0 +1,67 @@
+
+\documentclass[12pt]{amsart}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amssymb,amsmath,amsthm}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\usepackage{mathtools} % Bonus
+\DeclarePairedDelimiter\norm\lVert\rVert
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+% See the ``Article customise'' template for come common customisations
+
+\title{Optimal Policy from Optimal Value Function}
+\author{Ashwin Rao (Stanford CME 241)}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+\maketitle
+Let us start with the definitions of Optimal Value Function and Optimal Policy (that we covered in the class on Markov Decision Processes).
+
+$$\mbox{Optimal State Value Function } V_*(s) = \max_{\pi} V_{\pi}(s)$$
+$$\mbox{Optimal Action Value Function } Q_*(s,a) = \max_{\pi} Q_{\pi}(s)$$
+$$\pi_* \mbox{ is an Optimal Policy if } V_{\pi_*}(s) \geq V_{\pi}(s) \mbox{ {\bf for all policies} } \pi \mbox{ and {\bf for all states} } s \in \mathcal{S}$$ 
+
+Let us go beyond these formal definitions and develop an intuitive (and deeper) understanding of the above definitions. The definition of $V_*$ says that for each state $s \in \mathcal{S}$, we go through all policies $\pi$ and pick out the policy that maximizes $V_{\pi}(s)$. Because this maximization is done independently for each state $s \in \mathcal{S}$, presumably we could end up with different policies $\pi$ that maximize $V_{\pi}(s)$ for different states. The definition of 
+Optimal Policy $\pi_*$ says that it is a policy that is ``better than or equal to'' (on the $V_{\pi}$ metric) all other policies {\bf for all} states (note that there could be multiple Optimal Policies). So the natural question to ask is whether there exists an Optimal Policy $\pi_*$ that maximizes $V_{\pi}(s)$  {\bf for all} states $s \in \mathcal{S}$, i.e., $V_*(s) = V_{\pi_*}(s)$ for all $s \in \mathcal{S}$. On the face of it, this seems like a strong statement. However, this answers in the affirmative. In fact,
+
+\begin{theorem}
+For any Markov Decision Process
+\begin{itemize}
+\item There exists an Optimal Policy $\pi_*$, i.e., there exists a Policy $\pi_*$ such that $V_{\pi_*}(s) \geq V_{\pi}(s) \mbox{ for all policies  } \pi \mbox{ and for all states } s \in \mathcal{S}$
+\item All Optimal Policies achieve the Optimal Value Function, i.e. $V_{\pi_*}(s) = V_*(s)$ for all $s \in \mathcal{S}$, for all Optimal Policies $\pi_*$
+\item All Optimal Policies achieve the Optimal Action-Value Function, i.e. $Q_{\pi_*}(s,a) = Q_*(s,a)$ for all $s \in \mathcal{S}$, for all $a \in \mathcal{A}$, for all Optimal Policies $\pi_*$
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+First we establish a simple Lemma.
+\begin{lemma}
+For any two Optimal Policies $\pi_1$ and $\pi_2$, $V_{\pi_1}(s) = V_{\pi_2}(s)$ for all $s \in \mathcal{S}$
+\end{lemma}
+\begin{proof}
+Since $\pi_1$ is an Optimal Policy, from Optimal Policy definition, we have: $V_{\pi_1}(s) \geq V_{\pi_2}(s)$ for all $s \in \mathcal{S}$.
+Likewise, since $\pi_2$ is an Optimal Policy, from Optimal Policy definition, we have: $V_{\pi_2}(s) \geq V_{\pi_1}(s)$ for all $s \in \mathcal{S}$.
+This implies: $V_{\pi_1}(s) = V_{\pi_2}(s)$ for all $s \in \mathcal{S}$
+\end{proof}
+
+As a consequence of this Lemma, all we need to do to prove the theorem is to establish an Optimal Policy $\pi_*$ that achieves the Optimal Value Function and the Optimal Action-Value Function. Consider the following Deterministic Policy (as a candidate Optimal Policy) $\pi_* : \mathcal{S} \rightarrow \mathcal{A}$:
+
+$$\pi_*(s) = \argmax_{a \in \mathcal{A}} Q_*(s,a) \mbox{ for all } s \in \mathcal{S}$$
+
+First we show that $\pi_*$ achieves the Optimal Value Function.  Since $\pi_*(s) = \argmax_{a \in \mathcal{A}} Q_*(s,a)$ and $V_*(s) = \max_{a \in \mathcal{A}} Q_*(s,a)$ for all $s \in \mathcal{S}$, $\pi_*$ prescribes the optimal action for each state (that produces the Optimal Value Function $V_*$). Hence, following policy $\pi_*$ in each state will generate the same Value Function as the Optimal Value Function. In other words, $V_{\pi_*}(s) = V_*(s)$ for all $s \in \mathcal{S}$. Likewise, we can argue that: $Q_{\pi_*}(s,a) = Q_*(s,a)$ for all $s \in \mathcal{S}$ and for all $a \in \mathcal{A}$.
+
+Finally, we prove by contradiction that $\pi_*$ is an Optimal Policy. So assume $\pi_*$ is not an Optimal Policy. Then there exists a policy $\pi$ and a state $s \in \mathcal{S}$ such that $V_{\pi}(s) > V_{\pi_*}(s)$. Since $V_{\pi_*}(s) = V_*(s)$, we have: $V_{\pi}(s) > V_*(s)$ which contradicts the definition of $V_*(s) = \max_{\pi} V_{\pi}(s)$
+
+\end{proof}
+
+\end{document}
