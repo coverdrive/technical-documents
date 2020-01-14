@@ -27,8 +27,8 @@
 \maketitle
 Let us start with the definitions of Optimal Value Function and Optimal Policy (that we covered in the class on Markov Decision Processes).
 
-$$\mbox{Optimal State Value Function } V_*(s) = \max_{\pi} V_{\pi}(s)$$
-$$\mbox{Optimal Action Value Function } Q_*(s,a) = \max_{\pi} Q_{\pi}(s)$$
+$$\mbox{Optimal State Value Function } V_*(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all states } s \in \mathcal{S}$$
+$$\mbox{Optimal Action-Value Function } Q_*(s,a) = \max_{\pi} Q_{\pi}(s,a) \mbox{ for all states } s \in \mathcal{S}, \mbox{ for all actions } a \in \mathcal{A}$$
 $$\pi_* \mbox{ is an Optimal Policy if } V_{\pi_*}(s) \geq V_{\pi}(s) \mbox{ {\bf for all policies} } \pi \mbox{ and {\bf for all states} } s \in \mathcal{S}$$ 
 
 Let us go beyond these formal definitions and develop an intuitive (and deeper) understanding of the above definitions. The definition of $V_*$ says that for each state $s \in \mathcal{S}$, we go through all policies $\pi$ and pick out the policy that maximizes $V_{\pi}(s)$. Because this maximization is done independently for each state $s \in \mathcal{S}$, presumably we could end up with different policies $\pi$ that maximize $V_{\pi}(s)$ for different states. The definition of 
