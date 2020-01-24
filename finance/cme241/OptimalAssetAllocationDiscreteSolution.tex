@@ -46,7 +46,7 @@ $$ = max_{x_t} (- \gamma \cdot b_{t+1} e^{-c_{t+1}W_t(1+r) - c_{t+1} x_t (\mu - 
 
 \item {\bf Since the right-hand-side of the Bellman Optimality Equation involves a $\max$ over $x_t$, we can say that the partial derivative of the term inside the $\max$ with respect to $x_t$ is 0. This enables us to write the Optimal Allocation $x_t^*$ in terms of $c_{t+1}$.}
 
-$$\frac {\partial V^*(t, W_t)} {\partial x_t} = 0 \Rightarrow -c_{t+1} (\mu - r) + \sigma^2 c_{t+1}^2 x^*_t = 0 \Rightarrow x^*_t = \frac {\mu - r} {\sigma^2 c_{t+1}}$$
+$$ -c_{t+1} (\mu - r) + \sigma^2 c_{t+1}^2 x^*_t = 0 \Rightarrow x^*_t = \frac {\mu - r} {\sigma^2 c_{t+1}}$$
 
 \item {\bf Substituting this maximizing $x_t^*$ in the Bellman Optimality Equation enables us to express $b_t$ and $c_t$ as recursive equations in terms of $b_{t+1}$ and $c_{t+1}$ respectively.}
 

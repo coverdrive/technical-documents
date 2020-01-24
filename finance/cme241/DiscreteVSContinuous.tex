@@ -152,15 +152,17 @@ ICME, Stanford University
 \end{frame}
 
 \begin{frame}
-\frametitle{Policy Improvement for Multi-Dim/Continuous Actions}
+\frametitle{Multi-Dimensional/Continuous Actions}
 \pause
 \begin{itemize}[<+->]
-\item $\argmax_a$ sweep not possible for Multi-Dim/Continuous Actions
-\item So we have to perform an (unconstrained) optimization over Actions
-\item Analytical DP solutions based on partial derivatives of $Q(s,a)$ with respect to the dimensions of Action Space, and setting them to 0
-\item Substitute this solution for optimal actions in Bellman Optimality Eqn
-\item Assuming a suitable functional form (with unknown parameters) for the VF, this gives a recursive formulation for the VF parameters
-\item Knowing boundary condition for the VF, solve for the VF parameters
+\item How to improve Policy if Action Space is Multi-Dim/Continuous?
+\item $\pi'(s) = \argmax_a Q(s,a)$ cannot be done as a sweep over actions
+\item Instead, we perform an (unconstrained) optimization over $a$ on $Q(s,a)$
+\item For analytical DP solution, write out Bellman Optimality Equation and assume a functional form for the Optimal Value Function (with unknown parameters)
+\item Then take partial derivatives of the expression within $\max$ with respect to the dimensions of Action Space, and set to 0
+\item This gives us the optimal actions in terms of the state and the Optimal VF parameters
+\item Substituting the optimal actions in the Bellman Optimality Equation gives us a recursive expression for the Optimal VF parameters
+\item Use boundary condition for Optimal VF to solve for the parameters
 \item This gives us the Optimal VF and the Optimal Policy
 \item If we are restricted to doing RL $\Rightarrow$ Policy Gradient Algorithms
 \end{itemize}
