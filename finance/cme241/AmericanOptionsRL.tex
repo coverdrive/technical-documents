@@ -134,17 +134,17 @@ eg: Hitting time of a process to exceed a certain fixed level
 \pause
 \begin{itemize}[<+->]
 \item Optimal Stopping problem for Stochastic Process $X_t$: 
-$$V(x) = \max_{\tau} \mathbb{E}[G(X_{\tau})|X_0 = x]$$
- where $\tau$ is a set of stopping times of $X_t$, $V(\cdot)$ is called the Value function, and $G$ is the Reward function.
-\item Note that sometimes we can have several stopping times that maximize $\mathbb{E}[G(X_{\tau})]$ and we say that the optimal stopping time
+$$W(x) = \max_{\tau} \mathbb{E}[H(X_{\tau})|X_0 = x]$$
+ where $\tau$ is a set of stopping times of $X_t$, $W(\cdot)$ is called the Value function, and $H$ is the Reward function.
+\item Note that sometimes we can have several stopping times that maximize $\mathbb{E}[H(X_{\tau})]$ and we say that the optimal stopping time
 is the smallest stopping time achieving the maximum value.
 \item Example of Optimal Stopping: Optimal Exercise of American Options
 \begin{itemize}
 \item $X_t$ is risk-neutral process for underlying security's price
 \item $x$ is underlying security's current price
 \item $\tau$ is set of exercise times corresponding to various stopping policies
-\item $V(\cdot)$ is American option price as function of underlying's current price
-\item $G(\cdot)$ is the option payoff function, adjusted for time-discounting
+\item $W(\cdot)$ is American option price as function of underlying's current price
+\item $H(\cdot)$ is the option payoff function, adjusted for time-discounting
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -157,10 +157,10 @@ is the smallest stopping time achieving the maximum value.
 \item We formulate Stopping Time problems as Markov Decision Processes
 \item {\em State} is $X_t$
 \item {\em Action} is Boolean: Stop or Continue
-\item {\em Reward} always 0, except upon Stopping (when it is $=G(X_{\tau})$)
+\item {\em Reward} always 0, except upon Stopping (when it is $=H(X_{\tau})$)
 \item {\em State}-transitions governed by the Stochastic Process $X_t$
 \item For discrete time steps, the Bellman Optimality Equation is:
-$$V^*(X_t) = \max(G(X_t), \mathbb{E}[V^*(X_{t+1})|X_t])$$
+$$V^*(X_t) = \max(H(X_t), \mathbb{E}[V^*(X_{t+1})|X_t])$$
 \item For finite number of time steps, we can do a simple backward induction algorithm from final time step back to time step 0
 \end{itemize}
 \end{frame}
