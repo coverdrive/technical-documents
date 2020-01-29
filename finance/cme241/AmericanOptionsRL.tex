@@ -140,7 +140,7 @@ $$V(x) = \max_{\tau} \mathbb{E}[G(X_{\tau})|X_0 = x]$$
 is the smallest stopping time achieving the maximum value.
 \item Example of Optimal Stopping: Optimal Exercise of American Options
 \begin{itemize}
-\item $X_t$ is stochastic process for underlying security's price
+\item $X_t$ is risk-neutral process for underlying security's price
 \item $x$ is underlying security's current price
 \item $\tau$ is set of exercise times corresponding to various stopping policies
 \item $V(\cdot)$ is American option price as function of underlying's current price
@@ -193,7 +193,7 @@ $$V^*(X_t) = \max(G(X_t), \mathbb{E}[V^*(X_{t+1})|X_t])$$
 \item $m$ Monte-Carlo paths indexed $i = 0, 1, \ldots, m-1$
 \item $n+1$ time steps indexed $j = n, n-1, \ldots, 1, 0$ (we move back in time)
 \item Infinitesimal Risk-free rate at time $t_j$ denoted $r_{t_j}$
-\item Simulation paths of prices of underlying as input 2-dim array $SP[i,j]$
+\item Simulation paths (based on risk-neutral process) of underlying security prices as input 2-dim array $SP[i,j]$
 \item At each time step, $CF[i]$ is PV of current+future cashflow for path $i$
 \item $s_{i,j}$ denotes state for $(i,j)$ $:=$ (time $t_j$, price history $SP[i,:(j+1)]$)
 \item $Payoff(s_{i,j})$ denotes Option Payoff at $(i,j)$
@@ -237,7 +237,7 @@ continue \GETS e^{-r_0(t_1-t_0)} \cdot mean(CF[0:m])\\
 \item {\em State} is [Current Time, History of Underlying Security Prices]
 \item {\em Action} is Boolean: Exercise (i.e., Stop) or Continue
 \item {\em Reward} always 0, except upon Exercise ($=$ Payoff)
-\item {\em State}-transitions governed by Underlying Price's Stochastic Process
+\item {\em State}-transitions based on Underlying Security's Risk-Neutral Process
 \item Key is function approximation of state-conditioned continuation value
 \item Continuation Value $\Rightarrow$ Optimal Stopping $\Rightarrow$ Option Price
 \item We outline two RL Algorithms:
