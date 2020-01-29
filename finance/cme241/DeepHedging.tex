@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass{beamer}
+\documentclass[handout]{beamer}
 
 \mode<presentation> {
 
@@ -102,28 +102,40 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Classical Pricing and Hedging of Derivatives}
+\pause
+\begin{itemize}[<+->]
+\item Classical Pricing/Hedging Theory is based on a few core concepts:
 \begin{itemize}
-\item Classical Pricing/Hedging Theory assumes frictionless markets
-\item Frictionless := continuous trading, any volume, no transaction costs
+\item {\bf Arbitrage-Free Market} - where you cannot make money from nothing
+\item {\bf Replication} - when the payoff of a {\em Derivative} can be constructed by assembling (and rebalancing) a portfolio of the underlying securities
+\item {\bf Complete Market} - where payoffs of all derivatives can be replicated
+\item {\bf Risk-Neutral Measure} - Altered probability measure for movements of underlying securities for mathematical convenience in pricing
+\end{itemize}
+
 \item Assumptions of \href{https://github.com/coverdrive/technical-documents/blob/master/finance/ArbitrageCompleteness.pdf}{\underline{\textcolor{blue}{arbitrage-free and completeness}}}
-lead to (dynamic and exact) replication of derivatives with {\em basic} market securities
+lead to (dynamic, exact, unique) replication of derivatives with the underlying securities
+\item Assumptions of frictionless trading provide these idealistic conditions
+\item Frictionless := continuous trading, any volume, no transaction costs
 \item Replication strategy gives us the pricing and hedging solutions
 \item This is the foundation of the famous Black-Scholes formulas
 \item However, the real-world has many frictions $\Rightarrow$ {\em Incomplete Market}
-\item ... where Derivatives cannot be exactly replicated
+\item ... where derivatives cannot be exactly replicated
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Pricing and Hedging in an Incomplete Market}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item In an incomplete market, we have multiple risk-neutral measures
 \item So, multiple derivative prices (each consistent with no-arbitrage)
 \item The market/trader ``chooses'' a risk-neutral measure (hence, price)
+\item This ``choice'' is typically made in ad-hoc and inconsistent ways
+\item Alternative approach is for a trader to play {\em Portfolio Optimization}
+\item Maximizing ``risk-adjusted return'' of the derivative plus hedges
 \item Based on a specified preference for trading risk versus return
 \item This preference is equivalent to specifying a \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Utility function}}}
-\item Maximizing ``risk-adjusted return'' of the derivative plus hedges
-\item Reminiscent of the \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MertonPortfolio.pdf}{\underline{\textcolor{blue}{Portfolio Optimization problem}}}
+\item Reminiscent of the \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MertonPortfolio.pdf}{\underline{\textcolor{blue}{Portfolio Optimization problem}}} we've seen before
 \item Likewise, we can set this up as a stochastic control (MDP) problem
 \item Where the decision at each time step is: {\em Trades in the hedges}
 \item So what's the best way to solve this MDP?
@@ -133,7 +145,8 @@ lead to (dynamic and exact) replication of derivatives with {\em basic} market s
 
 \begin{frame}
 \frametitle{Deep Reinforcement Learning (DRL)}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Dynamic Programming not suitable in practice due to:
 \begin{itemize}
 \item Curse of Dimensionality
@@ -151,14 +164,15 @@ lead to (dynamic and exact) replication of derivatives with {\em basic} market s
 
 \begin{frame}
 \frametitle{Problem Setup}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item We will simplify the problem setup a bit for ease of exposition
 \item This model works for more complex, more frictionful markets too
 \item Assume time is in discrete (finite) steps $t = 0, 1, \ldots, T$
 \item Assume we have a position (portfolio) $D$ in $m$ derivatives
 \item Assume each of these $m$ derivatives expires in time $ \leq T$
 \item Portfolio-aggregated {\em Contingent Cashflows} at time $t$ denoted $X_t \in \mathbb{R}$
-\item Assume we have $n$ basic market securities as potential hedges
+\item Assume we have $n$ underlying market securities as potential hedges
 \item Hedge positions (units held) at time $t$ denoted $\alpha_t \in \mathbb{R}^n$
 \item Cashflows per unit of hedges held at time $t$ denoted $Y_t \in \mathbb{R}^n$
 \item Prices per unit of hedges at time $t$ denoted $P_t \in \mathbb{R}^n$
@@ -168,7 +182,8 @@ lead to (dynamic and exact) replication of derivatives with {\em basic} market s
 
 \begin{frame}
 \frametitle{States and Actions}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Denote state space at time $t$ as $\mathcal{S}_t$, state at time $t$ as $s_t \in \mathcal{S}_t$
 \item Among other things, $s_t$ contains $t, \alpha_t, P_t, \beta_t, D$
 \item $s_t$ will include any market information relevant to trading actions
@@ -182,7 +197,8 @@ lead to (dynamic and exact) replication of derivatives with {\em basic} market s
 
 \begin{frame}
 \frametitle{Sequence of events at each time step $t=0, \ldots, T$}
-\begin{enumerate}
+\pause
+\begin{enumerate}[<+->]
 \item Observe state $s_t = (t, \alpha_t, P_t, \beta_t, D)$
 \item Realize cashflows (from holding positions) $=X_t + \alpha_t \cdot Y_t$
 \item Perform action (trades) $a_t$ to produce trading PnL $= - a_t \cdot P_t$
@@ -197,7 +213,8 @@ $$\beta_{t+1} = \beta_t + X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t 
 
 \begin{frame}
 \frametitle{Pricing and Hedging}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Assume we now want to enter into an incremental position (portfolio) $D'$ in $m'$ derivatives (denote the combined position as $D \cup D'$)
 \item We want to determine the {\em Price} of the incremental position $D'$, as well as the hedging strategy for $D'$
 \item Denote the Optimal Value Function at time $t$ as $V_t^* : \mathcal{S}_t \rightarrow \mathbb{R}$
@@ -211,7 +228,8 @@ $$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0,
 
 \begin{frame}
 \frametitle{DRL Approach a Breakthrough for Practical Trading?}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item The industry practice/tradition has been to start with {\em Complete Market} assumption, and then layer ad-hoc/unsatisfactory adjustments
 \item There is some past work on pricing/hedging in incomplete markets
 \item But it's theoretical and not usable in real trading (eg: Superhedging)
@@ -226,9 +244,5 @@ $$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0,
 \end{itemize}
 
 \end{frame}
-
-
-
-
 
 \end{document}

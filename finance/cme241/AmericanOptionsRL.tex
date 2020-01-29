@@ -144,7 +144,7 @@ is the smallest stopping time achieving the maximum value.
 \item $x$ is underlying security's current price
 \item $\tau$ is set of exercise times corresponding to various stopping policies
 \item $V(\cdot)$ is American option price as function of underlying's current price
-\item $G(\cdot)$ is the option payoff function
+\item $G(\cdot)$ is the option payoff function, adjusted for time-discounting
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -155,10 +155,13 @@ is the smallest stopping time achieving the maximum value.
 \pause
 \begin{itemize}[<+->]
 \item We formulate Stopping Time problems as Markov Decision Processes
-\item {\em State} is a suitable function of the history of Stochastic Process $X_t$
+\item {\em State} is $X_t$
 \item {\em Action} is Boolean: Stop or Continue
 \item {\em Reward} always 0, except upon Stopping (when it is $=G(X_{\tau})$)
-\item {\em State}-transitions governed by Underlying Price Stochastic Process
+\item {\em State}-transitions governed by the Stochastic Process $X_t$
+\item For discrete time steps, the Bellman Optimality Equation is:
+$$V^*(X_t) = \max(G(X_t), \mathbb{E}[V^*(X_{t+1})|X_t])$$
+\item For finite number of time steps, we can do a simple backward induction algorithm from final time step back to time step 0
 \end{itemize}
 \end{frame}
 
@@ -310,20 +313,6 @@ w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize
 \item We will code up these algorithms to validate this claim \smiley{}
 \end{itemize}
 \end{frame}
-
-\begin{frame}
-\frametitle{Extending LSPI and FQI to model-based settings}
-\pause
-\begin{itemize}[<+->]
-\item Li, Szepesvari, Schuurmans have shown a model-free solution
-\item But the same algorithms can be extended to model-based settings
-\item Wherein we have explicit knowledge of the transition probabilities
-\item We simply change the TD target to a probability-weighted target
-\item This should help with speed of convergence
-\item Discussion: What other RL techniques could be used here? 
-\end{itemize}
-\end{frame}
-
 
 
 
