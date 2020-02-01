@@ -171,7 +171,7 @@ th.assignments {
 	    <ul>
 			<li>Model Merton's Portfolio problem as an MDP (write the model in LaTeX)</li>
 			<li>Implement this MDP model in code</li>
-			<li>Try recovering the closed-form solution with a DP algorithm that you implemented previously</li>
+			<li>Try recovering the closed-form solution (by making your time steps small enough) with a DP algorithm that you implemented previously</li>
 	                <li>Model a real-world Portfolio Allocation+Consumption problem as an MDP (including real-world frictions and constraints)</li>
 			<li><a href="lecture_slides/OptimalAssetAllocationDiscrete.pdf">Exam Practice Problem: Optimal Asset Allocation in Discrete Time</a></li>
 		</ul>
@@ -192,7 +192,7 @@ th.assignments {
     </th>
     <th>
 	     <ul>
-		    <li>Implement Black-Scholes formulas for European Call/Put Pricing</li>
+		    <li>Implement Black-Scholes pricing and greeks for European Call/Put Pricing to develop intuition for pricing/hedging formulas in complete markets</li>
 	     </ul>
     </th>
   </tr>
@@ -248,6 +248,10 @@ th.assignments {
 	    </ul>
     </th>
     <th>
+	    <ul>
+	    <li>Write out the full derivation (in LaTeX) of the Avellaneda-Stoikov result we derived in class</li>
+	    <li>Implement a simulation along the lines of the final section (section 3.3) in the Avellaneda-Stoikov paper and reproduce the results they describe in this section (you don't need to read the whole paper, just this last section)</li>
+	    </ul>
     </th>
   </tr>
 
@@ -263,6 +267,16 @@ th.assignments {
 	    </ul>
     </th>
     <th>
+	     <ul>
+		    <li>Write code for the interface for tabular RL algorithms. The core of this interface should be a mapping from a (state, action) pair
+			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
+			    or the reward model.</li>
+		    <li>Implement any tabular Monte-Carlo algorithm for Value Function prediction</li>
+		    <li>Implement tabular 1-step TD algorithm for Value Function prediction</li>
+		    <li>Test the above implementation of Monte-Carlo and TD Value Function prediction algorithms versus DP Policy Evaluation algorithm on an example MDP</li>
+		    <li>Prove that fixed learning rate (step size alpha) for MC is equivalent to an exponentially decaying average of episode returns</li>
+	    </ul>
+
     </th>
   </tr>
 
