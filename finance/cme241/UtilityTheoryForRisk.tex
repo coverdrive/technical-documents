@@ -231,15 +231,15 @@ $$\pi_R \approx \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
 \frametitle{Constant Absolute Risk-Aversion (CARA)}
 \pause
 \begin{itemize}[<+->]
-\item Consider the Utility function $U(x) = \frac {-e^{-ax}} {a}$ for $a \neq 0$
+\item Consider the Utility function $U(x) = \frac {1 - e^{-ax}} {a}$ for $a \neq 0$
 \item Absolute Risk-Aversion $A(x) = \frac {-U''(x)} {U'(x)} = a$
 \item $a$ is called Coefficient of Constant Absolute Risk-Aversion (CARA)
-\item For $a=0$, $U(x) = x$ (note: $A(x) = \frac {-U''(x)} {U'(x)} = 0$)
+\item For $a=0$, $U(x) = x$ (meaning Risk-Neutral)
 \item If the random outcome $x \sim \mathcal{N}(\mu, \sigma^2)$,
 $$
 \mathbb{E}[U(x)] = 
 \begin{cases}
-\frac {- e^{-a \mu + \frac {a^2 \sigma^2} 2}} a & \text{for } a \neq 0\\
+\frac {1 - e^{-a \mu + \frac {a^2 \sigma^2} 2}} a & \text{for } a \neq 0\\
 \mu & \text {for } a = 0\\
 \end{cases}
 $$
@@ -259,7 +259,7 @@ $$\mbox{Absolute Risk Premium } \pi_A = \mu - x_{CE} =  \frac {a \sigma^2} 2$$
 \item Riskless Asset Annual Return $=r$
 \item Determine unconstrained $\pi$ to allocate to risky asset ($1-\pi$ to riskless)
 \item Such that Portfolio has maximum Utility of Wealth in 1 year
-\item With CARA Utility $U(W) = \frac {-e^{-aW}} {a}$ for $a \neq 0$
+\item With CARA Utility $U(W) = \frac {1 -e^{-aW}} {a}$ for $a \neq 0$
 \item Portfolio Wealth $W \sim \mathcal{N}(1+ r + \pi(\mu - r), \pi^2 \sigma^2)$
 \item From the section on CARA Utility, we know we need to maximize:
 $$1+r+\pi (\mu - r) - \frac {a \pi^2 \sigma^2} 2$$
@@ -272,15 +272,15 @@ $$\pi^* = \frac {\mu - r} {a \sigma^2}$$
 \frametitle{Constant Relative Risk-Aversion (CRRA)}
 \pause
 \begin{itemize}[<+->]
-\item Consider the Utility function $U(x) = \frac {x^{1 - \gamma}} {1 - \gamma}$ for $\gamma \neq 1$
+\item Consider the Utility function $U(x) = \frac {x^{1 - \gamma} - 1} {1 - \gamma}$ for $\gamma \neq 1$
 \item Relative Risk-Aversion $R(x) = \frac {-U''(x) \cdot x} {U'(x)} = \gamma$
 \item $\gamma$ is called Coefficient of Constant Relative Risk-Aversion (CRRA)
-\item For $\gamma = 1$, $U(x) = \log(x)$ (note: $R(x) = \frac {-U''(x) \cdot x} {U'(x)} = 1$)
+\item For $\gamma = 1$, $U(x) = \log(x)$. For $\gamma = 0$, $U(x) = x - 1$ (Risk-Neutral)
 \item If the random outcome $x$ is lognormal, with $\log(x) \sim \mathcal{N}(\mu, \sigma^2)$,
 $$
 \mathbb{E}[U(x)] = 
 \begin{cases}
-\frac {e^{\mu (1 - \gamma) + \frac {\sigma^2} 2 (1-\gamma)^2}} {1 - \gamma} & \text{for } \gamma \neq 1\\
+\frac {e^{\mu (1 - \gamma) + \frac {\sigma^2} 2 (1-\gamma)^2} - 1} {1 - \gamma} & \text{for } \gamma \neq 1\\
 \mu & \text {for } \gamma = 1\\
 \end{cases}
 $$
@@ -306,7 +306,7 @@ $$\mbox{Relative Risk Premium } \pi_R = 1 - \frac {x_{CE}} {\bar{x}} =  1 - e^{-
 \item Constraint: Portfolio is continuously rebalanced to maintain fraction $\pi$
 \item So, the process for wealth $W_t$ is given by:
 $$dW_t = (r + \pi (\mu - r)) \cdot W_t \cdot dt + \pi \cdot \sigma \cdot W_t \cdot dz_t$$
-\item Assume CRRA Utility $U(W) = \frac {W^{1-\gamma}} {1-\gamma}, 0 < \gamma \neq 1$
+\item Assume CRRA Utility $U(W) = \frac {W^{1-\gamma} - 1} {1-\gamma}, 0 < \gamma \neq 1$
 \end{itemize}
 \end{frame}
 
