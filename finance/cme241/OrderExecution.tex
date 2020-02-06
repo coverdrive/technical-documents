@@ -236,11 +236,10 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 \begin{itemize}[<+->]
 \item We consider a simple model with Linear Price Impact
 \item $N, N_t, P_t$ are all continuous-valued ($\in \mathbb{R}$)
-\item In particular, we allow $N_t$ to be possibly negative (unconstrained)
-\item Price Dynamics: $P_{t+1} = P_t - \alpha N_t + \epsilon_t$ where $\alpha \in \mathbb{R}^+$
+\item Price Dynamics: $P_{t+1} = P_t - \alpha N_t + \epsilon_t$ where $\alpha \in \mathbb{R}_{\geq 0}$
 \item $\epsilon_t$ is i.i.d. with $\mathbb{E}[\epsilon_t|N_t, P_t] = 0$
 \item So, Permanent Price Impact is $\alpha N_t$
-\item Temporary Price Impact given by $\beta N_t$, so $Q_t = P_t - \beta N_t$ ($\beta \in \mathbb{R}^+$)
+\item Temporary Price Impact given by $\beta N_t$, so $Q_t = P_t - \beta N_t$ ($\beta \in \mathbb{R}_{\geq 0}$)
 \item Utility function $U(\cdot)$ is the identity function, i.e., no Risk-Aversion
 \item MDP Discount factor $\gamma = 1$
 \item This is an unrealistic model, but solving this gives plenty of intuition
@@ -268,24 +267,36 @@ $$=\max_{N_{T-1}} \{ N_{T-1}(P_{T-1} - \beta N_{T-1})  + (R_{T-1} - N_{T-1})(P_{
 \end{frame}
 
 \begin{frame}
-\frametitle{Optimal Policy and Optimal Value Function}
+\frametitle{Optimal Policy \& Optimal Value Function for case $\alpha \geq 2\beta$}
 \pause
+$$=\max_{N_{T-1}} \{ R_{T-1} P_{T-1} - \beta R_{T-1}^2 + (\alpha - 2 \beta) (N_{T-1}^2 - N_{T-1}R_{T-1}) \}$$
 \begin{itemize}
-\item Differentiating this expression w.r.t. $N_{T-1}$ and setting to 0 gives:
-$$2N^*_{T-1} (\alpha - 2\beta) - R_{T-1}(\alpha - 2\beta) = 0 \Rightarrow N^*_{T-1} = \frac {R_{T-1}} 2$$
+\item For the case $\alpha \geq 2\beta$, we have the trivial solution: $N^*_{T-1} = 0$ or $R_{T-1}$
+\item Substitute $N^*_{T-1}$ in the expression for $V^*(T-1,P_{T-1},R_{T-1})$:
+$$V^*(T-1,P_{T-1},R_{T-1}) =  R_{T-1} (P_{T-1} - \beta R_{T-1})$$
+\item Continuing backwards in time in this manner gives:
+$$N^*_t = 0 \mbox{ or } {R_t}$$
+$$V^*(t, P_t,R_t) = R_t (P_t - \beta R_t)$$
+\item So the solution for the case $\alpha \geq 2\beta$ is to sell all $N$ shares at any one of the time steps $t = 1, \ldots, T$ (and none in the other time steps) and the Optimal Expected Total Sale Proceeds $ = N(P_1 - \beta N)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Policy \& Optimal Value Function for case $\alpha < 2\beta$}
 \pause
+\begin{itemize}[<+->]
+\item For the case $\alpha < 2\beta$, differentiating w.r.t. $N_{T-1}$ and setting to 0 gives:
+$$(\alpha - 2\beta)(2N^*_{T-1} - R_{T-1}) = 0 \Rightarrow N^*_{T-1} = \frac {R_{T-1}} 2$$
 \item Substitute $N^*_{T-1}$ in the expression for $V^*(T-1,P_{T-1},R_{T-1})$:
 $$V^*(T-1,P_{T-1},R_{T-1}) =  R_{T-1} P_{T-1} - R_{T-1}^2 (\frac {\alpha + 2\beta} 4)$$
-\pause
 \item Continuing backwards in time in this manner gives:
 $$N^*_t = \frac {R_t} {T-t+1}$$
-\pause
 $$V^*(t, P_t,R_t) = R_t P_t - \frac {R_t^2} 2 (\frac {2\beta + (T-t)\alpha} {T-t+1})$$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Interpreting the solution}
+\frametitle{Interpreting the solution for the case $\alpha < 2\beta$}
 \pause
 \begin{itemize}[<+->]
 \item Rolling forward in time, we see that $N^*_t = \frac N T$, i.e., uniformly split
@@ -294,9 +305,8 @@ $$V^*(t, P_t,R_t) = R_t P_t - \frac {R_t^2} 2 (\frac {2\beta + (T-t)\alpha} {T-t
 \item Essentially equivalent to minimizing $\sum_{t=1}^T N_t^2$ with $\sum_{t=1}^T N_t = N$
 \item Optimal Expected Total Sale Proceeds $= NP_1 - \frac {N^2} 2 (\alpha + \frac {2\beta - \alpha} T)$
 \item So, {\em Implementation Shortfall} from Price Impact is $\frac {N^2} 2 (\alpha + \frac {2\beta - \alpha} T)$
-\item Note that Implementation Shortfall is non-zero ($\frac {\alpha N^2} 2$) when $T\rightarrow \infty$
-\item This is because we assumed non-zero {\em Permanent Price Impact} ($\alpha \neq 0$)
-\item If Price Impact were purely temporary (i.e., Price fully snapped back), Implementation Shortfall would be zero when $T\rightarrow \infty$
+\item Note that Implementation Shortfall is non-zero even if one had infinite time available ($T\rightarrow \infty$) for the case of $\alpha > 0$
+\item If Price Impact were purely temporary ($\alpha = 0$, i.e., Price fully snapped back), Implementation Shortfall is zero with infinite time available
 \end{itemize}
 \end{frame}
 
