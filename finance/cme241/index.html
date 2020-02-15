@@ -282,7 +282,7 @@ th.assignments {
 
   <tr>
     <th>February 10-11</th>
-    <th colspan="3">Take-home Midterm Exam</th>
+     <th colspan="3"><a href="lecture_slides/midterm-2020.pdf">Midterm Exam</a> (<a href="lecture_slides/midterm-2020-solutions.pdf">Solutions</a>)</th>
   </tr>
   <tr>
 
@@ -343,6 +343,20 @@ th.assignments {
 	    </ul>
     </th>
     <th>
+ <ul>
+		    <li>Write code for the interface for RL algorithms with value function approximation. The core of this interface should be a function from a (state, action) pair
+			    to a sampling of the (next state, reward) pair. It is important that this interface doesn't present the state-transition probability model
+			    or the reward model.</li>
+		    <li>Implement any Monte-Carlo Prediction algorithm with Value Function approximation</li>
+		    <li>Implement 1-step TD Prediction algorithm with Value Function approximation</li>
+		    <li>Implement Eligibility-Traces-based TD(lambda) Prediction algorithm with Value Function approximation</li>
+		    <li>Implement SARSA and SARSA(Lambda) with Value Function approximation</li>
+		    <li>Implement Q-Learning with Value Function approximation</li>
+		    <li>Optional: Implement LSTD and LSPI</li>
+		    <li>Test the above algorithms versus DP Policy Evaluation and DP Policy Iteration/Value Iteration algorithm on an example MDP</li>
+		    <li>Project Suggestion: Customize the LSPI algorithm for American Option Pricing (see <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">this paper</a>)</li>
+	    </ul>
+
     </th>
   </tr>
 
