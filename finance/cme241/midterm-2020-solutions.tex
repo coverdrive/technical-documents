@@ -114,7 +114,7 @@ $$R(0,D) = U(w_0)$$
 $$R(i,A) = U(w_i) \text{ for } 1 \leq i \leq n$$
 
 The Bellman Optimality Equation for the Optimal Value Function $V^* : \mathcal{S} \rightarrow \mathcal{R}$ is as follows:
-$$V^*(0) = \max(\sum_{i=1}^n p_i \cdot U(w_i) + \gamma \cdot (\alpha \cdot V^*(0) + \sum_{i=1}^n p_i \cdot (1 - \alpha) \cdot V^*(i)), U(w_0) + \gamma \cdot V^*(0))$$
+$$V^*(0) = \sum_{i=1}^n p_i \cdot \max(V^*(i), U(w_0) + \gamma \cdot V^*(0))$$
 $$V^*(i) = U(w_i) + \gamma \cdot (\alpha \cdot V^*(0) + (1 - \alpha) \cdot V^*(i)) \text{ for } 1 \leq i \leq n$$
 Hence, one would accept job-offer $i$ (for $1 \leq i \leq n$) if and only if:
 $$V^*(i) > U(w_0) + \gamma \cdot V^*(0)$$
