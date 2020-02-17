@@ -82,46 +82,47 @@ $$\mathbb{E}[\sum_{u=t}^\infty \gamma^{u-t} \cdot U(w_{i_u})]$$
 \begin{itemize}
 \item {\bf 5 points}: Express with clear mathematical notation the state space, action space, transition function, reward function, and write the Bellman Optimality Equation customized for this MDP.
 
-{\bf Answer: } We denote the state space as $\mathcal{S} = \{i \mid 0 \leq i \leq n\}$ to indicate the worker's situation at the start of a day: State $i = 0$ means the worker starts the day unemployed and state $1 \leq i \leq n$ means the worker starts the day employed in job $i$ (with daily wage $w_i$). The possible actions are $a=A$ (``accept the job-offer'') or $a=D$ (``decline the job-offer''). However, we need to choose between accepting or declining the job-offer only when we start the day unemployed (i.e., for state $i=0$). Therefore, we structure the action space as a function of the state as follows: $\mathcal{A}(0) = \{A,R\}$ and $\mathcal{A}(i) = \{A\}$ for $1 \leq i \leq n$ (to indicate that we don't need to make any choice when we start the day employed).
+{\bf Answer: } We denote the state space as $\mathcal{S} = \{i \mid 1 \leq i \leq n\} \times \{E, U\}$. So the state is represented by an (int, str) pair where the str (U or E) denotes being unemployed or employed and the int ($1\leq i \leq n$) denotes the index of the job employed in (if E) or the job offered (if U). The possible actions are $a=A$ (``accept the job-offer'') or $a=D$ (``decline the job-offer''). However, we need to choose between accepting or declining the job-offer only in unemployed states. Therefore, we structure the action space as a function of the state as follows: $\mathcal{A}((i, U)) = \{A,D\}$ for all $1\leq i \leq n$ and $\mathcal{A}((i, E)) = \{A\}$ for all $1 \leq i \leq n$ (to indicate that we don't need to make any choice when employed).
 
-The state transitions are given by:
+For all $1\leq i \leq n$, the state transitions are as follows:
 $$
-Pr[i' \mid (0, A)] =
+Pr[(i',b') \mid (i,b), A] =
 \begin{cases}
-\alpha & \text{ for } i' = 0 \\
-p_{i'}(1-\alpha) & \text{ for } 1 \leq i' \leq n
+\alpha \cdot p_{i'} & \text{ for each } 1 \leq i' \leq n, \text{for each } b \in \{U,E\}, \text{and } b' = U\\
+1 - \alpha & \text{ for } i' = i, \text{for each } b \in \{U, E\}, \text{and } b' = E\\
+0 & \text{ otherwise}
 \end{cases}
 $$
 $$
-Pr[i' \mid (0, D)] =
+Pr[(i',b') \mid (i,U), D] =
 \begin{cases}
-1 & \text{ for } i' = 0\\
-0 & \text{ for } 1 \leq i' \leq n
-\end{cases}
-$$
-$$
-Pr[i' \mid (i, A)] \text{ for } 1 \leq i \leq n =
-\begin{cases}
-\alpha & \text{ for } i' = 0 \\
-1-\alpha & \text{ for } i' = i\\
-0 & \text{ for } i' \neq i \text{ and } i' \neq 0
+p_{i'} & \text{ for each } 1 \leq i' \leq n, \text{and } b' = U\\
+0 & \text{ otherwise}
 \end{cases}
 $$
 
-Let us define $R(i, a)$ as the {\em Expected Reward} obtained when in state $i$ upon taking action $a$.
-$$R(0,A) = \sum_{i=1}^n p_i \cdot U(w_i)$$
-$$R(0,D) = U(w_0)$$
-$$R(i,A) = U(w_i) \text{ for } 1 \leq i \leq n$$
+Let us define $R((i,b), a)$ as the {\em Expected Reward} obtained when in state $(i,b)$ upon taking action $a$.
+$$R((i,b),A) = U(w_i) \text{ for each } 1\leq i\leq n, \text{for each } b \in \{U,E\}$$
+$$R((i,U),D) = U(w_0) \text{ for each } 1\leq i\leq n$$
 
-The Bellman Optimality Equation for the Optimal Value Function $V^* : \mathcal{S} \rightarrow \mathcal{R}$ is as follows:
-$$V^*(0) = \sum_{i=1}^n p_i \cdot \max(V^*(i), U(w_0) + \gamma \cdot V^*(0))$$
-$$V^*(i) = U(w_i) + \gamma \cdot (\alpha \cdot V^*(0) + (1 - \alpha) \cdot V^*(i)) \text{ for } 1 \leq i \leq n$$
+The Bellman Optimality Equation for the Optimal Value Function $V^* : \mathcal{S} \rightarrow \mathbb{R}$ is as follows:
+
+For all $1\leq i \leq n$
+
+$$V^*((i,U)) = \max(U(w_0) + \gamma \cdot \sum_{i'=1}^n p_{i'} \cdot V^*((i', U)), V^*((i,E))) $$
+$$V^*((i,E)) = U(w_i) + \gamma (\alpha \cdot \sum_{i'=1}^n p_{i'} \cdot V^*((i', U)) + (1 - \alpha) \cdot V^*((i,E)) ) $$
+
+We can simplify the above by denoting $\sum_{i'=1}^n p_{i'} \cdot V^*((i', U))$ as $V_0$ and $V^*((i,E))$ as $V_i$ for all $1\leq i \leq n$. This yields:
+
+$$V_0 = \sum_{i'=1}^n p_{i'} \cdot \max(U(w_0) + \gamma \cdot V_0, V_{i'})$$
+$$V_i = U(w_i) + \gamma \cdot (\alpha \cdot V_0 + (1 - \alpha) \cdot V_i) \text{ for all } 1 \leq i \leq n$$
+This is the more succinct (and easy-to-implement) version of the Bellman Optimality Equation (in $V_i, 0 \leq i \leq n$).
 Hence, one would accept job-offer $i$ (for $1 \leq i \leq n$) if and only if:
-$$V^*(i) > U(w_0) + \gamma \cdot V^*(0)$$
+$$V_i > U(w_0) + \gamma \cdot V_0$$
 
 \item {\bf 3 points}: You can solve this Bellman Optimality Equation (hence, solve for the Optimal Value Function and the Optimal Policy) with a numerical iterative algorithm (essentially a Dynamic Programming algorithm customized to this problem). Write Python code for this numerical algorithm. Clearly define the inputs and outputs of your algorithm with their types (int, float, List, Mapping etc.). Remember to include your Python code in your answer submission. Unlike the previous problem, here I am not expecting working Python code - a sketch of Python code that illustrates the numerical algorithm suffices for this problem (however, I need Python syntax so I can understand your approach).
 
-{\bf Answer:} The Python code with the numerical algorithm that solves the above Bellman Optimality Equation is \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/wage_max.py}{here}.
+{\bf Answer:} The Python code with the numerical algorithm that solves the above Bellman Optimality Equation (in $V_i, 0 \leq i \leq n$) is \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/wage_max.py}{here}.
 
 \end{itemize}
 
