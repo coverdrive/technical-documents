@@ -429,7 +429,7 @@ $$= (\bphi^T \cdot \bd \cdot \bdel)^T \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1}
 We derive the TDC Algorithm based on $\nabla_{\bf w} \mathcal{L}({\bf w})$
 $$\nabla_{\bf w} \mathcal{L}({\bf w}) = 2 \cdot (\nabla_{\bf w} (\bphi^T \cdot \bd \cdot \bdel)^T) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
 \pause
-Now we express each of these 3 terms as expectations of model-free transitions $s \stackrel{\mu}\longrightarrow (r,s')$, denoting $r + \gamma \cdot {\bw}^T \cdot \phi(s') - {\bw}^T \cdot \phi(s)$ as $\delta$
+Now we express each of these 3 terms as expectations of model-free transitions $s \stackrel{\pi}\longrightarrow (r,s')$, denoting $r + \gamma \cdot {\bw}^T \cdot \phi(s') - {\bw}^T \cdot \phi(s)$ as $\delta$
 \pause
 \begin{itemize}[<+->]
 \item $\bphi^T \cdot \bd \cdot \bdel = \mathbb{E}[\delta \cdot \phi(s)]$
