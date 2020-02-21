@@ -199,7 +199,7 @@ $$V^*(X_t) = \max(H(X_t), \mathbb{E}[V^*(X_{t+1})|X_t])$$
 \item $Payoff(s_{i,j})$ denotes Option Payoff at $(i,j)$
 \item $\phi_0(s_{i,j}), \ldots, \phi_{r-1}(s_{i,j})$ represent feature functions (of state $s_{i,j}$)
 \item $w_0, \ldots, w_{r-1}$ are the regression weights
-\item Regression function $f(s_{i,j}) = w \cdot \phi(s_{i,j}) = \sum_{l=0}^{r-1} w_l \cdot \phi_l(s_{i,j})$
+\item Regression function $f(s_{i,j}) = w^T \cdot \phi(s_{i,j}) = \sum_{l=0}^{r-1} w_l \cdot \phi_l(s_{i,j})$
 \item $f(\cdot)$ is estimate of continuation value for in-the-money states
 \end{itemize}
 \end{frame}
@@ -212,13 +212,13 @@ $$V^*(X_t) = \max(H(X_t), \mathbb{E}[V^*(X_{t+1})|X_t])$$
 CF[0:m] \GETS [Payoff(s_{i,n}) \mbox{ for } i \mbox{ in range}(m)]\\
 \FOR j \GETS n - 1 \DOWNTO 1 \DO
 \BEGIN
-CF[0:m] \GETS CF[0:m] * e^{-r_{t_j}(t_{j+1} - t_j)}\\
+CF[0:m] \GETS CF[0:m] \cdot e^{-r_{t_j}(t_{j+1} - t_j)}\\
 X \GETS [\phi(s_{i,j}) \mbox{ for } i \mbox{ in range}(m) \mbox{ if } Payoff(s_{i,j}) > 0]\\
 Y \GETS [CF[i] \mbox{ for } i \mbox{ in range}(m) \mbox{ if } Payoff(s_{i,j}) > 0]\\
 w \GETS (X^T \cdot X)^{-1} \cdot X^T \cdot Y\\
 \COMMENT{Above regression gives estimate of continuation value}\\
 \FOR i \GETS 0 \TO m-1 \DO
-CF[i] \GETS Payoff(s_{i,j}) \mbox{\bf{ if }}  Payoff(s_{i,j}) > w \cdot \phi(s_{i,j})
+CF[i] \GETS Payoff(s_{i,j}) \mbox{\bf{ if }}  Payoff(s_{i,j}) > w^T \cdot \phi(s_{i,j})
 \END
 \\
 exercise \GETS Payoff(s_{0,0})\\
@@ -246,28 +246,71 @@ continue \GETS e^{-r_0(t_1-t_0)} \cdot mean(CF[0:m])\\
 \item Fitted Q-Iteration (FQI)
 \end{itemize}
 \item Both Algorithms are batch methods solving a linear system
-\item More details in \href{http://proceedings.mlr.press/v5/li09d/li09d.pdf}{\underline{\textcolor{blue}{Li, Szepesvari, Schuurmans paper}}}
+\item Reference: \href{http://proceedings.mlr.press/v5/li09d/li09d.pdf}{\underline{\textcolor{blue}{Li, Szepesvari, Schuurmans paper}}}
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Least Squares Policy Iteration for Continuation Value}
+\frametitle{Review of Least Squares Policy Iteration (LSPI)}
+\pause
+\begin{itemize}[<+->]
+\item LSPI Algorithm performs a Least Squares Temporal Difference (LSTD) for each batch of episodes
+\item LSTD (for fixed policy $\pi$ in a batch) builds matrix $A$ and vector $B$
+\item $x(\cdot,\cdot)$ be a set of feature functions of state and action
+\item Update for $A$ at each time step is: $x(s,a) \cdot (x(s,a) - \gamma \cdot x(s',\pi(s')))^T$
+\item Update for $B$ at each time step is: $r \cdot x(s,a)$
+\item Sample $(s,a,r,s')$ is randomly picked from stored past experiences (possibly generated from policies other than the batch target policy $\pi$)
+
+\item At end of batch:
+\begin{itemize}
+\item Solve square linear system $Aw = B$
+\item Update linear-approx Action-Value Function $Q(s,a;w) = w^T \cdot x(s,a)$
+\item Improve policy as $\pi'(s) = \argmax_a Q(s,a;w)$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{LSPI customized for American Options Pricing}
+\pause
+\begin{itemize}[<+->]
+\item $a$ is $e$ (exercise) or $c$ (continue), $s$ is $s_{i,j}$, $s'$ is $s_{i,j+1}$
+\item $r$ is $\gamma \cdot Payoff(s_{i,j+1})$ if $\pi(s_{i,j+1})=e$ and $r=0$ if $\pi(s_{i,j+1})=c$
+\item We set $Q(s_{i,j},e) = Payoff(s_{i,j})$ (not to be learnt)
+\item We set $Q(s_{i,j},c; w) = w^T \cdot \phi(s_{i,j})$ (to be learnt)
+\item This requires us to set: $x(s_{i,j},c) = \phi(s_{i,j})$ and $x(s_{i,j},e) = 0$
+\item When $\pi(s_{i,j+1}) = c$, i.e., when $w^T \cdot \phi(s_{i,j+1}) \geq Payoff(s_{i,j+1})$
+\begin{itemize}
+\item $A$ update is: $\phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \cdot \phi(s_{i,j+1}))^T$
+\item $B$ update is: $0$
+\end{itemize}
+\item When $\pi(s_{i,j+1}) = e$, i.e., when $w^T \cdot \phi(s_{i,j+1}) < Payoff(s_{i,j+1})$
+ \begin{itemize}
+\item $A$ update is: $\phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \cdot 0)^T$
+\item $B$ update is: $\gamma \cdot Payoff(s_{i,j+1}) \cdot \phi(s_{i,j})$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LSPI for American Options Pricing}
 \pause
 \begin{pseudocode}{LSPI-AmericanPricing}{SP[0:m, 0:n+1]}
 \COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
 \COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
-\COMMENT{$A_{i,j} \leftarrow \phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \mathbb{I}_{w\cdot \phi(s_{i,j+1}) \geq Payoff(s_{i,j+1})} * \phi(s_{i,j+1}))^T$}\\
-\COMMENT{$b_{i,j} \leftarrow \gamma \mathbb{I}_{w \cdot \phi(s_{i,j+1}) < Payoff(s_{i,j+1})} * Payoff(s_{i,j+1}) * \phi(s_{i,j})$}\\
+\COMMENT{$A_{i,j} \leftarrow \phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \cdot \mathbb{I}_{w^T \cdot \phi(s_{i,j+1}) \geq Payoff(s_{i,j+1})} \cdot \phi(s_{i,j+1}))^T$}\\
+\COMMENT{$b_{i,j} \leftarrow \gamma \cdot \mathbb{I}_{w^T \cdot \phi(s_{i,j+1}) < Payoff(s_{i,j+1})} \cdot  Payoff(s_{i,j+1}) \cdot \phi(s_{i,j})$}\\
 A \GETS 0, B \GETS 0, w \GETS 0\\
 \FOR i \GETS 0 \TO m - 1 \DO
 \BEGIN
 \FOR j \GETS 0 \TO n-1 \DO
 \BEGIN
 Q \GETS Payoff(s_{i,j+1})\\
-P \GETS \phi(s_{i,j+1}) \mbox{ {\bf if }} j < n-1 \mbox{\bf{ and }} Q \leq w \cdot \phi(s_{i,j+1}) \mbox{\bf{ else} } 0\\
-R \GETS Q \mbox{ {\bf if }} Q > w \cdot P \mbox{\bf{ else} } 0 \\
-A \GETS A + \phi(s_{i,j}) \cdot (\phi(s_{i,j}) - e^{-r_{t_j}(t_{j+1}-t_j)} * P)^T\\
-B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} *  R * \phi(s_{i,j})\\
+P \GETS \phi(s_{i,j+1}) \mbox{ {\bf if }} j < n-1 \mbox{\bf{ and }} Q \leq w^T \cdot \phi(s_{i,j+1}) \mbox{\bf{ else} } 0\\
+R \GETS Q \mbox{ {\bf if }} Q > w^T \cdot P \mbox{\bf{ else} } 0 \\
+A \GETS A + \phi(s_{i,j}) \cdot (\phi(s_{i,j}) - e^{-r_{t_j}(t_{j+1}-t_j)} \cdot P)^T\\
+B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} \cdot  R \cdot \phi(s_{i,j})\\
 \END\\
 w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize == 0
 \END\\
@@ -275,13 +318,13 @@ w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize
 \end{frame}
 
 \begin{frame}
-\frametitle{Fitted Q-Iteration for Continuation Value}
+\frametitle{Fitted Q-Iteration for American Options Pricing}
 \pause
 \begin{pseudocode}{FQI-AmericanPricing}{SP[0:m, 0:n+1]}
 \COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
 \COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
 \COMMENT{$A_{i,j} \leftarrow \phi(s_{i,j}) \cdot \phi(s_{i,j})^T$}\\
-\COMMENT{$b_{i,j} \leftarrow \gamma \max(Payoff(s_{i,j+1}), w \cdot \phi(s_{i,j+1})) * \phi(s_{i,j})$}\\
+\COMMENT{$b_{i,j} \leftarrow \gamma \cdot \max(Payoff(s_{i,j+1}), w^T \cdot \phi(s_{i,j+1})) \cdot \phi(s_{i,j})$}\\
 A \GETS 0, B \GETS 0, w \GETS 0\\
 \FOR i \GETS 0 \TO m - 1 \DO
 \BEGIN
@@ -290,7 +333,7 @@ A \GETS 0, B \GETS 0, w \GETS 0\\
 Q \GETS Payoff(s_{i,j+1})\\
 P \GETS \phi(s_{i,j+1}) \mbox{ {\bf if }} j < n-1 \mbox{\bf{ else} } 0\\
 A \GETS A + \phi(s_{i,j}) \cdot \phi(s_{i,j})^T\\
-B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} *  \max(Payoff(s_{i,j+1}), w \cdot P) * \phi(s_{i,j})\\
+B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} \cdot  \max(Payoff(s_{i,j+1}), w^T \cdot P) \cdot \phi(s_{i,j})\\
 \END\\
 w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize == 0
 \END\\
