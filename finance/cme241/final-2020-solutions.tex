@@ -93,7 +93,7 @@ The output upon running \lstinline{__main__} is as follows:
 
 \vspace{3mm}
 
-\question Assume you are the owner of a bank where customers come in randomly everyday to make cash deposits and to withdraw cash from their accounts. At the end of each day, you can borrow (from another bank, without transaction costs) any cash amount $y > 0$ at a constant daily interest rate $R$, meaning you will need to pay back a cash amount of $y(1+R)$ at the end of the next day. Also, at the end of each day, you can invest a portion of your bank's cash in a risky (high return, high risk) asset. Assume you can change the amount of your investment in the risky asset each day, with no transaction costs (this is your mechanism to turn any amount of cash into risky investment or vice-versa). The key point here is that once you make a decision to invest a portion of your cash in the risky asset at the end of a day, you will not have access to this invested amount as cash that otherwise could have been made available to customers who come in the next day for withdrawals. More importantly, if the cash amount $c$ in your bank at the start of a day is less than $C$, the banking regulator will make you pay a penalty of $K \cdot \cot(\frac {\pi \cdot c}{2C})$ (for a given constant $K$).
+\question Assume you are the owner of a bank where customers come in randomly everyday to make cash deposits and to withdraw cash from their accounts. At the end of each day, you can borrow (from another bank, without transaction costs) any cash amount $y > 0$ at a constant daily interest rate $R$, meaning you will need to pay back a cash amount of $y(1+R)$ at the end of the next day. Also, at the end of each day, you can invest a portion of your bank's cash in a risky (high return, high risk) asset. Assume you can change the amount of your investment in the risky asset each day, with no transaction costs (this is your mechanism to turn any amount of cash into risky investment or vice-versa). The key point here is that once you make a decision to invest a portion of your cash in the risky asset at the end of a day, you will not have access to this invested amount as cash that otherwise could have been made available to customers who come in the next day for withdrawals. More importantly, if the cash amount $c$ in your bank at the start of a day is less than $C$, the banking regulator will make you pay a penalty of $K \cdot \cot(\frac {\pi \cdot c}{2C})$ (for a given constant $C > 0$ and a given constant $K > 0$).
 
 For convenience, we make the following assumptions:
 \begin{itemize}
@@ -109,23 +109,54 @@ For convenience, we make the following assumptions:
 \item {\bf 5 points:} In a practical setting, we do not know the exact probability distributions of the customer deposits and withdrawals. Neither do we know the exact stochastic process of the risky asset. But assume we have access to a large set of historical data detailing daily customer deposits and withdrawal requests, as well as daily historical market valuations of the risky asset. Assume we also have data on new customers as well as leaving customers (sometimes due to their withdrawal requests not being satisfied promptly). Describe your approach to solve this problem with Reinforcement Learning by using the historical data described above. Specify which Reinforcement Learning algorithm you would use, including any customizations for the specifics of this problem. Although you are not expected to write any code for this problem, provide sufficient detail that will enable a programmer with knowledge of RL to implement your ideas.
 \end{itemize}
 
-{\bf Answer: } {\em State} (when the bank closes its office for the day, i.e., after all deposits and withdrawal requests of the day are done) on day $1\leq t \leq T$ is given by the 5-tuple $(t,x_t,y_t,z_t,w_t) \in \mathbb{R}^5$ where $x_t$ is the current cash in the bank, $y_t$ is the current price of one share of the stock, $z_t$ is previous ($t-1$) day's cash borrowing, and $w_t$ is the shares invested in on the previous ($t-1$) day.
+{\bf Answer: } Since there are no transactions costs with buying/selling shares or with borrowing cash, we assume that at the end of each day (after the bank has closed its doors for the day), the following sequence of events occur:
+\begin{itemize}
+\item Event E1: We sell the entire quantity of stock we purchased the previous day
+\item Event E2: Then we make a decision to increase or decrease the quantity of cash-borrowing (i.e. decision to increase or decrease our liability)
+\item Event E3: Then we make a decision to purchase a certain quantity of stock (to hold over the course of the next day)
+\end{itemize}
+In our MDP, we observe the {\em State} after event E1 and before event E2. The {\em State} will consist of 5 components:
+\begin{itemize}
+\item The date, denoted as $t \in \{1, 2, \ldots, T\}$
+\item The net cash in the bank after selling the previous day's stock purchase, denoted as $x_t \in \mathbb{R}_{\geq 0}$
+\item The liability (money currently owed to the bank from whom we borrow), denoted as $l_t \in \mathbb{R}_{\geq 0}$
+\item The quantity of withdrawal requests we were not able to fulfill earlier in the day (backlogged withdrawals), denoted as $b_t \in \mathbb{R}_{\geq 0}$
+\item The value of a single share of the stock, denoted as $s_t \in \mathbb{R}_{\geq 0}$
+\end{itemize}
 
-{\em Action} (when the bank closes its office for the day, i.e., after all deposits and withdrawal requests of the day are done) is given by the 2-tuple $(a_t,b_t) \in \mathbb{R}^2$ where $a_t$ is the cash to be borrowed on day $t$ and $b_t$ is the number of shares to invest in on day $t$. $(a_t,b_t)$ is constrained on each day to ensure that the start-of-next-day cash $c_t  = x_t+w_ty_t - z_t(1+R) + a_t - b_ty_t > 0$ and when $c_t \leq C$, we also need to ensure that $c_t \geq K\cot(\frac {\pi \cdot c_t} {2C})$.
+A key element in this problem is the fact that the regulator requires us to have a minimum amount of cash $c_t$ at the start of each day. Since $\cot$ is a monotonically decreasing function in $(0, \frac {\pi} 2]$), we have the condition $c_t \geq c_{min}$ where $c_{min} \in (0, C)$ is defined as:
+$$c_{min} = K\cdot \cot(\frac {\pi \cdot c_{min}} {2C})$$
 
-Let the environment random variables be: Next day's deposits $p_{t+1}$, next day's withdrawal requests $q_{t+1}$ and the percentage change $s_{t+1}$ in the price of one share of the stock from current day to the next day. Then, the next day's state $(t+1,x_{t+1},y_{t+1},z_{t+1},w_{t+1})$ (for $1\leq t \leq T-1$) is given by:
+Now let us consider event E2. We denote $y_t \in \mathbb{R}$ as the further increase or decrease in our liability, meaning $y_t$ can be positive (meaning: borrow) or negative (meaning: pay off some of the current liability). Note that if we choose to pay off some of the current liability, there are some constraints. Firstly, we cannot make our net liability negative (we are not allowed to net-lend money to the bank from whom we borrow), hence $l_t + y_t \geq 0 \Rightarrow y_t \geq -l_t$. Secondly, we cannot let our net cash go below $c_{min}$, hence $x_t + y_t \geq c_{min} \Rightarrow y_t \geq c_{min} - x_t$. Combining these two inequalities, we get the following constraint on $y_t$:
+$$y_t \geq \max(-l_t, c_{min} - x_t)$$
 
-$$x_{t+1} = x_t + w_ty_t - z_t(1+R) + a_t - b_ty_t - K\cot(\frac {\pi \cdot (x_t + w_ty_t - z_t(1+R) + a_t - b_ty_t)} {2C}) + p_{t+1} - q_{t+1}$$
-$$y_{t+1} = y_t(1+s_{t+1})$$
-$$z_{t+1} = a_t$$
-$$w_{t+1} = b_t$$
+Now let us consider event E3. We denote $z_t\in \mathbb{R}$ as the number of shares of stock to purchase. But note that this is constrained by the fact that the net cash cannot fall below $c_{min}$. Therefore, $x_t + y_t - z_ts_t \geq c_{min}$ which sets a constraint on $z_t$ as:
+$$0 \leq z_t \leq \frac {x_t + y_t - c_{min}} {s_t}$$
+ 
+In our MDP, the {\em Action} is defined as the pair $(y_t,z_t)$ with the {\em Action Space} for $t < T$ defined by the constraints specified above for $y_t$ and $z_t$ (note: $y_T = z_T = 0$).
 
-{\em Reward} on day $t$ for $1\leq t \leq T-1$ is 0, and {\em Reward} on day $T$ is $U(x_T + w_Ty_T - z_T(1+R))$ (where $U(\cdot)$ is the Utility function defined by the bank owner's risk-aversion).
+To specify the state transitions, we need to define a few random variables that will define the dynamics of the MDP.
+\begin{itemize}
+\item Deposits on day $t$ denoted by the random variable $d_t \in \mathbb{R}_{\geq 0}$
+\item Withdrawal requests on day $t$ denoted by the random variable $w_t = f(t, b_{t-1})$ for $2 \leq t \leq T$ where $f: \{1, \ldots, T\} \times \mathbb{R}_{\geq 0} \rightarrow \mathbb{R}_{\geq 0}$ describes the usual (random) withdrawal requests as well as some of the previous day's unfulfilled withdrawal requests spilling to the current day
+\item Value of a single share of stock on day $t$ denoted by the random variable $s_t = g(t, s_{t-1})$ for $2\leq t \leq T$ where $g: \{1, \ldots, T\} \times \mathbb{R}_{\geq 0} \rightarrow \mathbb{R}_{\geq 0}$ describes the stochastic movement of the stock price from one day to the next
+\end{itemize}
+
+Armed with these random variables, we are now ready to specify the state transitions.
+
+$$x_{t+1} = \max(x_t + y_t - z_ts_t - K \cdot \cot(\frac {\pi \cdot \min(x_t + y_t - z_ts_t, C)} {2C})   + d_{t+1} - f(t+1, b_t), 0) + y_t \cdot g(t+1, s_t)$$
+$$l_{t+1} = (l_t + y_t)(1+R)$$
+$$b_{t+1} = \max(-(x_t + y_t - z_ts_t - K \cdot \cot(\frac {\pi \cdot \min(x_t + y_t - z_ts_t, C)} {2C})   + d_{t+1} - f(t+1,b_t)), 0)$$
+$$s_{t+1} = g(t+1, s_t)$$
+
+
+The {\em Reward} on day $t$ for $1\leq t \leq T-1$ is 0, and the {\em Reward} on day $T$ is $U(x_T - l_T)$ (where $U(\cdot)$ is the Utility function defined by the bank owner's risk-aversion). 
+
 
 We'd like to solve this problem with Reinforcement Learning. Although there are many different ways by which we could approach solving this problem and many different potential RL algorithms, here are some ideas.
 \begin{itemize}
-\item We use the historical data on a) Deposits b) Withdrawals c) Daily Stock Price movements to build a model of the above MDP (i.e., state transition probabilities based on the statistically-estimated probabilities of deposits, withdrawals and stock moves on any given day). One can get more sophisticated here by recording various explanatory factors for deposits, withdrawals and stock moves (eg: Day of week, demographics of current customers, econometric factors etc.). We would then have to predict the future movements of some of these explanatory factors and use those to predict the probabilities of future deposits, withdrawals and stock moves. We would use this model of the MDP to generate a large set of simulation episodes that account for above-mentioned probabilities. A much simpler way to generate these simulation episodes is to simple database the historical deposits, withdrawals, stock moves, and then to randomly pull a sample from the database anytime our simulation requires generation of the next state. This would operate as an experience-replay and this simple approach would make for a good first-version prototype before developing a more sophisticated simulator.
-\item Since the action space is large (large number of possible $(a_t,b_t)$ tuples), it would be suitable to employ a Policy Gradient algorithm. Secondly, the state space is also large, so will need a good function approximation for the $Q$-value function (that Policy Gradient requires). This would be an Actor-Critic algorithm. One would need to make a prudent choice of features for both the Actor and the Critic neural networks (although an initial prototype could be quickly built with linear-function approximations).
+\item We use the historical data on a) Deposits b) Withdrawals c) Daily Stock Price movements to build a model of the above MDP (i.e., state transition probabilities based on the statistically-estimated probabilities of deposits $d_t$, withdrawals $f(t,b_{t-1})$ and stock moves $g(t,s_{t-1})$). One can get more sophisticated here by recording various explanatory factors for deposits, withdrawals and stock moves (eg: Day of week, demographics of current customers, econometric factors etc.). We would then have to predict the future movements of some of these explanatory factors and use those to predict the probabilities of future deposits, withdrawals and stock moves. We would use this model of the MDP to generate a large set of simulation episodes that incorporate the above-mentioned estimated probabilities. 
+\item Since the action space is large (large number of possible $(y_t,z_t)$ tuples), it would be suitable to employ a Policy Gradient algorithm. Secondly, the state space is also large, so will need a good function approximation for the $Q$-value function (that Policy Gradient requires). This would be an Actor-Critic algorithm. One would need to make a prudent choice of features for both the Actor and the Critic neural networks (although an initial prototype could be quickly built with linear-function approximations).
 \end{itemize}
  
 \end{questions}
