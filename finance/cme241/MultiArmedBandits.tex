@@ -445,6 +445,7 @@ $$=\mathbb{E}_{\mathcal{R}|h_t}[\mathbbm{1}_{a=\argmax_{a\in\mathcal{A}} Q(a)}]$
 $$a_t = \argmax_{a\in\mathcal{A}} Q(a)$$
 \item Thompson Sampling achieves Lai-Robbins lower bound!
 \item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/ts_gaussian.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Gaussian Distributions
+\item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/ts_bernoulli.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Bernoulli Distributions
 \end{itemize}
 \end{frame}
 
@@ -489,9 +490,9 @@ $$\tilde{M} = (\tilde{\mathcal{S}}, \mathcal{A}, \tilde{\mathcal{P}}, \mathcal{R
 \item For arm $a$, reward=1 with probability $\mu_a$ (=0 with probability $1-\mu_a$)
 \item Assume we have $m$ arms $a_1, a_2, \ldots, a_m$
 \item The information state is $\tilde{s} = (\alpha_{a_1}, \beta_{a_1}, \alpha_{a_2}, \beta_{a_2}\ldots, \alpha_{a_m}, \beta_{a_m})$
-\item $\alpha_a$ records the pulls of arms $a$  for which reward was 0
-\item $\beta_a$ records the pulls of arm $a$ for which reward was 1
-\item In the long-run, $\frac {\beta_a} {\alpha_a + \beta_a} \rightarrow \mu_a$
+\item $\alpha_a$ records the pulls of arms $a$  for which reward was 1
+\item $\beta_a$ records the pulls of arm $a$ for which reward was 0
+\item In the long-run, $\frac {\alpha_a} {\alpha_a + \beta_a} \rightarrow \mu_a$
 \end{itemize}
 \end{frame}
 
@@ -518,8 +519,8 @@ $$\tilde{M} = (\tilde{\mathcal{S}}, \mathcal{A}, \tilde{\mathcal{P}}, \mathcal{R
 \item Start with $Beta(\alpha_a, \beta_a)$ prior over reward function $\mathcal{R}^a$
 \item Each time $a$ is selected, update posterior for $\mathcal{R}^a$ as:
 \begin{itemize}
-\item $Beta(\alpha_a+1, \beta_a)$ if $r=0$
-\item $Beta(\alpha_a, \beta_a+1)$ if $r=1$
+\item $Beta(\alpha_a+1, \beta_a)$ if $r=1$
+\item $Beta(\alpha_a, \beta_a+1)$ if $r=0$
 \end{itemize}
 \item This defines transition function $\tilde{\mathcal{P}}$ for the Bayes-adaptive MDP
 \item $(\alpha_a, \beta_a)$ in information state provides reward model $Beta(\alpha_a, \beta_a)$
