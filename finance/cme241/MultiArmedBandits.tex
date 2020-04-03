@@ -285,8 +285,9 @@ $$c > 0$$
 $$d = \min_{a|\Delta_a > 0} \Delta_a$$
 $$\epsilon_t = \min(1, \frac {c|\mathcal{A}|} {d^2t}\}$$
 \item Decaying $\epsilon_t$-Greedy algorithm has asymptotic {\em logarithmic} total regret
-\item Unfortunately, schedule requires advance knowledge of gaps
-\item Goal: Find an algorithm with sublinear total regret for any multi-armed bandit (without any prior knowledge of $\mathcal{R}$)
+\item Unfortunately, above schedule requires advance knowledge of gaps
+\item Practically, implementing {\em some} decay schedule helps considerably
+\item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/epsilon_greedy.py}{\underline{\textcolor{blue}{Educational Code}}} for decaying $\epsilon$-greedy with optimistic initialization
 \end{itemize}
 \end{frame}
 
@@ -296,6 +297,7 @@ $$\epsilon_t = \min(1, \frac {c|\mathcal{A}|} {d^2t}\}$$
 \frametitle{Lower Bound}
 \pause
 \begin{itemize}[<+->]
+\item Goal: Find an algorithm with sublinear total regret for any multi-armed bandit (without any prior knowledge of $\mathcal{R}$)
 \item The performance of any algorithm is determined by the similarity between the optimal arm and other arms
 \item Hard problems have similar-looking arms with different means
 \item Formally described by KL-Divergence $KL(\mathcal{R}^a||\mathcal{R}^{a^*})$ and gaps $\Delta_a$
@@ -350,13 +352,13 @@ $$a_t = \argmax_{a\in\mathcal{A}} \{ \hat{Q}_t(a) + \hat{U}_t(a) \}$$
 \frametitle{Hoeffding's Inequality}
 \pause
 \begin{theorem}[Hoeffding's Inequality]
-Let $X_1, \ldots, X_t$ be i.i.d. random variables in $[0,1]$, and let $$\bar{X}_t = \frac 1 t \sum_{s=1}^t X_s$$ be the sample mean. Then,
-$$\mathbb{P}[\mathbb{E}[X] > \bar{X}_t + u] \leq e^{-2tu^2}$$
+Let $X_1, \ldots, X_t$ be i.i.d. random variables in $[c,d]$, and let $$\bar{X}_t = \frac 1 t \sum_{s=1}^t X_s$$ be the sample mean. Then,
+$$\mathbb{P}[\mathbb{E}[X] > \bar{X}_t + u] \leq e^{-2t(\frac u {d-c})^2}$$
 \end{theorem}
 \begin{itemize}[<+->]
 \item We will apply Hoeffding's Inequality to rewards of the bandits
 \item Conditioned on selecting action $a$
-$$\mathbb{P}[Q(a) > \hat{Q}_t(a) + \hat{U}_t(a)] \leq e^{-2N_t(a)\hat{U}_t(a)^2}$$
+$$\mathbb{P}[Q(a) > \hat{Q}_t(a) + \hat{U}_t(a)] \leq e^{-2N_t(a)(\frac {\hat{U}_t(a)} {d-c})^2}$$
 \end{itemize}
 \end{frame}
 
@@ -368,11 +370,11 @@ $$\mathbb{P}[Q(a) > \hat{Q}_t(a) + \hat{U}_t(a)] \leq e^{-2N_t(a)\hat{U}_t(a)^2}
 \begin{itemize}[<+->]
 \item Pick a small probability $p$ that $Q(a)$ exceeds UCB $\{\hat{Q}_t(a) + \hat{U}_t(a)\}$
 \item Now solve for $\hat{U}_t(a)$
-$$e^{-2N_t(a)\hat{U}_t(a)^2} = p$$
-$$\Rightarrow \hat{U}_t(a) = \sqrt{\frac {-\log p} {2 N_t(a)}}$$
+$$e^{-2N_t(a)(\frac {\hat{U}_t(a)} {d-c})^2} = p$$
+$$\Rightarrow \hat{U}_t(a) = (d-c)\sqrt{\frac {-\log p} {2 N_t(a)}}$$
 \item Reduce $p$ as we observe more rewards, eg: $p = t^{-4}$
 \item This ensures we select optimal action as $t\rightarrow \infty$
-$$\hat{U}_t(a) = \sqrt{\frac {2 \log t} {N_t(a)}}$$
+$$\hat{U}_t(a) = (d-c)\sqrt{\frac {2 \log t} {N_t(a)}}$$
 \end{itemize}
 \end{frame}
 
@@ -380,11 +382,12 @@ $$\hat{U}_t(a) = \sqrt{\frac {2 \log t} {N_t(a)}}$$
 \frametitle{UCB1}
 \pause
 This leads to the UCB1 algorithm
-$$a_t = \argmax_{a\in \mathcal{A}} \{ \hat{Q}_t(a) + \sqrt{\frac {2 \log t} {N_t(a)}} \}$$
+$$a_t = \argmax_{a\in \mathcal{A}} \{ \hat{Q}_t(a) + (d-c)\sqrt{\frac {2 \log t} {N_t(a)}} \}$$
 \begin{theorem}
-The UCB Algorithm achieves asymptotic logarithmic total regret
+The UCB1 Algorithm achieves asymptotic logarithmic total regret
 $$\lim_{t\rightarrow \infty} L_t \leq 8 \log t \sum_{a|\Delta_a > 0} \Delta_a$$
 \end{theorem}
+\href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/ucb1.py}{\underline{\textcolor{blue}{Educational Code}}} for UCB1 algorithm
 \end{frame}
 
 \begin{frame}
@@ -441,6 +444,7 @@ $$=\mathbb{E}_{\mathcal{R}|h_t}[\mathbbm{1}_{a=\argmax_{a\in\mathcal{A}} Q(a)}]$
 \item Select action maximizing value of sample
 $$a_t = \argmax_{a\in\mathcal{A}} Q(a)$$
 \item Thompson Sampling achieves Lai-Robbins lower bound!
+\item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/ts_gaussian.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Gaussian Distributions
 \end{itemize}
 \end{frame}
 
