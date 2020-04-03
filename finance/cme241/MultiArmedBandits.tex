@@ -408,7 +408,7 @@ $$\lim_{t\rightarrow \infty} L_t \leq 8 \log t \sum_{a|\Delta_a > 0} \Delta_a$$
 \pause
 \begin{itemize}[<+->]
 \item Assume reward distribution is Gaussian, $\mathcal{R}^a(r) =\mathcal{N}(r;\mu_a, \sigma_a^2)$
-\item Compute Gaussian posterior over $\mu_a$ and $\sigma_a^2$ (by Bayes Law)
+\item Compute Gaussian posterior over $\mu_a,\sigma_a^2$  (Bayes update details \href{https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/lecture5.pdf}{\underline{\textcolor{blue}{here}}})
 $$\mathbb{P}[\mu_a, \sigma_a^2|h_t] \propto \mathbb{P}[\mu_a, \sigma_a^2] \cdot \prod_{t|a_t=a} \mathcal{N}(r_t;\mu_a, \sigma_a^2)$$
 \item Pick action that maximizes Expectation of $c$ std-devs above mean
 $$a_t = \argmax_{a\in\mathcal{A}} \mathbb{E}[\mu_a + \frac {c \sigma_a} {\sqrt{N_t(a)}}]$$
