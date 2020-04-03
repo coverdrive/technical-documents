@@ -381,7 +381,7 @@ $$\hat{U}_t(a) = (d-c)\sqrt{\frac {2 \log t} {N_t(a)}}$$
 \begin{frame}
 \frametitle{UCB1}
 \pause
-This leads to the UCB1 algorithm
+Yields UCB1 algorithm for arbitrary-distribution arms bounded in $[c,d]$
 $$a_t = \argmax_{a\in \mathcal{A}} \{ \hat{Q}_t(a) + (d-c)\sqrt{\frac {2 \log t} {N_t(a)}} \}$$
 \begin{theorem}
 The UCB1 Algorithm achieves asymptotic logarithmic total regret
