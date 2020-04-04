@@ -450,6 +450,60 @@ $$a_t = \argmax_{a\in\mathcal{A}} Q(a)$$
 \end{frame}
 
 \begin{frame}
+\frametitle{Gradient Bandit Algorithms}
+\pause
+\begin{itemize}[<+->]
+\item Gradient Bandit Algorithms are based on Stochastic Gradient Ascent
+\item We optimize {\em Score} parameters $s_a$ for $a\in \mathcal{A} = \{a_1, \ldots, a_m\}$
+\item Objective function to be maximized is the Expected Reward
+$$J(s_{a_1}, \ldots, s_{a_m}) = \sum_{a\in\mathcal{A}} \pi(a) \cdot \mathbb{E}[r|a]$$
+\item $\pi(\cdot)$ is probabilities of taking actions (based on a stochastic policy)
+\item The stochastic policy governing $\pi(\cdot)$ is a function of the {\em Scores}:
+$$\pi(a) = \frac {e^{s_a}} {\sum_{b\in \mathcal{A}} e^{s_b}}$$
+\item {\em Scores} represent the relative value of actions based on seen rewards
+\item Note: $\pi$ has a Boltzmann distribution (Softmax-function of {\em Scores})
+\item We move the {\em Score} parameters $s_a$ (hence, action probabilities $\pi(a)$) 
+such that we ascend along the direction of gradient of objective $J(\cdot)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Gradient of Expected Reward}
+\pause
+\begin{itemize}[<+->]
+\item To construct Gradient of $J(\cdot)$, we calculate $\pderiv{J}{s_a}$ for all $a\in \mathcal{A}$
+$$\pderiv{J}{s_a} = \pderiv{}{s_a}(\sum_{a'\in\mathcal{A}} \pi(a') \cdot \mathbb{E}[r|a'])
+ = \sum_{a'\in\mathcal{A}} \mathbb{E}[r|a'] \cdot \pderiv{\pi(a')} {s_a}$$ 
+$$ = \sum_{a'\in\mathcal{A}} \pi(a') \cdot \mathbb{E}[r|a'] \cdot \pderiv{\log \pi(a')} {s_a} 
+= \mathbb{E}_{a'\sim \pi, r\sim \mathcal{R}^{a'}}[r \cdot \pderiv{\log \pi(a')} {s_a}]$$
+\item We know from standard softmax-function calculus that:
+$$\pderiv{\log \pi(a')} {s_a} = \pderiv{}{s_a}(\log\frac {e^{s_{a'}}} {\sum_{b\in \mathcal{A}} e^{s_b}}) = \mathbbm{1}_{a=a'} - \pi(a)$$
+\item Therefore $\pderiv{J}{s_a}$ can we re-written as:
+$$=\mathbb{E}_{a'\sim \pi, r\sim \mathcal{R}^{a'}}[r \cdot  (\mathbbm{1}_{a=a'} - \pi(a))]$$
+\item At each step $t$, we approximate the gradient with $(a_t, r_t)$ sample as:
+$$r_t \cdot (\mathbbm{1}_{a=a_t} - \pi_t(a)) \mbox{ for all } a \in \mathcal{A}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Score updates with Stochastic Gradient Ascent}
+\pause
+\begin{itemize}[<+->]
+\item $\pi_t(a)$ is the probability of $a$ at step $t$ derived from score $s_t(a)$ at step $t$
+\item Reduce variance of estimate with baseline $B$ that's independent of $a$:
+$$(r_t -B) \cdot (\mathbbm{1}_{a=a_t} - \pi_t(a)) \mbox{ for all } a \in \mathcal{A}$$
+\item This doesn't introduce bias in the estimate of gradient of $J(\cdot)$ because
+$$\mathbb{E}_{a'\sim \pi}[B \cdot (\mathbbm{1}_{a=a'} - \pi(a))] = \mathbb{E}_{a'\sim \pi}[B \cdot \pderiv{\log \pi(a')} {s_a}]$$
+$$= B \cdot \sum_{a'\in\mathcal{A}} \pi(a') \cdot \pderiv{\log \pi(a')} {s_a} = B \cdot \sum_{a'\in\mathcal{A}} \pderiv{\pi(a')} {s_a} = B \cdot \pderiv{}{s_a}(\sum_{a'\in\mathcal{A}} \pi(a')) = 0$$
+\item We can use $B = \bar{r_t} =\frac 1 t \sum_{s=1}^t r_s = $ average rewards until step $t$
+\item So, the update to scores $s_t(a)$ for all $a\in\mathcal{A}$ is: 
+$$s_{t+1}(a) = s_t(a) + \alpha \cdot (r_t - \bar{r_t}) \cdot (\mathbbm{1}_{a=a_t} - \pi_t(a))$$
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
 \frametitle{Value of Information}
 \pause
 \begin{itemize}[<+->]
@@ -544,6 +598,20 @@ $$\tilde{M} = (\tilde{\mathcal{S}}, \mathcal{A}, \tilde{\mathcal{P}}, \mathcal{R
 \end{frame}
 
 \begin{frame}
+\frametitle{Summary of approaches to Bandit Algorithms}
+\pause
+\begin{itemize}[<+->]
+\item Naive Exploration (eg: $\epsilon$-Greedy)
+\item Optimistic Initialization
+\item Optimism in the face of uncertainty (eg: UCB, Bayesian UCB)
+\item Probability Matching (eg: Thompson Sampling)
+\item Gradient Bandit Algorithms
+\item Information State Space MDP, incorporating value of information
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Contextual Bandits}
 \pause
 \begin{itemize}[<+->]
@@ -559,6 +627,7 @@ $$\tilde{M} = (\tilde{\mathcal{S}}, \mathcal{A}, \tilde{\mathcal{P}}, \mathcal{R
 \end{itemize}
 \item The AI agent's goal is to maximize the Cumulative Reward:
 $$\sum_{t=1}^T r_t$$
+\item Extend Bandit Algorithms to Action-Value $Q(s,a)$ (instead of $Q(a)$)
 \end{itemize}
 \end{frame}
 
