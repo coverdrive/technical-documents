@@ -90,7 +90,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[A.I. For Retail]{A.I. for Optimal Decisioning under Uncertainty} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[A.I. For Retail]{A.I. for Dynamic Decisioning under Uncertainty} % The short title appears at the bottom of every slide, the full title is only on the title page
 \subtitle{Applied to Inventory and Price Optimization}
 \author{Ashwin Rao} % Your name
 \institute[Target/Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -235,7 +235,7 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \pause
 $$V_{\pi}(s) = \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
-\item Optimal Value Function $V_{*}(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
+\item  Value Function $V_{*}(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
 \pause
 $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
