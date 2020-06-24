@@ -154,7 +154,7 @@ For simplicity, we state and solve the problem for 1 risky asset but the solutio
 \item Balance constraint implies the following process for Wealth $W_t$
 $$dW_t = ((\pi_t \cdot (\mu - r) + r) \cdot W_t - c_t) \cdot dt + \pi_t \cdot \sigma \cdot W_t \cdot dz_t$$
 \item At any time $t$, determine optimal $[\pi(t,W_t), c(t, W_t)]$ to maximize:
-$$E[\int_t^T \frac {e^{-\rho (s-t)} \cdot c_s^{1-\gamma}} {1-\gamma} \cdot ds + \frac {e^{-\rho (T-t)} \cdot B(T) \cdot W_T^{1-\gamma}} {1-\gamma} \mid W_t]$$
+$$\mathbb{E}[\int_t^T \frac {e^{-\rho (s-t)} \cdot c_s^{1-\gamma}} {1-\gamma} \cdot ds + \frac {e^{-\rho (T-t)} \cdot B(T) \cdot W_T^{1-\gamma}} {1-\gamma} \mid W_t]$$
 \item where $\rho \geq 0$ is the utility discount rate, $B(T)$ is the bequest function
 \item We can solve this problem for arbitrary bequest $B(T)$ but for simplicity, will consider $B(T) = \epsilon^{\gamma}$
 where $0 < \epsilon \ll 1$, meaning ``no bequest'' (we need this $\epsilon$-formulation for technical reasons).
@@ -164,44 +164,48 @@ where $0 < \epsilon \ll 1$, meaning ``no bequest'' (we need this $\epsilon$-form
 
 \begin{frame}
 \frametitle{Continuous-Time Stochastic Control}
-\pause
 \begin{itemize}[<+->]
 \item Think of this as a continuous-time Stochastic Control problem
-\item The {\em State} is $(t, W_t)$
-\item The {\em Action} is $[\pi_t, c_t]$
-\item The {\em Reward} per unit time is $U(c_t)$ 
-\item The {\em Return} is the usual accumulated discounted {\em Reward}
+\item The {\em State} at time $t$ is $(t, W_t)$
+\item The {\em Action} at time $t$ is $[\pi_t, c_t]$
+\item The {\em Reward} per unit time at time $t$ is $U(c_t) = \frac {c_t^{1 - \gamma}} {1 - \gamma}$ 
+\item The {\em Return} at time $t$ is the accumulated discounted {\em Reward}:
+$$\int_t^T e^{-\rho(s-t)} \cdot \frac {c_s^{1-\gamma}} {1-\gamma} \cdot ds$$
 \item Find {\em Policy} $: (t, W_t) \rightarrow [\pi_t, c_t]$ that maximizes the {\em Expected Return}
 \item Note: $c_t \geq 0$, but $\pi_t$ is unconstrained
 \end{itemize}
 \end{frame}
 
-\section{HJB Equation as Optimal Discounted Value Function PDE}
+
+\section{HJB Equation as Optimal Value Function PDE}
 
 \begin{frame}
-\frametitle{Optimal Discounted Value Function}
-\pause
+\frametitle{Optimal Value Function}
 \begin{itemize}[<+->]
-\item Instead of the usual Value Function ({\em Expected Return} from a given {\em State}), we consider the Discounted Value Function
-\item Discounted Value Function is simply the Value Function further discounted to time 0
-\item We focus on the Optimal Discounted Value Function $V^*(t, W_t)$
-$$V^*(t, W_t) = \max_{\pi_t, c_t} E[\int_t^T \frac {e^{-\rho s} \cdot c_s^{1-\gamma}}{1 - \gamma} \cdot ds + \frac {e^{-\rho T} \cdot \epsilon^{\gamma} \cdot W_T^{1-\gamma}} {1 - \gamma} ]$$
-\item $V^*(t, W_t)$ satisfies a simple recursive formulation for $0 \leq t < t_1 < T$.
-$$V^*(t, W_t) = \max_{\pi_t, c_t} E[V^*(t_1, W_{t_1}) + \int_t^{t_1} \frac {e^{-\rho s} \cdot c_s^{1-\gamma}} {1 - \gamma} \cdot ds]$$
+\item Value Function for a {\em State} (under a given policy) is the {\em Expected Return} from the {\em State} (when following the given policy)
+\item We focus on the Optimal Value Function $V^*(t, W_t)$
+$$V^*(t, W_t) = \max_{\pi, c} \mathbb{E}_t[\int_t^T \frac {e^{-\rho (s-t)} \cdot c_s^{1-\gamma}}{1 - \gamma} \cdot ds + \frac {e^{-\rho (T-t)} \cdot \epsilon^{\gamma} \cdot W_T^{1-\gamma}} {1 - \gamma} ]$$
+\item $V^*(t, W_t)$ satisfies a simple recursive formulation for $0 \leq t < t_1 < T$
+$$V^*(t, W_t) = \max_{\pi, c} \mathbb{E}_t[ \int_t^{t_1} \frac {e^{-\rho (s-t)} \cdot c_s^{1-\gamma}} {1 - \gamma} \cdot ds + e^{-\rho(t_1-t)} \cdot V^*(t_1, W_{t_1})]$$
+\pause
+$$\Rightarrow e^{-\rho t} \cdot V^*(t, W_t) = \max_{\pi, c} \mathbb{E}_t[ \int_t^{t_1} \frac {e^{-\rho s} \cdot c_s^{1-\gamma}} {1 - \gamma} \cdot ds + e^{-\rho t_1} \cdot V^*(t_1, W_{t_1})]$$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{HJB Equation for Optimal Discounted Value Function}
+\frametitle{HJB Equation for Optimal Value Function}
 \pause
 Rewriting in stochastic differential form, we have the HJB formulation
-$$\max_{\pi_t, c_t} E[dV^*(t, W_t) + \frac {e^{-\rho t} \cdot c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = 0$$
+$$\max_{\pi_t, c_t} \mathbb{E}_t[d(e^{-\rho t} \cdot V^*(t, W_t)) + \frac {e^{-\rho t} \cdot c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = 0$$
+\pause
+$$\Rightarrow \max_{\pi_t, c_t} \mathbb{E}_t[dV^*(t, W_t) + \frac {c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = \rho V^*(t, W_t)$$
 \pause
 Use Ito's Lemma on $dV^*$, remove the $dz_t$ term since it's a martingale, and divide throughout by $dt$ to produce the HJB Equation in PDE form:
-$$\max_{\pi_t, c_t} [\pderiv{V^*}{t} + \pderiv{V^*}{W_t} ((\pi_t (\mu - r) + r)W_t  - c_t)+ \pderiv[2]{V^*}{W_t} \frac {\pi_t^2 \sigma^2 W_t^2} {2} + \frac { e^{-\rho t} \cdot c_t^{1-\gamma}}{1 - \gamma}] = 0$$
+$$\max_{\pi_t, c_t} [\pderiv{V^*}{t} + \pderiv{V^*}{W} ((\pi_t (\mu - r) + r)W_t  - c_t)+ \pderiv[2]{V^*}{W} \cdot \frac {\pi_t^2 \sigma^2 W_t^2} {2} + \frac {c_t^{1-\gamma}}{1 - \gamma}]$$
+$$ = \rho V^*(t, W_t)$$
 \pause
 Let us write the above equation more succinctly as:
-$$\max_{\pi_t, c_t} \Phi(t, W_t; \pi_t, c_t) = 0$$
+$$\max_{\pi_t, c_t} \Phi(t, W_t; \pi_t, c_t) = \rho V^*(t, W_t)$$
 \pause
 Note: we are working with the constraints $W_t > 0, c_t \geq 0$ for $0 \leq t < T$
 \end{frame}
@@ -215,20 +219,20 @@ Find optimal $\pi_t^*, c_t^*$ by taking partial derivatives of $\Phi(t, W_t; \pi
 $$(\mu -r) \cdot \pderiv{V^*}{W_t} + \pderiv[2]{V^*}{W_t} \cdot \pi_t \cdot \sigma^2 \cdot W_t = 0$$
 $$ \Rightarrow \pi_t^* = \frac {-\pderiv{V^*}{W_t} \cdot (\mu - r)} {\pderiv[2]{V^*}{W_t} \cdot \sigma^2 \cdot W_t}$$
 \item Partial derivative of $\Phi$ with respect to $c_t$:
-$$-\pderiv{V^*}{W_t} + e^{-\rho t} \cdot (c_t^*)^{-\gamma} = 0$$
-$$ \Rightarrow c_t^* = (\pderiv{V^*}{W_t} \cdot e^{\rho t})^{\frac {-1} {\gamma}}$$
+$$-\pderiv{V^*}{W_t} +  (c_t^*)^{-\gamma} = 0$$
+$$ \Rightarrow c_t^* = (\pderiv{V^*}{W_t})^{\frac {-1} {\gamma}}$$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Optimal Discounted Value Function PDE}
+\frametitle{Optimal Value Function PDE}
 \pause
-Now substitute $\pi_t^*$ and $c_t^*$ in $\Phi(t, W_t; \pi_t, c_t)$ and set it to 0, which gets us the Optimal Discounted Value Function PDE:
+Now substitute $\pi_t^*$ and $c_t^*$ in $\Phi(t, W_t; \pi_t, c_t)$ and equate to $\rho V^*(t,W_t)$, which gets us the Optimal Value Function PDE:
 \pause
-$$\pderiv{V^*}{t} - \frac {(\mu - r)^2}{2 \sigma^2} \cdot \frac {(\pderiv{V^*}{W_t})^2} {\pderiv[2]{V^*}{W_t}}  + \pderiv{V^*}{W_t} \cdot r \cdot W_t + \frac {\gamma} {1 - \gamma} \cdot e^{\frac {-\rho t}{\gamma}} \cdot (\pderiv{V^*}{W_t})^{\frac {\gamma-1} {\gamma}} = 0$$ 
+$$\pderiv{V^*}{t} - \frac {(\mu - r)^2}{2 \sigma^2} \cdot \frac {(\pderiv{V^*}{W_t})^2} {\pderiv[2]{V^*}{W_t}}  + \pderiv{V^*}{W_t} \cdot r \cdot W_t + \frac {\gamma} {1 - \gamma} \cdot (\pderiv{V^*}{W_t})^{\frac {\gamma-1} {\gamma}} = \rho V^*$$ 
 \pause
 The boundary condition is:
-$$V^*(T, W_T) = e^{-\rho T} \cdot \epsilon^{\gamma} \cdot \frac {W_T^{1-\gamma}} {1- \gamma}$$
+$$V^*(T, W_T) = \epsilon^{\gamma} \cdot \frac {W_T^{1-\gamma}} {1- \gamma}$$
 \pause
 The second-order conditions for $\Phi$ are satisfied {\bf under the assumptions} $c^*_t > 0, W_t > 0, \pderiv[2]{V^*}{W_t} < 0$ for all $0 \leq t < T$ (we will later show that these are all satisfied in the solution we derive), and for concave $U(\cdot)$, i.e., $\gamma > 0$
 \end{frame}
@@ -239,14 +243,14 @@ The second-order conditions for $\Phi$ are satisfied {\bf under the assumptions}
 \frametitle{Solving the PDE with a guess solution}
 \pause
 We surmise with a guess solution
-$$V^*(t, W_t) = f(t)^{\gamma} \cdot e^{-\rho t} \cdot \frac {W_t^{1-\gamma}} {1-\gamma}$$
+$$V^*(t, W_t) = f(t)^{\gamma} \cdot \frac {W_t^{1-\gamma}} {1-\gamma}$$
 \pause
 Then,
-$$\pderiv{V^*}{t} = (\gamma \cdot f(t)^{\gamma-1} \cdot f'(t) -\rho \cdot f(t)^{\gamma}) \cdot e^{-\rho t} \cdot \frac {W_t^{1-\gamma}} {1-\gamma}$$
+$$\pderiv{V^*}{t} = \gamma \cdot f(t)^{\gamma-1} \cdot f'(t) \cdot  \frac {W_t^{1-\gamma}} {1-\gamma}$$
 \pause
-$$\pderiv{V^*}{W_t} = f(t)^{\gamma} \cdot e^{-\rho t} \cdot W_t^{-\gamma}$$
+$$\pderiv{V^*}{W_t} = f(t)^{\gamma} \cdot W_t^{-\gamma}$$
 \pause
-$$\pderiv[2]{V^*}{W_t} = - f(t)^{\gamma} \cdot e^{-\rho t} \cdot \gamma \cdot W_t^{-\gamma-1}$$
+$$\pderiv[2]{V^*}{W_t} = - f(t)^{\gamma} \cdot \gamma \cdot W_t^{-\gamma-1}$$
 \end{frame}
 
 \begin{frame}
@@ -288,8 +292,8 @@ $$
 $$
 V^*(t, W_t) = 
 \begin{cases}
-e^{-\rho t} \cdot \frac {(1 + (\nu \epsilon - 1) \cdot e^{-\nu (T-t)})^{\gamma}} {\nu^{\gamma}} \cdot \frac {W_t^{1-\gamma}} {1-\gamma} & \text{for } \nu \neq 0\\
-e^{-\rho t} \cdot \frac {(T-t+\epsilon)^\gamma \cdot W_t^{1 - \gamma}} {1-\gamma} & \text{for } \nu = 0\\
+\frac {(1 + (\nu \epsilon - 1) \cdot e^{-\nu (T-t)})^{\gamma}} {\nu^{\gamma}} \cdot \frac {W_t^{1-\gamma}} {1-\gamma} & \text{for } \nu \neq 0\\
+\frac {(T-t+\epsilon)^\gamma \cdot W_t^{1 - \gamma}} {1-\gamma} & \text{for } \nu = 0\\
 \end{cases}
 $$
 \pause
