@@ -137,7 +137,7 @@ We drop subscript $p$ whenever the reference to portfolio $p$ is clear
 \begin{itemize}
 \item Efficient frontier is defined for a world with no risk-free assets
 \item It is the set of portfolios with minimum variance of return for each level of portfolio mean returns
-\item So, minimize portfolio variance $X^T \cdot V_p \cdot X$ subject to constraints:
+\item So, minimize portfolio variance $X^T \cdot V \cdot X$ subject to constraints:
 \end{itemize}
 $$X^T \cdot 1_n = 1$$
 $$X^T \cdot R = r_p$$
@@ -147,7 +147,7 @@ where $r_p$ is the mean return for efficient portfolio $p$.
 \item Substituting for $X$ gives us the efficient frontier parabola:
 \end{itemize}
 $$\sigma_p^2 = \frac {a - 2 b r_p + c r_p^2} {ac - b^2} \mbox{ where}$$
-$$a = R^T \cdot V^{-1} \cdot R, b = R^T \cdot V^{-1} \cdot 1_n, c = 1_n^T V^{-1} 1_n$$
+$$a = R^T \cdot V^{-1} \cdot R, b = R^T \cdot V^{-1} \cdot 1_n, c = 1_n^T \cdot V^{-1} \cdot 1_n$$
 \end{frame}
 
 \begin{frame}
