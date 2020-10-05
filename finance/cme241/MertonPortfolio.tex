@@ -198,14 +198,14 @@ $$\Rightarrow e^{-\rho t} \cdot V^*(t, W_t) = \max_{\pi, c} \mathbb{E}_t[ \int_t
 Rewriting in stochastic differential form, we have the HJB formulation
 $$\max_{\pi_t, c_t} \mathbb{E}_t[d(e^{-\rho t} \cdot V^*(t, W_t)) + \frac {e^{-\rho t} \cdot c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = 0$$
 \pause
-$$\Rightarrow \max_{\pi_t, c_t} \mathbb{E}_t[dV^*(t, W_t) + \frac {c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = \rho V^*(t, W_t)$$
+$$\Rightarrow \max_{\pi_t, c_t} \mathbb{E}_t[dV^*(t, W_t) + \frac {c_t^{1-\gamma}}{1 - \gamma} \cdot dt] = \rho \cdot V^*(t, W_t) \cdot dt$$
 \pause
 Use Ito's Lemma on $dV^*$, remove the $dz_t$ term since it's a martingale, and divide throughout by $dt$ to produce the HJB Equation in PDE form:
 $$\max_{\pi_t, c_t} [\pderiv{V^*}{t} + \pderiv{V^*}{W} ((\pi_t (\mu - r) + r)W_t  - c_t)+ \pderiv[2]{V^*}{W} \cdot \frac {\pi_t^2 \sigma^2 W_t^2} {2} + \frac {c_t^{1-\gamma}}{1 - \gamma}]$$
-$$ = \rho V^*(t, W_t)$$
+$$ = \rho \cdot V^*(t, W_t)$$
 \pause
 Let us write the above equation more succinctly as:
-$$\max_{\pi_t, c_t} \Phi(t, W_t; \pi_t, c_t) = \rho V^*(t, W_t)$$
+$$\max_{\pi_t, c_t} \Phi(t, W_t; \pi_t, c_t) = \rho \cdot V^*(t, W_t)$$
 \pause
 Note: we are working with the constraints $W_t > 0, c_t \geq 0$ for $0 \leq t < T$
 \end{frame}
