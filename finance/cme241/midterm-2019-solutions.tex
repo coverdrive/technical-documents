@@ -115,7 +115,7 @@ Note that on any given day, the demand could exceed the number of Halloween mask
  $$v_*(t, I_t) = \max_{1 <= i <= N} \{ \sum_{k=0}^{\infty} \frac {e^{-\lambda_i} \lambda_i^k} {k!} \cdot (\min(I_t, k) \cdot p_i + v_*(t+1, \max(0, I_t - k))) \}\mbox{ for } 0 \leq t < T$$
  The boundary case is: $v_*(T, I_T) = 0$
  
-The Python code that solves this backward recursion is implemented \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/price_control.py}{here}.
+The Python code that solves this backward recursion is implemented \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/exam_problems/price_control.py}{here}.
 
 \end{questions}
 
