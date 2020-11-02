@@ -1,0 +1,81 @@
+
+\documentclass[12pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% See the ``Article customise'' template for come common customisations
+
+\title{LSPI Customized for Optimal Exercise of American Options}
+\author{Ashwin Rao (Stanford University)}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+
+Let us first consider the general LSPI algorithm. In each iteration, we are given:
+
+$$Q(s,a) = \sum_i w_i \cdot \phi_i(s,a)$$
+
+and deterministic policy $\pi$ (known as the target policy for that iteration) is given by:
+
+$$\pi(s) = \argmax_a Q(s,a)$$
+
+The goal in the iteration is to solve for weights $\{w_i\}$ such that we minimize
+
+$$\sum_{s,a,r,s'} (r + \gamma \cdot Q'(s',\pi(s')) - Q'(s,a))^2$$
+
+over a data-set comprising of a sequence of 4-tuples $(s,a,r,s')$ with:
+
+$$Q'(s,a) = \sum_i w_i' \cdot \phi_i(s,a)$$
+$$Q'(s',\pi(s')) = \sum_i w_i' \cdot \phi_i(s', \pi(s'))$$
+
+Therefore, we solve for $\{w_i\}$ that minimizes:
+
+$$\sum_{s,a,r,s'} (r + \gamma \cdot Q'(s',\pi(s')) - \sum_i w_i' \cdot \phi_i(s,a))^2$$
+
+So we calculate the gradient of the above expression with respect to $\{w_j\}$ and set it to 0 (semi-gradient). This gives:
+
+\begin{equation}
+\sum_{s,a,r,s'} (r + \gamma \cdot Q'(s',\pi(s')) - \sum_i w_i' \cdot \phi_i(s,a)) \cdot \phi_j(s,a) = 0 \text{ for all } j
+\label{eq:general-lspi}
+\end{equation}
+
+Now we customize LSPI to the problem of Optimal Exercise of American Options. We have two actions: $a=c$ (continue the American Option) and $a=e$ (exercise the American Option). We consider a function approximation for $Q'(s,a)$ only for the case of $a=c$ since we know the exact expression for the case of $a=e$, given by the Payoff function (call it $g: \mathcal{S} \rightarrow \mathbb{R}$). Therefore,
+
+$$Q'(s,e) = g(s)$$
+
+We write the function approximation for $Q'(s,c)$ as:
+
+$$Q'(s,c) = \sum_i w_i' \cdot \phi_i(s, c) = \sum_i w_i' \cdot x_i(s)$$
+
+for feature functions $x_i: \mathcal{S} \rightarrow \mathbb{R}$ (i.e., functions of only state and not action).
+
+Since we are learning the Q-Value function for only $a=c$, our experience policy $\mu$ is a constant function $\mu(s) = c$. Also, for American Options, the reward for $a=c$ is 0. Thus, when considering the 4-tuples $(s,a,r,s')$ for training experience, we always have $a=c$ and $r=0$. So the 4-tuples are $(s,c,0,s')$ and so, we might as well simply consider 2-tuples $(s,s')$ for training experience (since $a=c$ and $r=0$ are locked).
+
+Now consider 2 cases to customize Equation \eqref{eq:general-lspi} to the problem of Optimal Exercise of American Options.
+
+{\bf Case 1}: If $\pi(s') = c$ (this happens when $\sum_i w_i \cdot x_i(s') \geq g(s')$), then Equation \eqref{eq:general-lspi} reduces to:
+
+$$\sum_{s,s'} (\gamma \cdot \sum_i w_i' \cdot x_i(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j$$
+\begin{equation}
+\Rightarrow \sum_i w_i' \cdot \sum_{s,s'} x_j(s) \cdot (x_i(s) - \gamma \cdot x_i(s')) = \sum_{s,s'} 0 \text{ for all } j
+\label{eq:lspi-amopt1}
+\end{equation}
+
+{\bf Case 2}: If $\pi(s') = e$ (this happens when $g(s') > \sum_i w_i \cdot x_i(s')$), then Equation \eqref{eq:general-lspi} reduces to:
+
+$$\sum_{s,s'} (\gamma \cdot g(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j$$
+\begin{equation}
+\Rightarrow \sum_i w_i' \cdot \sum_{s,s'} x_j(s) \cdot (x_i(s)) = \sum_{s,s'} x_j(s) \cdot \gamma \cdot g(s') \text{ for all } j
+\label{eq:lspi-amopt2}
+\end{equation}
+
+Equations \eqref{eq:lspi-amopt1} and \eqref{eq:lspi-amopt2} can be united with a common equation ${\bf A} \cdot {\bf w'} = {\bf b}$.
+The term $x_j(s) \cdot (x_i(s) - \gamma \cdot x_i(s'))$ from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot (x_i(s))$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to ${\bf A}$ for each $(s,s')$ in the training experience data-set. The term 0 from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot \gamma \cdot g(s')$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to ${\bf b}$ for each $(s,s')$ in the training experience data-set.
+
+\end{document}
