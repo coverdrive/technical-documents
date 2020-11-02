@@ -25,7 +25,7 @@ and deterministic policy $\pi$ (known as the target policy for that iteration) i
 
 $$\pi(s) = \argmax_a Q(s,a)$$
 
-The goal in the iteration is to solve for weights $\{w_i\}$ such that we minimize
+The goal in the iteration is to solve for weights $\{w_i'\}$ such that we minimize
 
 $$\sum_{s,a,r,s'} (r + \gamma \cdot Q'(s',\pi(s')) - Q'(s,a))^2$$
 
@@ -34,11 +34,11 @@ over a data-set comprising of a sequence of 4-tuples $(s,a,r,s')$ with:
 $$Q'(s,a) = \sum_i w_i' \cdot \phi_i(s,a)$$
 $$Q'(s',\pi(s')) = \sum_i w_i' \cdot \phi_i(s', \pi(s'))$$
 
-Therefore, we solve for $\{w_i\}$ that minimizes:
+Therefore, we solve for $\{w_i'\}$ that minimizes:
 
 $$\sum_{s,a,r,s'} (r + \gamma \cdot Q'(s',\pi(s')) - \sum_i w_i' \cdot \phi_i(s,a))^2$$
 
-So we calculate the gradient of the above expression with respect to $\{w_j\}$ and set it to 0 (semi-gradient). This gives:
+So we calculate the gradient of the above expression with respect to $\{w_j'\}$ and set it to 0 (semi-gradient). This gives:
 
 \begin{equation}
 \sum_{s,a,r,s'} (r + \gamma \cdot Q'(s',\pi(s')) - \sum_i w_i' \cdot \phi_i(s,a)) \cdot \phi_j(s,a) = 0 \text{ for all } j
