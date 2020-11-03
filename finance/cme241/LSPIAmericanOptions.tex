@@ -1,14 +1,27 @@
 
 \documentclass[12pt]{amsart}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{pseudocode}
+\usepackage{MnSymbol,wasysym}
 \usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
-\geometry{a4paper} % or letter or a5paper or ... etc
-% \geometry{landscape} % rotated page geometry
+\geometry{a4paper} 
+\newgeometry{vmargin={20mm}, hmargin={14mm,18mm}}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 
 % See the ``Article customise'' template for come common customisations
 
-\title{LSPI Customized for Optimal Exercise of American Options}
+\title{RL for Optimal Exercise of American Options}
 \author{Ashwin Rao (Stanford University)}
 \date{} % delete this line to display the current date
 
@@ -16,6 +29,10 @@
 \begin{document}
 
 \maketitle
+
+In this technical note, we explain how to solve the problem of Optimal Exercise of American Options using Reinforcement Learning. We start by showing how to solve this problem with a simple linear-approximation RL algorithm known as Least Squares Policy Iteration (LSPI). Our coverage is based on \href{http://proceedings.mlr.press/v5/li09d/li09d.pdf}{\underline{\textcolor{blue}{this paper by Li, Szepesvari, Schuurmans}}} where we customize the LSPI algorithm to fit the specific nuances of this Optimal Exercise problem. Finally, we show to solve this problem with Deep Q-Learning and Experience Replay.
+
+\section{Review of LSPI}
 
 Let us first consider the general LSPI algorithm. In each iteration, we are given:
 
@@ -45,7 +62,9 @@ So we calculate the gradient of the above expression with respect to $\{w_j'\}$ 
 \label{eq:general-lspi}
 \end{equation}
 
-Now we customize LSPI to the problem of Optimal Exercise of American Options. We have two actions: $a=c$ (continue the American Option) and $a=e$ (exercise the American Option). We consider a function approximation for $Q'(s,a)$ only for the case of $a=c$ since we know the exact expression for the case of $a=e$, given by the Payoff function (call it $g: \mathcal{S} \rightarrow \mathbb{R}$). Therefore,
+\section{LSPI Customization}
+
+Now we customize LSPI to the problem of Optimal Exercise of American Options. We have two actions: $a=c$ (continue the American Option) and $a=e$ (exercise the American Option). We consider a function approximation for $Q'(s,a)$ only for the case of $a=c$ since we know the exact expression for the case of $a=e$, given by the option payoff function (call it $g: \mathcal{S} \rightarrow \mathbb{R}$). Therefore,
 
 $$Q'(s,e) = g(s)$$
 
@@ -59,7 +78,7 @@ Since we are learning the Q-Value function for only $a=c$, our experience policy
 
 Now consider 2 cases to customize Equation \eqref{eq:general-lspi} to the problem of Optimal Exercise of American Options.
 
-{\bf Case 1}: If $\pi(s') = c$ (this happens when $\sum_i w_i \cdot x_i(s') \geq g(s')$), then Equation \eqref{eq:general-lspi} reduces to:
+{\bf Case 1}: If $s'$ is a non-terminal state and $\pi(s') = c$ (this happens when $\sum_i w_i \cdot x_i(s') \geq g(s')$), then Equation \eqref{eq:general-lspi} reduces to:
 
 $$\sum_{s,s'} (\gamma \cdot \sum_i w_i' \cdot x_i(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j$$
 \begin{equation}
@@ -67,7 +86,7 @@ $$\sum_{s,s'} (\gamma \cdot \sum_i w_i' \cdot x_i(s') - \sum_i w_i' \cdot x_i(s)
 \label{eq:lspi-amopt1}
 \end{equation}
 
-{\bf Case 2}: If $\pi(s') = e$ (this happens when $g(s') > \sum_i w_i \cdot x_i(s')$), then Equation \eqref{eq:general-lspi} reduces to:
+{\bf Case 2}: If $s'$ is a terminal state or $\pi(s') = e$ (this happens when $g(s') > \sum_i w_i \cdot x_i(s')$), then Equation \eqref{eq:general-lspi} reduces to:
 
 $$\sum_{s,s'} (\gamma \cdot g(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j$$
 \begin{equation}
@@ -76,6 +95,38 @@ $$\sum_{s,s'} (\gamma \cdot g(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \
 \end{equation}
 
 Equations \eqref{eq:lspi-amopt1} and \eqref{eq:lspi-amopt2} can be united with a common equation ${\bf A} \cdot {\bf w'} = {\bf b}$.
-The term $x_j(s) \cdot (x_i(s) - \gamma \cdot x_i(s'))$ from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot (x_i(s))$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to ${\bf A}$ for each $(s,s')$ in the training experience data-set. The term 0 from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot \gamma \cdot g(s')$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to ${\bf b}$ for each $(s,s')$ in the training experience data-set.
+The term $x_j(s) \cdot (x_i(s) - \gamma \cdot x_i(s'))$ from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot (x_i(s))$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to the ${\bf A}$ matrix for each $(s,s')$ in the training experience data-set. The term 0 from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot \gamma \cdot g(s')$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to the ${\bf b}$ vector for each $(s,s')$ in the training experience data-set.
 
+\section{Solving with Deep Q-Learning and Experience Replay}
+
+Although the above LSPI algorithm is data-efficient and computationally-efficient as well, it is limited by the fact that our function approximation needs to be linear in features. Linearity is a significant constraint on this problem. In order to use a more general function approximation (such as a deep neural network), we will need to look into traditional incremental RL algorithms. A straightforward choice is Q-Learning. We will employ Q-Learning together with Experience Replay by storing 2-tuples of $(s,s')$ in a buffer and drawing from the buffer randomly (the random draws serve as training experience).
+
+We use the same notation as we used above for LSPI. Let $\hat{f}$ denote a deep neural network function approximation for the Q-Value function when the action is to continue. Therefore,
+
+$$Q(s,c) = \hat{f}(s;w)$$
+$$Q(s,a) = g(s)$$
+$$
+\pi(s) =
+\begin{cases}
+c & \text{ if } \hat{f}(s;w) \geq g(s) \\
+e & \text{ otherwise}
+\end{cases}
+$$
+
+where $w$ denotes the weights of the deep neural network and $g(\cdot)$ is the option payoff function.
+
+Noting that in the experience 4-tuples $(s,a,r,s')$, $a=c$ and $r=0$ (as explained earlier), the Q-Learning update for each 2-tuple $(s,s)$ from the Experience Replay is as follows:
+
+$$w \leftarrow w + \alpha \cdot (\gamma \cdot Q(s', \pi(s')) - \hat{f}(s;w)) \cdot \nabla_w \hat{f}(s;w)$$
+
+where $\alpha$ is the learning rate.
+
+When $s'$ is a non-terminal state, the update is:
+
+$$w \leftarrow w + \alpha \cdot (\gamma \cdot \max(g(s'), \hat{f}(s';w)) - \hat{f}(s;w)) \cdot \nabla_w \hat{f}(s;w)$$
+
+When $s'$ is a terminal state, the update is:
+
+$$w \leftarrow w + \alpha \cdot (\gamma \cdot g(s') - \hat{f}(s;w)) \cdot \nabla_w \hat{f}(s;w)$$
+ 
 \end{document}
