@@ -5,6 +5,7 @@
 \usepackage{cool}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{bbm}
 \usepackage{listings}
 \usepackage[colorlinks = true,
             linkcolor = blue,
@@ -74,28 +75,32 @@ $$Q'(s,c) = \sum_i w_i' \cdot \phi_i(s, c) = \sum_i w_i' \cdot x_i(s)$$
 
 for feature functions $x_i: \mathcal{S} \rightarrow \mathbb{R}$ (i.e., functions of only state and not action).
 
-Since we are learning the Q-Value function for only $a=c$, our experience policy $\mu$ is a constant function $\mu(s) = c$. Also, for American Options, the reward for $a=c$ is 0. Thus, when considering the 4-tuples $(s,a,r,s')$ for training experience, we always have $a=c$ and $r=0$. So the 4-tuples are $(s,c,0,s')$ and so, we might as well simply consider 2-tuples $(s,s')$ for training experience (since $a=c$ and $r=0$ are locked).
+Since we are learning the Q-Value function for only $a=c$, our experience policy $\mu$ is a constant function $\mu(s) = c$. Also, for American Options, the reward for $a=c$ is 0. Thus, when considering the 4-tuples $(s,a,r,s')$ for training experience, we always have $a=c$ and $r=0$. So the 4-tuples are $(s,c,0,s')$ and so, we might as well simply consider 2-tuples $(s,s')$ for training experience (since $a=c$ and $r=0$ are locked). This means Equation \eqref{eq:general-lspi} reduces to:
 
-Now consider 2 cases to customize Equation \eqref{eq:general-lspi} to the problem of Optimal Exercise of American Options.
-
-{\bf Case 1}: If $s'$ is a non-terminal state and $\pi(s') = c$ (this happens when $\sum_i w_i \cdot x_i(s') \geq g(s')$), then Equation \eqref{eq:general-lspi} reduces to:
-
-$$\sum_{s,s'} (\gamma \cdot \sum_i w_i' \cdot x_i(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j$$
 \begin{equation}
-\Rightarrow \sum_i w_i' \cdot \sum_{s,s'} x_j(s) \cdot (x_i(s) - \gamma \cdot x_i(s')) = \sum_{s,s'} 0 \text{ for all } j
-\label{eq:lspi-amopt1}
+\sum_{s,s'} (\gamma \cdot Q'(s',\pi(s')) - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j
+\label{eq:customized-lspi}
 \end{equation}
 
-{\bf Case 2}: If $s'$ is a terminal state or $\pi(s') = e$ (this happens when $g(s') > \sum_i w_i \cdot x_i(s')$), then Equation \eqref{eq:general-lspi} reduces to:
+Now we need to consider two cases for $Q'(s',\pi(s'))$.
 
-$$\sum_{s,s'} (\gamma \cdot g(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j$$
-\begin{equation}
-\Rightarrow \sum_i w_i' \cdot \sum_{s,s'} x_j(s) \cdot (x_i(s)) = \sum_{s,s'} x_j(s) \cdot \gamma \cdot g(s') \text{ for all } j
-\label{eq:lspi-amopt2}
-\end{equation}
+{\bf Case 1} (which we will denote as condition $C1$): If $s'$ is a non-terminal state and $\pi(s') = c$ (this happens when $\sum_i w_i \cdot x_i(s') \geq g(s')$). In this case, we substitute $\sum_i w_i' \cdot x_i(s')$ for $Q'(s',\pi(s'))$ in Equation \eqref{eq:customized-lspi}.
 
-Equations \eqref{eq:lspi-amopt1} and \eqref{eq:lspi-amopt2} can be united with a common equation ${\bf A} \cdot {\bf w'} = {\bf b}$.
-The term $x_j(s) \cdot (x_i(s) - \gamma \cdot x_i(s'))$ from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot (x_i(s))$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to the ${\bf A}$ matrix for each $(s,s')$ in the training experience data-set. The term 0 from Equation \eqref{eq:lspi-amopt1} (for Case 1) and the term $x_j(s) \cdot \gamma \cdot g(s')$ from Equation \eqref{eq:lspi-amopt2} (for Case 2) contributes to the ${\bf b}$ vector for each $(s,s')$ in the training experience data-set.
+{\bf Case 1} (which we will denote as condition $C2$): If $s'$ is a terminal state or $\pi(s') = e$ (this happens when $g(s') > \sum_i w_i \cdot x_i(s')$). In this case, we substitute $g(s')$ for $Q'(s',\pi(s'))$ in Equation \eqref{eq:customized-lspi}.
+
+Thus, we can now rewrite Equation \eqref{eq:customized-lspi}, accounting for both of the above cases, as follows (note the $C1$ and $C2$ conditioning in the equation below):
+
+$$\sum_{s,s'|C1} (\gamma \cdot \sum_i w_i' \cdot x_i(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) + \sum_{s,s'|C2} (\gamma \cdot g(s') - \sum_i w_i' \cdot x_i(s)) \cdot x_j(s) = 0 \text{ for all } j$$
+
+Swapping the summations over $i$ and over $(s,s')$, we get:
+
+$$\sum_i w_i' \cdot  [ \sum_{s,s'|C1} x_j(s) \cdot (x_i(s) - \gamma \cdot x_i(s'))  + \sum_{s,s'|C2} x_j(s) \cdot x_i(s) ] = \sum_{s,s'|C2} x_j(s) \cdot \gamma \cdot g(s') \text{ for all } j$$
+
+Using the notation $\mathbbm{1}_{C1}$ and $\mathbbm{1}_{C2}$ to denote the indicator function for conditions $C1$ and $C2$ respectively, we can wewrite the above equation as:
+
+$$\sum_i w_i' \cdot [\sum_{s,s'} x_j(s) \cdot (x_i(s) - \gamma \cdot \mathbbm{1}_{C1} \cdot x_i(s'))] = \gamma \cdot \sum_{s,s'} x_j(s) \cdot \mathbbm{1}_{C2} \cdot g(s') \text{ for all } j$$
+
+ This equation can be written more compactly in vector-matrix notation as ${\bf A} \cdot {\bf w'} = {\bf b}$ where the rows of the matrix ${\bf A}$ are indexed by $j$, the columns of ${\bf A}$ are indexed by $i$ (${\bf w'}$ is a column vector indexed by $i$), and the column vector ${\bf b}$ is indexed by $j$. We express ${\bf A}$ as ${\bf X}^T \cdot {\bf Y}$ and ${\bf b}$ as ${\bf X}^T \cdot {\bf v}$ where the rows of the matrix ${\bf X}$ are indexed by the 2-tuples $(s,s')$, the columns of ${\bf X}$ are indexed by $j$ (an element in ${\bf X}$ is $x_j(s)$), the rows of matrix ${\bf Y}$ are indexed by the 2-tuples $(s,s')$, the columns of ${\bf Y}$ are indexed by $i$ (an element in ${\bf Y}$ is $x_i(s) - \gamma \cdot \mathbbm{1}_{C1} \cdot x_i(s')$), and the column vector ${\bf v}$ is indexed by the 2-tuples $(s,s')$ (an element in ${\bf v}$ is $\gamma \cdot \mathbbm{1}_{C2} \cdot g(s')$).
 
 \section{Solving with Deep Q-Learning and Experience Replay}
 
