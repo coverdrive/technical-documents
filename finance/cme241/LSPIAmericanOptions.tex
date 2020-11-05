@@ -31,7 +31,7 @@
 
 \maketitle
 
-In this technical note, we explain how to solve the problem of Optimal Exercise of American Options using Reinforcement Learning. We start by showing how to solve this problem with a simple linear-approximation RL algorithm known as Least Squares Policy Iteration (LSPI). Our coverage is based on \href{http://proceedings.mlr.press/v5/li09d/li09d.pdf}{\underline{\textcolor{blue}{this paper by Li, Szepesvari, Schuurmans}}} where we customize the LSPI algorithm to fit the specific nuances of this Optimal Exercise problem. Finally, we show to solve this problem with Deep Q-Learning and Experience Replay.
+In this technical note, we explain how to solve the problem of Optimal Exercise of American Options using Reinforcement Learning. We start by showing how to solve this problem with a simple linear-approximation RL algorithm known as Least Squares Policy Iteration (LSPI). The LSPI algorithm is customized to the specific nuances of this Optimal Exercise problem.  Finally, we show to solve this problem with Deep Q-Learning and Experience Replay.
 
 \section{Review of LSPI}
 
@@ -65,7 +65,7 @@ So we calculate the gradient of the above expression with respect to $\{w_j'\}$ 
 
 \section{LSPI Customization}
 
-Now we customize LSPI to the problem of Optimal Exercise of American Options. We have two actions: $a=c$ (continue the American Option) and $a=e$ (exercise the American Option). We consider a function approximation for $Q'(s,a)$ only for the case of $a=c$ since we know the exact expression for the case of $a=e$, given by the option payoff function (call it $g: \mathcal{S} \rightarrow \mathbb{R}$). Therefore,
+Now we customize LSPI to the specific nuances of our problem of Optimal Exercise of American Options. Our coverage is based on \href{http://proceedings.mlr.press/v5/li09d/li09d.pdf}{\underline{\textcolor{blue}{this paper by Li, Szepesvari, Schuurmans}}}. We have two actions: $a=c$ (continue the American Option) and $a=e$ (exercise the American Option). We consider a function approximation for $Q'(s,a)$ only for the case of $a=c$ since we know the exact expression for the case of $a=e$, given by the option payoff function (call it $g: \mathcal{S} \rightarrow \mathbb{R}$). Therefore,
 
 $$Q'(s,e) = g(s)$$
 
@@ -86,7 +86,7 @@ Now we need to consider two cases for $Q'(s',\pi(s'))$.
 
 {\bf Case 1} (which we will denote as condition $C1$): If $s'$ is a non-terminal state and $\pi(s') = c$ (this happens when $\sum_i w_i \cdot x_i(s') \geq g(s')$). In this case, we substitute $\sum_i w_i' \cdot x_i(s')$ for $Q'(s',\pi(s'))$ in Equation \eqref{eq:customized-lspi}.
 
-{\bf Case 1} (which we will denote as condition $C2$): If $s'$ is a terminal state or $\pi(s') = e$ (this happens when $g(s') > \sum_i w_i \cdot x_i(s')$). In this case, we substitute $g(s')$ for $Q'(s',\pi(s'))$ in Equation \eqref{eq:customized-lspi}.
+{\bf Case 2} (which we will denote as condition $C2$): If $s'$ is a terminal state or $\pi(s') = e$ (this happens when $g(s') > \sum_i w_i \cdot x_i(s')$). In this case, we substitute $g(s')$ for $Q'(s',\pi(s'))$ in Equation \eqref{eq:customized-lspi}.
 
 Thus, we can now rewrite Equation \eqref{eq:customized-lspi}, accounting for both of the above cases, as follows (note the $C1$ and $C2$ conditioning in the equation below):
 
@@ -109,7 +109,7 @@ Although the above LSPI algorithm is data-efficient and computationally-efficien
 We use the same notation as we used above for LSPI. Let $\hat{f}$ denote a deep neural network function approximation for the Q-Value function when the action is to continue. Therefore,
 
 $$Q(s,c) = \hat{f}(s;w)$$
-$$Q(s,a) = g(s)$$
+$$Q(s,e) = g(s)$$
 $$
 \pi(s) =
 \begin{cases}
@@ -120,7 +120,7 @@ $$
 
 where $w$ denotes the weights of the deep neural network and $g(\cdot)$ is the option payoff function.
 
-Noting that in the experience 4-tuples $(s,a,r,s')$, $a=c$ and $r=0$ (as explained earlier), the Q-Learning update for each 2-tuple $(s,s)$ from the Experience Replay is as follows:
+Noting that in the experience 4-tuples $(s,a,r,s')$, $a=c$ and $r=0$ (as explained earlier), the Q-Learning update for each 2-tuple $(s,s')$ from the Experience Replay is as follows:
 
 $$w \leftarrow w + \alpha \cdot (\gamma \cdot Q(s', \pi(s')) - \hat{f}(s;w)) \cdot \nabla_w \hat{f}(s;w)$$
 
