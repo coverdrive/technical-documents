@@ -603,7 +603,7 @@ $$\sum_{i=1}^n \pi'(\omega_i) \cdot S_j^{(i)} = \sum_{i=1}^n \pi(\omega_i) \cdot
 $$J(\theta, \lambda) = \sum_{j=0}^m \theta_j \cdot S_j^{(0)} + \sum_{i=1}^n \lambda_i \cdot (V_D^{(i)} - \sum_{j=0}^m \theta_j \cdot S_j^{(i)})$$
 \item So there exists $\lambda = (\lambda_1, \ldots, \lambda_n)$ that satisfy these KKT conditions:
 $$\lambda_i \geq 0 \mbox{ for all } i = 1, \ldots, n$$
-$$\lambda_i \cdot (V_D^{(i)} - \sum_{j=0}^m \theta_j^* \cdot S_j^{(i)}) = 0 \mbox{ for all } i = 1, \ldots, n \mbox{ (Complementary Slackness)}$$
+$$\lambda_i \cdot (V_D^{(i)} - \sum_{j=0}^m \theta_j^* \cdot S_j^{(i)}) = 0 \mbox{ for all } i = 1, \ldots, n $$
 $$\nabla_{\theta} J(\theta^*, \lambda) = 0 \Rightarrow S_j^{(0)} = \sum_{i=1}^n \lambda_i \cdot S_j^{(i)} \mbox{ for all } j = 0, 1, \ldots, m$$
 \end{itemize}
 \end{frame}
@@ -615,7 +615,7 @@ $$\nabla_{\theta} J(\theta^*, \lambda) = 0 \Rightarrow S_j^{(0)} = \sum_{i=1}^n 
 \item Define Lagrangian Dual $L(\lambda) = \inf_{\theta} J(\theta, \lambda)$. Then, Superhedge Price
 $$SP = \sum_{j=0}^m \theta_j^* \cdot S_j^{(0)} = \sup_{\lambda} L(\lambda) = \sup_{\lambda} \inf_{\theta} J(\theta, \lambda)$$
 \item Complementary Slackness and some linear algebra over the space of risk-neutral measures $\pi : \Omega \rightarrow [0,1]$ enables us to argue that:
-$$SP = \sup_{\pi} e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}$$
+$$SP = \sup_{\pi} \{e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}\}$$
 \end{itemize}
 \end{frame}
 
@@ -627,7 +627,7 @@ $$SP = \sup_{\pi} e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}$$
 \max_{\theta} \sum_{j=0}^m \theta_j \cdot S_j^{(0)} \mbox{ such that } \sum_{j=0}^m \theta_j \cdot S_j^{(i)} \leq V_D^{(i)} \mbox{ for all } i = 1, \ldots, n
 \end{equation}
 \item Likewise arguments enable us to establish:
-$$SB = \inf_{\pi} e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}$$
+$$SB = \inf_{\pi} \{e^{-r} \cdot \sum_{i=1}^n \pi(\omega_i) \cdot V_D^{(i)}\}$$
 \item This gives a lower bound of $SB$ and an upper bound of $SP$, meaning:
 \begin{itemize}
 \item A price outside these bounds leads to an arbitrage 
