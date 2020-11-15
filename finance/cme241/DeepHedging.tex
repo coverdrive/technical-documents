@@ -200,12 +200,12 @@ lead to (dynamic, exact, unique) replication of derivatives with the underlying 
 \pause
 \begin{enumerate}[<+->]
 \item Observe state $s_t = (t, \alpha_t, P_t, \beta_t, D)$
-\item Realize cashflows (from holding positions) $=X_t + \alpha_t \cdot Y_t$
 \item Perform action (trades) $a_t$ to produce trading PnL $= - a_t \cdot P_t$
 \item Trading transaction costs, example $= - \gamma P_t \cdot |a_t|$ for some $\gamma > 0$
-\item Update $\alpha_t$ as: $\alpha_{t+1} = \alpha_t + a_t$ for $t = 0, \ldots, T$ \\(force-liquidation at termination means $a_T= \alpha_T$)
+\item Update $\alpha_t$ as: $\alpha_{t+1} = \alpha_t + a_t$ \\(force-liquidation at termination means $a_T= -\alpha_T$)
+\item Realize cashflows (from updated positions) $=X_{t+1} + \alpha_{t+1} \cdot Y_{t+1}$
 \item Update PnL $\beta_t$ as:
-$$\beta_{t+1} = \beta_t + X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t \cdot |a_t| \mbox{ for } t = 0, \ldots, T$$
+$$\beta_{t+1} = \beta_t - a_t \cdot P_t - \gamma P_t \cdot |a_t|  + X_{t+1} + \alpha_{t+1} \cdot Y_{t+1}$$
 \item Reward $r_t = 0$ for all $t = 0, \ldots, T-1$ and $r_T = U(\beta_{T+1})$ for an appropriate concave \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Utility function $U$ (based on risk-aversion)}}}
 \item Simulator evolves hedge prices from $P_t$ to $P_{t+1}$
 \end{enumerate}
@@ -222,7 +222,7 @@ $$\beta_{t+1} = \beta_t + X_t + \alpha_t \cdot Y_t - a_t \cdot P_t - \gamma P_t 
 \item Precisely, Price of $D'$ is the value $x$ such that
 $$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0, D))$$
 \item This Pricing principle is known as the principle of {\em Indifference Pricing}
-\item The hedging strategy at time $t$ is given by the Optimal Policy $\pi_t^* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
+\item The hedging strategy at time $t$ for all $0 \leq t < T$ is given by the Optimal Policy $\pi_t^* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
 \end{itemize}
 \end{frame}
 
