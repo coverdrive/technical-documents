@@ -249,7 +249,7 @@ $$dW_t = P_t^{(a)} \cdot dX_t^{(a)} - P_t^{(b)} \cdot dX_t^{(b)} \mbox{ , } I_t 
 \pause
 \begin{itemize}[<+->]
 \item We denote the Optimal Value function as $V^*(t, S_t, W_t, I_t)$
-$$V^*(t, S_t, W_t, I_t) = \max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[-e^{-\gamma \cdot (W_T + I_t \cdot S_T)}]$$
+$$V^*(t, S_t, W_t, I_t) = \max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[-e^{-\gamma \cdot (W_T + I_T \cdot S_T)}]$$
 \item $V^*(t, S_t, W_t, I_t)$ satisfies a recursive formulation for $0 \leq t < t_1 < T$:
 $$V^*(t, S_t, W_t, I_t) = \max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[V^*(t_1, S_{t_1}, W_{t_1}, I_{t_1})]$$
 \item Rewriting in stochastic differential form, we have the HJB Equation
