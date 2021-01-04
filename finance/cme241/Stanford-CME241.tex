@@ -100,7 +100,7 @@
  % Your institution for the title page
 }
 
-\date{Winter 2020} % Date, can be changed to a custom date
+\date{Winter 2021} % Date, can be changed to a custom date
 
 \begin{document}
 \begin{frame}
@@ -116,17 +116,16 @@
 \frametitle{Meet your Instructor}
 \pause
 \begin{itemize}[<+->]
-\item My educational background: Algorithms Theory \& Abstract Algebra
+\item Joined Stanford ICME as Adjunct Faculty in Fall 2018
+\item Research Interests: A.I. for Dynamic Decisioning under Uncertainty
+\item Technical mentor to ICME students, partnerships with industry
+\item Educational background: Algorithms Theory \& Abstract Algebra
 \item 10 years at Goldman Sachs (NY) {\em Rates/Mortgage Derivatives} Trading
 \item 4 years at Morgan Stanley as {\em Managing Director - Market Modeling}
 \item Founded Tech Startup {\em ZLemma}, Acquired by hired.com in 2015
 \item One of our products was algorithmic jobs/career guidance for students
-\item I've been teaching short/medium-length courses for 25 years
-\item Topics across Pure \& Applied Math, CS, Programming, Finance
-\item Current Interest: A.I. for Dynamic Decisioning under Uncertainty
-\item Current Industry Job: V.P. of A.I. at Target
-\item Joined Stanford ICME as Adjunct in Fall 2018
-\item Apart from CME 241, I am a technical mentor to ICME students
+\item Teaching experience: Pure \& Applied Math, CompSci, Finance, Mgmt
+\item Current Industry Job: V.P. of A.I. at Target (the Retail company)
 \end{itemize}
 \end{frame}
 
@@ -135,19 +134,19 @@
 \frametitle{Requirements and Setup}
 \pause
 \begin{itemize}[<+->]
-\item (Light) Pre-requisites:
+\item Pre-requisites:
 \begin{itemize}
-\item Undergraduate-level background in Applied Mathematics (Linear Algebra, Probability Theory, Optimization)
-\item Background in Data Structures \& Algorithms, with programming experience in numpy/scipy
+\item Undergraduate-level background in Applied Mathematics (Multivariate Analysis, Linear Algebra, Probability, Optimization)
+\item Background in data structures/algorithms, fluency with numpy
 \item Basic familiarity with Pricing, Portfolio Mgmt and Algo Trading, but we will do an overview of the requisite Finance/Economics
-\item No background required in MDP, DP, RL (we will cover these topics from scratch)
+\item No background required in MDP, DP, RL (we will cover from scratch)
 \end{itemize}
-\item Register for the \href{https://piazza.com/stanford/winter2020/cme241/home}{\underline{\textcolor{blue}{course on Piazza}}}
+\item Register for the \href{https://piazza.com/stanford/winter2021/cme241/home}{\underline{\textcolor{blue}{course on Piazza}}}
 \item Install Python 3 and supporting IDE/tools (eg: PyCharm, Jupyter)
-\item Note: Python 2 doesn't support {\em Type Annotations}
+\item Install LaTeX/Markdown and supporting editor for tech writing
 \item Create git repo for this course (for assignments/sharing)
-\item Message me on Piazza with your git repo URL (for reviews/grading)
-\item Install LaTeX and supporting editor (eg: TeXShop)
+\item Course Assistant (CA) is Sven Lerner (\href{mailto:svenl@stanford.edu}{\underline{\textcolor{blue}{svenl@stanford.edu}}})
+\item Send Sven (on Piazza) your git repo URL (for reviews/grading)
 \end{itemize}
 \end{frame}
 
@@ -158,15 +157,14 @@
 \begin{itemize}[<+->]
 \item Grade based on:
 \begin{itemize}
-\item 25\% Mid-Term Exam (on Theory, Modeling, Algorithms)
-\item 40\% Final Exam (on Theory, Modeling, Algorithms)
-\item 35\% {\em Assignments}: Programming,  Technical Writing, Theory Problems
+\item 30\% 48-hour Mid-Term Exam (on Theory, Modeling, Programming)
+\item 40\% 48-hour Final Exam (on Theory, Modeling, Programming)
+\item 30\% {\em Assignments}: Technical Writing and Programming
 \end{itemize}
-\item Lectures Wed \& Fri 4:30pm - 5:50pm, Jan 8  - March 13
-\item Classes in \href{https://campus-map.stanford.edu/?srch=380-380W}{\underline{\textcolor{blue}{Bldg 380 (Sloan Mathematics Ctr) - Room 380w}}}
-\item Office Hours 2-4pm Fri (or by appointment) in my office (ICME M05)
+\item Lectures (on Zoom): Wed \& Fri 4:00pm - 5:20pm, Jan 13  - Mar 19
+\item Office Hours 1-4pm Fri (or by appointment) on Zoom
 \item Course Web Site: \href{http://cme241.stanford.edu}{\underline{\textcolor{blue}{cme241.stanford.edu}}}
-\item Ask Questions and engage in Discussions on \href{https://piazza.com/stanford/winter2020/cme241/home}{\underline{\textcolor{blue}{Piazza}}}
+\item Ask Questions and engage in Discussions on \href{https://piazza.com/stanford/winter2021/cme241/home}{\underline{\textcolor{blue}{Piazza}}}
 \item My e-mail: \href{mailto:ashwin.rao@stanford.edu}{\underline{\textcolor{blue}{ashwin.rao@stanford.edu}}}
 \end{itemize}
 \end{frame}
@@ -182,7 +180,7 @@
 \item Take the initiative to make up your own assignments
 \item Especially on topics you feel you don't quite understand
 \item Individual assignments won't get a grade and there are no due dates
-\item Rather, the entire body of assignments work will be graded
+\item Sven will review once every 3 weeks and provide feedback
 \item It will be graded less on correctness and completeness, and more on:
 \begin{itemize}
 \item Coding and Technical Writing style that is clear and modular
@@ -196,24 +194,13 @@
 \frametitle{Resources}
 \pause
 \begin{itemize}[<+->]
-\item I recommend \href{http://incompleteideas.net/book/the-book-2nd.html}{\underline{\textcolor{blue}{Sutton-Barto}}} as the companion book for this course
-\begin{itemize}
-\item I won't follow the structure of Sutton-Barto book
-\item But I will follow his approach/treatment
-\end{itemize}
-\item I will follow the structure of \href{http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html}{\underline{\textcolor{blue}{David Silver's RL course}}}
-\begin{itemize}
-\item I encourage you to augment my lectures with David's lecture videos
-\item Occasionally, I will veer away or speed up/slow down from this flow
-\end{itemize}
-\item We will do a bit more Theory \& a lot more coding (relative to above)
-\item You can freely use my \href{https://github.com/coverdrive/MDP-DP-RL}{\underline{\textcolor{blue}{open-source code}}} for your coding work
-\begin{itemize}
-\item I expect you to duplicate the functionality of above code in this course
-\end{itemize}
+\item Course based on the (incomplete) \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{book}}} I am currently writing
+\item Supplementary/Optional reading:  \href{http://incompleteideas.net/book/the-book-2nd.html}{\underline{\textcolor{blue}{Sutton-Barto's RL book}}}
+\item Some of the lecture slides are from \href{https://www.davidsilver.uk/teaching/}{\underline{\textcolor{blue}{David Silver's RL course}}}
+\item I encourage you to augment my lectures with Silver's lecture videos
+\item Assignments and code in my book based on \href{https://github.com/TikhonJelvis/RL-Book}{\underline{\textcolor{blue}{this open-source code}}}
 \item We will go over some classical papers on the Finance applications
-\item To understand in-depth the analytical solutions in simple settings
-\item I will augment the above content with many of my own slides
+\item Some supplementary/optional papers from Finance/RL
 \item All of this will be organized on the course web site (``source of truth'')
 \end{itemize}
 \end{frame}
@@ -231,6 +218,7 @@
 \item Jargon overload due to confluence of Control Theory, O.R. and A.I.
 \item For language clarity, let's just refer to this area as {\em Stochastic Control}
 \item The core framework is called {\em Markov Decision Processes} (MDP)
+\item {\em Reinforcement Learning} is a class of algorithms to solve MDPs
 \end{itemize}
 \end{frame}
 
@@ -403,6 +391,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \begin{itemize}[<+->]
 \item Theory of Markov Decision Processes (MDPs)
 \item Dynamic Programming (DP) Algorithms
+\item Approximate DP and Backward Induction Algorithms
 \item Reinforcement Learning (RL) Algorithms
 \item Plenty of Python implementations of models and algorithms
 \item Apply these algorithms to 5 Financial/Trading problems:
@@ -572,15 +561,16 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \begin{itemize}[<+->]
 \item W1: Markov Decision Processes \& Overview of Finance Problems
 \item W2: Bellman Equations \& Dynamic Programming Algorithms
-\item W3: Optimal Asset Allocation \& Derivatives Pricing/Hedging
-\item W4: American Options Exercise \& Optimal Trade Order Execution
-\item W5: Optimal Market-Making, and Mid-Term Exam
-\item W6: Model-free Prediction (RL for Value Function Estimation)
-\item W7: Model-Free Control (RL for Optimal Value Function/Policy)
-\item W8: RL with Function Approximation (including Deep RL)
-\item W9: Batch Methods (DQN, LSTDQ/LSPI), and Gradient TD
-\item W10: Policy Gradient Algorithms and Explore v/s Exploit
-\item W11: Final Exam
+\item W3: Approximate DP and Backward Induction
+\item W4: Optimal Asset Allocation \& Derivatives Pricing/Hedging
+\item W5: Options Exercise,  Order Execution, Market-Making
+\item Mid-Term Exam
+\item W6: RL For Prediction (MC, TD, TD($\lambda$))
+\item W7: RL for Control (SARSA, Q-Learning)
+\item W8: Batch Methods (DQN, LSTD/LSPI) and Gradient TD
+\item W9: Policy Gradient and Actor-Critic Algorithms
+\item W10: Model-based RL and Explore v/s Exploit
+\item Final Exam
 \end{itemize}
 \end{frame}
 
@@ -618,11 +608,13 @@ A sampling of lectures to browse through and get a sense ...
 \begin{itemize}
 \item AA 228/CS 238 (Mykel Kochenderfer)
 \item CS 234 (Emma Brunskill)
-\item MS\&E 251 (Edison Tse)
 \item CS 332 (Emma Brunskill)
 \item MS\&E 338 (Ben Van Roy)
+\item EE 277 (Ben Van Roy)
+\item MS\&E 251 (Edison Tse)
 \item MS\&E 348 (Gerd Infanger)
 \item MS\&E 351 (Ben Van Roy)
+\item MS\&E 339 (Ben Van Roy)
 \end{itemize}
 \end{frame}
 
