@@ -20,22 +20,20 @@
 \begin{center}
 {\large {\bf Stanford CME 241 (Winter 2021) - Assignment 1}}
 \end{center}
-
-I trust that you will follow \href{https://communitystandards.stanford.edu/policies-and-guidance/honor-code}{The Stanford Honor Code}.
  
-{\large{\bf Assignments:}}
+{\large{\bf This ``assignment'' is simply to complete the following tasks to get set up for course work and future assignments:}}
 \begin{questions}
 \question Register for the \href{https://piazza.com/stanford/winter2021/cme241/home}{Course on Piazza}.
-\question Install/Setup on your laptop with LaTeX, Python 3 (and optionally Jupyter notebook).
+\question Install/Setup on your laptop with LaTeX/Markdown (for technical writing), Python 3 (and optionally Jupyter, if you prefer working with .pynb instead of plain .py).
 \question Create a git repo for this course where you can upload and organize all the code and technical writing you will do as part of assignments and self-learning.
 \question Send Sven a message on Piazza with your git repo URL, so he can periodically review your assignments and other self-learning work.
 \question Clone the \href{https://github.com/TikhonJelvis/RL-book}{Code Repo associated with the RLForFinanceBook} and get set up to write code (for future assignments that uses classes/functions from this code repo). {\bf Optionally}, you can create the same virtual environment I use and replicate my dependencies with the following instructions:
 \begin{itemize}
-\item After cloning the repo on your laptop, create a virtual environment with the following shell command (from the RL-Book directory):
+\item After cloning the repo on your laptop, create a virtual environment with the following shell command (from the RL-book directory):
 \begin{lstlisting}[language=bash]
 $ python3 -m venv .venv
 \end{lstlisting}
-\item Then, each time you're working on this project, make sure to activate the venv with the following shell command (again, from the RL-Book directory):
+\item Then, each time you're working on this project, make sure to activate the venv with the following shell command (again, from the RL-book directory):
 \begin{lstlisting}[language=bash]
 $ source .venv/bin/activate
 \end{lstlisting}
@@ -44,11 +42,11 @@ $ source .venv/bin/activate
 \begin{lstlisting}[language=bash]
 (.venv) $ pip install matplotlib
 \end{lstlisting}
-\item Initially, you can install every Python package you need to work this git repo with the following shell command (again, from the RL-Book directory):
+\item Initially, you can install every Python package you need to work this git repo with the following shell command (again, from the RL-book directory):
 \begin{lstlisting}[language=bash]
 (.venv) $ pip install -r requirements.txt
 \end{lstlisting}
-\item To work with the appropriate file paths of the Python files in this repo from the RL-Book directory, execute the following command from the RL-book directory (this creates a pckage):
+\item To work with the appropriate file paths of the Python files in this repo from the RL-book directory, execute the following command from the RL-book directory (this creates a pckage):
 \begin{lstlisting}[language=bash]
 (.venv) $ pip install -e .
 \end{lstlisting}
