@@ -42,16 +42,21 @@ $ source .venv/bin/activate
 \item Once the venv is activated, you should see a (.venv) in your shell prompt
 \item Now you can use pip to install dependencies inside the venv, for example:
 \begin{lstlisting}[language=bash]
-$ pip install matplotlib
+(.venv) $ pip install matplotlib
 \end{lstlisting}
 \item Initially, you can install every Python package you need to work this git repo with the following shell command (again, from the RL-Book directory):
 \begin{lstlisting}[language=bash]
-$ pip install -r requirements.txt
+(.venv) $ pip install -r requirements.txt
 \end{lstlisting}
 \item To work with the appropriate file paths of the Python files in this repo from the RL-Book directory, execute the following command from the RL-book directory (this creates a pckage):
 \begin{lstlisting}[language=bash]
-$ pip install -e .
+(.venv) $ pip install -e .
 \end{lstlisting}
+\item To make sure you are all good, verify with the following command from the RL-book directory:
+\begin{lstlisting}[language=bash]
+(.venv) $ python -m unittest discover
+\end{lstlisting}
+If all is good, you should see an "OK" on the last line of the output upon running this command.
 \end{itemize}
 \end{questions}
 
