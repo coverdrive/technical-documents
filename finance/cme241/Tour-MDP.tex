@@ -460,17 +460,20 @@ $$\pi^* \in \Pi \text{ is an Optimal Policy if } V^{\pi^*}(s) \geq V^{\pi}(s) \t
 
 \begin{frame}
 \frametitle{Optimal Policy achieves Optimal Value Function}
-For most MDP settings of interest, the following statements hold:
+\begin{theorem}
+For any (discrete-time, countable-spaces, stationary) MDP:
 \pause
 \begin{itemize}[<+->]
 \item There exists an Optimal Policy $\pi^* \in \Pi$, i.e., there exists a Policy $\pi^* \in \Pi$ such that $V^{\pi^*}(s) \geq V^{\pi}(s) \text{ for all policies  } \pi \in \Pi \mbox{ and for all states } s \in \mathcal{N}$
 \item All Optimal Policies achieve the Optimal Value Function, i.e. $V^{\pi^*}(s) = V^*(s)$ for all $s \in \mathcal{N}$, for all Optimal Policies $\pi^*$
 \item All Optimal Policies achieve the Optimal Action-Value Function, i.e. $Q^{\pi^*}(s,a) = Q^*(s,a)$ for all $s \in \mathcal{N}$, for all $a \in \mathcal{A}$, for all Optimal Policies $\pi^*$
 \end{itemize}
+\label{th:optimal-policy-achieves-optimal-value-function}
+\end{theorem}
 \end{frame}
 
 \begin{frame}
-\frametitle{Outline/Intuition}
+\frametitle{Proof Outline}
 \pause
 \begin{itemize}[<+->]
 \item For any Optimal Policies $\pi_1^*$ and $\pi_2^*$, $V^{\pi_1^*}(s) = V^{\pi_2^*}(s)$ for all $s \in \mathcal{N}$
