@@ -85,6 +85,7 @@
 \usepackage{physics}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{enumerate}
 
 \newcommand{\prob}{\mathcal{P}}
 \newcommand{\rew}{\mathcal{R}}
@@ -199,10 +200,7 @@ $$\bvpi  = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bvpi$$
 \pause
 \begin{itemize}[<+->]
 \item Define the {\em Bellman Policy Operator} $\bbpi: \mathbb{R}^m \rightarrow \mathbb{R}^m$ as:
-\begin{equation}
-\bbpi(\bv) = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bv \text{ for any Value Function vector } \bv \in \mathbb{R}^m
-\label{eq:bellman_policy_operator}
-\end{equation}
+$$\bbpi(\bv) = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bv \text{ for any Value Function vector } \bv \in \mathbb{R}^m$$
 \item $\bbpi$ is a linear transformation on vectors in $\mathbb{R}^m$
 \item So, the MRP Bellman Equation can be expressed as:
 $$\bvpi = \bbpi(\bvpi)$$
@@ -222,7 +220,6 @@ Invoking the Banach Fixed-Point Theorem for $\gamma < 1$ gives:
 \begin{theorem}[Policy Evaluation Convergence Theorem]
 For a Finite MDP with $|\mathcal{N}| = m$ and $\gamma < 1$, if $\bvpi \in \mathbb{R}^m$ is the Value Function of the MDP when evaluated with a fixed policy $\pi: \mathcal{N} \times \mathcal{A} \rightarrow [0, 1]$, then $\bvpi$ is the unique Fixed-Point of the Bellman Policy Operator $\bbpi: \mathbb{R}^m \rightarrow \mathbb{R}^m$, and
 $$\lim_{i\rightarrow \infty} ({\bbpi})^i(\bm{V_0}) \rightarrow \bvpi \text{ for all starting Value Functions } \bm{V_0} \in \mathbb{R}^m$$
-\label{eq:policy_evaluation_convergence_theorem}
 \end{theorem}
 \end{frame}
 
@@ -240,7 +237,7 @@ $$\lim_{i\rightarrow \infty} ({\bbpi})^i(\bm{V_0}) \rightarrow \bvpi \text{ for 
 Banach Fixed-Point Theorem also assures speed of convergence (dependent on choice of starting Value Function $\bm{V_0}$ and on choice of $\gamma$).\\
 \vspace{5mm}
 \pause
-Running time of each iteration is $O(m^2)$. Constructing the MRP from the MDP and the policy takes $O(m^2 k)$ operations, where $k = |\mathcal{A}|$.
+Running time of each iteration is $O(m^2)$. Constructing the MRP from the MDP and the policy takes $O(m^2 k)$ operations, where $m = |mathcal{N}|, k = |\mathcal{A}|$.
 
 \end{frame}
 
@@ -253,10 +250,7 @@ Running time of each iteration is $O(m^2)$. Constructing the MRP from the MDP an
 \item {\em Policy Improvement} is based on a ``greedy'' technique
 \item The {\em Greedy Policy Function} $G: \mathbb{R}^m \rightarrow (\mathcal{N} \rightarrow \mathcal{A})$\\
 (interpreted as a function mapping a Value Function vector $\bv$ to a deterministic policy $\pi_D': \mathcal{N} \rightarrow \mathcal{A}$) is defined as:
-\begin{equation}
-G(\bv)(s) = \pi_D'(s) = \argmax_{a\in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \bv(s') \}
-\label{eq:greedy_policy_function1}
-\end{equation}
+$$G(\bv)(s) = \pi_D'(s) = \argmax_{a\in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \bv(s') \}$$
 \end{itemize}
 \pause
 \begin{definition}[Value Function Comparison]
@@ -292,7 +286,7 @@ $$\bm{B}^{\pi_D'}(\bvpi)(s) = \max_{a \in \mathcal{A}} \{\mathcal{R}(s,a) + \gam
 \item $\bvpi(s)$ is weighted average of $Q^{\pi}(s,\cdot)$ while $\bm{B}^{\pi_D'}(\bvpi)(s)$ is maximum
 $$\bm{B}^{\pi_D'}(\bvpi) \geq \bvpi$$
 \item Induction step is proved by monotonicity of $\bm{B}^{\pi}$ operator (for any $\pi$):
-$$\text{Monotonicity Property of } \bm{B}^{\pi}: \bv_1 \geq \bv_2 \Rightarrow \bm{B}^{\pi}(\bv_1) \geq \bm{B}^{\pi}(\bv_2)$$
+$$\text{Monotonicity Property of } \bm{B}^{\pi}: \bm{X} \geq \bm{Y} \Rightarrow \bm{B}^{\pi}(\bm{X}) \geq \bm{B}^{\pi}(\bm{Y})$$
 $$\text{So } (\bm{B}^{\pi_D'})^{i+1}(\bvpi) \geq (\bm{B}^{\pi_D'})^i(\bvpi) \Rightarrow (\bm{B}^{\pi_D'})^{i+2}(\bvpi) \geq (\bm{B}^{\pi_D'})^{i+1}(\bvpi)$$
 \end{itemize}
 \end{frame}
@@ -316,21 +310,48 @@ $$\text{So } (\bm{B}^{\pi_D'})^{i+1}(\bvpi) \geq (\bm{B}^{\pi_D'})^i(\bvpi) \Rig
 \end{frame}
 
 \begin{frame}
-\frametitle{Policy Iteration algorithm}
+\frametitle{Repeating Policy Improvement and Policy Evaluation}
 \pause
-begin{itemize}[<+->]
-\item Bellman Optimality Equations don't directly solve {\em Control}
+\begin{itemize}[<+->]
+\item Policy Improvement Theorem says:
+\begin{itemize}[<+->]
+\item Start with Value Function $\bvpi$ (for policy $\pi$)
+\item Perform a ``greedy policy improvement'' to create policy $\pi_D' = G(\bvpi)$
+\item Perform Policy Evaluation (for policy $\pi_D'$) with starting VF $\bvpi$
+\item This results in VF $\bm{V}^{\pi_D'} \geq$ starting VF $\bvpi$
+\end{itemize}
+\item We can repeat this process starting with $\bm{V}^{\pi_D'}$
+\item Creating an improved policy $\pi_D''$ and improved VF $\bm{V}^{\pi_D''}$.
+\item ... and we can keep going to create further improved policies/VFs
+\item ... until there is no further improvement
+\item This in fact is the {\em Policy Iteration} algorithm
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Policy Iteration algorithm}
-\includegraphics[width=12cm, height=8cm]{policy_iteration_loop.png}
+\pause
+\begin{itemize}[<+->]
+\item Start with any Value Function $\bm{V_0} \in \mathbb{R}^m$
+\item Iterating over $j = 0, 1, 2, \ldots$, calculate in each iteration:
+$$\text{ Deterministic Policy } \pi_{j+1} = G(\bm{V_j})$$
+$$\text{ Value Function } \bm{V_{j+1}} = \lim_{i\rightarrow \infty} (\bm{B}^{\pi_{j+1}})^i(\bm{V_j})$$
+\item Stop when $d(\bm{V_j}, \bm{V_{j+1}}) = \max_{s \in \mathcal{N}} |(\bm{V_j} - \bm{V_{j+1}})(s)|$ is small enough
+\end{itemize}
+\pause
+$$\text{At termination: } \bm{V_j} = (\bm{B}^{G(\bm{V_j})})^i(\bm{V_j}) = \bm{V_{j+1}} \text{ for all } i = 0, 1, 2, \ldots$$
+\pause
+Specializing this to $i=1$, we have for all $s \in \mathcal{N}$:
+$$\bm{V_j}(s) = \bm{B}^{G(\bm{V_j})}(\bm{V_j})(s) = \max_{a \in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \bm{V_j}(s')\}$$
+\pause
+This means $\bm{V_j}$ satisfies the MDP Bellman Optimality Equation and so,
+$$\bm{V_j} = \bm{V}^{\pi_j} = \bvs$$
 \end{frame}
 
 \begin{frame}
-\frametitle{Convergence of Policy Iteration algorithm}
-\includegraphics[width=12cm, height=8cm]{policy_iteration_convergence.png}
+\frametitle{Policy Iteration algorithm}
+\includegraphics[width=12cm, height=5cm]{policy_iteration_loop.png}
+\includegraphics[width=12cm, height=2cm]{policy_iteration_convergence.png}
 \end{frame}
 
 \begin{frame}
@@ -339,128 +360,308 @@ begin{itemize}[<+->]
 For a Finite MDP with $|\mathcal{N}| = m$ and $\gamma < 1$, Policy Iteration algorithm converges to the Optimal Value Function $\bvs \in \mathbb{R}^m$ along with a Deterministic Optimal Policy $\pi_D^*: \mathcal{N} \rightarrow \mathcal{A}$, no matter which Value Function $\bm{V_0} \in \mathbb{R}^m$ we start the algorithm with.
 \label{eq:policy_iteration_convergence_theorem}
 \end{theorem}
+\vspace{5mm}
+\pause
+Running time of Policy Improvement is $O(m^2 k)$ where $|\mathcal{N}| = m, |\mathcal{A}| = k$\\
+\vspace{2mm}
+\pause
+Running time of each iteration of Policy Evaluation is $O(m^2 k)$
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Bellman Optimality Operator}
+\pause
+\begin{itemize}[<+->]
+\item Tweak the definition of Greedy Policy Function ($\argmax$ to $\max$)
+\item {\em Bellman Optimality Operator} $\bbs: \mathbb{R}^m \rightarrow \mathbb{R}^m$ defined as:
+$$\bbs(\bv)(s) = \max_{a\in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \bv(s')\}$$
+\item Think of this as a non-linear transformation of a VF vector $\bv \in \mathbb{R}^m$
+\item The action $a$ producing the max is the action prescribed by $\pi_D$. So,
+$$\bm{B}^{G(\bv)}(\bv) = \bbs(\bv) \text{ for all } \bv \in \mathbb{R}^m$$
+\item Specializing $\bv$ to be the Value Function $\bvpi$ for a policy $\pi$, we get:
+$$\bm{B}^{G(\bvpi)}(\bvpi) = \bbs(\bvpi)$$
+\item This is the 1st stage of Policy Evaluation with improved policy $G(\bvpi)$
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Optimal Policy achieves Optimal Value Function}
-\begin{theorem}
-For any (discrete-time, countable-spaces, stationary) MDP:
+\frametitle{Fixed-Point of Bellman Optimality Operator}
 \pause
 \begin{itemize}[<+->]
-\item There exists an Optimal Policy $\pi^* \in \Pi$, i.e., there exists a Policy $\pi^* \in \Pi$ such that $V^{\pi^*}(s) \geq V^{\pi}(s) \text{ for all policies  } \pi \in \Pi \mbox{ and for all states } s \in \mathcal{N}$
-\item All Optimal Policies achieve the Optimal Value Function, i.e. $V^{\pi^*}(s) = V^*(s)$ for all $s \in \mathcal{N}$, for all Optimal Policies $\pi^*$
-\item All Optimal Policies achieve the Optimal Action-Value Function, i.e. $Q^{\pi^*}(s,a) = Q^*(s,a)$ for all $s \in \mathcal{N}$, for all $a \in \mathcal{A}$, for all Optimal Policies $\pi^*$
+\item $\bbpi$ was motivated by the MDP Bellman Policy Equation
+\item Similarly, $\bbs$ is motivated by the MDP Bellman Optimality Equation:
+$$\bvs(s) = \max_{a \in \mathcal{A}} \{ \mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \bvs(s') \} \text{ for all } s \in \mathcal{N}$$
+\item So we can express the MDP Bellman Optimality Equation neatly as:
+$$\bvs = \bbs(\bvs)$$
+\item Therefore, $\bvs \in \mathbb{R}^m$ is the Fixed-Point of $\bbs: \mathbb{R}^m \rightarrow \mathbb{R}^m$
+\item We want to prove that $\bbs$ is a contraction function (under $L^{\infty}$ norm)
+\item So we can take advantage of Banach Fixed-Point Theorem
+\item And solve the Control problem by iterative applications of $\bbs$
 \end{itemize}
-\label{th:optimal-policy-achieves-optimal-value-function}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof that $\bbs$ is a contraction}
+\pause
+\begin{itemize}[<+->]
+\item We need to utilize two key properties of $\bbs$
+$$\text{Monotonicity Property: } \bm{X} \geq \bm{Y} \Rightarrow \bbs(\bm{X}) \geq \bbs(\bm{Y})$$
+$$ \text{Constant Shift Property: } \bbs(\bm{X} + c) = \bbs(\bm{Y}) + \gamma c$$
+\item With these two properties, we can prove that:
+$$\max_{s \in \mathcal{N}} |(\bbs(\bm{X}) - \bbs(\bm{Y}))(s)| \leq \gamma \cdot \max_{s\in \mathcal{N}} |(\bm{X} - \bm{Y})(s)|$$
+\end{itemize}
+\begin{theorem}[Value Iteration Convergence Theorem]
+For a Finite MDP with $|\mathcal{N}| = m$ and $\gamma < 1$, if $\bvs \in \mathbb{R}^m$ is the Optimal Value Function, then $\bvs$ is the unique Fixed-Point of the Bellman Optimality Operator $\bbs: \mathbb{R}^m \rightarrow \mathbb{R}^m$, and
+$$\lim_{i\rightarrow \infty} (\bbs)^i(\bm{V_0}) \rightarrow \bvs \text{ for all starting Value Functions } \bm{V_0} \in \mathbb{R}^m$$
+\label{eq:policy_evaluation_convergence_theorem}
 \end{theorem}
 \end{frame}
 
 \begin{frame}
-\frametitle{Proof Outline}
+\frametitle{Value Iteration algorithm}
 \pause
 \begin{itemize}[<+->]
-\item For any Optimal Policies $\pi_1^*$ and $\pi_2^*$, $V^{\pi_1^*}(s) = V^{\pi_2^*}(s)$ for all $s \in \mathcal{N}$
-\item Construct a candidate Optimal (Deterministic) Policy $\pi_D^* : \mathcal{N} \rightarrow \mathcal{A}$:
- $$\pi_D^*(s) = \argmax_{a \in \mathcal{A}} Q^*(s,a) \text{ for all } s \in \mathcal{N}$$
- \item $\pi_D^*$ achieves the Optimal Value Functions $V^*$ and $Q^*$:
- $$V^*(s) = Q^*(s,\pi_D^*(s)) \text{ for all } s \in \mathcal{N}$$
- $$V^{\pi_D^*}(s) = V^*(s) \text{ for all } s \in \mathcal{N}$$
-$$Q^{\pi_D^*}(s,a) = Q^*(s,a) \text{ for all } s \in \mathcal{N}, \text{ for all } a \in \mathcal{A}$$
-\item $\pi_D^*$ is an Optimal Policy:
-$$V^{\pi_D^*}(s) \geq V^{\pi}(s) \text{ for all policies  } \pi \in \Pi \text{ and for all states } s \in \mathcal{N}$$
+\item Start with any Value Function $\bm{V_0} \in \mathbb{R}^m$
+\item Iterating over $i = 0, 1, 2, \ldots$, calculate in each iteration:
+$$\bm{V_{i+1}}(s) = \bbs(\bm{V_i})(s) \text{ for all } s \in \mathcal{N}$$
+\item Stop when $d(\bm{V_i}, \bm{V_{i+1}}) = \max_{s \in \mathcal{N}} |(\bm{V_i} - \bm{V_{i+1}})(s)|$ is small enough
 \end{itemize}
+\vspace{5mm}
+Running time of each iteration of Value Iteration is $O(m^2 k)$ where $|\mathcal{N}| = m$ and $|\mathcal{A}| = k$
 \end{frame}
 
 \begin{frame}
-\frametitle{State Space Size and Transitions Complexity}
+\frametitle{Optimal Policy from Optimal Value Function}
 \pause
 \begin{itemize}[<+->]
-\item Tabular Algorithms for State Spaces that are not too large
-\item In real-world, state spaces are very large/infinite/continuous
-\item {\em Curse of Dimensionality}: Size Explosion as a function of dimensions
-\item {\em Curse of Modeling}: Transition Probabilities hard to model/estimate
-\item Dimension-Reduction techniques, Unsupervised ML methods
-\item Function Approximation of the Value Function (in ADP and RL)
-\item Sampling, Sampling, Sampling ... (in ADP and RL)
+\item Note that Value Iteration does not deal with any policy (only VFs)
+\item Extract Optimal Policy $\pi^*$ from Optimal VF $V^*$ such that $\bm{V}^{\pi^*} = \bvs$
+\item Use Greedy Policy function $G$. We know:
+$$\bm{B}^{G(\bv)}(\bv) = \bbs(\bv) \text{ for all } \bv \in \mathbb{R}^m$$
+\item Specializing $\bv$ to $\bvs$, we get:
+$$\bm{B}^{G(\bvs)}(\bvs) = \bbs(\bvs)$$ 
+\item But we know $\bvs$ is the Fixed-Point of $\bbs$, i.e., $\bbs(\bvs) = \bvs$. So,
+$$\bm{B}^{G(\bvs)}(\bvs) = \bvs$$ 
+\item So $\bvs$ is the Fixed-Point of the Bellman Policy Operator $\bm{B}^{G(\bvs)}$
+\item But we know $\bm{B}^{G(\bvs)}$ has a unique Fixed-Point ($=\bm{V}^{G(\bvs)}$). So,
+$$\bm{V}^{G(\bvs)} = \bvs$$
+\item Evaluating MDP with greedy policy extracted from $\bvs$ achieves $\bvs$
+\item So, $G(\bvs)$ is a (Deterministic) Optimal Policy
 \end{itemize}
 \end{frame}
 
+
 \begin{frame}
-\frametitle{Action Space Sizes}
+\frametitle{Value Function Progression in Policy Iteration}
+$$\pi_1 = G(\bm{V_0}) \text{ : } \bm{V_0} \rightarrow \bm{B}^{\pi_1}(\bm{V_0}) \rightarrow \ldots (\bm{B}^{\pi_1})^i(\bm{V_0}) \rightarrow \ldots \bm{V}^{\pi_1} = \bm{V_1}$$
+$$\pi_2 = G(\bm{V_1}) \text{ : }  \bm{V_1} \rightarrow \bm{B}^{\pi_2}(\bm{V_1}) \rightarrow \ldots (\bm{B}^{\pi_2})^i(\bm{V_1}) \rightarrow \ldots \bm{V}^{\pi_2} = \bm{V_2}$$
+$$\ldots$$
+$$\ldots$$
+$$\pi_{j+1} = G(\bm{V_j}) \text{ : } \bm{V_j} \rightarrow \bm{B}^{\pi_{j+1}}(\bm{V_j}) \rightarrow \ldots (\bm{B}^{\pi_{j+1}})^i(\bm{V_j}) \rightarrow \ldots \bm{V}^{\pi_{j+1}} = \bvs$$
 \pause
 \begin{itemize}[<+->]
-\item Large Action Spaces: Hard to represent, estimate and evaluate:
+\item Policy Evaluation and Policy Improvement alternate until convergence
+\item In the process, they simultaneously compete and try to be consistent
+\item There are actually two notions of consistency:
 \begin{itemize}
-\item Policy $\pi$
-\item Action-Value Function for a policy $Q^{\pi}$
-\item Optimal Action-Value Function $Q^*$
+\item VF $\bv$ being consistent with/close to VF $\bvpi$ of the policy $\pi$.
+\item $\pi$ being consistent with/close to Greedy Policy $G(\bv$) of VF $\bv$.
 \end{itemize}
-\item Large Actions Space makes it hard to calculate $\argmax_a Q(s,a)$
-\item Optimization over Action Space for each non-terminal state
-\item Policy Gradient a technique to deal with large action spaces
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Time-Steps Variants and Continuity}
+\frametitle{Policy Iteration}
+\includegraphics[width=12cm, height=8cm]{vf_policy_intersecting_lines.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Generalized Policy Iteration (GPI)}
+\includegraphics[width=12cm, height=8cm]{gpi.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Value Iteration and Reinforcement Learning as GPI}
 \pause
 \begin{itemize}[<+->]
-\item Time-Steps: terminating ({\em episodic}) or non-terminating ({\em continuing})
-\item Discounted or Undiscounted MDPs, Average-Reward MDPs
-\item Continuous-time MDPs: Stochastic Processes and Stochastic Calculus
-\item When States/Actions/Time all continuous, Hamilton-Jacobi-Bellman
+\item Value Iteration takes only one step of Policy Evaluation
+$$\pi_1 = G(\bm{V_0}) \text{ : } \bm{V_0} \rightarrow \bm{B}^{\pi_1}(\bm{V_0}) = \bm{V_1}$$
+$$\pi_2 = G(\bm{V_1}) \text{ : } \bm{V_1} \rightarrow \bm{B}^{\pi_2}(\bm{V_1}) = \bm{V_2}$$
+$$\ldots$$
+$$\ldots$$
+$$\pi_{j+1} = G(\bm{V_j}) \text{ : } \bm{V_j} \rightarrow \bm{B}^{\pi_{j+1}}(\bm{V_j}) = \bvs$$
+\item RL updates either a subset of states or just one state at a time
+\item Large-scale RL updates function approximations of a VF
+\item These can be thought of as {\em partial} Policy Evaluation/Policy Iteration
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Partially-Observable Markov Decision Process (POMDP)}
+\frametitle{Asynchronous Dynamic Programming}
 \pause
-\begin{itemize}[<+->]
-\item Two different notions of {\em State}:
+The DP algorithms we've covered are qualified as {\em Synchronous DP}:
+\pause
 \begin{itemize}
-\item Internal representation of the environment at each time step $t$ ($S_t^{(e)}$)
-\item The agent's state at each time step $t$ (let's call it $S_t^{(a)}$)
+\item {\em All} states' values are updated in each iteration
+\item "Simultaneous" state updates implemented by updating a copy of VF
 \end{itemize}
-\item We assumed $S_t^{(e)} = S_t^{(a)} (= S_t)$ and that $S_t$ is {\em fully observable}
-\item A more general framework assumes agent sees {\em Observations} $O_t$
-\item Agent cannot see (or infer) $S_t^{(e)}$ from history of observations
-\item This more general framework is called {\em POMDP}
-\item POMDP is specified with {\em Observation Space} $\mathcal{O}$ and observation probability function 
-$\mathcal{Z}: \mathcal{S} \times \mathcal{A} \times \mathcal{O} \rightarrow [0, 1]$
-defined as:
-$$\mathcal{Z}(s', a, o) = \mathbb{P}[O_{t+1} = o | (S_{t+1}^{(e)} = s', A_t = a)]$$
-\item Along with the usual transition probabilities specification $\mathcal{P}_R$
-\item MDP is a special case of POMDP with $O_t = S_t^{(e)} = S_t^{(a)}$
+\pause
+{\em Asynchronous} DP can update subset of states, or update in any order
+\pause
+\begin{enumerate}[<+->]
+\item {\em In-place} updates enable updated values to be used immediately
+\item {\em Prioritized Sweeping} keeps states sorted by their Value Function {\em gaps}
+$$\text{ Gaps } g(s) = |V(s) - \argmax_{a\in \mathcal{A}} (\mathcal{R}(s,a) + \gamma \cdot \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot V(s'))|$$
+But this requires us to know the reverse transitions to resort queue
+\item {\em Real-Time Dynamic Programming (RTDP)} runs DP {\em while} the agent is experiencing real-time interaction with the environment
+\begin{itemize}
+\item A state is updated when it is visited during the real-time interaction
+\item The choice of action is governed by real-time VF-extracted policy
 \end{itemize}
+\end{enumerate}
 \end{frame}
 
 \begin{frame}
-\frametitle{POMDP Framework}
-\includegraphics[width=12cm, height=8cm]{pomdp.png}
-\end{frame}
-
-\begin{frame}
-\frametitle{Belief States, Tractability and Modeling}
+\frametitle{Episodic MDPs with unique state visits}
 \pause
 \begin{itemize}[<+->]
-\item Agent doesn't have knowledge of $S_t^{(e)}$, only of $O_t$
-\item So Agent has to ``guess'' $S_t$ by maintaining {\em Belief States}
-$$b(h)_t = (\mathbb{P}[S_t=s_1 | H_t = h], \mathbb{P}[S_t = s_2 | H_t = h], \ldots )$$
-where history $H_t$ is all data known to agent by time $t$:
-$$H_t := (O_0, R_0, A_0, O_1, R_1, A_1, \ldots, O_t, R_t)$$
-\item $H_t$ satisfies Markov Property $\Rightarrow  b(h)_t$ satisfies Markov Property
-\item POMDP yields (huge) MDP whose states are POMDP's belief states
-\item Read-world: Model as accurate POMDP or approx as tractable MDP?
+\item A fairly common specialization of MDPs enables great tractability:
+\begin{itemize}
+\item All random sequences terminate within fixed time steps (episodic MDP)
+\item A state is encountered at most once in an episode
+\end{itemize}
+\item This can be conceptualized as a \href{https://en.wikipedia.org/wiki/Directed_acyclic_graph}{\underline{\textcolor{blue}{Directed Acyclic Graph (DAG)}}}
+\item Each node in the DAG is a (state, action) pair
+\item Prediction/Control solved by ``backwards walk'' from terminal nodes
+\item Bellman Equation enables simply {\em setting the VF} of a visited node
+\item Avoids the expensive ``iterate to convergence'' method of classical DP
+\item States visited (and VFs set) in order of reverse \href{https://en.wikipedia.org/wiki/Topological_sorting}{\underline{\textcolor{blue}{Topological Sort}}}
+\item Next we cover a special case of DAG MDPs: finite-horizon MDPs
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Finite-Horizon MDPs}
+\pause
+\begin{itemize}[<+->]
+\item Finite-Horizon Markov Decision Processes are characterized by:
+\begin{itemize}
+\item Each sequence terminates within a finite number of time steps $T$
+\item Each time step has a separate (from other time steps) set of states
+\end{itemize} 
+\item Denote the set of states at time $t$ as $\mathcal{S}_t$, terminal states as $\mathcal{T}_t$,  non-terminal states as $\mathcal{N}_t = \mathcal{S}_t - \mathcal{T}_t$ (note: $\mathcal{N}_T = \emptyset$), actions as $\mathcal{A}_t$
+\item Augment each state to include time-index: augmented state is $(t, s_t)$
+$$\text{Entire MDP's States } \mathcal{S} = \{(t, s_t) | t = 0, 1, \ldots, T, s_t \in \mathcal{S}_t\}$$
+\item Each $t$ gets its own state-reward transition probability function
+$$(\mathcal{P}_R)_t: \mathcal{N}_t \times \mathcal{A}_t \times \mathbb{R} \times \mathcal{S}_{t+1} \rightarrow [0, 1]$$
+\item Likewise, each $t$ gets its own policy $\pi_t: \mathcal{N}_t \times \mathcal{A}_t \rightarrow [0, 1]$
+\item An overall policy $\pi: \mathcal{N} \times \mathcal{A} \rightarrow [0,1]$ composed of $(\pi_0, \pi_1, \ldots, \pi_{T-1})$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Backward Induction for Finite MRP with Finite-Horizon}
+\pause
+\begin{itemize}[<+->]
+\item VF for a given policy $\pi$ can be represented by time-sequenced VFs
+$$V^{\pi}_t: \mathcal{N}_t \rightarrow \mathbb{R}$$
+\item So Bellman Equation for $\pi$-implied Finite-Horizon MRP becomes:
+$$V^{\pi}_t(s_t) = \sum_{s_{t+1} \in \mathcal{S}_{t+1}} \sum_{r \in \mathbb{R}} (\mathcal{P}_R^{\pi_t})_t(s_t, r, s_{t+1}) \cdot (r + \gamma \cdot V^{\pi}_{t+1}(s_{t+1}))$$
+$$(\mathcal{P}_R^{\pi_t})_t(s_t, r, s_{t+1}) = \sum_{a_t \in \mathcal{A}_t} \pi_t(s_t, a_t) \cdot (\mathcal{P}_R)_t(s_t, a_t, r, s_{t+1})$$
+\item ``Backward Induction'' algorithm for {\em finite MRP} with Finite-Horizon
+\item Decrementing $t$ from $T$ to 0, and calculating $V_t^{\pi}$ from $V_{t+1}^{\pi}$
+\item Running time is $O(m^2 T)$ where $|\mathcal{N}_t|$ is $O(m)$
+\item $O(m^2 k T)$ to convert MDP to $\pi$-implied MRP ($|\mathcal{A}_t|$ is $O(k)$)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Backward Induction for Finite MDP with Finite-Horizon}
+\pause
+\begin{itemize}[<+->]
+\item Optimal VF $V^*$ can be represented by time-sequenced Optimal VFs
+$$V^*_t: \mathcal{N}_t \rightarrow \mathbb{R}$$
+\item So MDP Bellman Optimality Equation becomes: 
+$$V^*_t(s_t) = \max_{a_t \in \mathcal{A}_t} \{\sum_{s_{t+1} \in \mathcal{S}_{t+1}} \sum_{r \in \mathbb{R}} (\mathcal{P}_R)_t(s_t, a_t, r, s_{t+1}) \cdot (r + \gamma \cdot V^*_{t+1}(s_{t+1}))\}$$
+\item ``Backward Induction'' (Control) for {\em finite MDP} with Finite-Horizon
+\item Decrementing $t$ from $T$ to 0, and calculating $V_t^*$ from $V_{t+1}^*$
+\item (Associated) Optimal (Deterministic) Policy $(\pi^*_D)_t: \mathcal{N}_t \rightarrow \mathcal{A}_t$ is
+$$(\pi^*_D)_t(s_t) = \argmax_{a_t \in \mathcal{A}_t} \{\sum_{s_{t+1} \in \mathcal{S}_{t+1}} \sum_{r \in \mathbb{R}} (\mathcal{P}_R)_t(s_t, a_t, r, s_{t+1}) \cdot (r + \gamma \cdot V^*_{t+1}(s_{t+1}))\}$$
+\item Running time is $O(m^2 k T)$ where $|\mathcal{N}_t|$ is $O(m)$ and $|\mathcal{A}_t|$ is $O(k)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Dynamic Pricing for End-of-Life/End-of-Season}
+\pause
+\begin{itemize}[<+->]
+\item Dynamic Pricing: Core to many businesses, flexing to supply/demand
+\item We consider special case of products being sold at end of life/season
+\item Assume we are $T$ days from season-end and our inventory is $M$ units
+\item Assume no more incoming inventory during these final $T$ days
+\item Set prices daily to max {\em Expected Total Sales Revenue} over $T$ days
+\item Price for a given day picked from prices $P_1, P_2, \ldots, P_N \in \mathbb{R}$
+\item Customer daily demand is $Poisson(\lambda_i)$ if Price $P_i$ is picked for the day
+\item Note that demand can exceed inventory on any day, Sales $\leq$ Inventory
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Dynamic Pricing Model for End-of-Life/End-of-Season}
+\pause
+$$\mathcal{S}_t = \{(t, I_t), I_t \in \mathbb{Z}, 0 \leq I_t \leq M\} \text{ for all } 0 \leq t \leq T$$
+\pause
+$$\mathcal{N}_t = \mathcal{S}_t \text{ and } \mathcal{A}_t = \{1, 2, \ldots, N\} \text{ for all } 0 \leq t < T, \text{ and } \mathcal{N}_T =\emptyset$$
+\pause
+$$I_0 = M \text{ and } I_{t+1} = \max(0, I_t - d_t) \text{ where } d_t \sim Poisson(\lambda_i) \text{ if } a_t = i$$
+\pause
+$$\text{Sales Revenue } R_t \text{ on day } t \text{ is equal to } \min(I_t, d_t) \cdot P_t$$
+\pause
+$$
+ (\mathcal{P}_R)_t(I_t, i, R_t, I_t - k) =
+ \begin{cases}
+ \frac {e^{-\lambda_i} \lambda_i^{k}} {k!} & \text{ if } k < I_t \text{ and } R_t = k \cdot P_i\\
+ \sum_{j=I_t}^{\infty} \frac {e^{-\lambda_i} \lambda_i^{j}} {j!} & \text{ if } k = I_t \text{ and } R_t = k \cdot P_i\\
+ 0 & \text{ otherwise }
+ \end{cases}
+ $$
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Dynamic Pricing}
+\includegraphics[width=12cm, height=8cm]{dynamic_pricing.png}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Generalizations to Non-Tabular Algorithms}
+\begin{itemize}[<+->]
+\item Finite MDP algorithms we covered known as ``tabular'' algorithms
+\item ``Tabular'' means MDP is specified as a finite data structure
+\item More importantly, Value Function represented as a ``table''
+\item These algorithms typically sweep through all states in each iteration
+\item Cannot do this for large finite spaces or for infinite spaces
+\item Requires us to generalize to function approximation of Value Function
+\begin{itemize}[<+->]
+\item Sample an appropriate subset of states 
+\item Calculate the Value Function for those states (Bellman calculation)
+\item Create/Update a func approx with the sampled states' calculated values
+\end{itemize}
+\item  The fundamental structure of the algorithms is still the same
+\item Fundamental principles (Fixed-Point/Bellman Operators) still same
+\item These generalizations known as {\em Approximate Dynamic Programming}
+ \end{itemize}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Key Takeaways from this Chapter}
 \pause
 \begin{itemize}[<+->]
-\item MDP Bellman Policy Equations
-\item MDP Bellman Optimality Equations
-\item Existence of an Optimal Policy, and of each Optimal Policy achieving the Optimal Value Function
+\item Fixed-Point of Functions and Fixed-Point Theorem: Enables iterative algorithms to solve a variety of problems cast as Fixed-Point.
+\item Generalized Policy Iteration: Powerful idea of alternating between improvement of a policy and evaluation of a value function, even though each of them might be partial applications. This generalized perspective unifies almost algorithms for MDP Control.
+\item Backward Induction: A straightforward method to solve finite-horizon MDPs by simply walking backwards and {\em setting} the Value Function from the horizon-end to the start.
 \end{itemize}
 \end{frame}
 
