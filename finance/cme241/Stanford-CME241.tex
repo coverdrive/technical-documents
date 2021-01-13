@@ -278,7 +278,7 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \item Markov States $S_t \in \mathcal{S}$ where $\mathcal{S}$ is the State Space
 \item Actions $A_t \in \mathcal{A}$ where $\mathcal{A}$ is the Action Space
 \item Rewards $R_t \in \mathbb{R}$ denoting numerical feedback\
-\item Transitions $p(s',r|s,a) = Pr\{S_{t+1}=s',R_{t+1}=r|S_t=s,A_t=a\}$
+\item Transitions $p(s',r|s,a) = \mathbb{P}[S_{t+1}=s',R_{t+1}=r|S_t=s,A_t=a]$
 \item $\gamma \in [0,1]$ is the Discount Factor for Reward when defining {\em Return}
 \item Return $G_t = R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \ldots$
 \item Policy $\pi(a|s)$ is probability that Agent takes action $a$ in states $s$
@@ -439,9 +439,8 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item Transaction Costs \& Constraints on trading hours/quantities/shorting
 \item Allowed to consume a fraction of your wealth at specific times
 \item Dynamic Decision: Time-Sequenced Allocation \& Consumption
-\item To maximize horizon-aggregated Utility of Consumption
-\item Utility function represents degree of risk-aversion
-\item So, we effectively maximize aggregate Risk-Adjusted Consumption
+\item To maximize horizon-aggregated {\em Risk-Adjusted Consumption}
+\item {\em Risk-Adjustment} involves a study of {\em Utility Theory}
 \end{itemize}
 \end{frame}
 
@@ -468,9 +467,8 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item {\em Complete market} means derivatives can be perfectly replicated
 \item But real world has transaction costs and trading constraints
 \item So real markets are incomplete where classical theory doesn't fit
-\item In an incomplete market, we need to ``choose'' a risk-neutral measure
-\item This amounts to specifying a Utility function
-\item Maximizing ``risk-adjusted-return'' of the derivative plus hedges
+\item How to price and hedge in an {\em Incomplete Market}?
+\item Maximize ``risk-adjusted-return'' of the derivative plus hedges
 \item Similar to Asset Allocation, this is a stochastic control problem
 \item Deep Reinforcement Learning helps solve when framed as an MDP 
 \end{itemize}
@@ -497,7 +495,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item An American option can be exercised anytime before option maturity
 \item Key decision at any time is to exercise or continue
 \item The default algorithm is Backward Induction on a tree/grid
-\item But it doesn't work for path-dependent options 
+\item But it doesn't work for American options with complex payofss 
 \item Also, it's not feasible when state dimension is large
 \item Industry-Standard: Longstaff-Schwartz's simulation-based algorithm
 \item RL is an attractive alternative to Longstaff-Schwartz
@@ -529,7 +527,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item If you sell too slow, you risk running out of time
 \item We need to model temporary and permanent {\em Price Impact}s
 \item Objective should incorporate penalty for variance of sales proceeds
-\item Which is equivalent to maximizing aggregate Utility of sales proceeds 
+\item Again, this amounts to maximizing Utility of sales proceeds
 \end{itemize}
 \end{frame}
 
@@ -541,7 +539,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item {\em Action} is Quantity of Stock to Sell at current time
 \item {\em Reward} is Utility of Sales Proceeds (i.e., Variance-adjusted-Proceeds)
 \item {\em Reward} \& {\em State}-transitions governed by {\em Price Impact Model}
-\item Real-world {\em Model} can be quite complex (Limit Order Book Dynamics)
+\item Real-world {\em Model} can be quite complex ({\em Order Book Dynamics})
 \end{itemize}
 \end{frame}
 
@@ -550,9 +548,9 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \pause
 \begin{itemize}[<+->]
 \item Market-maker's job is to submit bid and ask prices (and sizes)
-\item On the Limit Order Book (which moves due to other players)
+\item On the Trading {\em Order Book} (which moves due to other players)
 \item Market-maker needs to adjust bid/ask prizes/sizes appropriately
-\item By anticipating the Limit Order Book Dynamics
+\item By anticipating the {\em Order Book Dynamics}
 \item Goal is to maximize {\em Utility of Gains} at the end of a suitable horizon
 \item If Buy/Sell LOs are too narrow, more frequent but small gains
 \item If Buy/Sell LOs are too wide, less frequent but large gains
@@ -569,7 +567,7 @@ $$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item {\em Action} is Bid \& Ask Prices \& Sizes at each time step
 \item {\em Reward} is Utility of Gains at termination
 \item {\em State}-transitions governed by probabilities of hitting/lifting Bid/Ask
-\item Also governed by Limit Order Book Dynamics (can be quite complex)
+\item Also governed by Order Book Dynamics (can be quite complex)
 \end{itemize}
 \end{frame}
 
