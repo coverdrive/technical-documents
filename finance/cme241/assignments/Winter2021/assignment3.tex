@@ -29,7 +29,7 @@
 \question Consider an MDP with an infinite set of states $\mathcal{S} = \{1,2,3,\ldots \}$. The start state is $s=1$. Each state $s$ allows a continuous set of actions $a \in [0,1]$. The transition probabilities are given by: $$\mathbb{P}[s+1 \mid s, a] = a, \mathbb{P}[s \mid s, a] = 1 - a \mbox{ for all } s \in \mathcal{S} \mbox{ for all } a \in [0,1]$$
  For all states $s \in \mathcal{S}$ and actions $a \in [0,1]$, transitioning from $s$ to $s+1$ results in a reward of $1-a$ and transitioning from $s$ to $s$ results in a reward of $1+a$. The discount factor $\gamma=0.5$.
 \begin{itemize}
-\item Calculate the Optimal Value Function $V^*(s)$ for all $s \in \mathcal{S}$
+\item Using the MDP Bellman Optimality Equation, calculate the Optimal Value Function $V^*(s)$ for all $s \in \mathcal{S}$
 \item Calculate an Optimal Deterministic Policy $\pi^*(s)$ for all $s \in \mathcal{S}$
 \end{itemize}
 \question Consider an array of $n+1$ lilypads on a pond, numbered $0$ to $n$. A frog sits on a lilypad other than the lilypads numbered $0$ or $n$.  When on lilypad $i$ ($1\leq i \leq n-1$), the frog can croak one of two sounds $A$ or $B$. If it croaks $A$ when on lilypad $i$ ($1 \leq i \leq n-1$), it is thrown to lilypad $i-1$ with probability $\frac i n$ and is thrown to lilypad $i+1$ with probability $\frac {n-i} n$. If it croaks $B$ when on lilypad $i$ ($1\leq i \leq n-1$), it is thrown to one of the lilypads $0, \ldots, i-1, i+1, \ldots n$ with uniform probability $\frac 1 n$. A snake, perched on lilypad $0$, will eat the frog if the frog lands on lilypad $0$. The frog can escape the pond (and hence, escape the snake!) if it lands on lilypad $n$.
