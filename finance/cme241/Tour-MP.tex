@@ -118,22 +118,85 @@
 \frametitle{Intuition on the concepts of {\em Process} and {\em State}}
 \pause
 \begin{itemize}[<+->]
-\item {\em Process:} random evolution over a sequence of time steps
-\item {\em State:} Internal Representation driving future evolution
-\item The 3 Stock Price Examples - random walks with ``reverse pulls''
-\item Play with code, plot graphs, develop intuition
-\item Markov Property:
-$$\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[S_{t+1}|S_t]$$
-\item Informally:
-\begin{itemize}
-\item The future is independent of the past given the present
+\item {\em Process:} time-sequenced random outcomes
+\item Random outcome eg: price of a derivative, portfolio value etc.
+\item {\em State:} Internal Representation $S_t$ driving future evolution
+\item We are interested in $\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0]$
+\item Let us consider random walks of stock prices $X_t = S_t$
+$$\mathbb{P}[X_{t+1} = X_t + 1] + \mathbb{P}[X_{t+1} = X_t - 1] = 1$$
+\item We consider 3 examples of such processes
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Markov Property - Stock Price Random Walk Process}
+\pause
+\begin{itemize}[<+->]
+\item Process is pulled towards level $L$ with strength parameter $\alpha$
+$$\mathbb{P}[X_{t+1} = X_t + 1] = \frac 1 {1 + e^{-\alpha_1(L - X_t)}}$$
+\item Notice how the probability of next price depends only on current price
+\item ``The future is independent of the past given the present''
+$$\mathbb{P}[X_{t+1}|X_t, X_{t-1}, \ldots, X_0] = \mathbb{P}[X_{t+1}|X_t]\text{ for all } t \geq 0$$
+\item This makes the mathematics easier and the computation tractable
+\item We call this the {\em Markov Property} of States
 \item The state captures all relevant information from history
 \item Once the state is known, the history may be thrown away
 \item The state is a sufficient statistic of the future
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Logistic Functions $f(x;\alpha) = \frac 1 {1 + e^{-\alpha x}}$}
+\includegraphics[width=12cm, height=7cm]{logistic_curves.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Another Stock Price Random Walk Process}
+\pause
+$$
+\mathbb{P}[X_{t+1} = X_t + 1] =
+\begin{cases}
+0.5 (1 - \alpha_2(X_t - X_{t-1})) & \text{if } t > 0\\
+0.5 & \text{if } t = 0
+\end{cases}
+$$
+\begin{itemize}[<+->]
+\item Direction of $X_{t+1} - X_t$ is biased in the reverse direction of $X_t - X_{t-1}$
+\item Extent of the bias is controlled by ``pull-strength'' parameter $\alpha_2$
+\item $S_t  = X_t$ doesn't satisfy Markov Property, $S_t = (X_t, X_t - X_{t-1})$ does
+$$\mathbb{P}[(X_{t+1}, X_{t+1} - X_t)|(X_t, X_t - X_{t-1}), (X_{t-1}, X_{t-1} - X_{t-2}), \ldots, (X_0, Null)]$$
+$$= \mathbb{P}[(X_{t+1}, X_{t+1} - X_t)|(X_t, X_t - X_{t-1})] $$
+\item $S_t = (X_0, X_1, \ldots, X_t)$ or $S_t = (X_t, X_{t-1})$ also satisfy Markov Property
+\item But we seek the  "simplest/minimal" representation for Markov State
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Yet Another Stock Price Random Walk Process}
+\pause
+\begin{itemize}[<+->]
+\item Here, probability of next move depends on {\em all} past moves
+\item Depends on \# past up-moves $U_t$ relative to \# past down-moves $D_t$
+$$
+\mathbb{P}[X_{t+1} = X_t + 1] =
+\begin{cases}
+\frac 1 {1 + (\frac {U_t + D_t} {D_t} - 1)^{\alpha_3}} & \text{if } t > 0\\
+0.5 & \text{if } t = 0
+\end{cases}
+$$
+\item Direction of $X_{t+1} - X_t$ biased in the reverse direction of history
+\item $\alpha_3$ is a ``pull-strength'' parameter
+\item Most ``compact'' Markov State $S_t = (U_t, D_t)$
+$$\mathbb{P}[(U_{t+1}, D_{t+1})|(U_t, D_t), (U_{t-1}, D_{t-1}), \ldots, (U_0, D_0)]$$
+$$ = \mathbb{P}[(U_{t+1}, D_{t+1})|(U_t, D_t)]$$
+\item Note that $X_t$ is not part of $S_t$ since $X_t = X_0 + U_t - D_t$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Unit-Sigmoid Curves $f(x; \alpha) = \frac 1 {1 + (\frac 1 x - 1)^{\alpha}}$}
+\includegraphics[width=12cm, height=7cm]{unit_sigmoid_curves.png}
+\end{frame}
 
 \begin{frame}
 \frametitle{Single Sampling Traces for the 3 Processes}
