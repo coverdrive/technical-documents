@@ -212,15 +212,15 @@ $$ = \mathbb{P}[(U_{t+1}, D_{t+1})|(U_t, D_t)]$$
 \frametitle{Definition for Discrete Time, Countable States}
 \pause
 \begin{definition}
- A {\em Markov Process} consists of:
- \begin{itemize}
- \item A countable set of states $\mathcal{S}$ (known as the State Space) and a set $\mathcal{T} \subseteq \mathcal{S}$ (known as the set of Terminal States)
- \item A time-indexed sequence of random states $S_t \in \mathcal{S}$ for time steps $t=0, 1, 2, \ldots$ with each state transition satisfying the Markov Property: $\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[S_{t+1}|S_t]$ for all $t \geq 0$.
- \item Termination: If an outcome for $S_T$ (for some time step $T$) is a state in the set $\mathcal{T}$, then this sequence outcome terminates at time step $T$.
- \end{itemize}
- \end{definition}
- \pause
- \begin{itemize}[<+=>]
+A {\em Markov Process} consists of:
+\begin{itemize}
+\item A countable set of states $\mathcal{S}$ (known as the State Space) and a set $\mathcal{T} \subseteq \mathcal{S}$ (known as the set of Terminal States)
+\item A time-indexed sequence of random states $S_t \in \mathcal{S}$ for time steps $t=0, 1, 2, \ldots$ with each state transition satisfying the Markov Property: $\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[S_{t+1}|S_t]$ for all $t \geq 0$.
+\item Termination: If an outcome for $S_T$ (for some time step $T$) is a state in the set $\mathcal{T}$, then this sequence outcome terminates at time step $T$.
+\end{itemize}
+\end{definition}
+\pause
+\begin{itemize}[<+->]
 \item The more commonly used term for {\em Markov Process} is {\em Markov Chain}
 \item We refer to $\mathbb{P}[S_{t+1}|S_t]$ as the transition probabilities for time $t$.
 \item Non-terminal states: $\mathcal{N} = \mathcal{S} - \mathcal{T}$
@@ -286,6 +286,7 @@ class MarkovProcess(ABC, Generic[S]):
 \item We'd like a {\em sparse representation} for $\mathcal{P}$
 \item Conceptualize $\mathcal{P} : \mathcal{N} \times \mathcal{S} \rightarrow [0, 1]$ as $\mathcal{N} \rightarrow (\mathcal{S} \rightarrow [0, 1])$
 \end{itemize}
+\pause
 \begin{lstlisting}
 Transition[S] = \
     Mapping[S, Optional[FiniteDistribution[S]]]
@@ -442,7 +443,7 @@ $$ = \sum_{s' \in \mathcal{S}} \mathcal{P}(s,s') \cdot \mathcal{R}_T(s,s') = \su
 \pause
 \begin{itemize}[<+->]
 \item Embellish Inventory Process with Holding Cost and Stockout Cost
-\item Holding cost of $h$ for each unit that remains overnight.
+\item Holding cost of $h$ for each unit that remains overnight
 \item Think of this as ``interest on inventory'', also includes upkeep cost
 \item Stockout cost of $p$ for each unit of ``missed demand''
 \item For each customer demand you could not satisfy with store inventory
@@ -479,6 +480,7 @@ $$\text{PMF } f(i) = \frac {e^{-\lambda} \lambda^i} {i!}, \text{ CMF } F(i) = \s
 \item We'd like a {\em sparse representation} for $\mathcal{P}_R$
 \item Conceptualize $\mathcal{P}_R : \mathcal{N} \times \mathbb{R} \times \mathcal{S} \rightarrow [0, 1]$ as $\mathcal{N} \rightarrow (\mathcal{S} \times \mathbb{R} \rightarrow [0, 1])$
 \end{itemize}
+\pause
 \begin{lstlisting}
 StateReward = FiniteDistribution[Tuple[S, float]]
 RewardTransition = Mapping[S, Optional[StateReward[S]]]
