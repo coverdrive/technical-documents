@@ -388,14 +388,14 @@ $\bm{\mathcal{P}}^T \cdot \bm{\pi}= \bm{\pi} \Rightarrow \bm{\pi}$ is an eigenve
 \frametitle{MRP Definition for Discrete Time, Countable States}
 \pause
 \begin{definition}
- A {\em Markov Reward Process (MRP)} is a Markov Process, along with a time-indexed sequence of {\em Reward} random variables $R_t \in \mathbb{R}$ for time steps $t=1, 2, \ldots$, satisfying the Markov Property (including Rewards): $\mathbb{P}[(R_{t+1}, S_{t+1}) | S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[(R_{t+1}, S_{t+1}) | S_t]$ for all $t \geq 0$.
+ A {\em Markov Reward Process (MRP)} is a Markov Process, along with a time-indexed sequence of {\em Reward} random variables $R_t \in \mathcal{D}$ (a countable subset of $\mathbb{R}$) for time steps $t=1, 2, \ldots$, satisfying the Markov Property (including Rewards): $\mathbb{P}[(R_{t+1}, S_{t+1}) | S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[(R_{t+1}, S_{t+1}) | S_t]$ for all $t \geq 0$.
  \end{definition}
  \pause
   $$S_0, R_1, S_1, R_2, S_2, \ldots, S_{T-1}, R_T, S_T$$
   \pause
  \begin{itemize}[<+->]
 \item By default, assume stationary: $\mathbb{P}[(R_{t+1}, S_{t+1}) | S_t]$ independent of $t$
-\item Stationary MRP specified with function $\mathcal{P}_R: \mathcal{N} \times \mathbb{R} \times \mathcal{S} \rightarrow [0,1]$
+\item Stationary MRP specified with function $\mathcal{P}_R: \mathcal{N} \times \mathcal{D} \times \mathcal{S} \rightarrow [0,1]$
 $$\mathcal{P}_R(s,r,s') = \mathbb{P}[(R_{t+1}=r, S_{t+1}=s') | S_t=s]$$
 \item $\mathcal{P}_R$ known as the {\em Transition Probability Function}
 \end{itemize}
@@ -431,10 +431,10 @@ class MarkovRewardProcess(MarkovProcess[S]):
 \begin{itemize}[<+->]
 \item The reward transition function $\mathcal{R}_T: \mathcal{N} \times \mathcal{S} \rightarrow \mathbb{R}$ is defined as:
 $$\mathcal{R}_T(s,s') = \mathbb{E}[R_{t+1}|S_{t+1}=s',S_t=s]$$
-$$ = \sum_{r\in \mathbb{R}} \frac {\mathcal{P}_R(s,r,s')} {\mathcal{P}(s,s')} \cdot r = \sum_{r\in \mathbb{R}} \frac {\mathcal{P}_R(s,r,s')} {\sum_{r\in \mathbb{R}} \mathcal{P}_R(s,r,s')} \cdot r$$
+$$ = \sum_{r\in \mathcal{D}} \frac {\mathcal{P}_R(s,r,s')} {\mathcal{P}(s,s')} \cdot r = \sum_{r\in \mathcal{D}} \frac {\mathcal{P}_R(s,r,s')} {\sum_{r\in \mathcal{D}} \mathcal{P}_R(s,r,s')} \cdot r$$
 \item The reward function $\mathcal{R}: \mathcal{N} \rightarrow \mathbb{R}$ is defined as:
 $$\mathcal{R}(s) = \mathbb{E}[R_{t+1}|S_t=s]$$
-$$ = \sum_{s' \in \mathcal{S}} \mathcal{P}(s,s') \cdot \mathcal{R}_T(s,s') = \sum_{s'\in \mathcal{S}} \sum_{r\in\mathbb{R}} \mathcal{P}_R(s,r,s') \cdot r$$
+$$ = \sum_{s' \in \mathcal{S}} \mathcal{P}(s,s') \cdot \mathcal{R}_T(s,s') = \sum_{s'\in \mathcal{S}} \sum_{r \in \mathcal{D}} \mathcal{P}_R(s,r,s') \cdot r$$
 \end{itemize}
 \end{frame}
 
@@ -477,8 +477,9 @@ $$\text{PMF } f(i) = \frac {e^{-\lambda} \lambda^i} {i!}, \text{ CMF } F(i) = \s
 \pause
 \begin{itemize}[<+->]
 \item Finite State Space $\mathcal{S} = \{s_1, s_2, \ldots, s_n\}$, $|\mathcal{N}| = m\leq n$
+\item Finite set of (next state, reward) transitions
 \item We'd like a {\em sparse representation} for $\mathcal{P}_R$
-\item Conceptualize $\mathcal{P}_R : \mathcal{N} \times \mathbb{R} \times \mathcal{S} \rightarrow [0, 1]$ as $\mathcal{N} \rightarrow (\mathcal{S} \times \mathbb{R} \rightarrow [0, 1])$
+\item Conceptualize $\mathcal{P}_R : \mathcal{N} \times \mathcal{D} \times \mathcal{S} \rightarrow [0, 1]$ as $\mathcal{N} \rightarrow (\mathcal{S} \times \mathcal{D} \rightarrow [0, 1])$
 \end{itemize}
 \pause
 \begin{lstlisting}

@@ -147,7 +147,7 @@ A {\em Markov Decision Process (MDP)} comprises of:
 
 \item A countable set of states $\mathcal{S}$ (State Space), a set $\mathcal{T} \subseteq \mathcal{S}$ (known as the set of Terminal States), and a countable set of actions $\mathcal{A}$
 
-\item A time-indexed sequence of {\em environment-generated} pairs of random states $S_t \in \mathcal{S}$ and random rewards $R_t \in \mathbb{R}$, alternating with {\em agent-controllable} actions $A_t \in \mathcal{A}$ for time steps $t=0, 1, 2, \ldots$
+\item A time-indexed sequence of {\em environment-generated} pairs of random states $S_t \in \mathcal{S}$ and random rewards $R_t \in \mathcal{D}$ (a countable subset of $\mathbb{R}$), alternating with {\em agent-controllable} actions $A_t \in \mathcal{A}$ for time steps $t=0, 1, 2, \ldots$
 
 \item Markov Property: $\mathbb{P}[(R_{t+1}, S_{t+1}) | (S_t, A_t, S_{t-1}, A_{t-1}, \ldots, S_0, A_0)] = \mathbb{P}[(R_{t+1}, S_{t+1}) | (S_t, A_t)]$ for all $t \geq 0$
 
@@ -165,15 +165,15 @@ A {\em Markov Decision Process (MDP)} comprises of:
 \pause
 \begin{itemize}[<+->]
 \item Stationary (by default): $\mathbb{P}[(R_{t+1}, S_{t+1}) | (S_t, A_t)]$ independent of $t$
-\item $\Rightarrow$ {\em Transition Probability Function} $\mathcal{P}_R: \mathcal{N} \times \mathcal{A} \times \mathbb{R} \times \mathcal{S} \rightarrow [0,1]$
+\item $\Rightarrow$ {\em Transition Probability Function} $\mathcal{P}_R: \mathcal{N} \times \mathcal{A} \times \mathcal{D} \times \mathcal{S} \rightarrow [0,1]$
 $$\mathcal{P}_R(s,a,r,s') = \mathbb{P}[(R_{t+1}=r, S_{t+1}=s') | S_t=s, A_t = a]$$
 \item State Transition Probability Function $\mathcal{P}: \mathcal{N} \times \mathcal{A} \times \mathcal{S} \rightarrow [0,1]$:
-$$\mathcal{P}(s, a, s') = \sum_{r\in \mathbb{R}} \mathcal{P}_R(s, a, r, s')$$
+$$\mathcal{P}(s, a, s') = \sum_{r\in \mathcal{D}} \mathcal{P}_R(s, a, r, s')$$
 \item Reward Transition Function $\mathcal{R}_T: \mathcal{N} \times \mathcal{A} \times \mathcal{S} \rightarrow \mathbb{R}$ defined as:
 $$\mathcal{R}_T(s,a,s') = \mathbb{E}[R_{t+1}|(S_{t+1}=s',S_t=s,A_t=a)]$$
-$$ = \sum_{r\in \mathbb{R}} \frac {\mathcal{P}_R(s,a,r,s')} {\mathcal{P}(s,a,s')} \cdot r = \sum_{r\in \mathbb{R}} \frac {\mathcal{P}_R(s,a,r,s')} {\sum_{r\in \mathbb{R}} \mathcal{P}_R(s,a,r,s')} \cdot r$$
+$$ = \sum_{r\in \mathcal{D}} \frac {\mathcal{P}_R(s,a,r,s')} {\mathcal{P}(s,a,s')} \cdot r = \sum_{r\in \mathcal{D}} \frac {\mathcal{P}_R(s,a,r,s')} {\sum_{r\in \mathcal{D}} \mathcal{P}_R(s,a,r,s')} \cdot r$$
 \item Reward Function $\mathcal{R}: \mathcal{N} \times \mathcal{A} \rightarrow \mathbb{R}$ defined as:
-$$\mathcal{R}(s,a) = \mathbb{E}[R_{t+1}|(S_t=s, A_t=a)] = \sum_{s'\in \mathcal{S}} \sum_{r\in\mathbb{R}} \mathcal{P}_R(s,a,r,s') \cdot r$$
+$$\mathcal{R}(s,a) = \mathbb{E}[R_{t+1}|(S_t=s, A_t=a)] = \sum_{s'\in \mathcal{S}} \sum_{r\in\mathcal{D}} \mathcal{P}_R(s,a,r,s') \cdot r$$
 \end{itemize}
 \end{frame}
 
@@ -262,9 +262,10 @@ def apply_policy(self, policy: Policy[S, A]) \
 \begin{itemize}[<+->]
 \item Finite State Space $\mathcal{S} = \{s_1, s_2, \ldots, s_n\}$, $|\mathcal{N}| = m\leq n$
 \item Action Space $\mathcal{A}(s)$ is finite for each $s \in \mathcal{N}$
+\item Finite set of (next state, reward) transitions
 \item We'd like a {\em sparse representation} for $\mathcal{P}_R$
-\item Conceptualize $\mathcal{P}_R : \mathcal{N} \times \mathcal{A} \times \mathbb{R} \times \mathcal{S} \rightarrow [0, 1]$ as:
-$$\mathcal{N} \rightarrow (\mathcal{A} \rightarrow (\mathcal{S} \times \mathbb{R} \rightarrow [0, 1]))$$
+\item Conceptualize $\mathcal{P}_R : \mathcal{N} \times \mathcal{A} \times \mathcal{D} \times \mathcal{S} \rightarrow [0, 1]$ as:
+$$\mathcal{N} \rightarrow (\mathcal{A} \rightarrow (\mathcal{S} \times \mathcal{D} \rightarrow [0, 1]))$$
 \end{itemize}
 \pause
 \begin{lstlisting}

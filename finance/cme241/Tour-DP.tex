@@ -153,7 +153,7 @@
 \item Each is an iterative algorithm converging to the true Value Function
 \item Each algorithm is based on the concept of {\em Fixed-Point}
 \begin{definition}
-The Fixed-Point of a function $f: \mathcal{D} \rightarrow \mathcal{D}$ (for some arbitrary domain $\mathcal{D}$) is a value $x \in \mathcal{D}$ that satisfies the equation: $x = f(x)$.
+The Fixed-Point of a function $f: \mathcal{X} \rightarrow \mathcal{X}$ (for some arbitrary domain $\mathcal{X}$) is a value $x \in \mathcal{X}$ that satisfies the equation: $x = f(x)$.
 \end{definition}
 \item Some functions have multiple fixed-points, some have none
 \item DP algorithms are based on functions with a unique fixed-point
@@ -167,16 +167,16 @@ The Fixed-Point of a function $f: \mathcal{D} \rightarrow \mathcal{D}$ (for some
 \frametitle{Banach Fixed-Point Theorem}
 \pause
 \begin{theorem}[Banach Fixed-Point Theorem]
-Let $\mathcal{D}$ be a non-empty set equipped with a complete metric $d: \mathcal{D} \times \mathcal{D} \rightarrow \mathbb{R}$. Let $f: \mathcal{D} \rightarrow \mathcal{D}$ be such that there exists a $L \in [0, 1)$ such that
-$d(f(x_1), f(x_2)) \leq L \cdot d(x_1, x_2)$ for all $x_1, x_2 \in \mathcal{D}$. Then,
+Let $\mathcal{X}$ be a non-empty set equipped with a complete metric $d: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$. Let $f: \mathcal{X} \rightarrow \mathcal{X}$ be such that there exists a $L \in [0, 1)$ such that
+$d(f(x_1), f(x_2)) \leq L \cdot d(x_1, x_2)$ for all $x_1, x_2 \in \mathcal{X}$. Then,
 \begin{itemize}
-\item There exists a unique Fixed-Point $x^* \in \mathcal{D}$, i.e.,
+\item There exists a unique Fixed-Point $x^* \in \mathcal{X}$, i.e.,
 $$x^* = f(x^*)$$
-\item For any $x_0 \in \mathcal{D}$, and sequence $[x_i|i=0, 1, 2, \ldots]$ defined as $x_{i+1} = f(x_i)$ for all $i = 0, 1, 2, \ldots$,
+\item For any $x_0 \in \mathcal{X}$, and sequence $[x_i|i=0, 1, 2, \ldots]$ defined as $x_{i+1} = f(x_i)$ for all $i = 0, 1, 2, \ldots$,
 $$\lim_{i\rightarrow \infty} x_i = x^*$$
 \end{itemize}
 \end{theorem}
-If you have a complete metric space $\langle \mathcal{D}, d \rangle$ and a contraction $f$ (with respect to $d$), then you have an algorithm to solve for the fixed-point of $f$.
+If you have a complete metric space $\langle \mathcal{X}, d \rangle$ and a contraction $f$ (with respect to $d$), then you have an algorithm to solve for the fixed-point of $f$.
 \end{frame}
 
 \begin{frame}
@@ -185,7 +185,7 @@ If you have a complete metric space $\langle \mathcal{D}, d \rangle$ and a contr
 \begin{itemize}[<+->]
 \item MDP with $\mathcal{S} = \{s_1, s_2, \ldots, s_n\}, \mathcal{N} = \{s_1, s_2, \ldots, s_m \}$
 \item Given a policy $\pi$, compute the Value Function of $\pi$-implied MRP
-\item $\mathcal{P}_R^{\pi}: \mathcal{N} \times \mathbb{R} \times \mathcal{S} \rightarrow [0, 1]$ is given as a data structure
+\item $\mathcal{P}_R^{\pi}: \mathcal{N} \times \mathcal{D} \times \mathcal{S} \rightarrow [0, 1]$ is given as a data structure
 \item Extract (from $\mathcal{P}_R^{\pi}$) $\mathcal{P}^{\pi}: \mathcal{N} \times \mathcal{S} \rightarrow [0, 1]$ and  $\mathcal{R}^{\pi}: \mathcal{N} \rightarrow \mathbb{R}$
 \item For non-large spaces, we can compute (in vector notation):
 $${\bm V}^{\pi} = (\bm{I_m} - \gamma \bm{\mathcal{P}}^{\pi})^{-1} \cdot \bm{\mathcal{R}}^{\pi}$$
@@ -237,7 +237,7 @@ $$\lim_{i\rightarrow \infty} ({\bbpi})^i(\bm{V_0}) \rightarrow \bvpi \text{ for 
 Banach Fixed-Point Theorem also assures speed of convergence (dependent on choice of starting Value Function $\bm{V_0}$ and on choice of $\gamma$).\\
 \vspace{5mm}
 \pause
-Running time of each iteration is $O(m^2)$. Constructing the MRP from the MDP and the policy takes $O(m^2 k)$ operations, where $m = |mathcal{N}|, k = |\mathcal{A}|$.
+Running time of each iteration is $O(m^2)$. Constructing the MRP from the MDP and the policy takes $O(m^2 k)$ operations, where $m = |\mathcal{N}|, k = |\mathcal{A}|$.
 
 \end{frame}
 
@@ -512,7 +512,7 @@ The DP algorithms we've covered are qualified as {\em Synchronous DP}:
 \begin{enumerate}[<+->]
 \item {\em In-place} updates enable updated values to be used immediately
 \item {\em Prioritized Sweeping} keeps states sorted by their Value Function {\em gaps}
-$$\text{ Gaps } g(s) = |V(s) - \argmax_{a\in \mathcal{A}} (\mathcal{R}(s,a) + \gamma \cdot \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot V(s'))|$$
+$$\text{ Gaps } g(s) = |V(s) - \max_{a\in \mathcal{A}} \{ \mathcal{R}(s,a) + \gamma \cdot \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot V(s') \}|$$
 But this requires us to know the reverse transitions to resort queue
 \item {\em Real-Time Dynamic Programming (RTDP)} runs DP {\em while} the agent is experiencing real-time interaction with the environment
 \begin{itemize}
@@ -550,11 +550,11 @@ But this requires us to know the reverse transitions to resort queue
 \item Each sequence terminates within a finite number of time steps $T$
 \item Each time step has a separate (from other time steps) set of states
 \end{itemize} 
-\item Denote the set of states at time $t$ as $\mathcal{S}_t$, terminal states as $\mathcal{T}_t$,  non-terminal states as $\mathcal{N}_t = \mathcal{S}_t - \mathcal{T}_t$ (note: $\mathcal{N}_T = \emptyset$), actions as $\mathcal{A}_t$
+\item Denote states at time $t$ as $\mathcal{S}_t$, terminal states as $\mathcal{T}_t$,  non-terminal states as $\mathcal{N}_t = \mathcal{S}_t - \mathcal{T}_t$ (note: $\mathcal{N}_T = \emptyset$), actions as $\mathcal{A}_t$, rewards as $\mathcal{D}_t$
 \item Augment each state to include time-index: augmented state is $(t, s_t)$
 $$\text{Entire MDP's States } \mathcal{S} = \{(t, s_t) | t = 0, 1, \ldots, T, s_t \in \mathcal{S}_t\}$$
 \item Each $t$ gets its own state-reward transition probability function
-$$(\mathcal{P}_R)_t: \mathcal{N}_t \times \mathcal{A}_t \times \mathbb{R} \times \mathcal{S}_{t+1} \rightarrow [0, 1]$$
+$$(\mathcal{P}_R)_t: \mathcal{N}_t \times \mathcal{A}_t \times \mathcal{D}_{t+1} \times \mathcal{S}_{t+1} \rightarrow [0, 1]$$
 \item Likewise, each $t$ gets its own policy $\pi_t: \mathcal{N}_t \times \mathcal{A}_t \rightarrow [0, 1]$
 \item An overall policy $\pi: \mathcal{N} \times \mathcal{A} \rightarrow [0,1]$ composed of $(\pi_0, \pi_1, \ldots, \pi_{T-1})$
 \end{itemize}
@@ -567,8 +567,8 @@ $$(\mathcal{P}_R)_t: \mathcal{N}_t \times \mathcal{A}_t \times \mathbb{R} \times
 \item VF for a given policy $\pi$ can be represented by time-sequenced VFs
 $$V^{\pi}_t: \mathcal{N}_t \rightarrow \mathbb{R}$$
 \item So Bellman Equation for $\pi$-implied Finite-Horizon MRP becomes:
-$$V^{\pi}_t(s_t) = \sum_{s_{t+1} \in \mathcal{S}_{t+1}} \sum_{r \in \mathbb{R}} (\mathcal{P}_R^{\pi_t})_t(s_t, r, s_{t+1}) \cdot (r + \gamma \cdot V^{\pi}_{t+1}(s_{t+1}))$$
-$$(\mathcal{P}_R^{\pi_t})_t(s_t, r, s_{t+1}) = \sum_{a_t \in \mathcal{A}_t} \pi_t(s_t, a_t) \cdot (\mathcal{P}_R)_t(s_t, a_t, r, s_{t+1})$$
+$$V^{\pi}_t(s_t) = \sum_{s_{t+1} \in \mathcal{S}_{t+1}} \sum_{r_{t+1} \in \mathbb{D}_{t+1}} (\mathcal{P}_R^{\pi_t})_t(s_t, r_{t+1}, s_{t+1}) \cdot (r_{t+1} + \gamma \cdot V^{\pi}_{t+1}(s_{t+1}))$$
+$$(\mathcal{P}_R^{\pi_t})_t(s_t, r_{t+1}, s_{t+1}) = \sum_{a_t \in \mathcal{A}_t} \pi_t(s_t, a_t) \cdot (\mathcal{P}_R)_t(s_t, a_t, r_{t+1}, s_{t+1})$$
 \item ``Backward Induction'' algorithm for {\em finite MRP} with Finite-Horizon
 \item Decrementing $t$ from $T$ to 0, and calculating $V_t^{\pi}$ from $V_{t+1}^{\pi}$
 \item Running time is $O(m^2 T)$ where $|\mathcal{N}_t|$ is $O(m)$
@@ -583,11 +583,11 @@ $$(\mathcal{P}_R^{\pi_t})_t(s_t, r, s_{t+1}) = \sum_{a_t \in \mathcal{A}_t} \pi_
 \item Optimal VF $V^*$ can be represented by time-sequenced Optimal VFs
 $$V^*_t: \mathcal{N}_t \rightarrow \mathbb{R}$$
 \item So MDP Bellman Optimality Equation becomes: 
-$$V^*_t(s_t) = \max_{a_t \in \mathcal{A}_t} \{\sum_{s_{t+1} \in \mathcal{S}_{t+1}} \sum_{r \in \mathbb{R}} (\mathcal{P}_R)_t(s_t, a_t, r, s_{t+1}) \cdot (r + \gamma \cdot V^*_{t+1}(s_{t+1}))\}$$
+$$V^*_t(s_t) = \max_{a_t \in \mathcal{A}_t} \sum_{s_{t+1}} \sum_{r_{t+1}} (\mathcal{P}_R)_t(s_t, a_t, r_{t+1}, s_{t+1}) \cdot (r_{t+1} + \gamma \cdot V^*_{t+1}(s_{t+1}))$$
 \item ``Backward Induction'' (Control) for {\em finite MDP} with Finite-Horizon
 \item Decrementing $t$ from $T$ to 0, and calculating $V_t^*$ from $V_{t+1}^*$
 \item (Associated) Optimal (Deterministic) Policy $(\pi^*_D)_t: \mathcal{N}_t \rightarrow \mathcal{A}_t$ is
-$$(\pi^*_D)_t(s_t) = \argmax_{a_t \in \mathcal{A}_t} \{\sum_{s_{t+1} \in \mathcal{S}_{t+1}} \sum_{r \in \mathbb{R}} (\mathcal{P}_R)_t(s_t, a_t, r, s_{t+1}) \cdot (r + \gamma \cdot V^*_{t+1}(s_{t+1}))\}$$
+$$(\pi^*_D)_t(s_t) = \argmax_{a_t \in \mathcal{A}_t} \sum_{s_{t+1}} \sum_{r_{t+1}} (\mathcal{P}_R)_t(s_t, a_t, r_{t+1}, s_{t+1}) \cdot (r_{t+1} + \gamma \cdot V^*_{t+1}(s_{t+1}))$$
 \item Running time is $O(m^2 k T)$ where $|\mathcal{N}_t|$ is $O(m)$ and $|\mathcal{A}_t|$ is $O(k)$
 \end{itemize}
 \end{frame}
@@ -610,19 +610,19 @@ $$(\pi^*_D)_t(s_t) = \argmax_{a_t \in \mathcal{A}_t} \{\sum_{s_{t+1} \in \mathca
 \begin{frame}
 \frametitle{Dynamic Pricing Model for End-of-Life/End-of-Season}
 \pause
-$$\mathcal{S}_t = \{(t, I_t), I_t \in \mathbb{Z}, 0 \leq I_t \leq M\} \text{ for all } 0 \leq t \leq T$$
+$$\mathcal{S}_t = \{(t, I_t) | I_t \in \mathbb{Z}, 0 \leq I_t \leq M\} \text{ for all } 0 \leq t \leq T$$
 \pause
 $$\mathcal{N}_t = \mathcal{S}_t \text{ and } \mathcal{A}_t = \{1, 2, \ldots, N\} \text{ for all } 0 \leq t < T, \text{ and } \mathcal{N}_T =\emptyset$$
 \pause
 $$I_0 = M \text{ and } I_{t+1} = \max(0, I_t - d_t) \text{ where } d_t \sim Poisson(\lambda_i) \text{ if } a_t = i$$
 \pause
-$$\text{Sales Revenue } R_t \text{ on day } t \text{ is equal to } \min(I_t, d_t) \cdot P_t$$
+$$\text{Sales Revenue } \text{ on day } t \text{ is equal to } \min(I_t, d_t) \cdot P_t$$
 \pause
 $$
- (\mathcal{P}_R)_t(I_t, i, R_t, I_t - k) =
+ (\mathcal{P}_R)_t(I_t, i, r_{t+1}, I_t - k) =
  \begin{cases}
- \frac {e^{-\lambda_i} \lambda_i^{k}} {k!} & \text{ if } k < I_t \text{ and } R_t = k \cdot P_i\\
- \sum_{j=I_t}^{\infty} \frac {e^{-\lambda_i} \lambda_i^{j}} {j!} & \text{ if } k = I_t \text{ and } R_t = k \cdot P_i\\
+ \frac {e^{-\lambda_i} \lambda_i^{k}} {k!} & \text{ if } k < I_t \text{ and } r_{t+1} = k \cdot P_i\\
+ \sum_{j=I_t}^{\infty} \frac {e^{-\lambda_i} \lambda_i^{j}} {j!} & \text{ if } k = I_t \text{ and } r_{t+1} = k \cdot P_i\\
  0 & \text{ otherwise }
  \end{cases}
  $$

@@ -163,23 +163,6 @@ $$w^* = \argmax_w \{ \prod_{i=1}^n f(x_i; w)(y_i)\} = \argmax_w \{ \sum_{i=1}^n 
 \end{frame}
 
 \begin{frame}
-\frametitle{Theory of Function Approximations}
-\pause
-\begin{itemize}[<+->]
-\item We work with a generic but simple setting for Function Approximation
-\item Predictor variable $x \in \mathcal{X}$, Response variable $y \in \mathbb{R}$
-\item We treat $x, y$ as unknown random variables, and want to estimate a function approximation for $\mathbb{P}[y|x]$ from data in the form of $(x,y)$ pairs
-\item We consider parameterized functions $f$ with parameters denoted $w$
-\item  Exact data type of $w$ will depend on specific form of function approx
-\item  Denote the estimated probability of $y|x$ as $f(x; w)(y)$
-\item  Assume given data in the form of a sequence of $n$ $(x,y)$ pairs:
-$$[(x_i, y_i)|1 \leq i \leq n]$$
-\item  Estimating $\mathbb{P}[y|x]$ is formalized by solving for $w=w^*$ such that:
-$$w^* = \argmax_w \{ \prod_{i=1}^n f(x_i; w)(y_i)\} = \argmax_w \{ \sum_{i=1}^n \log f(x_i; w)(y_i)\}$$
-\end{itemize}
-\end{frame}
-
-\begin{frame}
 \frametitle{Maximum Likelihood and Cross-Entropy Loss}
 \pause
 \begin{itemize}[<+->]
