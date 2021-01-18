@@ -266,6 +266,7 @@ def apply_policy(self, policy: Policy[S, A]) \
 \item Conceptualize $\mathcal{P}_R : \mathcal{N} \times \mathcal{A} \times \mathbb{R} \times \mathcal{S} \rightarrow [0, 1]$ as:
 $$\mathcal{N} \rightarrow (\mathcal{A} \rightarrow (\mathcal{S} \times \mathbb{R} \rightarrow [0, 1]))$$
 \end{itemize}
+\pause
 \begin{lstlisting}
 StateReward = FiniteDistribution[Tuple[S, float]]
 ActionMapping = Mapping[A, StateReward[S]]

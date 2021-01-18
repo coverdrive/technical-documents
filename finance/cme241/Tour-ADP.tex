@@ -1,0 +1,532 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[handout]{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{physics}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{enumerate}
+
+\newcommand{\prob}{\mathcal{P}}
+\newcommand{\rew}{\mathcal{R}}
+\newcommand{\states}{\mathcal{S}}
+\newcommand{\actions}{\mathcal{S}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand{\bvpi}{\bm{V}^{\pi}}
+\newcommand{\bvs}{\bm{V}^*}
+\newcommand{\bbpi}{\bm{B}^{\pi}}
+\newcommand{\bbs}{\bm{B}^*}
+\newcommand{\bv}{\bm{V}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Approximate DP Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 4}}}: \\ Function Approximation and Approximate DP} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{ICME, Stanford University
+ % Your institution for the title page
+}
+
+\date % Date, can be changed to a custom date
+
+\begin{document}
+\lstset{language=Python}  
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Overview} % Table of contents slide, comment this block out to remove it
+% \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+% \end{frame}
+
+\begin{frame}
+\frametitle{From DP to Approximate ADP (abbrev. ADP)}
+\begin{itemize}[<+->]
+\item Dynamic Programming algorithms meant for non-large finite spaces
+\item DP algorithms typically sweep through all states in each iteration
+\item Cannot do this for large finite spaces or for infinite spaces
+\item Requires us to generalize to function approximation of Value Function
+\begin{itemize}[<+->]
+\item Sample an appropriate subset of states 
+\item Calculate the Value Function for those states (Bellman calculation)
+\item Create/Update a func approx with the sampled states' calculated values
+\end{itemize}
+\item Also, can sample transitions to estimate DP algo's Bellman update
+\item The fundamental structure of the algorithms is still the same
+\item Fundamental principles (Fixed-Point/Bellman Operators) still same
+\item These generalizations known as {\em Approximate Dynamic Programming}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Theory of Function Approximations}
+\pause
+\begin{itemize}[<+->]
+\item We work with a generic but simple setting for Function Approximation
+\item Predictor variable $x \in \mathcal{X}$, Response variable $y \in \mathbb{R}$
+\item We treat $x, y$ as unknown random variables, and want to estimate a function approximation for $\mathbb{P}[y|x]$ from data in the form of $(x,y)$ pairs
+\item We consider parameterized functions $f$ with parameters denoted $w$
+\item  Exact data type of $w$ will depend on specific form of function approx
+\item  Denote the estimated probability of $y|x$ as $f(x; w)(y)$
+\item  Assume given data in the form of a sequence of $n$ $(x,y)$ pairs:
+$$[(x_i, y_i)|1 \leq i \leq n]$$
+\item  Estimating $\mathbb{P}[y|x]$ is formalized by solving for $w=w^*$ such that:
+$$w^* = \argmax_w \{ \prod_{i=1}^n f(x_i; w)(y_i)\} = \argmax_w \{ \sum_{i=1}^n \log f(x_i; w)(y_i)\}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Theory of Function Approximations}
+\pause
+\begin{itemize}[<+->]
+\item We work with a generic but simple setting for Function Approximation
+\item Predictor variable $x \in \mathcal{X}$, Response variable $y \in \mathbb{R}$
+\item We treat $x, y$ as unknown random variables, and want to estimate a function approximation for $\mathbb{P}[y|x]$ from data in the form of $(x,y)$ pairs
+\item We consider parameterized functions $f$ with parameters denoted $w$
+\item  Exact data type of $w$ will depend on specific form of function approx
+\item  Denote the estimated probability of $y|x$ as $f(x; w)(y)$
+\item  Assume given data in the form of a sequence of $n$ $(x,y)$ pairs:
+$$[(x_i, y_i)|1 \leq i \leq n]$$
+\item  Estimating $\mathbb{P}[y|x]$ is formalized by solving for $w=w^*$ such that:
+$$w^* = \argmax_w \{ \prod_{i=1}^n f(x_i; w)(y_i)\} = \argmax_w \{ \sum_{i=1}^n \log f(x_i; w)(y_i)\}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Maximum Likelihood and Cross-Entropy Loss}
+\pause
+\begin{itemize}[<+->]
+\item This is the framework of {\em Maximum Likelihood Estimation} of $y|x$
+\item Data $[(x_i, y_i)|1 \leq i \leq n]$ specifies {\em empirical probability distribution} $D$
+\item Parameterized function $f$ specifies {]\em model probability distribution} $M$
+\item So we are in the business of reconciling $D$ and $M$
+\item So this is minimizing {\em Cross-Entropy Loss} between $D$ and $M$
+$$ \text{Cross-Entropy Loss } \mathcal{H}(D, M) = -\mathbb{E}_D[\log M]$$
+\item We want to allow for incremental estimation (with data at each $t$):
+$$[(x_{t,i}, y_{t,i})|1 \leq i \leq n_t]$$
+\item Parameters update from $w_{t-1}$ to $w_t$ with say gradient descent
+\item Allow for full batch, mini-batch or single pair (eg: SGD)
+\item With an estimate of $f(x;w)$, we can predict $y|x$ as $\mathbb{E}_M[y|x]$:
+$$\mathbb{E}_M[y|x] = \mathbb{E}_{f(x;w)}[y] = \int_{-\infty}^{+\infty} y \cdot f(x;w)(y) \cdot dy$$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{The @abstractclass FunctionApprox}
+\pause
+\begin{lstlisting}
+class FunctionApprox(ABC, Generic[X]):
+
+    @abstractmethod
+    def solve(
+        self,
+        xy_vals_seq: Iterable[Tuple[X, float]],
+        error_tolerance: Optional[float] = None
+    ) -> FunctionApprox[X]:
+    
+    @abstractmethod
+    def evaluate(
+        self,
+        x_values_seq: Iterable[X]
+    ) -> np.ndarray:
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The @abstractclass FunctionApprox}
+\pause
+\begin{lstlisting}
+    @abstractmethod
+    def update(
+        self,
+        xy_vals_seq: Iterable[Tuple[X, float]]
+    ) -> FunctionApprox[X]:
+        pass
+        
+    def iterate_updates(
+        self,
+        xy_seq_stream: Iterator[Iterable[Tuple[X, float]]]
+    ) -> Iterator[FunctionApprox[X]]:
+        return iterate.accumulate(
+            xy_seq_stream,
+            lambda fa, xy: fa.update(xy),
+            initial=self
+        )   
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Linear Function Approximation}
+\pause
+\begin{itemize}[<+->]
+\item Define a sequence of feature functions $\phi_j: \mathcal{X} \rightarrow \mathbb{R}, j = 1, 2, \ldots, m$
+\item Parameters $w$ is a weights vector $\bm{w} = (w_1, w_2, \ldots, w_m) \in \mathbb{R}^m$
+\item Linear function approximation assumes gaussian distribution for $y|x$
+$$\text{ with mean } = \sum_{j=1}^m \phi_j(x) \cdot w_j \text{ and constant variance } \sigma^2$$
+$$\mathbb{P}[y|x] = f(x;\bm{w})(y) = \frac {1} {\sqrt{2\pi \sigma^2}} \cdot e^{-\frac {(y - \sum_{j=1}^m \phi_j(x) \cdot w_j)^2} {2\sigma^2}}$$
+\item Regularized cross-entropy loss function for data $[x_i, y_i|1 \leq i \leq n]$:
+$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\sum_{j=1}^m \phi_j(x_i) \cdot w_j - y_i)^2 + \frac 1 2 \cdot\lambda \cdot \sum_{j=1}^m w_j^2$$
+\item This ignores constants involving $\sigma$, and $\lambda$ is regularization coefficient
+\item So $\mathcal{L}(\bm{w})$ is just MSE of linear predictions $\sum_{j=1}^m \phi_j(x_i) \cdot w_j$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Linear Function Approximation with Gradient Descent}
+\pause
+\begin{itemize}[<+->]
+\item Gradient of $\mathcal{L}(\bm{w})$ with respect to $\bm{w}$ works out to:
+$$\nabla_{\bm{w}} \mathcal{L}(\bm{w}) = \frac 1 n \cdot (\sum_{i=1}^n \bm{\phi}(x_i) \cdot (\bm{\phi}(x_i) \cdot \bm{w} - y_i)) + \lambda \cdot \bm{w}$$
+$$\bm{\phi}(x) = (\phi_1(x), \phi_2(x), \ldots, \phi_m(x)) \text{ for all } x \in \mathcal{X}$$
+\item Solve for $\bm{w^*}$ by incremental estimation using gradient descent
+\item Gradient estimate $\mathcal{G}_{(x_t,y_t)}(\bm{w}_t)$ for time $t$-data $[(x_{t,i}, y_{t,i})|1 \leq i \leq n_t]$:
+$$\mathcal{G}_{(x_t, y_t)}(\bm{w}_t) = \frac 1 n \cdot (\sum_{i=1}^{n_t} \bm{\phi}(x_{t,i}) \cdot (\bm{\phi}(x_{t,i}) \cdot \bm{w}_t - y_{t,i})) + \lambda \cdot \bm{w}_t$$
+\item Interpreted as the weighted-mean of the feature vectors $\bm{\phi}(x_{t,i})$
+\item Weighted by the (scalar) linear prediction errors $\bm{\phi}(x_{t,i}) \cdot \bm{w}_t - y_{t,i}$
+\item So the update to the weights vector $\bm{w}$ is given by:
+$$\bm{w}_{t+1} = \bm{w}_t - \alpha_t \cdot \mathcal{G}_{(x_t, y_t)}(\bm{w}_t)$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Direct Solution of Linear Function Approximation}
+\pause
+\begin{itemize}[<+->]
+\item If feature functions not too large, we can directly solve for $\bm{w^*}$ 
+\item Assume the entire provided data is $[(x_i, y_i)|1\leq i \leq n]$
+\item Then the gradient estimate based can be set to 0 to solve for $\bm{w^*}$
+$$\frac 1 n \cdot (\sum_{i=1}^n \bm{\phi}(x_i) \cdot (\bm{\phi}(x_i) \cdot \bm{w^*} - y_i)) + \lambda \cdot \bm{w^*} = 0$$
+\item Denote $\bm{\Phi}$ as $n \times m$ matrix: $\bm{\Phi}_{i,j} = \phi_j(x_i)$
+\item Denote column vector $\bm{Y} \in \mathbb{R}^n$ defined as $\bm{Y}_i = y_i$
+$$\frac 1 n \cdot \bm{\Phi}^T \cdot (\bm{\Phi} \cdot \bm{w^*} - \bm{Y}) + \lambda \cdot \bm{w^*} = 0$$
+$$\Rightarrow (\bm{\Phi}^T \cdot \bm{\Phi} + n \lambda \cdot \bm{I_m}) \cdot \bm{w^*} = \bm{\Phi}^T \cdot \bm{Y}$$
+$$\Rightarrow \bm{w^*} = (\bm{\Phi}^T \cdot \bm{\Phi} + n \lambda \cdot \bm{I_m})^{-1} \cdot \bm{\Phi}^T \cdot \bm{Y}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Deep Neural Networks (of vanilla flavor)}
+\pause
+\begin{itemize}[<+->]
+\item Deep Neural Network (DNN) layers numbered $l = 0, 1, \ldots L$
+\item Denote input and output to layer $l$ as vectors $\bm{I_l}$ and $\bm{O_l}$
+$$\bm{I_0} = \bm{\phi}(x) \in \mathbb{R}^m \text{ and } \bm{O_L} = \mathbb{E}_M[y|x] \text{ and } \bm{I_{l+1}} = \bm{O_l}$$
+\item Denote layer $l$ parameters as $|\bm{O_l}| \times |\bm{I_l}|$ matrix $\bm{w_l}$
+\item Layer $l$ neurons define a linear transformation from $\bm{I_l}$ to $\bm{S_l}$
+$$\bm{S_l} = \bm{w_l} \cdot \bm{I_l} \text{ and } \bm{O_l} = g_l(\bm{S_l})$$
+\item where $g_l: \mathbb{R} \rightarrow \mathbb{R}$ is the activation function for layer $l$
+\item Forward-propagation composes layers' linear and activation functions
+\item Back-propagation calculates cross-entropy loss gradient $\nabla_{\bm{w_l}} \mathcal{L}$
+\item Gradient Descent updates for weights $\bm{w_l}$ proportional to $\nabla_{\bm{w_l}} \mathcal{L}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Back-prop as Recursive Gradient Calculation}
+\pause
+\begin{itemize}[<+->]
+\item Loss gradient can be reduced to calculating $\bm{P_l} = \nabla_{\bm{S_l}} \mathcal{L}$
+$$\nabla_{\bm{w_l}} \mathcal{L} = (\nabla_{\bm{S_l}} \mathcal{L})^T \cdot \nabla_{\bm{w_l}} \bm{S_l} = \bm{P_l}^T \cdot \nabla_{\bm{w_l}} \bm{S_l} = \bm{P_l} \cdot \bm{I_l}^T = \bm{P_l} \otimes \bm{I_l}$$
+\item Including $L^2$ regularization (with regularization coefficients $\lambda_l$):
+$$\nabla_{\bm{w_l}} \mathcal{L} = \bm{P_l} \otimes \bm{I_l} + \lambda_l \cdot \bm{w_l} $$
+\item $\cdot$ is inner-product, $\otimes$ is outer-product, $\circ$ is component-wise product
+\end{itemize}
+\pause
+\begin{theorem}
+$$\bm{P_l} = (\bm{w_{l+1}}^T \cdot \bm{P_{l+1}}) \circ g_l'(\bm{S_l}) \text{ (read the proof in the book)}$$
+\end{theorem}
+\pause
+To calculate $\bm{P_L} = \nabla_{\bm{S_L}} \mathcal{L}$, assume suitable functional form for $\mathbb{P}[y|S_L]$
+\end{frame}
+
+\begin{frame}
+\frametitle{Exponential functional form for $\mathbb{P}[y|S_L]$}
+\pause
+\begin{itemize}[<+->]
+\item Consider the exponential-family functional-form for $\mathbb{P}[y|S_L]$
+$$\mathbb{P}[y|S_L] = p(y|S_L, \tau) = h(y, \tau) \cdot e^{\frac {S_L \cdot y - A(S_L)} {d(\tau)}}$$
+\item Form adopted from framework of Generalized Linear Models (GLM)
+\item We want the scalar prediction $O_L = g_L(S_L)$ to be equal to $\mathbb{E}_p[y|S_L]$
+\item What function $g_L: \mathbb{R} \rightarrow \mathbb{R}$ (in terms of $p(y|S_L, \tau)$) would satisfy the requirement of $O_L = g_L(S_L) = \mathbb{E}_p[y|S_L]$?
+\end{itemize}
+\pause
+\begin{lemma}
+$$\mathbb{P}[y|S_L] = h(y, \tau) \cdot e^{\frac {S_L \cdot y - A(S_L)} {d(\tau)}} \Rightarrow \mathbb{E}_p[y|S_L] = A'(S_L)$$
+\end{lemma}
+\pause
+\begin{itemize}[<+->]
+\item To satisfy $O_L = g_L(S_L) = \mathbb{E}_p[y|S_L]$, we need: $O_L = g_L(S_L) = A'(S_L)$
+\item So $g_L(\cdot)$ must be set to be the derivative of the $A(\cdot)$ function
+\item In GLM theory, $A'(\cdot)$ serves as {\em canonical link function} for given $\mathbb{P}[y|x]$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Examples of Distributions and their Canonical Links}
+With canonical link, $P_L$ reduces to prediction error for each $(x,y)$ data
+\begin{theorem}
+$$P_L =  \frac {\partial \mathcal{L}}{\partial S_L} = \frac {O_L - y} {d(\tau)}$$
+\end{theorem}
+\pause
+Some examples of distributions and their canonical link functions:
+\begin{itemize}
+\item Normal distribution $y \sim \mathcal{N}(\mu, \sigma^2)$: $S_L = \mu, \tau = \sigma, h(y, \tau) = \frac {e^{\frac {-y^2} {2 \tau^2}}} {\sqrt{2 \pi} \tau}, A(S_L) = \frac {S_L^2} {2}, d(\tau) = \tau^2$. $g_L(S_L) = S_L$
+\item Bernoulli distribution for binary-valued $y$, parameterized by $p$: $S_L = \log{(\frac p {1-p})}, \tau = h(y, \tau) = d(\tau) = 1, A(S_L) = \log{(1+e^{S_L})}$. $g_L(S_L) = \frac 1 {1+e^{-S_L}}$
+\item Poisson distribution for $y$ parameterized by $\lambda$:
+$S_L = \log{\lambda}, \tau = d(\tau) = 1, h(y, \tau) = \frac 1 {y!}, A(S_L) = e^{S_L}$.  $g_L(S_L) = e^{S_L}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tabular as a form of {\em FunctionApprox}}
+\pause
+\begin{itemize}[<+->]
+\item ``Tabular'' is simple setting with finite $\mathcal{X} = \{x_1, x_2, \ldots, x_n\}$
+\item With $(x,y)$ data pairs having all it's $x$-values within this finite $\mathcal{X}$
+\item $\mathbb{E}[y|x]$ must be calculated from data $y$-values associated with single $x$
+\item So $\mathbb{E}[y|x]$ prediction must be {\em some sort of average} of those $y$-values
+\item A ``table'' can store all $\mathcal{X}$ together with all predictions $\mathbb{E}[y|x]$
+\item This ``Tabular'' setting is compatible with \lstinline{FunctionApprox} interface
+\item Also, ``Tabular'' is a special case of linear function approximation
+\item With features $\phi_i$ as indicator functions for each $x_i \in \mathcal{X}$
+\item And weights $w_i$ as average of $y$-values associated with $x_i$ in the data
+\item Next we cover Approximate DP using \lstinline{FunctionApprox}
+\item Where $\mathcal{X}$ is state space and predictions constitute Value Function
+\item Specializing \lstinline{FunctionApprox} to \lstinline{Tabular} gives Tabular DP
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Approximate Policy Evaluation}
+\pause
+\begin{itemize}[<+->]
+\item Repeatedly apply $\bm{B}^{\pi}$ on \lstinline{FunctionApprox} of $V: \mathcal{N} \rightarrow \mathbb{R}$	
+\item Operates on \lstinline{MarkovRewardProcess} (not necessarily Finite)
+\item So no enumeration of states and no access to transition probabilities
+\item We specify a sampling probability distribution of ``source states''
+\item From each source sample $s$, sample pairs of (next state $s'$, reward $r$)
+\item Estimate $\mathbb{E}[r + \gamma \cdot V(s')]$ by averaging over sampled pairs
+\item  $V(s')$ obtained from the instance of \lstinline{FunctionApprox} being used
+\item Sample of source states and their associated Bellman expectation estimates (from transition samples) used to \lstinline{update} \lstinline{FunctionApprox}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Approximate Policy Evaluation interface}
+\pause
+\begin{lstlisting}
+def evaluate_mrp(
+    mrp: MarkovRewardProcess[S],
+    gamma: float,
+    approx_0: FunctionApprox[S],
+    non_terminal_states_distribution: Distribution[S],
+    num_state_samples: int
+) -> Iterator[FunctionApprox[S]]:
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Approximate Policy Evaluation code}
+\pause
+\begin{lstlisting}
+def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
+    nt_states: Sequence[S] = \
+        non_terminal_states_distribution.sample_n(
+            num_state_samples
+        )
+
+    def return_(s_r: Tuple[S, float]) -> float:
+        s, r = s_r
+        return r + gamma * v.evaluate([s]).item()
+
+    return v.update(
+        [(s, mrp.transition_reward(s).expectation(
+            return_)) for s in nt_states]
+    )
+
+return iterate(update, approx_0)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Approximate Value Iteration interface}
+\pause
+\begin{lstlisting}
+def value_iteration(
+    mdp: MarkovDecisionProcess[S, A],
+    gamma: float,
+    approx_0: FunctionApprox[S],
+    non_terminal_states_distribution: Distribution[S],
+    num_state_samples: int
+) -> Iterator[FunctionApprox[S]]:
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Approximate Value Iteration code}
+\pause
+\begin{lstlisting}
+def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
+    nt_states: Sequence[S] = \
+        non_terminal_states_distribution.sample_n(
+            num_state_samples
+        )
+
+    def return_(s_r: Tuple[S, float]) -> float:
+        s, r = s_r
+        return r + gamma * v.evaluate([s]).item()
+
+    return v.update(
+        [(s, max(mdp.step(s, a).expectation(return_)
+                      for a in mdp.actions(s)))
+         for s in nt_states]
+    )
+return iterate(update, approx_0)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Finite-Horizon Approximate Dynamic Programming}
+\pause
+\begin{itemize}[<+->]
+\item Similarly, generalize Backward Induction DP algorithms
+\item Each time steps' Value Function is a \lstinline{FunctionApprox}
+\item Work with a separate MRP/MDP representation for each time step's transitions, that is responsible for sampling next step's (state, reward)
+\item $x$-values come from current time step's states sampling distribution
+\item $y$-values come from applying Bellman Operator on next time steps' \lstinline{FunctionApprox} for it's Value Function
+\item  Bellman Operator expectation is estimated by averaging over transition samples
+\item These $(x,y)$ pairs constitute the data-set used to \lstinline{solve} the current time step's \lstinline{FunctionApprox} for it's Value Function
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Constructing the Non-Terminal States Distribution}
+\pause
+\begin{itemize}[<+->]
+\item Each ADP algorithm works with a distribution of non-terminal states
+\item Good choice: Stationary Distribution of uniform-policy-implied MRP
+\item See if you can use some mathematical property of given MDP/MRP
+\item Or create sampling traces and estimate with occurrence frequency
+\item Backup choice: Uniform Distribution of all non-terminal states
+\item Likewise, for backward induction, see if you can utilize some property of the given process to infer distribution of states for a fixed time step
+\item eg: In finance, continuous-time processes can sometimes be solved
+\item Or create sampling traces and estimate with occurrence frequency
+\item Backup choice: Uniform Distribution of all non-terminal states
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Key Takeaways from this Chapter}
+\pause
+\begin{itemize}[<+->]
+\item The \lstinline{FunctionApprox} interface involves three key methods:
+\begin{itemize}
+\item \lstinline{solve:} Calculate the ``best-fit'' parameters that minimizes the cross-entropy loss function for the given fixed data set of $(x,y)$ pairs
+\item \lstinline{update:} Parameters of \lstinline{FunctionApprox} are updated based on each new $(x,y)$ pairs data set from the available data stream
+\item \lstinline{evaluate:}  Calculate the conditional expectation of response variable $y$, according to the model specified by \lstinline{FunctionApprox}
+\end{itemize}
+\item Tabular is a special case of linear function approximation with feature functions as indicator functions for each of the finite set of $\mathcal{X}$
+\item All the Tabular DP algorithms can be generalized to ADP algorithms
+\begin{itemize}
+\item Tabular VF updates replaced by updates to \lstinline{FunctionApprox} parameters
+\item Sweep over all states in Tabular case replaced by state samples
+\item Bellman Operators' Expectation estimated as average of calculations over transition samples (versus using explicit transition probabilities)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\end{document}
