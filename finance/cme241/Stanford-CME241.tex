@@ -278,7 +278,7 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \item Markov States $S_t \in \mathcal{S}$ where $\mathcal{S}$ is the State Space
 \item Actions $A_t \in \mathcal{A}$ where $\mathcal{A}$ is the Action Space
 \item Rewards $R_t \in \mathbb{R}$ denoting numerical feedback\
-\item Transitions $p(s',r|s,a) = \mathbb{P}[S_{t+1}=s',R_{t+1}=r|S_t=s,A_t=a]$
+\item Transitions $p(r,s'|s,a) = \mathbb{P}[(R_{t+1}=r,S_{t+1}=s')|S_t=s,A_t=a]$
 \item $\gamma \in [0,1]$ is the Discount Factor for Reward when defining {\em Return}
 \item Return $G_t = R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \ldots$
 \item Policy $\pi(a|s)$ is probability that Agent takes action $a$ in states $s$
@@ -333,11 +333,11 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \begin{itemize}
 \item Value function (under policy $\pi$) $V_{\pi}(s) = \mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
 \pause
-$$V_{\pi}(s) = \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
+$$V_{\pi}(s) = \sum_{a} \pi(a|s) \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
 \item Optimal Value Function $V_{*}(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
 \pause
-$$V_{*}(s) = \max_{a} \sum_{s',r} p(s',r|s,a) \cdot (r + \gamma V_{*}(s')) \mbox{ for all } s \in \mathcal{S}$$
+$$V_{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{*}(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
 \item {\em There exists an Optimal Policy} $\pi_{*}$ achieving $V_{*}(s)$ for all $s \in \mathcal{S}$
 \pause
