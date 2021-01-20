@@ -358,10 +358,6 @@ V^{\pi}(s) = \sum_{a\in \mathcal{A}} \pi(s,a) \cdot (\mathcal{R}(s,a) + \gamma \
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{MDP State-Value Function Bellman Policy Equation}
-\includegraphics[width=12cm, height=8cm]{mdp_bellman_policy_tree_vv.png}
-\end{frame}
 
 \begin{frame}
 \frametitle{Action-Value Function of an MDP for a Fixed Policy}
@@ -384,8 +380,15 @@ Q^{\pi}(s, a) = \mathcal{R}(s,a) + \gamma \cdot \sum_{s'\in \mathcal{N}} \mathca
 \label{eq:mdp_bellman_policy_eqn_qq}
 \end{equation}
 \end{itemize}
+\pause
 {\bf MDP Prediction Problem:} Evaluating $V^{\pi}(\cdot)$ and $Q^{\pi}(\cdot)$ for fixed policy $\pi$
 \end{frame}
+
+\begin{frame}
+\frametitle{MDP State-Value Function Bellman Policy Equation}
+\includegraphics[width=12cm, height=8cm]{mdp_bellman_policy_tree_vv.png}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{MDP Action-Value Function Bellman Policy Equation}
@@ -431,6 +434,7 @@ and the {\em MDP Action-Value Function Bellman Optimality Equation}
 Q^*(s,a) = \mathcal{R}(s,a) + \gamma \cdot \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \max_{a'\in \mathcal{A}} Q^*(s',a')
 \label{eq:mdp_bellman_opt_eqn_qq}
 \end{equation}
+\pause
 {\bf MDP Control Problem:} Computing $V^*(\cdot)$ and $Q^*(\cdot)$
 \end{frame}
 
@@ -547,9 +551,9 @@ $$V^{\pi_D^*}(s) \geq V^{\pi}(s) \text{ for all policies  } \pi \in \Pi \text{ a
 \item POMDP is specified with {\em Observation Space} $\mathcal{O}$ and observation probability function 
 $\mathcal{Z}: \mathcal{S} \times \mathcal{A} \times \mathcal{O} \rightarrow [0, 1]$
 defined as:
-$$\mathcal{Z}(s', a, o) = \mathbb{P}[O_{t+1} = o | (S_{t+1}^{(e)} = s', A_t = a)]$$
+$$\mathcal{Z}(s', a, o) = \mathbb{P}[O_{t+1} = o | (S_{t+1} = s', A_t = a)]$$
 \item Along with the usual transition probabilities specification $\mathcal{P}_R$
-\item MDP is a special case of POMDP with $O_t = S_t^{(e)} = S_t^{(a)}$
+\item MDP is a special case of POMDP with $O_t = S_t^{(e)} = S_t^{(a)} = S_t$
 \end{itemize}
 \end{frame}
 
@@ -562,7 +566,7 @@ $$\mathcal{Z}(s', a, o) = \mathbb{P}[O_{t+1} = o | (S_{t+1}^{(e)} = s', A_t = a)
 \frametitle{Belief States, Tractability and Modeling}
 \pause
 \begin{itemize}[<+->]
-\item Agent doesn't have knowledge of $S_t^{(e)}$, only of $O_t$
+\item Agent doesn't have knowledge of $S_t$, only of $O_t$
 \item So Agent has to ``guess'' $S_t$ by maintaining {\em Belief States}
 $$b(h)_t = (\mathbb{P}[S_t=s_1 | H_t = h], \mathbb{P}[S_t = s_2 | H_t = h], \ldots )$$
 where history $H_t$ is all data known to agent by time $t$:
