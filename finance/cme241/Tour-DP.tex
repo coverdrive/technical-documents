@@ -169,13 +169,15 @@ The Fixed-Point of a function $f: \mathcal{X} \rightarrow \mathcal{X}$ (for some
 \begin{theorem}[Banach Fixed-Point Theorem]
 Let $\mathcal{X}$ be a non-empty set equipped with a complete metric $d: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$. Let $f: \mathcal{X} \rightarrow \mathcal{X}$ be such that there exists a $L \in [0, 1)$ such that
 $d(f(x_1), f(x_2)) \leq L \cdot d(x_1, x_2)$ for all $x_1, x_2 \in \mathcal{X}$. Then,
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item There exists a unique Fixed-Point $x^* \in \mathcal{X}$, i.e.,
 $$x^* = f(x^*)$$
 \item For any $x_0 \in \mathcal{X}$, and sequence $[x_i|i=0, 1, 2, \ldots]$ defined as $x_{i+1} = f(x_i)$ for all $i = 0, 1, 2, \ldots$,
 $$\lim_{i\rightarrow \infty} x_i = x^*$$
 \end{itemize}
 \end{theorem}
+\pause
 If you have a complete metric space $\langle \mathcal{X}, d \rangle$ and a contraction $f$ (with respect to $d$), then you have an algorithm to solve for the fixed-point of $f$.
 \end{frame}
 
@@ -257,6 +259,7 @@ $$G(\bv)(s) = \pi_D'(s) = \argmax_{a\in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma
 We say $X \geq Y$ for Value Functions $X, Y: \mathcal{N} \rightarrow \mathbb{R}$ of an MDP iff:
 $$X(s) \geq Y(s) \text{ for all } s \in \mathcal{N}$$
 \end{definition}
+\pause
 We say $\pi_1$ better (``improvement'') than $\pi_2$ if $\bm{V}^{\pi_1} \geq \bm{V}^{\pi_2}$
 \end{frame}
 
@@ -407,10 +410,11 @@ $$\bvs = \bbs(\bvs)$$
 \begin{itemize}[<+->]
 \item We need to utilize two key properties of $\bbs$
 $$\text{Monotonicity Property: } \bm{X} \geq \bm{Y} \Rightarrow \bbs(\bm{X}) \geq \bbs(\bm{Y})$$
-$$ \text{Constant Shift Property: } \bbs(\bm{X} + c) = \bbs(\bm{Y}) + \gamma c$$
+$$ \text{Constant Shift Property: } \bbs(\bm{X} + c) = \bbs(\bm{X}) + \gamma c$$
 \item With these two properties, we can prove that:
 $$\max_{s \in \mathcal{N}} |(\bbs(\bm{X}) - \bbs(\bm{Y}))(s)| \leq \gamma \cdot \max_{s\in \mathcal{N}} |(\bm{X} - \bm{Y})(s)|$$
 \end{itemize}
+\pause
 \begin{theorem}[Value Iteration Convergence Theorem]
 For a Finite MDP with $|\mathcal{N}| = m$ and $\gamma < 1$, if $\bvs \in \mathbb{R}^m$ is the Optimal Value Function, then $\bvs$ is the unique Fixed-Point of the Bellman Optimality Operator $\bbs: \mathbb{R}^m \rightarrow \mathbb{R}^m$, and
 $$\lim_{i\rightarrow \infty} (\bbs)^i(\bm{V_0}) \rightarrow \bvs \text{ for all starting Value Functions } \bm{V_0} \in \mathbb{R}^m$$
@@ -427,6 +431,7 @@ $$\lim_{i\rightarrow \infty} (\bbs)^i(\bm{V_0}) \rightarrow \bvs \text{ for all 
 $$\bm{V_{i+1}}(s) = \bbs(\bm{V_i})(s) \text{ for all } s \in \mathcal{N}$$
 \item Stop when $d(\bm{V_i}, \bm{V_{i+1}}) = \max_{s \in \mathcal{N}} |(\bm{V_i} - \bm{V_{i+1}})(s)|$ is small enough
 \end{itemize}
+\pause
 \vspace{5mm}
 Running time of each iteration of Value Iteration is $O(m^2 k)$ where $|\mathcal{N}| = m$ and $|\mathcal{A}| = k$
 \end{frame}
@@ -454,6 +459,7 @@ $$\bm{V}^{G(\bvs)} = \bvs$$
 
 \begin{frame}
 \frametitle{Value Function Progression in Policy Iteration}
+\pause
 $$\pi_1 = G(\bm{V_0}) \text{ : } \bm{V_0} \rightarrow \bm{B}^{\pi_1}(\bm{V_0}) \rightarrow \ldots (\bm{B}^{\pi_1})^i(\bm{V_0}) \rightarrow \ldots \bm{V}^{\pi_1} = \bm{V_1}$$
 $$\pi_2 = G(\bm{V_1}) \text{ : }  \bm{V_1} \rightarrow \bm{B}^{\pi_2}(\bm{V_1}) \rightarrow \ldots (\bm{B}^{\pi_2})^i(\bm{V_1}) \rightarrow \ldots \bm{V}^{\pi_2} = \bm{V_2}$$
 $$\ldots$$
@@ -660,7 +666,7 @@ $$
 \pause
 \begin{itemize}[<+->]
 \item Fixed-Point of Functions and Fixed-Point Theorem: Enables iterative algorithms to solve a variety of problems cast as Fixed-Point.
-\item Generalized Policy Iteration: Powerful idea of alternating between improvement of a policy and evaluation of a value function, even though each of them might be partial applications. This generalized perspective unifies almost algorithms for MDP Control.
+\item Generalized Policy Iteration: Powerful idea of alternating between improvement of a policy and evaluation of a value function, even though each of them might be partial applications. This generalized perspective unifies almost all algorithms for MDP Control.
 \item Backward Induction: A straightforward method to solve finite-horizon MDPs by simply walking backwards and {\em setting} the Value Function from the horizon-end to the start.
 \end{itemize}
 \end{frame}
