@@ -1,0 +1,552 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[handout]{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{physics}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{enumerate}
+
+\newcommand{\prob}{\mathcal{P}}
+\newcommand{\rew}{\mathcal{R}}
+\newcommand{\states}{\mathcal{S}}
+\newcommand{\actions}{\mathcal{S}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand{\bvpi}{\bm{V}^{\pi}}
+\newcommand{\bvs}{\bm{V}^*}
+\newcommand{\bbpi}{\bm{B}^{\pi}}
+\newcommand{\bbs}{\bm{B}^*}
+\newcommand{\bv}{\bm{V}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[RL Prediction Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 9}}}: \\ Reinforcement Learning for Prediction} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{ICME, Stanford University
+ % Your institution for the title page
+}
+
+\date % Date, can be changed to a custom date
+
+\begin{document}
+\lstset{language=Python}  
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Overview} % Table of contents slide, comment this block out to remove it
+% \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+% \end{frame}
+
+\begin{frame}
+\frametitle{RL does not have access to a probability model}
+\begin{itemize}[<+->]
+\item DP/ADP assume access to probability model (knowledge of $\mathcal{P}_R$)
+\item Often in real-world, we do not have access to these probabilities
+\item Which means we'd need to {\em interact} with the {\em actual environment}
+\item {Actual Environment} serves up individual experiences, not probabilities
+\item Even if MDP model is available, model updates can be challenging
+\item Often real-world models end up being too large or too complex
+\item Sometimes estimating a {\em sampling model} is much more feasible
+\item So RL interacts with either {\em actual} or {\em simulated} environment
+\item Either way, we receive {\em individual experiences} of next state and reward
+\item RL learns Value Functions from a stream of individual experiences
+\item How does RL solve Prediction and Control with such limited access?
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The RL Approach}
+\begin{itemize}[<+->]
+\item Like humans/animals, RL doesn't aim to estimate probability model
+\item Rather, RL is a ``trial-and-error'' approach to linking actions to returns
+\item This is hard because actions have overlapping reward sequences
+\item Also, sometimes actions result in {\em delayed rewards}
+\item The key is incrementally updating $Q$-Value Function from experiences
+\item Appropriate Approximation of $Q$-Value Function is also key to success
+\item RL algorithms are founded on the {\em Bellman Equations}
+\item Moreover, RL Control is based on {\em Generalized Policy Iteration}
+\item This lecture/chapter focuses on RL for Prediction
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{RL for Prediction}
+\pause
+\begin{itemize}[<+->]
+\item Prediction: Problem of estimating MDP Value Function for a policy $\pi$
+\item Equivalently, problem of estimating $\pi$-implied MRP's Value Function
+\item Assume interface serves an {\em atomic experience} of (next state, reward)
+\item Interacting with this interface repeatedly provides a {\em trace experience}
+$$S_0, R_1, S_1, R_2, S_2, \ldots$$
+\item {\em Value Function} $V: \mathcal{N} \rightarrow \mathbb{R}$ of an MRP is defined as:
+$$V(s) = \mathbb{E}[G_t|S_t = s] \text{ for all } s \in \mathcal{N}, \text{ for all } t = 0, 1, 2, \ldots$$
+where the {\em Return} $G_t$ for each $t = 0, 1, 2, \ldots$ is defined as:
+$$G_t = \sum_{i=t+1}^{\infty} \gamma^{i-t-1} \cdot R_i = R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \ldots = R_{t+1} + \gamma \cdot G_{t+1}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Code interface for RL Prediction}
+\pause
+An {\em atomic experience} is represented as a \lstinline{TransitionStep[S]}
+\pause
+\begin{lstlisting}
+@dataclass(frozen=True)
+class TransitionStep(Generic[S]):
+    state: S
+    next_state: S
+    reward: float
+\end{lstlisting}
+\pause
+\vspace{3mm}
+Input to RL prediction can be either of:
+\pause
+\begin{itemize}[<+->]
+\item Atomic Experiences as \lstinline{Iterable[TransitionStep[S]]}, or
+\item Trace Experiences as \lstinline{Iterable[Iterable[TransitionStep[S]]]}
+\end{itemize}
+\pause
+\vspace{3mm}
+Note that \lstinline{Iterable} can be either a \lstinline{Sequence} or an \lstinline{Iterator} (i.e., {\em stream})
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Monte-Carlo (MC) Prediction}
+\pause
+\begin{itemize}[<+->]
+\item Supervised learning with states and returns from trace experiences
+\item Incremental estimation with \lstinline{update} method of \lstinline{FunctionApprox}
+\item $x$-values are states $S_t$, $y$-values are returns $G_t$
+\item Note that \lstinline{update}s can be done only at the end of a trace experience
+\item Returns calculated with a backward walk: $G_t = R_{t+1} + \gamma \cdot G_{t+1}$
+\end{itemize}
+\pause
+$$\mathcal{L}_{(S_t,G_t)}(\bm{w}) = \frac 1 2 \cdot (V(S_t;\bm{w}) - G_t)^2$$
+\pause
+$$\nabla_{\bm{w}} \mathcal{L}_{(S_t,G_t)}(\bm{w}) = (V(S_t;\bm{w}) - G_t) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\pause
+$$\Delta \bm{w} = \alpha \cdot (G_t - V(S_t;\bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Structure of the parameters update formula}
+\pause
+$$\Delta \bm{w} = \alpha \cdot (G_t - V(S_t;\bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\vspace{3mm}
+\pause
+The update $\Delta \bm{w}$ to parameters $\bm{w}$ should be seen as product of:
+\pause
+\begin{itemize}[<+->]
+\item {\em Learning Rate} $\alpha$
+\item {\em Return Residual} of the observed return $G_t$ relative to the estimated conditional expected return $V(S_t;\bm{w})$
+\item {\em Estimate Gradient} of the conditional expected return $V(S_t;\bm{w})$ with respect to the parameters $\bm{w}$
+\end{itemize}
+\pause
+\vspace{3mm}
+This structure (as product of above 3 entities) will be a repeated pattern.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Tabular MC Prediction}
+\pause
+\begin{itemize}[<+->]
+\item Finite state space, let's say non-terminal states $\mathcal{N} = \{s_1, s_2, \ldots, s_m\}$
+\item Denote $V_n(s_i)$ as estimate of VF after the $n$-th occurrence of $s_i$
+\item Denote $Y^{(1)}_i, Y^{(2)}_i, \ldots, Y^{(n)}_i$ as returns for first $n$ occurrences of $s_i$
+\item Denote \lstinline{count_to_weight_func} attribute of \lstinline{Tabular} as $f(\cdot)$
+\item Then the \lstinline{Tabular} update at the $n$-th occurrence of $s_i$ is:
+\begin{align*}
+V_n(s_i) & = (1 - f(n)) \cdot V_{n-1}(s_i) + f(n) \cdot Y^{(n)}_i \\
+& = V_{n-1}(s_i) + f(n) \cdot (Y^{(n)}_i - V_{n-1}(s_i))
+\end{align*}
+\item So update to VF for $s_i$ is {\em Latest Weight} times {\em Return Residual}
+\item For default setting of \lstinline{count_to_weight_func} as $f(n) = \frac 1 n$:
+$$V_n(s_i) = \frac {n-1} n \cdot V_{n-1}(s_i) + \frac 1 n \cdot Y^{(n)}_i = V_{n-1}(s_i) + \frac 1 n \cdot (Y^{(n)}_i - V_{n-1}(s_i))$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tabular MC Prediction}
+\pause
+\begin{itemize}[<+->]
+\item Expanding the incremental updates across values of $n$, we get:
+\begin{align*}
+V_n(s_i) = & f(n) \cdot Y^{(n)}_i + (1 - f(n)) \cdot f(n-1) \cdot Y^{(n-1)}_i + \ldots \\
+& \ldots + (1-f(n)) \cdot (1-f(n-1)) \cdots (1-f(2)) \cdot f(1) \cdot Y^{(1)}_i
+\end{align*}
+\item For default setting of \lstinline{count_to_weight_func} as $f(n) = \frac 1 n$:
+\begin{align*}
+V_n(s_i) = & \frac 1 n \cdot Y^{(n)}_i + \frac {n-1} n\cdot \frac 1 {n-1} \cdot Y^{(n-1)}_i + \ldots \\
+& \ldots + \frac {n-1} n \cdot \frac {n-2} {n-1} \cdots \frac 1 2 \cdot \frac 1 1 \cdot Y^{(1)}_i  = \frac {\sum_{k=1}^n Y^{(k)}_i} n
+\end{align*}
+\item Tabular MC is simply incremental calculation of averages of returns
+\item Exactly the calculation in the \lstinline{update} method of \lstinline{Tabular} class
+\item View Tabular MC as an application of Law of Large Numbers
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tabular MC as a special case of Linear Func Approximation}
+\pause
+\begin{itemize}[<+->]
+\item Features functions are indicator functions for states
+\item Linear-approx parameters are Value Function estimates for states
+\item \lstinline{count_to_weight_func} plays the role of learning rate
+\item So tabular Value Function update can be written as:
+$$w^{(n)}_i = w^{(n-1)}_i + \alpha_n \cdot (Y^{(n)}_i - w^{(n-1)}_i)$$
+\item $Y^{(n)}_i - w^{(n-1)}_i$ represents the gradient of the loss function
+\item For non-stationary problems, algorithm needs to ``forget'' distant past
+\item With constant learning rate $\alpha$, time-decaying weights:
+\begin{align*}
+V_n(s_i) & = \alpha \cdot Y^{(n)}_i + (1 - \alpha) \cdot \alpha \cdot Y^{(n-1)}_i + \ldots + (1-\alpha)^{n-1} \cdot \alpha \cdot Y^{(1)}_i \\
+& = \sum_{j=1}^n \alpha \cdot (1 - \alpha)^{n-j} \cdot Y^{(j)}_i
+\end{align*}
+\item Weights sum to 1 asymptotically: $\lim_{n\rightarrow \infty} \sum_{j=1}^n \alpha \cdot (1 - \alpha)^{n-j} = 1$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Each-Visit MC and First-Visit MC}
+\pause
+\begin{itemize}[<+->]
+\item The MC algorithm we covered is known as {\em Each-Visit Monte-Carlo}
+\item Because we include each occurrence of a state in a trace experience
+\item Alternatively, we can do {\em First-Visit Monte-Carlo}
+\item  Only the first occurrence of a state in a trace experience is considered
+\item  Keep track of whether a state has been visited in a trace experience
+\item MC Prediction algorithms are easy to understand and implement
+\item MC produces unbiased estimates but can be slow to converge
+\item Key disadvantage: MC requires complete trace experiences
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Temporal-Difference (TD) Prediction}
+\pause
+\begin{itemize}[<+->]
+\item To understand TD, we start with Tabular TD Prediction
+\item Key: Exploit recursive structure of VF in MRP Bellman Equation
+\item Replace $G_t$ with $R_{t+1} + \gamma \cdot V(S_{t+1})$ using atomic experience data
+\item So we are {\em bootstrapping} the VF (``estimate from estimate'')
+\item The tabular MC Prediction update (for constant $\alpha$) is modified from:
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot (G_t - V(S_t))$$
+to:
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - V(S_t))$$
+\item $R_{t+1} + \gamma \cdot V(S_{t+1})$ known as {\em TD target}
+\item  $\delta_t = R_{t+1} + \gamma \cdot V(S_{t+1}) - V(S_t)$ known as  {\em TD Error}
+\item TD Error is the crucial quantity - it represents ``sample Bellman Error''
+\item VF is adjusted so as to bridge TD error (on an expected basis)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{TD updates after each atomic experience}
+\pause
+\begin{itemize}[<+->]
+\item Unlike MC, we can use TD when we have incomplete traces
+\item Often in real-world situations,  experiments gets curtailed/disrupted
+\item  Also, we can use TD in non-episodic (known as {\em continuing}) traces
+\item  TD updates VF after each atomic experience (``continuous learning'') 
+\item So TD can be run on {\em any} stream of atomic experiences
+\item This means we can chop up the input stream and serve in any order
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{TD Prediction with Function Approximation}
+\pause
+\begin{itemize}[<+->]
+\item Each atomic experience leads to a parameters update
+\item To understand how parameters update work, consider:
+$$\mathcal{L}_{(S_t,S_{t+1},R_{t+1})}(\bm{w}) = \frac 1 2 \cdot (V(S_t;\bm{w}) - (R_{t+1} + \gamma \cdot V(S_{t+1}; \bm{w})))^2$$
+\item Above formula replaces $G_t$ (of MC) with $R_{t+1} + \gamma \cdot V(S_{t+1}, \bm{w})$
+\item Unlike MC, in TD, we don't take the gradient of this loss function
+\item "Cheat" in gradient calc by ignoring dependency of $V(S_{t+1}; \bm{w})$ on $\bm{w}$
+\item This "gradient with cheating" calculation is known as {\em semi-gradient}
+\item So we pretend the only dependency on $\bm{w}$ is through $V(S_t; \bm{w})$
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1};\bm{w}) - V(S_t;\bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Structure of the parameters update formula}
+\pause
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1};\bm{w}) - V(S_t;\bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\vspace{3mm}
+\pause
+The update $\Delta \bm{w}$ to parameters $\bm{w}$ should be seen as product of:
+\pause
+\begin{itemize}[<+->]
+\item {\em Learning Rate} $\alpha$
+\item {\em TD Error} $\delta_t = R_{t+1} + \gamma \cdot V(S_{t+1}; \bm{w}) - V(S_t; \bm{w})$
+\item {\em Estimate Gradient} of the conditional expected return $V(S_t;\bm{w})$ with respect to the parameters $\bm{w}$
+\end{itemize}
+\pause
+\vspace{3mm}
+So parameters update formula has same product-structure as MC
+\end{frame}
+
+
+\begin{frame}
+\frametitle{TD's many benefits}
+\pause
+\begin{itemize}[<+->]
+\item ``TD is the most significant and innovative idea in RL'' - Rich Sutton
+\item Blends the advantages of DP and MC
+\item Like DP, TD learns by bootstrapping (drawing from Bellman Eqn)
+\item Like MC, TD learns from experiences without access to probabilities
+\item So TD overcomes curse of dimensionality and curse of modeling
+\item TD also has the advantage of not requiring entire trace experiences
+\item Most significantly, TD is akin to human (continuous) learning
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Bias, Variance and Convergence of TD versus MC}
+\pause
+\begin{itemize}[<+->]
+\item MC uses $G_t$ is an unbiased estimate of the Value Function
+\item This helps MC with convergence even with function approximation
+\item TD uses $R_{t+1} + \gamma \cdot V(S_{t+1};\bm{w})$ as a biased estimate of the VF
+\item Tabular TD prediction converges to true VF in the mean for const $\alpha$
+\item And converges to true VF under Robbins-Monro learning rate schedule
+$$\sum_{n=1}^{\infty} \alpha_n = \infty \text{ and } \sum_{n=1}^{\infty} \alpha_n^2 < \infty$$
+\item However, Robbins-Monro schedule is not so useful in practice
+\item TD Prediction with func-approx does not always converge to true VF
+\item Most convergence proofs are for Tabular, some for linear func-approx
+\item TD Target $R_{t+1} + \gamma \cdot V(S_{t+1}; \bm{w})$ has much lower variance that $G_t$
+\item $G_t$ depends on many random rewards whose variances accumulate
+\item TD Target depends on only the next reward, so lower variance
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Speed of Convergence of TD versus MC}
+\pause
+\begin{itemize}[<+->]
+\item We typically compare algorithms based on:
+\begin{itemize}[<+->]
+\item Speed of convergence
+\item Efficiency in use of limited set of experiences data
+\end{itemize}
+\item There are no formal proofs for MC v/s TD on above criterion
+\item MC and TD have significant differences in their:
+\begin{itemize}[<+->]
+\item Usage of data
+\item Nature of updates
+\item Frequency of updates
+\end{itemize}
+\item So unclear exactly how to compare them apples to apples
+\item Typically, MC and TD are compared with constant $\alpha$
+\item Practically/empirically, TD does better than MC with constant $\alpha$
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Approximate Policy Evaluation code}
+\pause
+\begin{lstlisting}
+def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
+    nt_states: Sequence[S] = \
+        non_terminal_states_distribution.sample_n(
+            num_state_samples
+        )
+
+    def return_(s_r: Tuple[S, float]) -> float:
+        s, r = s_r
+        return r + gamma * v.evaluate([s]).item()
+
+    return v.update(
+        [(s, mrp.transition_reward(s).expectation(
+            return_)) for s in nt_states]
+    )
+
+return iterate(update, approx_0)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Approximate Value Iteration interface}
+\pause
+\begin{lstlisting}
+def value_iteration(
+    mdp: MarkovDecisionProcess[S, A],
+    gamma: float,
+    approx_0: FunctionApprox[S],
+    non_terminal_states_distribution: Distribution[S],
+    num_state_samples: int
+) -> Iterator[FunctionApprox[S]]:
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Approximate Value Iteration code}
+\pause
+\begin{lstlisting}
+def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
+    nt_states: Sequence[S] = \
+        non_terminal_states_distribution.sample_n(
+            num_state_samples
+        )
+
+    def return_(s_r: Tuple[S, float]) -> float:
+        s, r = s_r
+        return r + gamma * v.evaluate([s]).item()
+
+    return v.update(
+        [(s, max(mdp.step(s, a).expectation(return_)
+                      for a in mdp.actions(s)))
+         for s in nt_states]
+    )
+return iterate(update, approx_0)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Finite-Horizon Approximate Dynamic Programming}
+\pause
+\begin{itemize}[<+->]
+\item Similarly, generalize Backward Induction DP algorithms
+\item Each time steps' Value Function is a \lstinline{FunctionApprox}
+\item Work with a separate MRP/MDP representation for each time step's transitions, that is responsible for sampling next step's (state, reward)
+\item $x$-values come from current time step's states sampling distribution
+\item $y$-values come from applying Bellman Operator on next time steps' \lstinline{FunctionApprox} for it's Value Function
+\item  Bellman Operator expectation is estimated by averaging over transition samples
+\item These $(x,y)$ pairs constitute the data-set used to \lstinline{solve} the current time step's \lstinline{FunctionApprox} for it's Value Function
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Constructing the Non-Terminal States Distribution}
+\pause
+\begin{itemize}[<+->]
+\item Each ADP algorithm works with a distribution of non-terminal states
+\item Good choice: Stationary Distribution of uniform-policy-implied MRP
+\item See if you can use some mathematical property of given MDP/MRP
+\item Or create sampling traces and estimate with occurrence frequency
+\item Backup choice: Uniform Distribution of all non-terminal states
+\item Likewise, for backward induction, see if you can utilize some property of the given process to infer distribution of states for a fixed time step
+\item eg: In finance, continuous-time processes can sometimes be solved
+\item Or create sampling traces and estimate with occurrence frequency
+\item Backup choice: Uniform Distribution of all non-terminal states
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Key Takeaways from this Chapter}
+\pause
+\begin{itemize}[<+->]
+\item The \lstinline{FunctionApprox} interface involves three key methods:
+\begin{itemize}
+\item \lstinline{solve:} Calculate the ``best-fit'' parameters that minimizes the cross-entropy loss function for the given fixed data set of $(x,y)$ pairs
+\item \lstinline{update:} Parameters of \lstinline{FunctionApprox} are updated based on each new $(x,y)$ pairs data set from the available data stream
+\item \lstinline{evaluate:}  Calculate the conditional expectation of response variable $y$, according to the model specified by \lstinline{FunctionApprox}
+\end{itemize}
+\item Tabular is a special case of linear function approximation with feature functions as indicator functions for each of the finite set of $\mathcal{X}$
+\item All the Tabular DP algorithms can be generalized to ADP algorithms
+\begin{itemize}
+\item Tabular VF updates replaced by updates to \lstinline{FunctionApprox} parameters
+\item Sweep over all states in Tabular case replaced by state samples
+\item Bellman Operators' Expectation estimated as average of calculations over transition samples (versus using explicit transition probabilities)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\end{document}
