@@ -432,98 +432,338 @@ $$\sum_{n=1}^{\infty} \alpha_n = \infty \text{ and } \sum_{n=1}^{\infty} \alpha_
 \item So unclear exactly how to compare them apples to apples
 \item Typically, MC and TD are compared with constant $\alpha$
 \item Practically/empirically, TD does better than MC with constant $\alpha$
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Approximate Policy Evaluation code}
-\pause
-\begin{lstlisting}
-def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
-    nt_states: Sequence[S] = \
-        non_terminal_states_distribution.sample_n(
-            num_state_samples
-        )
-
-    def return_(s_r: Tuple[S, float]) -> float:
-        s, r = s_r
-        return r + gamma * v.evaluate([s]).item()
-
-    return v.update(
-        [(s, mrp.transition_reward(s).expectation(
-            return_)) for s in nt_states]
-    )
-
-return iterate(update, approx_0)
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Approximate Value Iteration interface}
-\pause
-\begin{lstlisting}
-def value_iteration(
-    mdp: MarkovDecisionProcess[S, A],
-    gamma: float,
-    approx_0: FunctionApprox[S],
-    non_terminal_states_distribution: Distribution[S],
-    num_state_samples: int
-) -> Iterator[FunctionApprox[S]]:
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Approximate Value Iteration code}
-\pause
-\begin{lstlisting}
-def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
-    nt_states: Sequence[S] = \
-        non_terminal_states_distribution.sample_n(
-            num_state_samples
-        )
-
-    def return_(s_r: Tuple[S, float]) -> float:
-        s, r = s_r
-        return r + gamma * v.evaluate([s]).item()
-
-    return v.update(
-        [(s, max(mdp.step(s, a).expectation(return_)
-                      for a in mdp.actions(s)))
-         for s in nt_states]
-    )
-return iterate(update, approx_0)
-\end{lstlisting}
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{Finite-Horizon Approximate Dynamic Programming}
-\pause
-\begin{itemize}[<+->]
-\item Similarly, generalize Backward Induction DP algorithms
-\item Each time steps' Value Function is a \lstinline{FunctionApprox}
-\item Work with a separate MRP/MDP representation for each time step's transitions, that is responsible for sampling next step's (state, reward)
-\item $x$-values come from current time step's states sampling distribution
-\item $y$-values come from applying Bellman Operator on next time steps' \lstinline{FunctionApprox} for it's Value Function
-\item  Bellman Operator expectation is estimated by averaging over transition samples
-\item These $(x,y)$ pairs constitute the data-set used to \lstinline{solve} the current time step's \lstinline{FunctionApprox} for it's Value Function
+\item Also, MC is not very sensitive to initial Value Function, but TD is
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Constructing the Non-Terminal States Distribution}
+\frametitle{Convergence of MC versus TD with constant $\alpha$}
+\includegraphics[width=12cm, height=7cm]{random_walk_mrp_convergence.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{RMSE of MC versus TD as function of episodes}
 \pause
 \begin{itemize}[<+->]
-\item Each ADP algorithm works with a distribution of non-terminal states
-\item Good choice: Stationary Distribution of uniform-policy-implied MRP
-\item See if you can use some mathematical property of given MDP/MRP
-\item Or create sampling traces and estimate with occurrence frequency
-\item Backup choice: Uniform Distribution of all non-terminal states
-\item Likewise, for backward induction, see if you can utilize some property of the given process to infer distribution of states for a fixed time step
-\item eg: In finance, continuous-time processes can sometimes be solved
-\item Or create sampling traces and estimate with occurrence frequency
-\item Backup choice: Uniform Distribution of all non-terminal states
+\item Symmetric random walk with barrier $B=10$ and no discounting
+\item Graph depicts RMSE after every 7th episode (700 episodes in all)
+\item Blue curves for constant $\alpha = 0.01$, green for constant $\alpha = 0.05$
+\item Notice how MC has significantly more variance
+\item RMSE progression is quite slow on blue curves (small learning rate)
+\item MC progresses quite fast initially but then barely progresses
+\item TD gets to fairly small RMSE quicker than corresponding MC
+\item This performance of TD versus MC is typical for constant $\alpha$
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Fixed-Data Experience Replay on TD versus MC}
+\pause
+\begin{itemize}[<+->]
+\item So far, we've understood {\em how} TD learns versus {\em how} MC learns
+\item Now we want to understand {\em what} TD learns versus {\em what} MC learns
+\item To illustrate, we consider a finite set of trace experiences
+\item The agent can tap into this finite set of traces experiences endlessly
+\item But everything is ultimately sourced from this finite data set
+\item So we'd end up tapping into these experiences repeatedly
+\item We call this technique {\em Experience Replay}
+\end{itemize}
+\pause
+\begin{lstlisting}
+data: Sequence[Sequence[Tuple[str, float]]] = [
+    [('A', 2.), ('A', 6.), ('B', 1.), ('B', 2.)],
+    [('A', 3.), ('B', 2.), ('A', 4.), ('B', 2.), ('B', 0.)],
+    [('B', 3.), ('B', 6.), ('A', 1.), ('B', 1.)],
+    [('A', 0.), ('B', 2.), ('A', 4.), ('B', 4.), ('B', 2.), ('B', 3.)],
+    [('B', 8.), ('B', 2.)]
+]
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+\frametitle{MC and TD learn different Value Functions}
+\pause
+\begin{itemize}[<+->]
+\item It is quite obvious what MC Prediction algorithm would learn
+\item MC Prediction is simply supervised learning with (state, return) pairs
+\item But here those pairs ultimately come from the given finite pairs
+\item So, MC estimates Value Function as average returns in the finite data
+\item Running MC Prediction algo matches explicit average returns calc
+\item But running TD Prediction algo gives significantly different answer
+\item So what is TD Prediction algorithm learning?
+\item TD drives towards VF of MRP {\em implied} by the finite experiences
+\item Specifically, learns MLE for $\mathcal{P}_R$ from the given finite data
+$$\mathcal{P}_R(s,r,s') = \frac {\sum_{i=1}^N \mathbb{I}_{S_i=s,R_{i+1}=r,S_{i+1}=s'}} {\sum_{i=1}^N \mathbb{I}_{S_i=s}}$$
+\item TD is advantageous in Markov environments, MC in non-Markov
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bootstrapping and Experiencing}
+\pause
+\begin{itemize}[<+->]
+\item We summarize MC, TD and DP in terms of whether they:
+\begin{itemize}[<+->]
+\item Bootstrap:  Update to VF utilizes a current or prior estimate of the VF
+\item Experience: Interaction with actual or simulated environment
+\end{itemize}
+\item TD and DP {\em do bootstrap} (updates use current/prior estimate of VF)
+\item MC {\em does not bootstrap} (updates use trace experience returns)
+\item MC and TD {\em do experience} (actual/simulated environment interaction)
+\item DP {\em does not experience} (updates use transition probabilities)
+\item Bootstrapping means backups are {\em shallow} (MC backups are {\em deep})
+\item Experiencing means backups are {\em narrow} (DP backups are {\em wide})
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{MC backup Diagram}
+\includegraphics[width=12cm, height=7cm]{mc_backup.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{TD backup Diagram}
+\includegraphics[width=12cm, height=7cm]{td_backup.png}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{DP backup Diagram}
+\includegraphics[width=12cm, height=7cm]{dp_backup.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Unified View of RL}
+\includegraphics[width=12cm, height=7cm]{unified_view.png}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Tabular $n$-step Bootstrapping}
+\pause
+\begin{itemize}[<+->]
+\item Tabular TD Prediction bootstraps the Value Function with update:
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - V(S_t))$$
+\item So it's natural to extend this to bootstrapping with 2 steps ahead:
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot (R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot V(S_{t+2})- V(S_t))$$
+\item Generalize to bootstrapping with $n \geq 1$ time steps ahead:
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot (G_{t,n} - V(S_t))$$
+\item $G_{t,n}$ (known as $n$-step bootstrapped return) is defined as:
+\begin{align*}
+G_{t,n} & = \sum_{i=t+1}^{t+n} \gamma^{i-t-1} \cdot R_i  + \gamma^n \cdot V(S_{t+n}) \\
+& = R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \ldots + \gamma^{n-1} \cdot R_{t+n} + \gamma^n \cdot V(S_{t+n})
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{$n$-step Bootstrapping with Function Approximation}
+\pause
+\begin{itemize}[<+->]
+\item Generalizing this to the case of Function Approximation, we get:
+$$\Delta \bm{w} = \alpha \cdot (G_{t,n} - V(S_t; \bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\item This looks similar to formula for parameters update for MC and TD
+\item In terms of conceptualizing the change in parameters as product of:
+\begin{itemize}[<+->]
+\item {\em Learning Rate} $\alpha$
+\item {\em $n$-step Bootstrapped Error} $G_{t,n} - V(S_t; \bm{w})$
+\item {\em Estimate Gradient} of the conditional expected return $V(S_t;\bm{w})$ with respect to the parameters $\bm{w}$
+\end{itemize}
+\item $n$ serves as a parameter taking us across the spectrum from TD to MC
+\item $n=1$ is the case of TD while sufficiently large $n$ is the case of MC
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\lambda$-Return Prediction Algorithm}
+\pause
+\begin{itemize}[<+->]
+\item Instead of $G_{t,n}$, a valid target is a weighted-average target:
+$$\sum_{n=1}^N u_n \cdot G_{t,n} + u \cdot G_t \text{ where } u + \sum_{n=1}^N u_n = 1$$
+\item Any of the $u_n$ or $u$ can be 0, as long as they all sum up to 1
+\item The $\lambda$-Return target is a special case of weights $u_n$ and $u$
+$$u_n = (1 - \lambda) \cdot \lambda^{n-1} \text{ for all } n = 1, \ldots, T-t-1$$
+$$u_n = 0 \text{ for all } n \geq T-t \text{ and } u = \lambda^{T-t-1}$$
+\item We denote the $\lambda$-Return target as $G_t^{(\lambda)}$, defined as:
+$$G_t^{(\lambda)} = (1-\lambda) \cdot \sum_{n=1}^{T-t-1} \lambda^{n-1} \cdot G_{t,n} + \lambda^{T-t-1} \cdot G_t$$
+$$\Delta \bm{w} = \alpha \cdot (G_t^{(\lambda)} - V(S_t; \bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Online versus Offline}
+\pause
+\begin{itemize}[<+->]
+\item Note that for $\lambda=0$, the $\lambda$-Return target reduces to the TD target
+\item Note that for $\lambda=1$, the $\lambda$-Return target reduces to the MC target $G_t$
+\item $\lambda$ parameter enables us to finely tune from TD ($\lambda=0$) to MC ($\lambda=1$)
+\item Note that for $\lambda > 0$, updates are made only at the end of an episode
+\item Algorithms updating at end of episodes known as {\em Offline Algorithms}
+\item Online algorithms (updates after each time step) are appealing:
+\begin{itemize}[<+->]
+\item Updated VF can be utilized immediately for next time step's update
+\item This facilitates continuous/fast learning
+\end{itemize}
+\item Can we have a similar $\lambda$-tunable online algorithm for Prediction?
+\item Yes - this is known as the TD($\lambda$) Prediction algorithm
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Memory Function}
+\pause
+\begin{itemize}[<+->]
+\item TD($\lambda$) algorithm is based on the concept of {\em Eligibility Traces}
+\item We introduce the concept by defining a {\em Memory Function} $M(t)$
+\item Assume an event occurs at times $t_1 < t_2 < \ldots < t_n \in \mathbb{R}_{\geq 0}$
+\item We want $M(t)$ to remember the \# of times the event has occurred
+\item But we also want it to have an element of ``forgetfulness''
+\item Recent event-occurrences remembered better than older occurrences
+\item  We want $M(\cdot)$ to give us a time-decayed count of event-occurrences
+\begin{equation*}
+M(t) = 
+\begin{cases}
+\mathbb{I}_{t=t_1} & \text{ if } t \leq t_1, \\
+M(t_i) \cdot \theta^{t - t_i} + \mathbb{I}_{t=t_{i+1}}& \text{ if }  t_i < t \leq t_{i+1} \text{ for any } 1 \leq i < n, \\
+M(t_n) \cdot \theta^{t - t_n} & \text{ otherwise (i.e., } t > t_n)
+\end{cases}
+\end{equation*}
+\item There's an uptick of 1 each time the event occurs, but it decays by a factor of $\theta^{\Delta t}$ over any interval $\Delta t$ where the event doesn't occur
+\item Thus, $M(\cdot)$ captures the notion of frequency as well as recency
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Memory Function with $\theta = 0.8$}
+\includegraphics[width=12cm, height=7cm]{memory_function.png}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Eligibility Traces and Tabular TD($\lambda)$ Prediction}
+\pause
+\begin{itemize}[<+->]
+\item Assume a finite state space with non-terminals $\mathcal{N} = \{s_1, s_2, \ldots, s_m\}$
+\item Eligibility Trace for each state $s\in S$ is defined as the Memory function $M(\cdot)$ with $\theta = \gamma \cdot \lambda$, and the event timings are the time steps at which the state $s$ occurs in a trace experience
+ \item Eligibility traces at time $t$ is a function $E_t: \mathcal{N} \rightarrow \mathbb{R}_{\geq 0}$:
+$$E_0(s) = 0, \text{ for all } s \in \mathcal{N}$$
+$$E_t(s) = \gamma \cdot \lambda \cdot E_{t-1}(s) + \mathbb{I}_{S_t=s}, \text{ for all } s \in \mathcal{N}, \text{ for all } t = 1, 2, \ldots$$
+\item Tabular TD($\lambda$) Prediction algorithm performs following update at each time step $t$ in each trace experience:
+$$V(s) \leftarrow V(s) + \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - V(S_t)) \cdot E_t(s), \text{ {\em for all} } s \in \mathcal{N}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{``Equivalence'' of TD($\lambda)$ and $\lambda$-Return}
+\pause
+\begin{itemize}[<+->]
+\item TD($\lambda$) is an online algorithm, similar to TD
+\item But unlike TD, we update the VF {\em for all} states at each time step
+\item VF update for each state is proportional to TD-Error $\delta_t$ (like TD)
+ \item But here, $\delta_t$ is scaled by $E_t(s)$ for each state $s$ at each $t$
+$$V(s) \leftarrow V(s) + \alpha \cdot \delta_t \cdot E_t(s), \text{ {\em for all} } s \in \mathcal{N}$$
+\item But how is TD($\lambda)$ Prediction linked to the $\lambda$-Return Prediction?
+\item It turns out that if we made all updates in an offline manner, then sum of updates for a fixed state $s \in \mathcal{N}$ over entire trace experience equals (offline) update for $s$ in the $\lambda$-Return prediction algorithm
+\end{itemize}
+\pause
+\begin{theorem}
+$$\sum_{t=0}^{T-1} \alpha \cdot \delta_t \cdot E_t(s) = \sum_{t=0}^{T-1} \alpha \cdot (G_t^{(\lambda)} - V(S_t)) \cdot \mathbb{I}_{S_t=s}, \text{ for all } s \in \mathcal{N}$$
+\end{theorem}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Proof}
+\pause
+
+\begin{equation*}
+\begin{aligned}[b]
+G_t^{(\lambda)} =  & (1 - \lambda) \cdot \lambda^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1})) \\
++ & (1 - \lambda) \cdot \lambda^1 \cdot (R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot V(S_{t+2})) \\
++ & (1 - \lambda) \cdot \lambda^2 \cdot (R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \gamma^3 \cdot V(S_{t+2})) \\
++ & \ldots \\
+\pause
+= & (\gamma \lambda)^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - \gamma \lambda \cdot V(S_{t+1})) \\
++ & (\gamma \lambda)^1 \cdot (R_{t+2} + \gamma \cdot V(S_{t+2}) - \gamma \lambda \cdot V(S_{t+2})) \\
++ & (\gamma \lambda)^2 \cdot (R_{t+3} + \gamma \cdot V(S_{t+3}) - \gamma \lambda \cdot V(S_{t+3})) \\
++ & \ldots
+\end{aligned}
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Proof}
+\pause
+
+\begin{equation*}
+\begin{aligned}[b]
+G_t^{(\lambda)} =  & (\gamma \lambda)^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - \gamma \lambda \cdot V(S_{t+1})) \\
++ & (\gamma \lambda)^1 \cdot (R_{t+2} + \gamma \cdot V(S_{t+2}) - \gamma \lambda \cdot V(S_{t+2})) \\
++ & (\gamma \lambda)^2 \cdot (R_{t+3} + \gamma \cdot V(S_{t+3}) - \gamma \lambda \cdot V(S_{t+3})) \\
++ & \ldots
+\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+\begin{aligned}[b]
+G_t^{(\lambda)} - V(S_t) = & (\gamma \lambda)^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - V(S_t)) \\
++ & (\gamma \lambda)^1 \cdot (R_{t+2} + \gamma \cdot V(S_{t+2}) - V(S_{t+1})) \\
++ & (\gamma \lambda)^2 \cdot (R_{t+3} + \gamma \cdot V(S_{t+3}) - V(S_{t+2})) \\
++ & \ldots \\
+= & \delta_t + \gamma \lambda \cdot \delta_{t+1} + (\gamma \lambda)^2 \cdot \delta_{t+2} + \ldots
+\end{aligned}
+\end{equation*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof}
+\pause
+Now assume that a specific non-terminal state $s$ appears at time steps $t_1, t_2, \ldots, t_n$. Then,
+\begin{align*}
+\sum_{t=0}^{T-1} \alpha \cdot (G_t^{(\lambda)} - V(S_t)) \cdot \mathbb{I}_{S_t=s} & = \sum_{i=1}^n \alpha \cdot (G_{t_i}^{(\lambda)} - V(S_{t_i})) \\
+& = \sum_{i=1}^n \alpha \cdot (\delta_{t_i} + \gamma \lambda \cdot \delta_{t_i+1} + (\gamma \lambda)^2 \cdot \delta_{t_i+2} + \ldots ) \\
+& = \sum_{t=0}^{T-1} \alpha \cdot \delta_t \cdot E_t(s)
+\end{align*}
+\qed
+\end{frame}
+
+
+\begin{frame}
+\frametitle{TD(0) and TD(1) with Offline Updates}
+\pause
+\begin{itemize}[<+->]
+\item To be clear, TD($\lambda$) Prediction is an online algorithm
+\item So {\em not the same} as {\em offline} $\lambda$-Return Prediction
+\item If we modified TD($\lambda$) to be offline, they'd be equivalent
+\item Offline version of TD($\lambda$) would not update VF at each step
+\item Accumulate changes in buffer, update VF offline with buffer contents
+\item If we set $\lambda = 0$, $E_t(s) = \mathbb{I}_{S_t=s}$ and so, the update reduces to:
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot \delta_t$$
+\item This is exactly the TD update. So, TD is often refered to as TD(0)
+\item If we set $\lambda=1$ with episodic traces, sum of all VF updates for a state over a trace experience is equal to it's VF update in Every-Visit MC
+\item Hence, Offline TD(1) is equivalent to Every-Visit MC
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{TD($\lambda$) Prediction with Function Approximation}
+\pause
+\begin{itemize}[<+->]
+\item Generalize TD($\lambda$) to the case of function approximation
+\item Data-Type of eligibility traces same as func-approx parameters $\bm{w}$
+\item So here we denote eligibility traces at time $t$ as simply $\bm{E}_t$
+\item Initialize $\bm{E}_0$ to 0 for each component in it's data type
+\item Then, for each time step $t > 0$, we define $\bm{E}_t$ recursively:
+$$\bm{E}_t = \gamma \lambda \cdot \bm{E}_{t-1} + \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\item VF approximation update at each time step $t$ is as follows:
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}; \bm{w}) - V(S_t; \bm{w})) \cdot \bm{E}_t$$
+\item Expressed more succinctly in terms of function-approx TD-Error $\delta_t$:
+$$\Delta \bm{w} = \alpha \cdot \delta_t \cdot \bm{E}_t$$
 \end{itemize}
 \end{frame}
 
@@ -532,19 +772,15 @@ return iterate(update, approx_0)
 \frametitle{Key Takeaways from this Chapter}
 \pause
 \begin{itemize}[<+->]
-\item The \lstinline{FunctionApprox} interface involves three key methods:
-\begin{itemize}
-\item \lstinline{solve:} Calculate the ``best-fit'' parameters that minimizes the cross-entropy loss function for the given fixed data set of $(x,y)$ pairs
-\item \lstinline{update:} Parameters of \lstinline{FunctionApprox} are updated based on each new $(x,y)$ pairs data set from the available data stream
-\item \lstinline{evaluate:}  Calculate the conditional expectation of response variable $y$, according to the model specified by \lstinline{FunctionApprox}
+\item Bias-Variance tradeoff of TD versus MC
+\item MC learns the mean of the observed returns while TD learns something "deeper" - it implicitly estimates an MRP from given data and produces the Value Function of the implicitly-estimated MRP
+\item Understanding TD versus MC versus DP from the perspectives of:
+\begin{itemize}[<+->]
+\item ``Bootstrapping''
+\item ``Experiencing''
 \end{itemize}
-\item Tabular is a special case of linear function approximation with feature functions as indicator functions for each of the finite set of $\mathcal{X}$
-\item All the Tabular DP algorithms can be generalized to ADP algorithms
-\begin{itemize}
-\item Tabular VF updates replaced by updates to \lstinline{FunctionApprox} parameters
-\item Sweep over all states in Tabular case replaced by state samples
-\item Bellman Operators' Expectation estimated as average of calculations over transition samples (versus using explicit transition probabilities)
-\end{itemize}
+\item ``Equivalence'' of $\lambda$-Return Prediction and TD($\lambda$) Prediction
+\item TD is equivalent to TD(0) and MC is ``equivalent'' to TD(1)
 \end{itemize}
 \end{frame}
 
