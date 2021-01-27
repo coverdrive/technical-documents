@@ -150,7 +150,7 @@
 \pause
 \begin{itemize}[<+->]
 \item We work with a generic but simple setting for Function Approximation
-\item Predictor variable $x \in \mathcal{X}$, Response variable $y \in \mathbb{R}$
+\item Predictor variable $x \in \mathcal{X}$ (generic domain), Response variable $y \in \mathbb{R}$
 \item We treat $x, y$ as unknown random variables, and want to estimate a function approximation for $\mathbb{P}[y|x]$ from data in the form of $(x,y)$ pairs
 \item We consider parameterized functions $f$ with parameters denoted $w$
 \item  Exact data type of $w$ will depend on specific form of function approx
@@ -168,7 +168,7 @@ $$w^* = \argmax_w \{ \prod_{i=1}^n f(x_i; w)(y_i)\} = \argmax_w \{ \sum_{i=1}^n 
 \begin{itemize}[<+->]
 \item This is the framework of {\em Maximum Likelihood Estimation} of $y|x$
 \item Data $[(x_i, y_i)|1 \leq i \leq n]$ specifies {\em empirical probability distribution} $D$
-\item Parameterized function $f$ specifies {]\em model probability distribution} $M$
+\item Parameterized function $f$ specifies {\em model probability distribution} $M$
 \item So we are in the business of reconciling $D$ and $M$
 \item So this is minimizing {\em Cross-Entropy Loss} between $D$ and $M$
 $$ \text{Cross-Entropy Loss } \mathcal{H}(D, M) = -\mathbb{E}_D[\log M]$$
