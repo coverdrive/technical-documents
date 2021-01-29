@@ -385,6 +385,26 @@ $S_L = \log{\lambda}, \tau = d(\tau) = 1, h(y, \tau) = \frac 1 {y!}, A(S_L) = e^
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{@abstractclass Distribution interface}
+\pause
+\begin{lstlisting}
+class Distribution(ABC, Generic[A]):
+
+    @abstractmethod
+    def sample(self) -> A:
+        pass
+
+    @abstractmethod
+    def expectation(
+        self,
+        f: Callable[[A], float]
+    ) -> float:
+        pass
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
 \frametitle{Approximate Policy Evaluation interface}
 \pause
 \begin{lstlisting}
