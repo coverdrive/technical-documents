@@ -361,20 +361,123 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t
 \end{frame}
 
 \begin{frame}
-\frametitle{Gaining Insights into the Solution}
+\frametitle{Discrete-Time Asset-Allocation Example}
 \pause
 \begin{itemize}[<+->]
-\item Optimal Allocation $\pi^*(t, W_t)$ is constant (independent of $t$ and $W_t$)
-\item Optimal Fractional Consumption $\frac {c^*(t, W_t)} {W_t}$ depends only on $t$ ($=\frac 1 {f(t)}$)
-\item With Optimal Allocation \& Consumption, the Wealth process is:
-$$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t)}) \cdot dt + \frac {\mu - r} {\sigma \gamma} \cdot dz_t$$
-\item Expected Portfolio Return is constant over time ($=r + \frac {(\mu - r)^2} {\sigma^2 \gamma}$)
-\item Assuming $\epsilon < \frac 1 {\nu}$, Fractional Consumption $\frac 1 {f(t)}$ increases over time
-\item Expected Rate of Wealth Growth $r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t)}$ decreases over time
-\item If $r + \frac {(\mu - r)^2} {\sigma^2 \gamma} > \frac 1 {f(0)}$, we start by Consuming $<$ Expected Portfolio Growth and over time, we Consume $>$ Expected Portfolio Growth
-\item Wealth Growth Volatility is constant ($= \frac {\mu - r} {\sigma \gamma}$)
+\item At time steps $t = 0, 1, \ldots, T-1$, we can asset-allocate wealth $W_t$
+\item 1 risky asset, unconstrained allocation, no transaction costs
+\item Risky asset return for each time step $\sim \mathcal{N}(\mu, \sigma^2)$
+\item Riskless asset has constant return $r$ for each time step
+\item Assume no wealth consumption for any time $t < T$
+\item We liquidate and consume wealth $W_T$ at time $T$
+\item Goal:  Maximize Expected Utility of Wealth $W_T$ at time $T$
+\item Dynamic allocation $x_t \in \mathbb{R}$ in risky asset, $W_t - x_t$ in riskless asset
+\item Utility of Wealth $W_T$ at time $T$ is given by CARA function:
+$$U(W_T) = \frac {1 - e^{-a W_T}} {a} \text{ for some fixed } a \neq 0$$
+\item So we maximize, for each $t=0, 1, \ldots, T-1$, over choices of $x_t \in \mathbb{R}$:
+$$\mathbb{E}[\frac {- e^{-a W_T}} a | (t, W_t)]$$
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{MDP for Discrete-Time Asset-Allocation}
+\pause
+\begin{itemize}[<+->]
+\item Continuous-States/Actions, Discrete-Time, Finite-Horizon MDP
+\item All states at time $T$ are terminal states
+\item {\em State} $s_t \in \mathcal{S}_t$ is the wealth $W_t$, {\em Action} $a_t \in \mathcal{A}_t$ is risky investment $x_t$
+\item  Deterministic policy at time $t$ denoted as $\pi_t$, so $\pi_t(W_t) = x_t$
+\item Optimal deterministic policy at time $t$ denoted as $\pi^*_t$, so $\pi^*_t(W_t) = x^*_t$
+\item Single-time-step return of risky asset from $t$ to $t+1$ is $Y_t \sim \mathcal{N}(\mu, \sigma^2)$
+$$W_{t+1} = x_t \cdot (1 + Y_t) + (W_t - x_t) \cdot (1 + r) = x_t \cdot (Y_t - r) + W_t \cdot (1 + r)$$
+\item MDP {\em Reward} is 0 for all $t = 0, 1, \ldots, T-1$
+\item MDP {\em Reward} at time $T$: $\frac {- e^{-a W_T}} {a}$
+\item MDP discount factor $\gamma = 1$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Optimal Value Function and Bellman Optimality Equation}
+\pause
+\begin{itemize}[<+->]
+\item Denote Value Function at time $t$ for policy $\pi = (\pi_0, \pi_1, \ldots, \pi_{T-1})$ as:
+$$V^{\pi}_t(W_t) = \mathbb{E}_{\pi}[\frac {- e^{-a W_T}} a | (t, W_t)]$$
+\item Denote Optimal Value Function at time $t$ as:
+$$V^*_t(W_t) = \max_{\pi} V^{\pi}_t(W_t) = \max_{\pi} \{ \mathbb{E}_{\pi}[\frac {- e^{-a W_T}} a | (t, W_t)] \}$$
+\item Bellman Optimality Equation is:
+$$V^*_t(W_t) = \max_{x_t} \{\mathbb{E}_{Y_t \sim \mathcal{N}(\mu, \sigma^2)}[V^*_{t+1}(W_{t+1})]\}$$
+$$V^*_{T-1}(W_{T-1}) = \max_{x_{T-1}} \{ \mathbb{E}_{Y_{T-1} \sim \mathcal{N}(\mu, \sigma^2)}[\frac {- e^{-a W_T}} a] \}$$
+\item Make an educated guess for the functional form of the $V^*_t(W_t)$:
+$$V^*_t(W_t) = - b_t \cdot e^{-c_t \cdot W_t}$$
+where $b_t, c_t$ are independent of the wealth $W_t$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Solving the Optimal Value Function}
+\pause
+\begin{itemize}[<+->]
+\item We express Bellman Optimality Equation using this functional form:
+\begin{equation*}
+\begin{split}
+V^*_t(W_t) & = \max_{x_t} \{ \mathbb{E}_{Y_t \sim \mathcal{N}(\mu, \sigma^2)} [-b_{t+1} \cdot e^{-c_{t+1} \cdot W_{t+1}}] \} \\
+& = \max_{x_t} \{ \mathbb{E}_{Y_t \sim \mathcal{N}(\mu, \sigma^2)} [-b_{t+1} \cdot e^{-c_{t+1} \cdot (x_t \cdot (Y_t - r) + W_t \cdot (1+r))}] \} \\
+& = \max_{x_t} \{-b_{t+1} \cdot e^{-c_{t+1} \cdot (1 + r) \cdot W_t - c_{t+1} \cdot (\mu - r) \cdot x_t + c^2_{t+1} \cdot \frac {\sigma^2} {2} \cdot x_t^2} \}
+\end{split}
+\end{equation*}
+\item The partial derivative of term inside the $\max$ with respect to $x_t$ is 0:
+$$ -c_{t+1} \cdot (\mu - r) + \sigma^2 \cdot c^2_{t+1} \cdot x^*_t = 0$$
+\begin{equation}
+\Rightarrow x^*_t = \frac {\mu - r} {\sigma^2 \cdot c_{t+1}}
+\label{eq:pi-star-functional-discrete}
+\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Solving the Optimal Value Function}
+\pause
+\begin{itemize}[<+->]
+\item Next we substitute maximizing $x_t^*$ in Bellman Optimality Equation:
+$$V^*_t(W_t) = - b_{t+1} \cdot e^{-c_{t+1} \cdot (1 + r) \cdot W_t - \frac {(\mu - r)^2} {2 \sigma^2}} $$
+\item But since $V^*_t(W_t) = -b_t \cdot e^{-c_t \cdot W_t}$, we can write:
+$$b_t = b_{t+1} \cdot e^{- \frac {(\mu -r)^2} {2 \sigma^2}}, c_t = c_{t+1} \cdot (1 + r)$$
+\item We can calculate $b_{T-1}$ and $c_{T-1}$ from {\em Reward} $\frac {- e^{-a W_T}} a$
+$$V^*_{T-1}(W_{T-1}) = \max_{x_{T-1}} \{ \mathbb{E}_{Y_{T-1} \sim \mathcal{N}(\mu, \sigma^2)}[\frac {- e^{-a W_T}} a] \}$$
+\item Substituting for $W_T$, we get:
+$$V^*_{T-1}(W_{T-1}) = \max_{x_{T-1}} \{ \mathbb{E}_{Y_{T-1} \sim \mathcal{N}(\mu, \sigma^2)}[\frac {- e^{-a (x_{T-1}\cdot (Y_{T-1} - r) + W_{T-1} \cdot (1 + r))}} a] \}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Solving the Optimal Value Function}
+\pause
+\begin{itemize}[<+->]
+\item The expectation of this exponential (under normal distribution) is:
+$$V^*_{T-1}(W_{T-1}) = \frac {-e^{-\frac {(\mu - r)^2} {2 \sigma^2} - a \cdot (1 + r) \cdot W_{T-1}}} a$$
+\item This gives us $b_{T-1}$ and $c_{T-1}$ as follows:
+$$b_{T-1} = \frac {e^{- \frac {(\mu - r)^2} {2 \sigma^2}}} a$$
+$$c_{T-1} = a \cdot (1 + r)$$
+\item Now we can unroll recursions for $b_t$ and $c_t$:
+$$b_t = \frac {e^{- \frac {(\mu - r)^2 \cdot (T-t)} {2 \sigma^2}}} a$$
+$$ c_t = a \cdot (1+ r)^{T-t}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Solving the Optimal Value Function}
+\pause
+\begin{itemize}[<+->]
+\item Substituting the solution for $c_{t+1}$ in \eqref{eq:pi-star-functional-discrete} gives the Optimal Policy:
+$$\pi^*_t(W_t) = x^*_t = \frac {\mu - r} {\sigma^2 \cdot a \cdot (1+ r)^{T-t-1}}$$
+\item Note optimal action at time $t$ does not depend on state $W_t$
+\item Hence, optimal policy $\pi^*_t(\cdot)$ is a constant deterministic policy function
+\item Substituting for $b_t$ and $c_t$  gives us the Optimal Value Function:
+$$V^*_t(W_t) = \frac {- e^{- \frac {(\mu - r)^2 (T-t)} {2 \sigma^2}}} a \cdot e^{- a (1+ r)^{T-t} \cdot W_t}$$
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Real-World}
