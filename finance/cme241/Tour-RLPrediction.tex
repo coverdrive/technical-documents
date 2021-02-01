@@ -649,7 +649,8 @@ M(t_n) \cdot \theta^{t - t_n} & \text{ otherwise (i.e., } t > t_n)
 \begin{itemize}[<+->]
 \item Assume a finite state space with non-terminals $\mathcal{N} = \{s_1, s_2, \ldots, s_m\}$
 \item Eligibility Trace for each state $s\in S$ is defined as the Memory function $M(\cdot)$ with $\theta = \gamma \cdot \lambda$, and the event timings are the time steps at which the state $s$ occurs in a trace experience
- \item Eligibility traces at time $t$ is a function $E_t: \mathcal{N} \rightarrow \mathbb{R}_{\geq 0}$:
+ \item Eligibility trace for a given trace experience at time $t$ is a function
+$$E_t: \mathcal{N} \rightarrow \mathbb{R}_{\geq 0}$$
 $$E_0(s) = 0, \text{ for all } s \in \mathcal{N}$$
 $$E_t(s) = \gamma \cdot \lambda \cdot E_{t-1}(s) + \mathbb{I}_{S_t=s}, \text{ for all } s \in \mathcal{N}, \text{ for all } t = 1, 2, \ldots$$
 \item Tabular TD($\lambda$) Prediction algorithm performs following update at each time step $t$ in each trace experience:
