@@ -83,10 +83,14 @@
 \usepackage{amssymb}
 \usepackage{pseudocode}
 \usepackage{bm}
+\usepackage{multirow}
 \usepackage{physics}
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{enumerate}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
 
 \newcommand{\prob}{\mathcal{P}}
 \newcommand{\rew}{\mathcal{R}}
@@ -316,7 +320,7 @@ $$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t
 
 \begin{frame}
 \frametitle{SARSA Visualization}
-\centerline{\includegraphics[width=2cm, height=6cm]{sarsa.png}}
+\centerline{\includegraphics[width=2cm, height=8cm]{sarsa.png}}
 \end{frame}
 
 
@@ -333,7 +337,6 @@ $$\sum_{t=1}^{\infty} \alpha_t^2 < \infty$$
 \end{itemize}
 \end{theorem}
 \end{frame}
-
 
 
 \begin{frame}
@@ -387,20 +390,249 @@ $$Q(s, a) \leftarrow Q(s, a) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Off-Policy Learning}
+\pause
+\begin{itemize}[<+->]
+\item Estimate VF for {\em target policy} $\pi$  while following {\em behavior policy} $\mu$
+$$\{S_0, A_0, R_1, S_1, A_1, \ldots, R_T, S_T\} \sim \mu$$
+\item Why is this important?
+\begin{itemize}[<+->]
+\item Learning from observing  humans or other agents
+\item Re-use experience generated from  old policies  $\pi_1, \pi_2, \ldots, \pi_{t-1}$
+\item Learn about {\em optimal} policy while following {\em exploratory} policy
+\item Learn about {\em multiple} policies while following {\em one} policy
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Importance Sampling for Off-Policy Learning}
+\pause
+\begin{itemize}[<+->]
+\item Importance Sampling refers to methods to estimate properties of a distribution $P$, given access to samples from a different distribution $Q$
+\item We can calculate $\mathbb{E}_{X\sim P}[f(X)]$ given samples from $Q$ as follows:
+\begin{align*}
+\mathbb{E}_{X\sim P}[f(X)] & = \sum P(X) \cdot f(X) \\
+& = \sum Q(X) \cdot \frac {P(X)} {Q(X)} \cdot f(X) \\
+& = \mathbb{E}_{X \sim Q}[\frac {P(X)} {Q(X)} \cdot f(X)]
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Importance Sampling for Off-Policy Monte-Carlo}
+\pause
+\begin{itemize}[<+->]
+\item Use returns generated from $\mu$ to estimate Value Function for $\pi$
+\item Weight return $G_t$ according to similarity between policies
+\item Multiply importance sampling corrections along whole episode
+$$G_t^{\pi / \mu} = \frac {\pi(S_t, A_t)} {\mu(S_t, A_t)} \cdot  \frac {\pi(S_{t+1}, A_{t+1})} {\mu(S_{t+1}, A_{t+1})} \cdots \frac {\pi(S_T, A_t)} {\mu(S_T, A_T)} \cdot G_t$$
+\item Update value towards {\em corrected} return
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot (G_t^{\pi / \mu} - V(S_t))$$
+\item Likewise for $Q$-Value Function for MC Control
+\item Note: We cannot use this method if $\mu$ is zero when $\pi$ is non-zero
+\item Importance sampling can dramatically increase variance
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Importance Sampling for Off-Policy Temporal-Difference}
+\pause
+\begin{itemize}[<+->]
+\item  Use TD targets generated from $\mu$ to evaluate Value Function for $\pi$
+\item Weight TD target $R + \gamma \cdot V(S')$ with importance sampling
+\item Here we only need a single importance sampling correction
+$$V(S_t) \leftarrow V(S_t) + \alpha \cdot ( \frac {\pi(S_t, A_t)} {\mu(S_t, A_t)} \cdot (R_{t+1} + \gamma \cdot V(S_{t+1})) - V(S_t))$$
+\item Likewise for $Q$-Value Function for TD Control
+\item This has much lower variance than MC importance sampling
+\item Policies only need to be similar over a single step
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tabular Q-Learning}
+\pause
+\begin{itemize}[<+->]
+\item We now consider off-policy learning of action-values $Q(s,a)$
+\item {\bf No} importance sampling is required
+\item The next action is chosen using behavior policy $A_{t+1} \sim \mu(S_t,\cdot)$
+\item But we consider an alternative successor action $A' \sim \pi(S_t, \cdot)$
+\item Update $Q(S_t, A_t)$ towards value of alternative action
+$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A') - Q(S_t, A_t))$$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Off-Policy Control with Tabular Q-Learning}
+\pause
+\begin{itemize}[<+->]
+\item We now allow both behavior and target policies to {\bf improve}
+\item The target (deterministic) policy $\pi_D$ is {\bf greedy} w.r.t $Q$-Value Function
+$$\pi_D(S_{t+1}) = \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a')$$
+\item The behavior policy $\mu$ is also improving, eg: $\epsilon$-greedy w.r.t. $Q$
+\item The $Q$-learning target then simplifies to:
+\begin{align*}
+& R_{t+1} + \gamma \cdot Q(S_{t+1}, A') \\
+= & R_{t+1} + \gamma \cdot Q(S_{t+1}, \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a')) \\
+= & R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a')
+\end{align*}
+\item Thus the update to $Q$-Value Function after each atomic experience is:
+$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a') - Q(S_t, A_t))$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tabular Q-Learning Control Algorithm}
+\pause
+\begin{theorem}
+Tabular Q-Learning Control converges to the Optimal Action-Value Function, $Q(s,a) \rightarrow Q^*(s,a)$
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q-Learning Control Visualization}
+\centerline{\includegraphics[width=4cm, height=8cm]{q_learning.png}}
+\end{frame}
+
+\begin{frame}
+\frametitle{RL Control with Function Approximation}
+\pause
+\begin{itemize}[<+->]
+\item Natural extension of Tabular Control to function approximations
+\item Instead of parameterized approximation $V(s; \bm{w})$, we have $Q(s,a;\bm{w})$
+\item GPI's Policy Evaluation is Approximate $Q$-Value Policy Evaluation
+\item Loss Function for $Q(s,a;\bm{w})$ estimate relative to appropriate return
+\item For MC Control, the loss function for $(S_t,A_t)$ in an episode is:
+$$\mathcal{L}_{(S_t,A_t,G_t)}(\bm{w}) = \frac 1 2 \cdot (Q(S_t,A_t;\bm{w}) - G_t)^2$$
+\item Therefore, the gradient of the loss function for this $(S_t,A_t)$ is:
+$$\nabla_{\bm{w}} \mathcal{L}_{(S_t,A_t,G_t)}(\bm{w}) = (Q(S_t,A_t;\bm{w}) - G_t) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
+\item Therefore, parameters update for this $(S_t,A_t)$ at episode-end is:
+$$\Delta \bm{w} = \alpha \cdot (G_t - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
+\item $\epsilon$-greedy policy improvement is automatic from updated $Q$ estimate
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bootstrapped Control with Function Approximation}
+\pause
+\begin{itemize}[<+->]
+\item For SARSA, parameters update after each atomic experience:
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1},A_{t+1};\bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
+\item For Q-Learning, parameters update after each atomic experience:
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1},a';\bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
+\item For offline $\lambda$-Return Control, parameters update at episode-end:
+$$\Delta \bm{w} = \alpha \cdot (G_t^{(\lambda)} - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
+\item For online SARSA($\lambda$), update after each atomic experience:
+$$\delta_t = R_{t+1} + \gamma \cdot Q(S_{t+1},A_{t+1};\bm{w}) - Q(S_t,A_t;\bm{w})$$
+$$\bm{E}_t = \gamma \lambda \cdot \bm{E}_{t-1} + \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
+$$\Delta \bm{w} = \alpha \cdot \delta_t \cdot \bm{E}_t$$
+\item $\epsilon$-greedy policy improvement is automatic from updated $Q$ estimate
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Relationship between DP and TD}
+\pause
+      \begin{tabular}{c|c|c}
+      & {\bf Full Backup (DP)} & {\bf Sample Backup (TD)} \\ \hline
+       Bellman Expectation & \includegraphics[width=3.0cm, height=1.9cm]{mdp_bellman_policy_tree_vv.png}  & \includegraphics[width=0.5cm, height=1.9cm]{td.png} \\
+               Equation for $V^{\pi}(s)$ & Iterative Policy Evaluation & TD Learning \\ \hline
+        Bellman Expectation & \includegraphics[width=3.0cm, height=1.9cm]{mdp_bellman_policy_tree_qq.png} & \includegraphics[width=0.5cm, height=1.9cm]{sarsa.png} \\
+               Equation for $Q^{\pi}(s, a)$ & Q-Policy Iteration & SARSA \\ \hline
+          Bellman Optimality & \includegraphics[width=3.0cm, height=1.9cm]{mdp_bellman_opt_tree_qq.png} & \includegraphics[width=1.5cm, height=1.9cm]{q_learning.png} \\
+               Equation for $Q^*(s, a)$ & Q-Value Iteration & Q-Learning \\         
+      \end{tabular}  
+\end{frame}
+
+\begin{frame}
+\frametitle{Relationship between DP and TD}
+\pause
+\begin{center}
+      \begin{tabular}{c|c}
+      {\bf Full Backup (DP)} & {\bf Sample Backup (TD)} \\ \hline
+       Iterative Policy Evaluation: $V(S)$ update & TD Learning: $V(S)$ update \\
+       $\mathbb{E}[R + \gamma V(S')|S]$ & sample $R + \gamma V(S')$ \\ \hline
+      Q-Policy Evaluation: $Q(S,A)$ update & SARSA: $Q(S,A)$ update \\
+       $\mathbb{E}[R + \gamma Q(S',A')|S,A]$ & sample $R + \gamma Q(S',A')$ \\ \hline
+       Q-Value Iteration: $Q(S,A)$ update & Q-Learning: $Q(S,A)$ update \\
+       $\mathbb{E}[R + \gamma \max_{a'} Q(S',a')|S,A]$ & sample $R + \gamma \max_{a' } Q(S',a')$ \\ \hline
+      \end{tabular} 
+\end{center}      
+\end{frame}
+
+\begin{frame}
+\frametitle{Convergence of Prediction Algorithms}
+\pause
+\begin{center}
+      \begin{tabular}{ccccc}
+      \hline
+      On/Off Policy & Algorithm & Tabular & Linear & Non-Linear \\ \hline
+      \multirow{3}{*}{On-Policy} & MC & \cmark & \cmark & \cmark \\
+      & TD(0) & \cmark & \cmark & \xmark \\
+      & TD($\lambda$) & \cmark & \cmark & \xmark \\ \hline
+      \multirow{3}{*}{Off-Policy} & MC & \cmark & \cmark & \cmark \\
+      & TD(0) & \cmark & \xmark & \xmark \\
+      & TD($\lambda$) & \cmark & \xmark & \xmark \\ \hline
+      \end{tabular}
+\end{center}      
+\end{frame}
+
+\begin{frame}
+\frametitle{Gradient Temporal-Difference Learning}
+\pause
+\begin{itemize}[<+->]
+\item TD does not follow the gradient of {\em any} objective function
+\item This is why TD can diverge:
+\begin{itemize}[<+->]
+\item when running off-policy, or
+\item when using non-linear function approximation
+\end{itemize}
+\item {\bf Gradient TD} follows true gradient of projected Bellman Error
+\end{itemize}
+\pause
+\begin{center}
+      \begin{tabular}{ccccc}
+      \hline
+      On/Off Policy & Algorithm & Tabular & Linear & Non-Linear \\ \hline
+      \multirow{4}{*}{On-Policy} & MC & \cmark & \cmark & \cmark \\
+      & TD & \cmark & \cmark & \xmark \\
+      & {\bf Gradient TD} & {\bf \cmark} & {\bf \cmark} & {\bf \cmark} \\ \hline
+      \multirow{4}{*}{Off-Policy} & MC & \cmark & \cmark & \cmark \\
+      & TD & \cmark & \xmark & \xmark \\
+      & {\bf Gradient TD} & {\bf \cmark} & {\bf \cmark} & {\bf \cmark} \\ \hline
+      \end{tabular} 
+\end{center}      
+\end{frame}
+
+\begin{frame}
+\frametitle{Convergence of Control Algorithms}
+\pause
+\begin{center}
+      \begin{tabular}{cccc}
+      \hline
+      Algorithm & Tabular & Linear & Non-Linear \\ \hline
+      MC Control & \cmark & ( \cmark ) & \xmark \\
+      SARSA & \cmark & ( \cmark ) & \xmark \\ 
+      Q-Learning & \cmark & \xmark & \xmark \\
+      Gradient Q-Learning & \cmark & \cmark & \xmark \\ \hline
+      \end{tabular}
+ \end{center}     
+  \pause
+  ( \cmark ) means it chatters around near-optimal Value Function   
+\end{frame}
 
 \begin{frame}
 \frametitle{Key Takeaways from this Chapter}
 \pause
 \begin{itemize}[<+->]
-\item Bias-Variance tradeoff of TD versus MC
-\item MC learns the mean of the observed returns while TD learns something "deeper" - it implicitly estimates an MRP from given data and produces the Value Function of the implicitly-estimated MRP
-\item Understanding TD versus MC versus DP from the perspectives of:
+\item RL Control is based on the idea of Generalized Policy Iteration (GPI)
 \begin{itemize}[<+->]
-\item ``Bootstrapping''
-\item ``Experiencing''
+\item Policy Evaluation with $Q$-Value Function (instead of $V$)
+\item Improved Policy needs to be exploratory, eg: $\epsilon$-greedy
 \end{itemize}
-\item ``Equivalence'' of $\lambda$-Return Prediction and TD($\lambda$) Prediction
-\item TD is equivalent to TD(0) and MC is ``equivalent'' to TD(1)
+\item On-Policy versus Off-Policy
+\item Deadly Triad := [Bootstrapping, Function Approximation, Off-Policy]
 \end{itemize}
 \end{frame}
 
