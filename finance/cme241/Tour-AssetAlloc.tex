@@ -81,6 +81,7 @@
 \usepackage{cool}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{listings}
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
 \usetikzlibrary{positioning}
@@ -503,5 +504,24 @@ $$V^*_t(W_t) = \frac {- e^{- \frac {(\mu - r)^2 (T-t)} {2 \sigma^2}}} a \cdot e^
 \item Large Action Space points to Policy Gradient Algorithms
 \end{itemize}
 \end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Code for Discrete-time Dynamic Asset-Allocation}
+\pause
+\begin{lstlisting}
+@dataclass(frozen=True)
+class AssetAllocDiscrete:
+    risky_return_distributions: \
+        Sequence[Distribution[float]]
+    riskless_returns: Sequence[float]
+    utility_func: Callable[[float], float]
+    risky_alloc_choices: Sequence[float]
+    feature_functions: \
+        Sequence[Callable[[Tuple[float, float]], float]]
+    dnn_spec: DNNSpec
+    initial_wealth_distribution: Distribution[float]
+\end{lstlisting}    
+\end{frame}    
 
 \end{document}
