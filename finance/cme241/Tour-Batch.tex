@@ -1,0 +1,216 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[handout]{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pseudocode}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{physics}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\newcommand{\prob}{\mathcal{P}}
+\newcommand{\rew}{\mathcal{R}}
+\newcommand{\states}{\mathcal{S}}
+\newcommand{\actions}{\mathcal{S}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand{\bvpi}{\bm{V}^{\pi}}
+\newcommand{\bvs}{\bm{V}^*}
+\newcommand{\bbpi}{\bm{B}^{\pi}}
+\newcommand{\bbs}{\bm{B}^*}
+\newcommand{\bv}{\bm{V}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Batch RL Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 11}}}: \\ Batch RL: Experience Replay, DQN, LSPI} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{ICME, Stanford University
+ % Your institution for the title page
+}
+
+\date % Date, can be changed to a custom date
+
+\begin{document}
+\lstset{language=Python}  
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Overview} % Table of contents slide, comment this block out to remove it
+% \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+% \end{frame}
+
+\begin{frame}
+\frametitle{Incremental RL makes inefficient use of training data}
+\begin{itemize}[<+->]
+\item Incremental versus Batch RL in the context of fixed finite data
+\item Let's understand the difference for the simple case of MC Prediction
+\item Given fixed finite sequence of trace experiences yielding training data:
+$$\mathcal{D} = [(S_i, G_i) | 1 \leq i \leq n]$$
+\item Incremental MC estimates $V(s;\bm{w})$ using $\nabla_{\bm{w}} \mathcal{L}(\bm{w})$ for each data pair:
+$$\mathcal{L}_{(S_i, G_i)}(\bm{w}) = \frac 1 2 \cdot (V(S_i; \bm{w}) - G_i)^2$$
+$$\nabla_{\bm{w}} \mathcal{L}_{(S_i, G_i)}(\bm{w}) = (V(S_i; \bm{w}) - G_i) \cdot \nabla_{\bm{w}} V(S_i; \bm{w})$$
+$$\Delta \bm{w} = \alpha \cdot (G_i - V(S_i; \bm{w})) \cdot \nabla_{\bm{w}} V(S_i; \bm{w})$$
+\item $n$ updates are performed in sequence for $i = 1, 2, \ldots ,n$
+\item Uses  \lstinline{update} method of \lstinline{FunctionApprox} for each data pair $(S_i, G_i)$
+\item Incremental RL makes inefficient use of available training data $\mathcal{D}$
+\item Essentially each data point is ``discarded'' after being used for update
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Batch MC Prediction makes efficient use of training data}
+\pause
+\begin{itemize}[<+->]
+\item Instead we'd like to estimate the Value Function $V(s;\bm{w^*})$ such that
+\begin{align*}
+w^* & = \argmin_{\bm{w}} \frac 1 n \cdot \sum_{i=1}^n \frac 1 2 \cdot (V(S_i;\bm{w}) - G_i)^2 \\
+& = \argmin_{\bm{w}} \mathbb{E}_{(S,G) \sim \mathcal{D}} [\frac 1 2 \cdot (V(S; \bm{w}) - G)^2]
+\end{align*}
+\item This is the \lstinline{solve} method of \lstinline{FunctionApprox} on training data $\mathcal{D}$
+\item This approach to RL is known as {\em Batch RL}
+\item \lstinline{solve} by doing \lstinline{update}s with repeated use of available data pairs
+\item Each update using random data pair $(S,G) \sim \mathcal{D}$
+$$\Delta \bm{w} = \alpha \cdot (G - V(S; \bm{w})) \cdot \nabla_{\bm{w}} V(S; \bm{w})$$
+\item This will ultimately converge to desired value function $V(s;\bm{w^*})$
+\item Repeated use of available data  known as {\em Experience Replay} 
+\item This makes more efficient use of available training data $\mathcal{D}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Batch TD Prediction makes efficient use of {\em Experience}}
+\pause
+\begin{itemize}[<+->]
+\item In Batch TD Prediction, we have experience $\mathcal{D}$ available as:
+$$\mathcal{D} = [(S_i, R_i, S'_i) | 1 \leq i \leq n]$$
+\item Where $(R_i, S'_i)$ is the pair of reward and next state from a state $S_i$
+\item So, Experience $\mathcal{D}$ in the form of finite number of atomic experiences
+\item This is represented in code as an \lstinline{Iterable[TransitionStep[S]]}
+\item Parameters updated with repeated use of these atomic experiences
+\item Each update using random data pair $(S,R,S') \sim \mathcal{D}$
+$$\Delta \bm{w} = \alpha \cdot (R + \gamma \cdot V(S'; \bm{w}) - V(S; \bm{w})) \cdot \nabla_{\bm{w}} V(S; \bm{w})$$
+\item This is TD Prediction with Experience Replay on Finite Experience $\mathcal{D}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Batch TD($\lambda$) Prediction}
+\pause
+\begin{itemize}[<+->]
+\item In Batch TD($\lambda$) Prediction, given finite number of trace experiences
+$$\mathcal{D} = [(S_{i,0}, R_{i,1}, S_{i,1}, R_{i,2}, S_{i,2}, \ldots, R_{i,T_i}, S_{i,T_i}) | 1 \leq i \leq n]$$
+\item Parameters updated with repeated use of these trace experiences
+\item Randomly pick trace experience (say indexed $i$) $\sim \mathcal{D}$
+\item For trace experience $i$, parameters updated at each time step $t$:
+$$\bm{E}_t = \gamma \lambda \cdot \bm{E}_{t-1} + \nabla_{\bm{w}} V(S_{i,t};\bm{w})$$
+$$\Delta \bm{w} = \alpha \cdot (R_{i,t+1} + \gamma \cdot V(S_{i,t+1}; \bm{w}) - V(S_{i,t}; \bm{w})) \cdot \bm{E}_t$$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Key Takeaways from this Chapter}
+\pause
+\begin{itemize}[<+->]
+\item Batch RL makes efficient use of data
+\item DQN uses experience replay together with a frozen DNN avoiding pitfalls of time-correlation and semi-gradient
+\item LSTD is a fast linear-algebra calculation of Batch TD Prediction
+\item LSPI is an off-policy, experience-replay Control Algorithm using LSTD for Policy Evaluation
+\end{itemize}
+\end{frame}
+
+
+\end{document}
