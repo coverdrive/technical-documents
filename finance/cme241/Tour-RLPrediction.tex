@@ -759,7 +759,7 @@ $$V(S_t) \leftarrow V(S_t) + \alpha \cdot \delta_t$$
 \item Data-Type of eligibility traces same as func-approx parameters $\bm{w}$
 \item So here we denote eligibility traces at time $t$ as simply $\bm{E}_t$
 \item Initialize $\bm{E}_0$ to 0 for each component in it's data type
-\item Then, for each time step $t > 0$, we define $\bm{E}_t$ recursively:
+\item For each time step $t > 0$, $\bm{E}_t$ is calculated recursively:
 $$\bm{E}_t = \gamma \lambda \cdot \bm{E}_{t-1} + \nabla_{\bm{w}} V(S_t;\bm{w})$$
 \item VF approximation update at each time step $t$ is as follows:
 $$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}; \bm{w}) - V(S_t; \bm{w})) \cdot \bm{E}_t$$
