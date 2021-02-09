@@ -174,9 +174,9 @@
 \item So we will do Policy Evaluation with Tabular MC evaluation
 \item And we will do the usual Greedy Policy Improvement
 \item But Greedy Policy Improvement requires a model of MDP
-$$\pi'(s) \leftarrow  \argmax_{a\in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot V^{\pi}(s') \}$$
+$$\pi'_D(s) \leftarrow  \argmax_{a\in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot V^{\pi}(s') \}$$
 \item However, it works if we were working with Action-Value Function
-$$\pi'(s) \leftarrow \argmax_{a\in \mathcal{A}} Q^{\pi}(s,a)$$
+$$\pi'_D(s) \leftarrow \argmax_{a\in \mathcal{A}} Q^{\pi}(s,a)$$
 \item This means: Policy Evaluation for Action-Value Function $Q^{\pi}(s,a)$
 \item Following a policy $\pi$, update Q-value for each $(S_t,A_t)$ each episode:
 $$Count(S_t,A_t) \leftarrow Count(S_t,A_t) + 1$$
