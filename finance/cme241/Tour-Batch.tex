@@ -200,15 +200,356 @@ $$\Delta \bm{w} = \alpha \cdot (R_{i,t+1} + \gamma \cdot V(S_{i,t+1}; \bm{w}) - 
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{The Deep Q-Networks (DQN) Control Algorithm}
+\pause
+DQN uses {\bf Experience Replay} and {\bf fixed Q-learning targets}.\\
+\pause
+At each time $t$ for each episode:
+\begin{itemize}[<+->]
+\item Given state $S_t$, take action $A_t$ according to $\epsilon$-greedy policy extracted from Q-network values $Q(S_t,a;\bm{w})$
+\item Given state $S_t$ and action $A_t$, obtain reward $R_{t+1}$ and next state $S_{t+1}$
+\item Store atomic experience $(S_t, A_t, R_{t+1}, S_{t+1})$ in replay memory $\mathcal{D}$
+\item Sample random mini-batch  of atomic experiences $(s_i,a_i,r_i,s'_i) \sim \mathcal{D}$
+\item Update Q-network parameters $\bm{w}$ using Q-learning targets based on ``frozen'' parameters $\bm{w}^-$ of {\em target network}
+$$\Delta \bm{w} = \alpha \cdot \sum_i (r_i + \gamma \cdot \max_{a'_i} Q(s'_i, a'_i; \bm{w}^-) - Q(s_i,a_i;\bm{w})) \cdot \nabla_{\bm{w}} Q(s_i,a_i;\bm{w})$$ 
+\item $S_t \leftarrow S_{t+1}$
+\end{itemize}
+\pause
+Parameters $\bm{w}^-$ of target network infrequently updated to values of Q-network parameters $\bm{w}$ (hence, Q-learning targets treated as ``frozen'')
+\end{frame}
+
+\begin{frame}
+\frametitle{Least-Squares RL Prediction}
+\pause
+\begin{itemize}[<+->]
+\item Batch RL Prediction for general function approximation is iterative
+\item Uses experience replay and gradient descent
+\item We can solve directly (without gradient) for linear function approx
+\item Define a sequence of feature functions $\phi_j: \mathcal{X} \rightarrow \mathbb{R}, j = 1, 2, \ldots, m$
+\item Parameters $w$ is a weights vector $\bm{w} = (w_1, w_2, \ldots, w_m) \in \mathbb{R}^m$
+\item Value Function is approximated as:
+$$V(s;\bm{w}) = \sum_{j=1}^m \phi_j(s) \cdot w_j = \bm{\phi}(s) \cdot \bm{w}$$
+where $\bm{\phi}(s) \in \mathbb{R}^m$ is the feature vector for state $s$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Least-Squares Monte-Carlo (LSMC)}
+\pause
+\begin{itemize}[<+->]
+\item Loss function for Batch MC Prediction with data $[(S_i, G_i) | 1 \leq i \leq n]$:
+$$\mathcal{L}(\bm{w}) =  \frac 1 {2n} \cdot \sum_{i=1}^n (\sum_{j=1}^m \phi_j(S_i) \cdot w_j - G_i)^2 = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(S_i) \cdot \bm{w} - G_i)^2$$
+\item The gradient of this Loss function is set to 0 to solve for $\bm{w}^*$
+$$\sum_{i=1}^n \bm{\phi}(S_i) \cdot (\bm{\phi}(S_i) \cdot \bm{w^*} - G_i) = 0$$
+\item $\bm{w^}*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
+\item $m \times m$ Matrix $\bm{A}$ is accumulated at each data pair $(S_i, G_i)$ as:
+$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(S_i) \otimes \bm{\phi}(S_i) \text{ (note: } \otimes \text{ means Outer-Product)}$$
+\item $m$-Vector $\bm{b}$ is accumulated at each data pair $(S_i, G_i)$ as:
+$$\bm{b} \leftarrow \bm{b} + \bm{\phi}(S_i) \cdot G_i$$
+\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Least-Squares Temporal-Difference (LSTD)}
+\pause
+\begin{itemize}[<+->]
+\item Loss func for Batch TD Prediction with data $[(s_i, r_i, s'_i) | 1 \leq i \leq n]$:
+$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(s_i) \cdot \bm{w} - (r_i + \gamma \cdot \bm{\phi}(s'_i) \cdot \bm{w}))^2$$
+\item The semi-gradient of this Loss function is set to 0 to solve for $\bm{w}^*$
+$$\sum_{i=1}^n \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i) \cdot \bm{w}^*)) = 0$$
+\item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
+\item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$:
+$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \otimes (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i)) \text{ (note: } \otimes \text{ means Outer-Product)}$$
+\item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$:
+$$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i) \cdot r_i$$
+\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LSTD($\lambda$)}
+\pause
+\begin{itemize}[<+->]
+\item Likewise, we can do LSTD($\lambda$) using Eligibility Traces
+\item Denote the Eligibility Trace of atomic experience $i$ as $\bm{E}_i$
+\item Note: $\bm{E}_i$ accumulates $\nabla_{\bm{w}} V(s;\bm{w}) = \bm{\phi}(s)$ in each trace experience
+\item When accumulating, previous step's eligibility trace discounted by $\lambda \gamma$
+$$\sum_{i=1}^n \bm{E_i} \cdot (\bm{\phi}(s_i) \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i) \cdot \bm{w}^*)) = 0$$
+\item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
+\item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $i$:
+$$ \bm{A} \leftarrow \bm{A} + \bm{E_i} \otimes (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i)) \text{ (note: } \otimes \text{ means Outer-Product)}$$
+\item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$ as:
+$$\bm{b} \leftarrow \bm{b} + \bm{E_i} \cdot r_i$$
+\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Convergence of Least Squares Prediction Algorithms}
+\pause
+\begin{center}
+      \begin{tabular}{ccccc}
+      \hline
+      On/Off Policy & Algorithm & Tabular & Linear & Non-Linear \\ \hline
+      \multirow{3}{*}{On-Policy} & MC & \cmark & \cmark & \cmark \\
+      & {\bf LSMC} & \cmark & \cmark & - \\
+      & TD & \cmark & \cmark & \xmark \\ 
+      & {\bf LSTD} & \cmark & \cmark & - \\ \hline
+      \multirow{3}{*}{Off-Policy} & MC & \cmark & \cmark & \cmark \\
+      & {\bf LSMC} & \cmark & \xmark & - \\
+      & TD & \cmark & \xmark & \xmark \\
+      & {\bf LSTD} & \cmark & \xmark & - \\ \hline
+      \end{tabular}
+\end{center}      
+\end{frame}
+
+\begin{frame}
+\frametitle{Least Squares RL Control}
+\pause
+\begin{itemize}[<+->]
+\item To perform Least Squares RL Control, we do GPI with:
+\begin{itemize}[<+->]
+\item Policy Evaluation as Least-Squares Q-Value Prediction
+\item Greedy Policy Improvement
+\end{itemize}
+\item For MC or On-Policy TD Control, Q-Value Prediction (for policy $\pi$):
+$$Q^{\pi}(s,a) \approx Q(s,a;\bm{w}^*) = \bm{\phi}(s,a) \cdot \bm{w}^*$$
+\item Direct solve for $\bm{w}^*$ using experience data generated using policy $\pi$
+\item We are interested in Off-Policy Control with Least-Squares TD
+\item Using the same idea as Q-Learning and with Experience Replay
+\item This technique is known as Least Squares Policy Iteration (LSPI)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Least Squares Policy Iteration (LSPI)}
+\pause
+\begin{itemize}[<+->]
+\item In each iteration of GPI, we operate with a function approximation
+$$Q(s,a; \bm{w}) = \bm{\phi}(s,a) \cdot \bm{w} = \sum_{j=1}^m \phi_j(s,a) \cdot w_j$$
+\item Deterministic policy $\pi_D$ ({\em target policy} for this iteration) is given by:
+$$\pi_D(s) = \argmax_a Q(s,a; \bm{w})$$
+\item Sample mini-batch of experiences $(s_i,a_i,r_i,s'_i)$ from replay memory $\mathcal{D}$
+\item Goal of the iteration is to solve for weights $\bm{w}'$ to minimize:
+\begin{align*}
+\mathcal{L}(\bm{w}') & = \sum_i (Q(s_i,a_i; \bm{w}') - (r_i + \gamma \cdot Q(s'_i,\pi_D(s'_i); \bm{w}')))^2\\
+& = \sum_i (\bm{\phi}(s_i,a_i) \cdot \bm{w}' - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i)) \cdot \bm{w}'))^2
+\end{align*}
+\item $\bm{w}'$ would give the parameters of the next iteration's function approx
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Least Squares Policy Iteration (LSPI)}
+\pause
+\begin{itemize}[<+->]
+\item We set the semi-gradient of $\mathcal{L}(\bm{w}')$ to 0
+$$\sum_i \phi(s_i,a_i) \cdot (\bm{\phi}(s_i,a_i) \cdot \bm{w}' - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi(s'_i)) \cdot \bm{w}')) = 0$$
+\item $\bm{w}'$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
+\item $m \times m$ Matrix $\bm{A}$ is accumulated at each experience $(s_i,a_i,r_i,s'_i)$:
+$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i, a_i) \otimes (\bm{\phi}(s_i, a_i) - \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i))) $$
+\item $m$-Vector $\bm{b}$ is accumulated at each experience $(s_i,a_i,r_i,s'_i)$ as:
+$$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i, a_i) \cdot r_i$$
+\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\item This least-squares solution of $\bm{w}'$ (Prediction) is known as {\em LSTDQ}
+\item GPI with LSTDQ and greedy policy improvement known as {\em LSPI}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Convergence of Control Algorithms}
+\pause
+\begin{center}
+      \begin{tabular}{cccc}
+      \hline
+      Algorithm & Tabular & Linear & Non-Linear \\ \hline
+      MC Control & \cmark & ( \cmark ) & \xmark \\
+      SARSA & \cmark & ( \cmark ) & \xmark \\ 
+      Q-Learning & \cmark & \xmark & \xmark \\
+      {\bf LSPI} & \cmark & ( \cmark ) & - \\ \hline
+      \end{tabular}
+ \end{center}     
+  \pause
+  ( \cmark ) means it chatters around near-optimal Value Function   
+\end{frame}
+
+
+\begin{frame}
+\frametitle{LSPI for Optimal Exercise of American Options}
+\pause
+\begin{itemize}[<+->]
+\item American Option Pricing is Optimal Stopping, and hence an MDP
+\item So can be tackled with Dynamic Programming or RL algorithms
+\item But let us first review the mainstream approaches
+\item For some American options, just price the European, eg: vanilla call
+\item When payoff is not path-dependent and state dimension is not large, we can do backward induction on a binomial/trinomial tree/grid
+\item Otherwise, the standard approach is \href{https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf}{\underline{\textcolor{blue}{Longstaff-Schwartz algorithm}}}
+\item Longstaff-Schwartz algorithm combines 3 ideas:
+\begin{itemize}
+\item Valuation based on Monte-Carlo simulation
+\item Function approximation of continuation value for in-the-money states
+\item Backward-recursive determination of early exercise states
+\end{itemize}
+\item We consider LSPI as an alternative approach for American Pricing
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Ingredients of Longstaff-Schwartz Algorithm}
+\pause
+\begin{itemize}[<+->]
+\item $m$ Monte-Carlo paths indexed $i = 0, 1, \ldots, m-1$
+\item $n+1$ time steps indexed $j = n, n-1, \ldots, 1, 0$ (we move back in time)
+\item Infinitesimal Risk-free rate at time $t_j$ denoted $r_{t_j}$
+\item Simulation paths (based on risk-neutral process) of underlying security prices as input 2-dim array $SP[i,j]$
+\item At each time step, $CF[i]$ is PV of current+future cashflow for path $i$
+\item $s_{i,j}$ denotes state for $(i,j)$ $:=$ (time $t_j$, price history $SP[i,:(j+1)]$)
+\item $Payoff(s_{i,j})$ denotes Option Payoff at $(i,j)$
+\item $\phi_0(s_{i,j}), \ldots, \phi_{r-1}(s_{i,j})$ represent feature functions (of state $s_{i,j}$)
+\item $w_0, \ldots, w_{r-1}$ are the regression weights
+\item Regression function $f(s_{i,j}) = w^T \cdot \phi(s_{i,j}) = \sum_{l=0}^{r-1} w_l \cdot \phi_l(s_{i,j})$
+\item $f(\cdot)$ is estimate of continuation value for in-the-money states
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Longstaff-Schwartz Algorithm}
+\pause
+\begin{pseudocode}{LongstaffSchwartz}{SP[0:m, 0:n+1]}
+\COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
+CF[0:m] \GETS [Payoff(s_{i,n}) \mbox{ for } i \mbox{ in range}(m)]\\
+\FOR j \GETS n - 1 \DOWNTO 1 \DO
+\BEGIN
+CF[0:m] \GETS CF[0:m] \cdot e^{-r_{t_j}(t_{j+1} - t_j)}\\
+X \GETS [\phi(s_{i,j}) \mbox{ for } i \mbox{ in range}(m) \mbox{ if } Payoff(s_{i,j}) > 0]\\
+Y \GETS [CF[i] \mbox{ for } i \mbox{ in range}(m) \mbox{ if } Payoff(s_{i,j}) > 0]\\
+w \GETS (X^T \cdot X)^{-1} \cdot X^T \cdot Y\\
+\COMMENT{Above regression gives estimate of continuation value}\\
+\FOR i \GETS 0 \TO m-1 \DO
+CF[i] \GETS Payoff(s_{i,j}) \mbox{\bf{ if }}  Payoff(s_{i,j}) > w^T \cdot \phi(s_{i,j})
+\END
+\\
+exercise \GETS Payoff(s_{0,0})\\
+continue \GETS e^{-r_0(t_1-t_0)} \cdot mean(CF[0:m])\\
+\RETURN{\max(exercise, continue)}\\
+\end{pseudocode}
+\end{frame}
+
+\begin{frame}
+\frametitle{RL as an alternative to Longstaff-Schwartz}
+\pause
+\begin{itemize}[<+->]
+\item RL is straightforward if we clearly define the MDP
+\item {\em State} is [Current Time, History of Underlying Security Prices]
+\item {\em Action} is Boolean: Exercise (i.e., Stop) or Continue
+\item {\em Reward} always 0, except upon Exercise ($=$ Payoff)
+\item {\em State}-transitions based on Underlying Security's Risk-Neutral Process
+\item Key is function approximation of state-conditioned continuation value
+\item Continuation Value $\Rightarrow$ Optimal Stopping $\Rightarrow$ Option Price
+\item We outline two RL Algorithms:
+\begin{itemize}
+\item Least Squares Policy Iteration (LSPI)
+\item Fitted Q-Iteration (FQI)
+\end{itemize}
+\item Both Algorithms are batch methods solving a linear system
+\item Reference: \href{http://proceedings.mlr.press/v5/li09d/li09d.pdf}{\underline{\textcolor{blue}{Li, Szepesvari, Schuurmans paper}}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LSPI customized for American Options Pricing}
+\pause
+\begin{itemize}[<+->]
+\item $a$ is $e$ (exercise) or $c$ (continue), $s$ is $s_{i,j}$, $s'$ is $s_{i,j+1}$
+\item $r$ is $\gamma \cdot Payoff(s_{i,j+1})$ if $\pi(s_{i,j+1})=e$ and $r=0$ if $\pi(s_{i,j+1})=c$
+\item We set $Q(s_{i,j},e) = Payoff(s_{i,j})$ (not to be learnt)
+\item We set $Q(s_{i,j},c; w) = w^T \cdot \phi(s_{i,j})$ (to be learnt)
+\item This requires us to set: $x(s_{i,j},c) = \phi(s_{i,j})$ and $x(s_{i,j},e) = 0$
+\item When $\pi(s_{i,j+1}) = c$, i.e., when $w^T \cdot \phi(s_{i,j+1}) \geq Payoff(s_{i,j+1})$
+\begin{itemize}
+\item $A$ update is: $\phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \cdot \phi(s_{i,j+1}))^T$
+\item $B$ update is: $0$
+\end{itemize}
+\item When $\pi(s_{i,j+1}) = e$, i.e., when $w^T \cdot \phi(s_{i,j+1}) < Payoff(s_{i,j+1})$
+ \begin{itemize}
+\item $A$ update is: $\phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \cdot 0)^T$
+\item $B$ update is: $\gamma \cdot Payoff(s_{i,j+1}) \cdot \phi(s_{i,j})$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LSPI for American Options Pricing}
+\pause
+\begin{pseudocode}{LSPI-AmericanPricing}{SP[0:m, 0:n+1]}
+\COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
+\COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
+\COMMENT{$A_{i,j} \leftarrow \phi(s_{i,j}) \cdot  (\phi(s_{i,j}) - \gamma \cdot \mathbb{I}_{w^T \cdot \phi(s_{i,j+1}) \geq Payoff(s_{i,j+1})} \cdot \phi(s_{i,j+1}))^T$}\\
+\COMMENT{$b_{i,j} \leftarrow \gamma \cdot \mathbb{I}_{w^T \cdot \phi(s_{i,j+1}) < Payoff(s_{i,j+1})} \cdot  Payoff(s_{i,j+1}) \cdot \phi(s_{i,j})$}\\
+A \GETS 0, B \GETS 0, w \GETS 0\\
+\FOR i \GETS 0 \TO m - 1 \DO
+\BEGIN
+\FOR j \GETS 0 \TO n-1 \DO
+\BEGIN
+Q \GETS Payoff(s_{i,j+1})\\
+P \GETS \phi(s_{i,j+1}) \mbox{ {\bf if }} j < n-1 \mbox{\bf{ and }} Q \leq w^T \cdot \phi(s_{i,j+1}) \mbox{\bf{ else} } 0\\
+R \GETS Q \mbox{ {\bf if }} Q > w^T \cdot P \mbox{\bf{ else} } 0 \\
+A \GETS A + \phi(s_{i,j}) \cdot (\phi(s_{i,j}) - e^{-r_{t_j}(t_{j+1}-t_j)} \cdot P)^T\\
+B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} \cdot  R \cdot \phi(s_{i,j})\\
+\END\\
+w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize == 0
+\END\\
+\end{pseudocode}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fitted Q-Iteration for American Options Pricing}
+\pause
+\begin{pseudocode}{FQI-AmericanPricing}{SP[0:m, 0:n+1]}
+\COMMENT{$s_{i,j}$ is shorthand for state at $(i,j) :=$ ($t_j$, $SP[i,:(j+1)]$)}\\
+\COMMENT{$A$ is an $r \times r$ matrix, $b$ and $w$ are $r$-length vectors}\\
+\COMMENT{$A_{i,j} \leftarrow \phi(s_{i,j}) \cdot \phi(s_{i,j})^T$}\\
+\COMMENT{$b_{i,j} \leftarrow \gamma \cdot \max(Payoff(s_{i,j+1}), w^T \cdot \phi(s_{i,j+1})) \cdot \phi(s_{i,j})$}\\
+A \GETS 0, B \GETS 0, w \GETS 0\\
+\FOR i \GETS 0 \TO m - 1 \DO
+\BEGIN
+\FOR j \GETS 0 \TO n-1 \DO
+\BEGIN
+Q \GETS Payoff(s_{i,j+1})\\
+P \GETS \phi(s_{i,j+1}) \mbox{ {\bf if }} j < n-1 \mbox{\bf{ else} } 0\\
+A \GETS A + \phi(s_{i,j}) \cdot \phi(s_{i,j})^T\\
+B \GETS B + e^{-r_{t_j}(t_{j+1}-t_j)} \cdot  \max(Payoff(s_{i,j+1}), w^T \cdot P) \cdot \phi(s_{i,j})\\
+\END\\
+w \GETS A^{-1} \cdot b, A \GETS 0, b \GETS 0 \mbox{\bf{ if }} (i+1) \% BatchSize == 0
+\END\\
+\end{pseudocode}
+\end{frame}
+
+\begin{frame}
+\frametitle{Feature functions}
+\pause
+\begin{itemize}[<+->]
+\item Li, Szepesvari, Schuurmans recommend Laguerre polynomials (first 3)
+\item Over $S' = S_t/K$ where $S_t$ is underlying price and $K$ is strike
+\item $\phi_0(S_t) = 1, \phi_1(S_t) = e^{-\frac {S'} 2}, \phi_2(S_t) = e^{-\frac{S'} 2} \cdot (1-S'), \phi_3(S_t) = e^{-\frac{S'} 2} \cdot (1-2S'+S'^2/2)$
+\item They used these for Longstaff-Schwartz as well as for LSPI and FQI
+\item For LSPI and FQI, we also need feature functions for time
+\item They recommend $\phi_0^t(t) = sin(\frac {\pi(T-t)} {2T}), \phi_1^t(t) = \log(T-t), \phi_2^t(t) = (\frac t T)^2$
+\end{itemize}
+\end{frame}
 
 \begin{frame}
 \frametitle{Key Takeaways from this Chapter}
 \pause
 \begin{itemize}[<+->]
 \item Batch RL makes efficient use of data
-\item DQN uses experience replay together with a frozen DNN avoiding pitfalls of time-correlation and semi-gradient
-\item LSTD is a fast linear-algebra calculation of Batch TD Prediction
-\item LSPI is an off-policy, experience-replay Control Algorithm using LSTD for Policy Evaluation
+\item DQN uses experience replay and fixed Q-learning targets, avoiding the pitfalls of time-correlation and semi-gradient
+\item LSTD is a direct (gradient-free) solution of Batch TD Prediction
+\item LSPI is an off-policy, experience-replay Control Algorithm using LSTDQ for Policy Evaluation
+\item Optimal Exercise of American Options can be tackled with LSPI and Deep Q-Learning algorithms
 \end{itemize}
 \end{frame}
 
