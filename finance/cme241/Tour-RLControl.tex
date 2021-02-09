@@ -394,7 +394,7 @@ $$Q(s, a) \leftarrow Q(s, a) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A
 \frametitle{Off-Policy Learning}
 \pause
 \begin{itemize}[<+->]
-\item Estimate VF for {\em target policy} $\pi$  while following {\em behavior policy} $\mu$
+\item Estimate VF for {\em target policy} $\pi$  while following {\em experience policy} $\mu$
 $$\{S_0, A_0, R_1, S_1, A_1, \ldots, R_T, S_T\} \sim \mu$$
 \item Why is this important?
 \begin{itemize}[<+->]
@@ -456,7 +456,7 @@ $$V(S_t) \leftarrow V(S_t) + \alpha \cdot ( \frac {\pi(S_t, A_t)} {\mu(S_t, A_t)
 \begin{itemize}[<+->]
 \item We now consider off-policy learning of action-values $Q(s,a)$
 \item {\bf No} importance sampling is required
-\item The next action is chosen using behavior policy $A_{t+1} \sim \mu(S_t,\cdot)$
+\item The next action is chosen using experience policy $A_{t+1} \sim \mu(S_t,\cdot)$
 \item But we consider an alternative successor action $A' \sim \pi(S_t, \cdot)$
 \item Update $Q(S_t, A_t)$ towards value of alternative action
 $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A') - Q(S_t, A_t))$$ 
@@ -470,7 +470,7 @@ $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_
 \item We now allow both behavior and target policies to {\bf improve}
 \item The target (deterministic) policy $\pi_D$ is {\bf greedy} w.r.t $Q$-Value Function
 $$\pi_D(S_{t+1}) = \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a')$$
-\item The behavior policy $\mu$ is also improving, eg: $\epsilon$-greedy w.r.t. $Q$
+\item The experience policy $\mu$ is also improving, eg: $\epsilon$-greedy w.r.t. $Q$
 \item The $Q$-learning target then simplifies to:
 \begin{align*}
 & R_{t+1} + \gamma \cdot Q(S_{t+1}, A') \\
@@ -615,7 +615,7 @@ $$\Delta \bm{w} = \alpha \cdot \delta_t \cdot \bm{E}_t$$
       MC Control & \cmark & ( \cmark ) & \xmark \\
       SARSA & \cmark & ( \cmark ) & \xmark \\ 
       Q-Learning & \cmark & \xmark & \xmark \\
-      Gradient Q-Learning & \cmark & \cmark & \xmark \\ \hline
+      {\bf Gradient Q-Learning} & \cmark & \cmark & \xmark \\ \hline
       \end{tabular}
  \end{center}     
   \pause
