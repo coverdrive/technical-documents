@@ -320,9 +320,9 @@ lead to (dynamic, exact, unique) replication of derivatives with the underlying 
 \pause
 \begin{itemize}[<+->]
 \item Denote state space at time $t$ as $\mathcal{S}_t$, state at time $t$ as $s_t \in \mathcal{S}_t$
-\item Among other things, $s_t$ contains $t, \alpha_t, P_t, \beta_t, D$
+\item Among other things, $s_t$ contains $\alpha_t, P_t, \beta_t, D$
 \item $s_t$ will include any market information relevant to trading actions
-\item For simplicity, we assume $s_t$ is just the tuple $(t, \alpha_t, P_t, \beta_t, D)$
+\item For simplicity, we assume $s_t$ is just the tuple $(\alpha_t, P_t, \beta_t, D)$
 \item Denote action space at time $t$ as $\mathcal{A}_t$, action at time $t$ as $a_t \in \mathcal{A}_t$
 \item $a_t$ represents units of hedges traded (positive for buy, negative for sell)
 \item Trading restrictions (eg: no short-selling) define $\mathcal{A}_t$ as a function of $s_t$
@@ -334,7 +334,7 @@ lead to (dynamic, exact, unique) replication of derivatives with the underlying 
 \frametitle{Sequence of events at each time step $t=0, \ldots, T$}
 \pause
 \begin{enumerate}[<+->]
-\item Observe state $s_t = (t, \alpha_t, P_t, \beta_t, D)$
+\item Observe state $s_t = (\alpha_t, P_t, \beta_t, D)$
 \item Perform action (trades) $a_t$ to produce trading PnL $= - a_t \cdot P_t$
 \item Trading transaction costs, example $= - \gamma P_t \cdot |a_t|$ for some $\gamma > 0$
 \item Update $\alpha_t$ as: $\alpha_{t+1} = \alpha_t + a_t$ \\(force-liquidation at termination means $a_T= -\alpha_T$)
@@ -355,7 +355,7 @@ $$\beta_{t+1} = \beta_t - a_t \cdot P_t - \gamma P_t \cdot |a_t|  + X_{t+1} + \a
 \item Denote the Optimal Value Function at time $t$ as $V_t^* : \mathcal{S}_t \rightarrow \mathbb{R}$
 \item Pricing of $D'$ is based on the principle that introducing the incremental position of $D'$ together with a calibrated cashflow (Price) at $t=0$ should leave the Optimal Value (at $t=0$) unchanged
 \item Precisely, Price of $D'$ is the value $x$ such that
-$$V_0^*((0,\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((0, \alpha_0, P_0, \beta_0, D))$$
+$$V_0^*((\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((\alpha_0, P_0, \beta_0, D))$$
 \item This Pricing principle is known as the principle of {\em Indifference Pricing}
 \item The hedging strategy at time $t$ for all $0 \leq t < T$ is given by the Optimal Policy $\pi_t^* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
 \end{itemize}
