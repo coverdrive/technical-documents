@@ -300,13 +300,18 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 \item Denote Optimal Value Function as $V^*_t((P_t,R_t)) = max_{\pi} V^{\pi}_t((P_t,R_t))$
 \pause
 \item Optimal Value Function satisfies the Bellman Eqn ($\forall 0 \leq t < T - 1$):
+\pause
 $$V^*_t((P_t,R_t)) = \max_{N_t} \{ N_t \cdot (P_t - \beta \cdot N_t)  + \mathbb{E}[V^*_{t+1}((P_{t+1}, R_{t+1}))] \}$$
 \pause
 $$V^*_{T-1}((P_{T-1},R_{T-1})) = N_{T-1} \cdot (P_{T-1} - \beta \cdot N_{T-1}) = R_{T-1} \cdot (P_{T-1} - \beta \cdot R_{T-1})$$
+\pause
 \item From the above, we can infer $V^*_{T-2}((P_{T-2},R_{T-2}))$ as:
+\pause
 $$\max_{N_{T-2}} \{ N_{T-2}(P_{T-2} - \beta N_{T-2})  + \mathbb{E}[R_{T-1}(P_{T-1} - \beta R_{T-1})] \}$$
+\pause
 \end{itemize}
 $$=\max_{N_{T-2}} \{ N_{T-2}(P_{T-2} - \beta N_{T-2})  + \mathbb{E}[(R_{T-2} - N_{T-2})(P_{T-1} - \beta(R_{T-2} - N_{T-2}))] \}$$
+\pause
 $$=\max_{N_{T-2}} \{ N_{T-2}(P_{T-2} - \beta N_{T-2})  + (R_{T-2} - N_{T-2})(P_{T-2} - \alpha N_{T-2} - \beta(R_{T-2} - N_{T-2})) \}$$
 \end{frame}
 
@@ -314,6 +319,7 @@ $$=\max_{N_{T-2}} \{ N_{T-2}(P_{T-2} - \beta N_{T-2})  + (R_{T-2} - N_{T-2})(P_{
 \frametitle{Optimal Policy \& Optimal Value Function for case $\alpha \geq 2\beta$}
 \pause
 $$=\max_{N_{T-2}} \{ R_{T-2} P_{T-2} - \beta R_{T-2}^2 + (\alpha - 2 \beta) (N_{T-2}^2 - N_{T-2}R_{T-2}) \}$$
+\pause
 \begin{itemize}[<+->]
 \item For the case $\alpha \geq 2\beta$, we have the trivial solution: $N^*_{T-1} = 0$ or $R_{T-1}$
 \item Substitute $N^*_{T-2}$ in the expression for $V^*_{T-2}((P_{T-2},R_{T-2}))$:
@@ -493,8 +499,8 @@ $$W_{t+1} = W_t + P_t^{(a)} \cdot (X_{t+1}^{(a)} - X_t^{(a)}) - P_t^{(b)} \cdot 
 \begin{itemize}[<+->]
 \item Order of MDP activity in each time step $0 \leq t \leq T-1$:
 \begin{itemize}
-\item Observe {\em State} $:= (t, S_t, W_t, I_t)$
-\item Perform {\em Action} $:= (P_t^{(b)}, N_t^{(b)}, P_t^{(a)}, N_t^{(a)})$
+\item Observe {\em State} $:= (S_t, W_t, I_t) \in \mathcal{S}_t$
+\item Perform {\em Action} $:= (P_t^{(b)}, N_t^{(b)}, P_t^{(a)}, N_t^{(a)}) \in \mathcal{A}_t$
 \item Experience OB Dynamics resulting in:
 \begin{itemize}
 \item random bid-shares hit $=X_{t+1}^{(b)} - X_t^{(b)}$ and ask-shares lifted $=X_{t+1}^{(a)} - X_t^{(a)}$
@@ -510,8 +516,8 @@ U(W_{t+1} + I_{t+1} \cdot S_{t+1}) & \text{ for } t+1 = T \\
 \end{cases}
 $$
 \end{itemize}
-\item Goal is to find an {\em Optimal Policy} $\pi^*$:
-$$\pi^*(t, S_t, W_t, I_t) = (P_t^{(b)}, N_t^{(b)}, P_t^{(a)}, N_t^{(a)}) \mbox{ that maximizes } \mathbb{E}[\sum_{t=1}^T R_t]$$
+\item Goal is to find an {\em Optimal Policy} $\pi^* = (\pi_0^*, \pi_1^*, \ldots, \pi_{T-1}^*)$:
+$$\pi_t^*((S_t, W_t, I_t)) = (P_t^{(b)}, N_t^{(b)}, P_t^{(a)}, N_t^{(a)}) \mbox{ that maximizes } \mathbb{E}[R_T]$$
 \item Note: Discount Factor when aggregating Rewards in the MDP is 1
 \end{itemize}
 \end{frame}
