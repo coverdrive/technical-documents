@@ -546,9 +546,9 @@ $$dW_t = P_t^{(a)} \cdot dX_t^{(a)} - P_t^{(b)} \cdot dX_t^{(b)} \mbox{ , } I_t 
 \pause
 \begin{itemize}[<+->]
 \item We denote the Optimal Value function as $V^*(t, S_t, W_t, I_t)$
-$$V^*(t, S_t, W_t, I_t) = \max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[-e^{-\gamma \cdot (W_T + I_T \cdot S_T)}]$$
+$$V^*(t, S_t, W_t, I_t) = \max_{\delta_u^{(b)}, \delta_u^{(a)}: t \leq u < T} \mathbb{E}[-e^{-\gamma \cdot (W_T + I_T \cdot S_T)}]$$
 \item $V^*(t, S_t, W_t, I_t)$ satisfies a recursive formulation for $0 \leq t < t_1 < T$:
-$$V^*(t, S_t, W_t, I_t) = \max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[V^*(t_1, S_{t_1}, W_{t_1}, I_{t_1})]$$
+$$V^*(t, S_t, W_t, I_t) = \max_{\delta_u^{(b)}, \delta_u^{(a)}: t \leq u < t_1} \mathbb{E}[V^*(t_1, S_{t_1}, W_{t_1}, I_{t_1})]$$
 \item Rewriting in stochastic differential form, we have the HJB Equation
 $$\max_{\delta_t^{(b)}, \delta_t^{(a)}} \mathbb{E}[dV^*(t, S_t, W_t, I_t)] = 0 \mbox{ for } t < T$$
 $$V^*(T, S_T, W_T, I_T) = -e^{-\gamma \cdot (W_T + I_T \cdot S_T)}$$
@@ -722,7 +722,7 @@ $$e^{-\gamma({\delta_t^{(a)}}^* + S_t - Q_t^{(a)})} \cdot (\gamma \cdot f^{(a)}(
 \begin{itemize}[<+->]
 \item Define {\em Indifference Mid Price} $Q_t^{(m)} = \frac {Q_t^{(b)} + Q_t^{(a)}} {2}$
 \item To develop intuition for Indifference Prices, consider a simple case where the market-maker doesn't supply any bids or asks
-$$V^*(t,S_t,W_t,I_t) = \mathbb{E}[-e^{-\gamma(W_t + I_t \cdot S_T)}]$$
+$$V^*(t,S_t,W_t,I_t) = \mathbb{E}[-e^{-\gamma(W_T + I_T \cdot S_T)}]$$
 \item Combining this with the diffusion $dS_t = \sigma \cdot dz_t$, we get:
 $$V^*(t,S_t,W_t,I_t) = -e^{-\gamma(W_t + I_t \cdot S_t - \frac {\gamma \cdot I_t^2 \cdot \sigma^2(T-t)} {2})}$$
 \item Combining this with equations (\ref{eq:indiffbid}) and (\ref{eq:indiffask}), we get:
