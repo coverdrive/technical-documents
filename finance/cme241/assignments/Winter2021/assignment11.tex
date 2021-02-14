@@ -1,0 +1,36 @@
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{pseudocode}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{MnSymbol,wasysym}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} 
+\newgeometry{vmargin={20mm}, hmargin={14mm,18mm}}
+ 
+\begin{document}
+\begin{center}
+{\large {\bf Stanford CME 241 (Winter 2021) - Assignment 11}}
+\end{center}
+ 
+{\large{\bf Assignments:}}
+\begin{questions}
+\question We have written the function \lstinline{mc_prediction} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/monte_carlo.py}{rl\//monte\_carlo.py} as an implementation of Monte-Carlo Prediction with function approximation. You have also learnt that since Tabular MC Prediction is a special case of MC Prediction with Function Approximation and so, writing a separate function for Tabular MC Prediction is not necessary. But for a learning experience, it's a great idea to write a function for Tabular MC Prediction {\bf from scratch}. Think about what the input and output types must be. Be sure to reduce the learning rate appropriately as a function of number of updates (or as a function of number of episodes). 
+
+\question We have written the function \lstinline{td_prediction} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/monte_carlo.py}{rl\//td.py} as an implementation of Temporal-Difference Prediction with function approximation. You have also learnt that since Tabular TD Prediction is a special case of TD Prediction with Function Approximation and so, writing a separate function for Tabular TD Prediction is not necessary. But for a learning experience, it's a great idea to write a function for Tabular TD Prediction {\bf from scratch}. Think about what the input and output types must be. Be sure to reduce the learning rate appropriately as a function of number of updates. 
+
+\question Test your above implementations of Tabular MC Prediction and Tabular TD Prediction on \\\lstinline{SimpleInventoryMRPFinite} (from \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter2/simple_inventory_mrp.py}{rl\//chapter2\//simple\_inventory\_mrp.py}) by ensuring that your Value Function output matches that produced by the function approximation versions of MC Prediction and TD Prediction.
+
+\question Extend \lstinline{RandomWalkMRP} (in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter10/random_walk_mrp.py}{rl\//chapter10\//random\_walk\_mrp.py}) to \lstinline{RandomWalkMRP2D} which is a random walk in 2-D with states $\{i, j) | 0 \leq i \leq B_1, 0 \leq j \leq B_2\}$ with terminal states as $(0, j)$ and $(B_1, j)$ for all $j$, $(i, 0)$ and $(i, B_2)$ for all $i$, and with reward of 0 for all $(0, j)$ and for all $(i, 0)$, reward of 1 for all $(B_1, j)$ and for all $(i, B_2)$, and with discrete probabilities of 4 movements - UP, DOWN, LEFT, RIGHT from any non-terminal state. Analyze the convergence of MC and TD on this \lstinline{RandomWalkMRP2D} much like how we analyzed it for \lstinline{RandomWalkMRP}, along with plots of similar graphs.
+
+\end{questions}
+
+\end{document}
