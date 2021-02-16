@@ -232,14 +232,15 @@ class FunctionApprox(ABC, Generic[X]):
 \pause
 \begin{itemize}[<+->]
 \item Define a sequence of feature functions $\phi_j: \mathcal{X} \rightarrow \mathbb{R}, j = 1, 2, \ldots, m$
+$$\mbox{Feature Vector } \bm{\phi}(x) = (\phi_1(x), \phi_2(x), \ldots, \phi_m(x)) \text{ for all } x \in \mathcal{X}$$
 \item Parameters $w$ is a weights vector $\bm{w} = (w_1, w_2, \ldots, w_m) \in \mathbb{R}^m$
 \item Linear function approximation assumes gaussian distribution for $y|x$
-$$\text{ with mean } = \sum_{j=1}^m \phi_j(x) \cdot w_j \text{ and constant variance } \sigma^2$$
-$$\mathbb{P}[y|x] = f(x;\bm{w})(y) = \frac {1} {\sqrt{2\pi \sigma^2}} \cdot e^{-\frac {(y - \sum_{j=1}^m \phi_j(x) \cdot w_j)^2} {2\sigma^2}}$$
+$$\text{ with mean } = \sum_{j=1}^m \phi_j(x) \cdot w_j = \bm{\phi}(x)^T \cdot \bm{w} \text{ and constant variance } \sigma^2$$
+$$\mathbb{P}[y|x] = f(x;\bm{w})(y) = \frac {1} {\sqrt{2\pi \sigma^2}} \cdot e^{-\frac {(y - \bm{\phi}(x)^T \cdot \bm{w})^2} {2\sigma^2}}$$
 \item Regularized cross-entropy loss function for data $[x_i, y_i|1 \leq i \leq n]$:
-$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\sum_{j=1}^m \phi_j(x_i) \cdot w_j - y_i)^2 + \frac 1 2 \cdot\lambda \cdot \sum_{j=1}^m w_j^2$$
+$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(x_i)^T \cdot \bm{w} - y_i)^2 + \frac 1 2 \cdot\lambda \cdot |\bm{w}|^2$$
 \item This ignores constants involving $\sigma$, and $\lambda$ is regularization coefficient
-\item So $\mathcal{L}(\bm{w})$ is just MSE of linear predictions $\sum_{j=1}^m \phi_j(x_i) \cdot w_j$
+\item So $\mathcal{L}(\bm{w})$ is just MSE of linear predictions $\bm{\phi}(x_i)^T \cdot \bm{w}$
 \end{itemize}
 \end{frame}
 
@@ -248,13 +249,12 @@ $$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\sum_{j=1}^m \phi_j(x_i
 \pause
 \begin{itemize}[<+->]
 \item Gradient of $\mathcal{L}(\bm{w})$ with respect to $\bm{w}$ works out to:
-$$\nabla_{\bm{w}} \mathcal{L}(\bm{w}) = \frac 1 n \cdot (\sum_{i=1}^n \bm{\phi}(x_i) \cdot (\bm{\phi}(x_i) \cdot \bm{w} - y_i)) + \lambda \cdot \bm{w}$$
-$$\bm{\phi}(x) = (\phi_1(x), \phi_2(x), \ldots, \phi_m(x)) \text{ for all } x \in \mathcal{X}$$
+$$\nabla_{\bm{w}} \mathcal{L}(\bm{w}) = \frac 1 n \cdot (\sum_{i=1}^n \bm{\phi}(x_i) \cdot (\bm{\phi}(x_i)^T \cdot \bm{w} - y_i)) + \lambda \cdot \bm{w}$$
 \item Solve for $\bm{w^*}$ by incremental estimation using gradient descent
 \item Gradient estimate $\mathcal{G}_{(x_t,y_t)}(\bm{w}_t)$ for time $t$-data $[(x_{t,i}, y_{t,i})|1 \leq i \leq n_t]$:
-$$\mathcal{G}_{(x_t, y_t)}(\bm{w}_t) = \frac 1 n \cdot (\sum_{i=1}^{n_t} \bm{\phi}(x_{t,i}) \cdot (\bm{\phi}(x_{t,i}) \cdot \bm{w}_t - y_{t,i})) + \lambda \cdot \bm{w}_t$$
+$$\mathcal{G}_{(x_t, y_t)}(\bm{w}_t) = \frac 1 n \cdot (\sum_{i=1}^{n_t} \bm{\phi}(x_{t,i}) \cdot (\bm{\phi}(x_{t,i})^T \cdot \bm{w}_t - y_{t,i})) + \lambda \cdot \bm{w}_t$$
 \item Interpreted as the weighted-mean of the feature vectors $\bm{\phi}(x_{t,i})$
-\item Weighted by the (scalar) linear prediction errors $\bm{\phi}(x_{t,i}) \cdot \bm{w}_t - y_{t,i}$
+\item Weighted by the (scalar) linear prediction errors $\bm{\phi}(x_{t,i})^T \cdot \bm{w}_t - y_{t,i}$
 \item So the update to the weights vector $\bm{w}$ is given by:
 $$\bm{w}_{t+1} = \bm{w}_t - \alpha_t \cdot \mathcal{G}_{(x_t, y_t)}(\bm{w}_t)$$
 \end{itemize}
@@ -267,7 +267,7 @@ $$\bm{w}_{t+1} = \bm{w}_t - \alpha_t \cdot \mathcal{G}_{(x_t, y_t)}(\bm{w}_t)$$
 \item If feature functions not too large, we can directly solve for $\bm{w^*}$ 
 \item Assume the entire provided data is $[(x_i, y_i)|1\leq i \leq n]$
 \item Then the gradient estimate based can be set to 0 to solve for $\bm{w^*}$
-$$\frac 1 n \cdot (\sum_{i=1}^n \bm{\phi}(x_i) \cdot (\bm{\phi}(x_i) \cdot \bm{w^*} - y_i)) + \lambda \cdot \bm{w^*} = 0$$
+$$\frac 1 n \cdot (\sum_{i=1}^n \bm{\phi}(x_i) \cdot (\bm{\phi}(x_i)^T \cdot \bm{w^*} - y_i)) + \lambda \cdot \bm{w^*} = 0$$
 \item Denote $\bm{\Phi}$ as $n \times m$ matrix: $\bm{\Phi}_{i,j} = \phi_j(x_i)$
 \item Denote column vector $\bm{Y} \in \mathbb{R}^n$ defined as $\bm{Y}_i = y_i$
 $$\frac 1 n \cdot \bm{\Phi}^T \cdot (\bm{\Phi} \cdot \bm{w^*} - \bm{Y}) + \lambda \cdot \bm{w^*} = 0$$
@@ -280,7 +280,7 @@ $$\Rightarrow \bm{w^*} = (\bm{\Phi}^T \cdot \bm{\Phi} + n \lambda \cdot \bm{I_m}
 \frametitle{Deep Neural Networks (of vanilla flavor)}
 \pause
 \begin{itemize}[<+->]
-\item Deep Neural Network (DNN) layers numbered $l = 0, 1, \ldots L$
+\item Deep Neural Network (DNN) layers numbered $l = 0, 1, \ldots, L$
 \item Denote input and output to layer $l$ as vectors $\bm{I_l}$ and $\bm{O_l}$
 $$\bm{I_0} = \bm{\phi}(x) \in \mathbb{R}^m \text{ and } \bm{O_L} = \mathbb{E}_M[y|x] \text{ and } \bm{I_{l+1}} = \bm{O_l}$$
 \item Denote layer $l$ parameters as $|\bm{O_l}| \times |\bm{I_l}|$ matrix $\bm{w_l}$
@@ -300,7 +300,7 @@ $$\bm{S_l} = \bm{w_l} \cdot \bm{I_l} \text{ and } \bm{O_l} = g_l(\bm{S_l})$$
 \item Loss gradient can be reduced to calculating $\bm{P_l} = \nabla_{\bm{S_l}} \mathcal{L}$
 $$\nabla_{\bm{w_l}} \mathcal{L} = (\nabla_{\bm{S_l}} \mathcal{L})^T \cdot \nabla_{\bm{w_l}} \bm{S_l} = \bm{P_l}^T \cdot \nabla_{\bm{w_l}} \bm{S_l} = \bm{P_l} \cdot \bm{I_l}^T = \bm{P_l} \otimes \bm{I_l}$$
 \item Including $L^2$ regularization (with regularization coefficients $\lambda_l$):
-$$\nabla_{\bm{w_l}} \mathcal{L} = \bm{P_l} \otimes \bm{I_l} + \lambda_l \cdot \bm{w_l} $$
+$$\nabla_{\bm{w_l}} \mathcal{L} = \bm{P_l} \cdot \bm{I_l}^T + \lambda_l \cdot \bm{w_l} $$
 \item $\cdot$ is inner-product, $\otimes$ is outer-product, $\circ$ is component-wise product
 \end{itemize}
 \pause
