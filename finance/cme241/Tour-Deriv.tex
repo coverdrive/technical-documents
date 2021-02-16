@@ -80,6 +80,7 @@
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{cool}
 \usepackage{tikz}
+\usepackage{bm}
 \usepackage{amsmath}
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
@@ -308,9 +309,9 @@ lead to (dynamic, exact, unique) replication of derivatives with the underlying 
 \item Assume each of these $m$ derivatives expires in time $ \leq T$
 \item Portfolio-aggregated {\em Contingent Cashflows} at time $t$ denoted $X_t \in \mathbb{R}$
 \item Assume we have $n$ underlying market securities as potential hedges
-\item Hedge positions (units held) at time $t$ denoted $\alpha_t \in \mathbb{R}^n$
-\item Cashflows per unit of hedges held at time $t$ denoted $Y_t \in \mathbb{R}^n$
-\item Prices per unit of hedges at time $t$ denoted $P_t \in \mathbb{R}^n$
+\item Hedge positions (units held) at time $t$ denoted $\bm{\alpha}_t \in \mathbb{R}^n$
+\item Cashflows per unit of hedges held at time $t$ denoted $\bm{Y}_t \in \mathbb{R}^n$
+\item Prices per unit of hedges at time $t$ denoted $\bm{P}_t \in \mathbb{R}^n$
 \item PnL position at time $t$ is denoted as $\beta_t \in \mathbb{R}$
 \end{itemize}
 \end{frame}
@@ -320,13 +321,13 @@ lead to (dynamic, exact, unique) replication of derivatives with the underlying 
 \pause
 \begin{itemize}[<+->]
 \item Denote state space at time $t$ as $\mathcal{S}_t$, state at time $t$ as $s_t \in \mathcal{S}_t$
-\item Among other things, $s_t$ contains $\alpha_t, P_t, \beta_t, D$
+\item Among other things, $s_t$ contains $\bm{\alpha}_t, \bm{P}_t, \beta_t, D$
 \item $s_t$ will include any market information relevant to trading actions
-\item For simplicity, we assume $s_t$ is just the tuple $(\alpha_t, P_t, \beta_t, D)$
-\item Denote action space at time $t$ as $\mathcal{A}_t$, action at time $t$ as $a_t \in \mathcal{A}_t$
+\item For simplicity, we assume $s_t$ is just the tuple $(\bm{\alpha}_t, \bm{P}_t, \beta_t, D)$
+\item Denote action space at time $t$ as $\mathcal{A}_t$, action at time $t$ as $\bm{a}_t \in \mathcal{A}_t$
 \item $a_t$ represents units of hedges traded (positive for buy, negative for sell)
 \item Trading restrictions (eg: no short-selling) define $\mathcal{A}_t$ as a function of $s_t$
-\item State transitions $P_{t+1}|P_t$ available from a {\em simulator}, whose internals are estimated from real market data and realistic assumptions
+\item State transitions $\bm{P}_{t+1}|\bm{P}_t$ available from a {\em simulator}, whose internals are estimated from real market data and realistic assumptions
 \end{itemize}
 \end{frame}
 
@@ -334,15 +335,15 @@ lead to (dynamic, exact, unique) replication of derivatives with the underlying 
 \frametitle{Sequence of events at each time step $t=0, \ldots, T$}
 \pause
 \begin{enumerate}[<+->]
-\item Observe state $s_t = (\alpha_t, P_t, \beta_t, D)$
-\item Perform action (trades) $a_t$ to produce trading PnL $= - a_t \cdot P_t$
-\item Trading transaction costs, example $= - \gamma P_t \cdot |a_t|$ for some $\gamma > 0$
-\item Update $\alpha_t$ as: $\alpha_{t+1} = \alpha_t + a_t$ \\(force-liquidation at termination means $a_T= -\alpha_T$)
-\item Realize cashflows (from updated positions) $=X_{t+1} + \alpha_{t+1} \cdot Y_{t+1}$
+\item Observe state $s_t = (\bm{\alpha}_t, \bm{P}_t, \beta_t, D)$
+\item Perform action (trades) $a_t$ to produce trading PnL $= - \bm{a}_t^T \cdot \bm{P}_t$
+\item Trading transaction costs, eg. $= - \gamma \cdot abs(\bm{a}_t^T) \cdot \bm{P}_t$ for some $\gamma > 0$
+\item Update $\bm{\alpha}_t$ as: $\bm{\alpha}_{t+1} = \bm{\alpha}_t + \bm{a}_t$ (force-liquidation at $T \Rightarrow \bm{a}_T= -\bm{\alpha}_T$)
+\item Realize cashflows (from updated positions) $=X_{t+1} + \bm{\alpha}_{t+1}^T \cdot \bm{Y}_{t+1}$
 \item Update PnL $\beta_t$ as:
-$$\beta_{t+1} = \beta_t - a_t \cdot P_t - \gamma P_t \cdot |a_t|  + X_{t+1} + \alpha_{t+1} \cdot Y_{t+1}$$
+$$\beta_{t+1} = \beta_t - \bm{a}_t^T \cdot \bm{P}_t - \gamma \cdot abs(\bm{a}_t^T) \cdot \bm{P}_t + X_{t+1} + \bm{\alpha}_{t+1}^T \cdot \bm{Y}_{t+1}$$
 \item Reward $r_t = 0$ for all $t = 0, \ldots, T-1$ and $r_T = U(\beta_{T+1})$ for an appropriate concave Utility function $U$ (based on risk-aversion)
-\item Simulator evolves hedge prices from $P_t$ to $P_{t+1}$
+\item Simulator evolves hedge prices from $\bm{P}_t$ to $\bm{P}_{t+1}$
 \end{enumerate}
 \end{frame}
 
@@ -355,7 +356,7 @@ $$\beta_{t+1} = \beta_t - a_t \cdot P_t - \gamma P_t \cdot |a_t|  + X_{t+1} + \a
 \item Denote the Optimal Value Function at time $t$ as $V_t^* : \mathcal{S}_t \rightarrow \mathbb{R}$
 \item Pricing of $D'$ is based on the principle that introducing the incremental position of $D'$ together with a calibrated cashflow (Price) at $t=0$ should leave the Optimal Value (at $t=0$) unchanged
 \item Precisely, Price of $D'$ is the value $x$ such that
-$$V_0^*((\alpha_0,P_0,\beta_0-x,D\cup D')) = V_0^*((\alpha_0, P_0, \beta_0, D))$$
+$$V_0^*((\bm{\alpha}_0, \bm{P}_0, \beta_0 - x, D \cup D')) = V_0^*((\bm{\alpha}_0, \bm{P}_0, \beta_0, D))$$
 \item This Pricing principle is known as the principle of {\em Indifference Pricing}
 \item The hedging strategy at time $t$ for all $0 \leq t < T$ is given by the Optimal Policy $\pi_t^* : \mathcal{S}_t \rightarrow \mathcal{A}_t$
 \end{itemize}
