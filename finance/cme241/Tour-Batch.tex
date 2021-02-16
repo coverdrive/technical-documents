@@ -229,7 +229,7 @@ Parameters $\bm{w}^-$ of target network infrequently updated to values of Q-netw
 \item Define a sequence of feature functions $\phi_j: \mathcal{X} \rightarrow \mathbb{R}, j = 1, 2, \ldots, m$
 \item Parameters $w$ is a weights vector $\bm{w} = (w_1, w_2, \ldots, w_m) \in \mathbb{R}^m$
 \item Value Function is approximated as:
-$$V(s;\bm{w}) = \sum_{j=1}^m \phi_j(s) \cdot w_j = \bm{\phi}(s) \cdot \bm{w}$$
+$$V(s;\bm{w}) = \sum_{j=1}^m \phi_j(s) \cdot w_j = \bm{\phi}(s)^T \cdot \bm{w}$$
 where $\bm{\phi}(s) \in \mathbb{R}^m$ is the feature vector for state $s$
 \end{itemize}
 \end{frame}
@@ -240,12 +240,12 @@ where $\bm{\phi}(s) \in \mathbb{R}^m$ is the feature vector for state $s$
 \pause
 \begin{itemize}[<+->]
 \item Loss function for Batch MC Prediction with data $[(S_i, G_i) | 1 \leq i \leq n]$:
-$$\mathcal{L}(\bm{w}) =  \frac 1 {2n} \cdot \sum_{i=1}^n (\sum_{j=1}^m \phi_j(S_i) \cdot w_j - G_i)^2 = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(S_i) \cdot \bm{w} - G_i)^2$$
+$$\mathcal{L}(\bm{w}) =  \frac 1 {2n} \cdot \sum_{i=1}^n (\sum_{j=1}^m \phi_j(S_i) \cdot w_j - G_i)^2 = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(S_i)^T \cdot \bm{w} - G_i)^2$$
 \item The gradient of this Loss function is set to 0 to solve for $\bm{w}^*$
-$$\sum_{i=1}^n \bm{\phi}(S_i) \cdot (\bm{\phi}(S_i) \cdot \bm{w^*} - G_i) = 0$$
+$$\sum_{i=1}^n \bm{\phi}(S_i) \cdot (\bm{\phi}(S_i)^T \cdot \bm{w^*} - G_i) = 0$$
 \item $\bm{w^}*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
 \item $m \times m$ Matrix $\bm{A}$ is accumulated at each data pair $(S_i, G_i)$ as:
-$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(S_i) \otimes \bm{\phi}(S_i) \text{ (note: } \otimes \text{ means Outer-Product)}$$
+$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(S_i) \cdot \bm{\phi}(S_i)^T \text{ (i.e., outer-product of } \bm{\phi}(S_i) \text{ with itself})$$
 \item $m$-Vector $\bm{b}$ is accumulated at each data pair $(S_i, G_i)$ as:
 $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(S_i) \cdot G_i$$
 \item Shermann-Morrison incremental inverse can be done in $O(m^2)$
@@ -257,12 +257,12 @@ $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(S_i) \cdot G_i$$
 \pause
 \begin{itemize}[<+->]
 \item Loss func for Batch TD Prediction with data $[(s_i, r_i, s'_i) | 1 \leq i \leq n]$:
-$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(s_i) \cdot \bm{w} - (r_i + \gamma \cdot \bm{\phi}(s'_i) \cdot \bm{w}))^2$$
+$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(s_i) \cdot \bm{w} - (r_i + \gamma \cdot \bm{\phi}(s'_i)^T \cdot \bm{w}))^2$$
 \item The semi-gradient of this Loss function is set to 0 to solve for $\bm{w}^*$
-$$\sum_{i=1}^n \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i) \cdot \bm{w}^*)) = 0$$
+$$\sum_{i=1}^n \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i)^T \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i)^T \cdot \bm{w}^*)) = 0$$
 \item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
 \item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$:
-$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \otimes (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i)) \text{ (note: } \otimes \text{ means Outer-Product)}$$
+$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i))^T \text{ (note the Outer-Product)}$$
 \item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$:
 $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i) \cdot r_i$$
 \item Shermann-Morrison incremental inverse can be done in $O(m^2)$
@@ -277,10 +277,10 @@ $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i) \cdot r_i$$
 \item Denote the Eligibility Trace of atomic experience $i$ as $\bm{E}_i$
 \item Note: $\bm{E}_i$ accumulates $\nabla_{\bm{w}} V(s;\bm{w}) = \bm{\phi}(s)$ in each trace experience
 \item When accumulating, previous step's eligibility trace discounted by $\lambda \gamma$
-$$\sum_{i=1}^n \bm{E_i} \cdot (\bm{\phi}(s_i) \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i) \cdot \bm{w}^*)) = 0$$
+$$\sum_{i=1}^n \bm{E_i} \cdot (\bm{\phi}(s_i)^T \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i)^T \cdot \bm{w}^*)) = 0$$
 \item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
 \item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $i$:
-$$ \bm{A} \leftarrow \bm{A} + \bm{E_i} \otimes (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i)) \text{ (note: } \otimes \text{ means Outer-Product)}$$
+$$ \bm{A} \leftarrow \bm{A} + \bm{E_i} \cdot (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i))^T \text{ (note the Outer-Product)}$$
 \item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$ as:
 $$\bm{b} \leftarrow \bm{b} + \bm{E_i} \cdot r_i$$
 \item Shermann-Morrison incremental inverse can be done in $O(m^2)$
@@ -316,7 +316,7 @@ $$\bm{b} \leftarrow \bm{b} + \bm{E_i} \cdot r_i$$
 \item Greedy Policy Improvement
 \end{itemize}
 \item For MC or On-Policy TD Control, Q-Value Prediction (for policy $\pi$):
-$$Q^{\pi}(s,a) \approx Q(s,a;\bm{w}^*) = \bm{\phi}(s,a) \cdot \bm{w}^*$$
+$$Q^{\pi}(s,a) \approx Q(s,a;\bm{w}^*) = \bm{\phi}(s,a)^T \cdot \bm{w}^*$$
 \item Direct solve for $\bm{w}^*$ using experience data generated using policy $\pi$
 \item We are interested in Off-Policy Control with Least-Squares TD
 \item Using the same idea as Q-Learning and with Experience Replay
@@ -329,14 +329,14 @@ $$Q^{\pi}(s,a) \approx Q(s,a;\bm{w}^*) = \bm{\phi}(s,a) \cdot \bm{w}^*$$
 \pause
 \begin{itemize}[<+->]
 \item Each iteration of GPI starts with a function approximation
-$$Q(s,a; \bm{w}) = \bm{\phi}(s,a) \cdot \bm{w} = \sum_{j=1}^m \phi_j(s,a) \cdot w_j$$
+$$Q(s,a; \bm{w}) = \bm{\phi}(s,a)^T \cdot \bm{w} = \sum_{j=1}^m \phi_j(s,a) \cdot w_j$$
 \item Deterministic policy $\pi_D$ ({\em target policy} for this iteration) is given by:
 $$\pi_D(s) = \argmax_a Q(s,a; \bm{w})$$
 \item Sample mini-batch of experiences $(s_i,a_i,r_i,s'_i)$ from replay memory $\mathcal{D}$
 \item Goal of the iteration is to solve for weights $\bm{w}^*$ to minimize:
 \begin{align*}
 \mathcal{L}(\bm{w}) & = \sum_i (Q(s_i,a_i; \bm{w}) - (r_i + \gamma \cdot Q(s'_i,\pi_D(s'_i); \bm{w})))^2\\
-& = \sum_i (\bm{\phi}(s_i,a_i) \cdot \bm{w} - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i)) \cdot \bm{w}))^2
+& = \sum_i (\bm{\phi}(s_i,a_i)^T \cdot \bm{w} - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i))^T \cdot \bm{w}))^2
 \end{align*}
 \item Iteration ends by setting the next iteration's start parameters $\bm{w}$ to $\bm{w}^*$
 \end{itemize}
@@ -348,12 +348,12 @@ $$\pi_D(s) = \argmax_a Q(s,a; \bm{w})$$
 \begin{itemize}[<+->]
 \item We set the semi-gradient of $\mathcal{L}(\bm{w}^*)$ to 0
 \begin{equation}
-\sum_i \phi(s_i,a_i) \cdot (\bm{\phi}(s_i,a_i) \cdot \bm{w}^* - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i)) \cdot \bm{w}^*)) = 0
+\sum_i \phi(s_i,a_i) \cdot (\bm{\phi}(s_i,a_i)^T \cdot \bm{w}^* - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i))^T \cdot \bm{w}^*)) = 0
 \label{eq:lspi-loss-semi-gradient}
 \end{equation}
 \item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
 \item $m \times m$ Matrix $\bm{A}$ is accumulated at each experience $(s_i,a_i,r_i,s'_i)$:
-$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i, a_i) \otimes (\bm{\phi}(s_i, a_i) - \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i))) $$
+$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i, a_i) \cdot (\bm{\phi}(s_i, a_i) - \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i)))^T $$
 \item $m$-Vector $\bm{b}$ is accumulated at each experience $(s_i,a_i,r_i,s'_i)$ as:
 $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i, a_i) \cdot r_i$$
 \item Shermann-Morrison incremental inverse can be done in $O(m^2)$
@@ -426,7 +426,7 @@ $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i, a_i) \cdot r_i$$
 $$
 \hat{Q}(s,a; \bm{w}) =
 \begin{cases}
-\bm{\phi}(s) \cdot \bm{w} & \text{ if } a = c \\
+\bm{\phi}(s)^T \cdot \bm{w} & \text{ if } a = c \\
 g(s) & \text{ if } a = e
 \end{cases}
 $$
@@ -445,20 +445,20 @@ for feature funcs $\bm{\phi}(\cdot) = [\phi_i(\cdot)|i = 1, \ldots, m]$ of only 
 \begin{itemize}[<+->]
 \item This reduces LSPI Semi-Gradient Equation \eqref{eq:lspi-loss-semi-gradient} to:
 \begin{equation}
-\sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) \cdot \bm{w}^* - \gamma \cdot \hat{Q}(s'_i, \pi_D(s'_i); \bm{w}^*)) = 0
+\sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i)^T \cdot \bm{w}^* - \gamma \cdot \hat{Q}(s'_i, \pi_D(s'_i); \bm{w}^*)) = 0
 \label{eq:customized-lspi-loss-semi-gradient}
 \end{equation}
 \item We need to consider two cases for the term $\hat{Q}(s'_i, \pi_D(s'_i); \bm{w}^*)$
 \begin{itemize} 
-\item  $C1$: If $s'_i$ is non-terminal and $\pi_D(s'_i) = c$ (i.e., $\bm{\phi}(s'_i) \cdot \bm{w} \geq g(s'_i)$):\\
-Substitute $\bm{\phi}(s'_i) \cdot \bm{w}^*$ for $\hat{Q}(s'_i,\pi_D(s'_i); \bm{w}^*)$ in Equation \eqref{eq:customized-lspi-loss-semi-gradient}
-\item $C2$: If $s'_i$ is a terminal state or $\pi_D(s'_i) = e$ (i.e., $g(s'_i) > \bm{\phi}(s'_i) \cdot \bm{w}$):\\
+\item  $C1$: If $s'_i$ is non-terminal and $\pi_D(s'_i) = c$ (i.e., $\bm{\phi}(s'_i)^T \cdot \bm{w} \geq g(s'_i)$):\\
+Substitute $\bm{\phi}(s'_i)^T \cdot \bm{w}^*$ for $\hat{Q}(s'_i,\pi_D(s'_i); \bm{w}^*)$ in Equation \eqref{eq:customized-lspi-loss-semi-gradient}
+\item $C2$: If $s'_i$ is a terminal state or $\pi_D(s'_i) = e$ (i.e., $g(s'_i) > \bm{\phi}(s'_i)^T \cdot \bm{w}$):\\
 Substitute $g(s'_i)$ for $\hat{Q}(s'_i,\pi_D(s'_i); \bm{w}^*)$ in Equation \eqref{eq:customized-lspi-loss-semi-gradient}
 \end{itemize}
-\item So we can rewrite Equation \eqref{eq:customized-lspi-loss-semi-gradient} as:
-$$\sum_{i|C1} \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) \cdot \bm{w}^* - \gamma \cdot \bm{\phi}(s'_i) \cdot \bm{w}^*) + \sum_{i|C2} \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) \cdot \bm{w}^* -  \gamma \cdot g(s'_i)) = 0$$
-\item Factoring out $\bm{w}^*$ and using indicator notation for cases $C1, C2$:
-$$(\sum_i \bm{\phi}(s_i) \otimes (\bm{\phi}(s_i) - \mathbb{I}_{C1} \cdot \gamma \cdot \bm{\phi}(s'_i))) \cdot \bm{w}^*= \gamma \cdot \sum_i  \mathbb{I}_{C2} \cdot \bm{\phi}(s_i) \cdot g(s'_i)$$
+\item So rewrite Equation \eqref{eq:customized-lspi-loss-semi-gradient} using indicator notation for cases $C1, C2$ as:
+$$\sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i)^T \cdot \bm{w}^* - \mathbb{I}_{C1} \cdot \gamma \cdot \bm{\phi}(s'_i)^T \cdot \bm{w}^*  -  \mathbb{I}_{C2} \cdot \gamma \cdot g(s'_i)) = 0$$
+\item Factoring out $\bm{w}^*$, we get:
+$$(\sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) - \mathbb{I}_{C1} \cdot \gamma \cdot \bm{\phi}(s'_i))^T) \cdot \bm{w}^*= \gamma \cdot \sum_i  \mathbb{I}_{C2} \cdot \bm{\phi}(s_i) \cdot g(s'_i)$$
 
 
 \end{itemize}
@@ -469,12 +469,12 @@ $$(\sum_i \bm{\phi}(s_i) \otimes (\bm{\phi}(s_i) - \mathbb{I}_{C1} \cdot \gamma 
 \pause
 \begin{itemize}[<+->]
 \item This can be written in the familiar vector-matrix notation: $\bm{A} \cdot \bm{w}^* = \bm{b}$
-$$\bm{A} = \sum_i \bm{\phi}(s_i) \otimes (\bm{\phi}(s_i) - \mathbb{I}_{\bm{\phi}(s'_i) \cdot \bm{w} \geq g(s'_i)} \cdot \gamma \cdot \bm{\phi}(s'_i))$$
-$$\bm{b} = \gamma \cdot \sum_i \mathbb{I}_{g(s'_i)  > \bm{\phi}(s'_i) \cdot  \bm{w}} \cdot \bm{\phi}(s_i) \cdot  g(s'_i)$$
+$$\bm{A} = \sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) - \mathbb{I}_{\bm{\phi}(s'_i)^T  \cdot \bm{w} \geq g(s'_i)} \cdot \gamma \cdot \bm{\phi}(s'_i))^T$$
+$$\bm{b} = \gamma \cdot \sum_i \mathbb{I}_{g(s'_i)  > \bm{\phi}(s'_i)^T \cdot  \bm{w}} \cdot \bm{\phi}(s_i) \cdot  g(s'_i)$$
 \item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(s_i,s'_i)$ as:
-$$\bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \otimes (\bm{\phi}(s_i) -  \mathbb{I}_{\bm{\phi}(s'_i) \cdot \bm{w} \geq g(s'_i)} \cdot \gamma \cdot \bm{\phi}(s'_i))$$
+$$\bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) -  \mathbb{I}_{\bm{\phi}(s'_i)^T \cdot \bm{w} \geq g(s'_i)} \cdot \gamma \cdot \bm{\phi}(s'_i))^T$$
 \item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, s'_i)$ as:
-$$\bm{b} \leftarrow \bm{b} + \gamma  \cdot \mathbb{I}_{g(s'_i) > \bm{\phi}(s'_i) \cdot \bm{w}} \cdot \bm{\phi}(s_i) \cdot g(s'_i)$$
+$$\bm{b} \leftarrow \bm{b} + \gamma  \cdot \mathbb{I}_{g(s'_i) > \bm{\phi}(s'_i)^T  \cdot \bm{w}} \cdot \bm{\phi}(s_i) \cdot g(s'_i)$$
 \item Shermann-Morrison incremental inverse of $\bm{A}$ can be done in $O(m^2)$
 \end{itemize}
 \end{frame}
