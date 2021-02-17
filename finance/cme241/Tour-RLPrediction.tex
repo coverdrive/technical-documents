@@ -152,7 +152,7 @@
 \item Also, sometimes actions result in {\em delayed rewards}
 \item The key is incrementally updating $Q$-Value Function from experiences
 \item Appropriate Approximation of $Q$-Value Function is also key to success
-\item RL algorithms are founded on the {\em Bellman Equations}
+\item Most RL algorithms are founded on the {\em Bellman Equations}
 \item Moreover, RL Control is based on {\em Generalized Policy Iteration}
 \item This lecture/chapter focuses on RL for Prediction
 \end{itemize}
@@ -217,6 +217,27 @@ $$\mathcal{L}_{(S_t,G_t)}(\bm{w}) = \frac 1 2 \cdot (V(S_t;\bm{w}) - G_t)^2$$
 $$\nabla_{\bm{w}} \mathcal{L}_{(S_t,G_t)}(\bm{w}) = (V(S_t;\bm{w}) - G_t) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
 \pause
 $$\Delta \bm{w} = \alpha \cdot (G_t - V(S_t;\bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{MC Prediction code}
+\pause
+\begin{lstlisting}
+def mc_prediction(
+        trs: Iterable[Iterable[TransitionStep[S]]],
+        approx_0: FunctionApprox[S],
+        gamma: float,
+        tol: float = 1e-6
+) -> Iterator[FunctionApprox[S]]:
+
+    episodes: Iterator[Iterator[ReturnStep[S]]] = \
+        (returns(tr, gamma, tol) for tr in trs)
+
+    return approx_0.iterate_updates(
+        ((st.state, st.return_) for st in episode)
+        for episode in episodes
+    )
+\end{lstlisting}    
 \end{frame}
 
 \begin{frame}
@@ -313,6 +334,19 @@ V_n(s_i) & = \alpha \cdot Y^{(n)}_i + (1 - \alpha) \cdot \alpha \cdot Y^{(n-1)}_
 \end{frame}
 
 \begin{frame}
+\frametitle{Testing RL Algorithms}
+\pause
+\begin{itemize}[<+->]
+\item Start with \lstinline{MarkovRewardProcess} or \lstinline{MarkovDecisionProcess}
+\item Solve it with a DP/ADP Algorithm
+\item But RL does not (cannot) have access to transition probabilities
+\item Use method \lstinline{reward_traces} or \lstinline{simulate_actions} to generate episodes
+\item Use episodes or transitions \lstinline{Iterable} as input to RL algorithm
+\item Compare solution of RL algorithm to that of DP/ADP Algorithm
+\end{itemize}
+\end{frame}
+
+\begin{frame}
 \frametitle{Temporal-Difference (TD) Prediction}
 \pause
 \begin{itemize}[<+->]
@@ -358,6 +392,29 @@ $$\mathcal{L}_{(S_t,S_{t+1},R_{t+1})}(\bm{w}) = \frac 1 2 \cdot (V(S_t;\bm{w}) -
 \item So we pretend the only dependency on $\bm{w}$ is through $V(S_t; \bm{w})$
 $$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot V(S_{t+1};\bm{w}) - V(S_t;\bm{w})) \cdot \nabla_{\bm{w}} V(S_t;\bm{w})$$
 \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{TD Prediction code}
+\pause
+\begin{lstlisting}
+def td_prediction(
+        trans: Iterable[TransitionStep[S]],
+        approx_0: FunctionApprox[S],
+        gamma: float,
+) -> Iterator[FunctionApprox[S]]:
+
+    def step(
+            v: FunctionApprox[S],
+            tr: TransitionStep[S]
+    ) -> FunctionApprox[S]:
+        return v.update([(
+            tr.state,
+            tr.reward + gamma * v(tr.next_state)
+        )])
+        
+    return iterate.accumulate(trans, step, approx_0)
+\end{lstlisting}    
 \end{frame}
 
 \begin{frame}
@@ -709,13 +766,14 @@ G_t^{(\lambda)} =  & (\gamma \lambda)^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1})
 + & \ldots
 \end{aligned}
 \end{equation*}
-
+\pause
 \begin{equation*}
 \begin{aligned}[b]
 G_t^{(\lambda)} - V(S_t) = & (\gamma \lambda)^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - V(S_t)) \\
 + & (\gamma \lambda)^1 \cdot (R_{t+2} + \gamma \cdot V(S_{t+2}) - V(S_{t+1})) \\
 + & (\gamma \lambda)^2 \cdot (R_{t+3} + \gamma \cdot V(S_{t+3}) - V(S_{t+2})) \\
 + & \ldots \\
+\pause
 = & \delta_t + \gamma \lambda \cdot \delta_{t+1} + (\gamma \lambda)^2 \cdot \delta_{t+2} + \ldots
 \end{aligned}
 \end{equation*}
@@ -725,6 +783,7 @@ G_t^{(\lambda)} - V(S_t) = & (\gamma \lambda)^0 \cdot (R_{t+1} + \gamma \cdot V(
 \frametitle{Proof}
 \pause
 Now assume that a specific non-terminal state $s$ appears at time steps $t_1, t_2, \ldots, t_n$. Then,
+\pause
 \begin{align*}
 \sum_{t=0}^{T-1} \alpha \cdot (G_t^{(\lambda)} - V(S_t)) \cdot \mathbb{I}_{S_t=s} & = \sum_{i=1}^n \alpha \cdot (G_{t_i}^{(\lambda)} - V(S_{t_i})) \\
 & = \sum_{i=1}^n \alpha \cdot (\delta_{t_i} + \gamma \lambda \cdot \delta_{t_i+1} + (\gamma \lambda)^2 \cdot \delta_{t_i+2} + \ldots ) \\
