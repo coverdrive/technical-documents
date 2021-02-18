@@ -479,16 +479,10 @@ $$\pi_D(S_{t+1}) = \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a')$$
 \end{align*}
 \item Thus the update to $Q$-Value Function after each atomic experience is:
 $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a') - Q(S_t, A_t))$$
+\item Convergence proofs require infinite exploration of all (state, action) pairs \& appropriate stochastic approximation conditions for step sizes.
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Tabular Q-Learning Control Algorithm}
-\pause
-\begin{theorem}
-Tabular Q-Learning Control converges to the Optimal Action-Value Function, $Q(s,a) \rightarrow Q^*(s,a)$
-\end{theorem}
-\end{frame}
 
 \begin{frame}
 \frametitle{Q-Learning Control Visualization}
