@@ -80,17 +80,22 @@
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{cool}
 \usepackage{amsmath}
+\usepackage{bm}
 
-\newcommand{\vw}{{\bf v_w}}
-\newcommand{\vpi}{{\bf v_{\pi}}}
-\newcommand{\bphi}{{\bf \Phi}}
-\newcommand{\bb}{{\bf B}_{\pi}}
-\newcommand{\bpi}{{\bf \Pi}_{{\bf \Phi}}}
-\newcommand{\bmu}{{\bf \mu}_{\pi}}
-\newcommand{\bv}{{\bf v}}
-\newcommand{\bd}{{\bf D}}
-\newcommand{\bw}{{\bf w}}
-\newcommand{\bdel}{{\bf \delta_w}}
+\newcommand{\vw}{\bm{V_w}}
+\newcommand{\vpi}{\bm{V}^{\pi}}
+\newcommand{\bphi}{\bm{\Phi}}
+\newcommand{\bb}{\bm{B}^{\pi}}
+\newcommand{\bpi}{\bm{\Pi_{\Phi}}}
+\newcommand{\bmu}{\bm{\mu_{\pi}}}
+\newcommand{\bv}{\bm{V}}
+\newcommand{\bd}{\bm{D}}
+\newcommand{\bw}{\bm{w}}
+\newcommand{\btheta}{\bm{\theta}}
+\newcommand{\bdel}{\bm{\delta_w}}
+\newcommand{\brew}{\bm{\mathcal{R}}^{\pi}}
+\newcommand{\bprob}{\bm{\mathcal{P}}^{\pi}}
+
 \DeclareMathOperator*{\argmin}{arg\,min}
 
 \newcounter{sauvegardeenumi}
@@ -144,13 +149,13 @@ ICME, Stanford University
 \item Assume state space $\mathcal{S}$ consists of $n$ states: $\{s_1, s_2, \ldots, s_n\}$
 \item Action space $\mathcal{A}$ consisting of finite number of actions
 \item This exposition extends easily to continuous state/action spaces too
-\item This exposition is for a fixed (often stochastic) policy denoted $\pi(a|s)$
+\item This exposition is for a fixed (often stochastic) policy denoted $\pi(s,a)$
 \item VF for a policy $\pi$ is denoted as $\vpi: \mathcal{S} \rightarrow \mathbb{R}$
 \item $m$ feature functions $\phi_1, \phi_2, \ldots, \phi_m : \mathcal{S} \rightarrow \mathbb{R}$
-\item Feature vector for a state $s \in \mathcal{S}$ denoted as ${\bf \phi}(s) \in \mathbb{R}^m$
+\item Feature vector for a state $s \in \mathcal{S}$ denoted as $\bm{\phi}(s) \in \mathbb{R}^m$
 \item For linear function approximation of VF with weights $\bw = (w_1, w_2, \ldots, w_m)$,
 VF $\vw: \mathcal{S} \rightarrow \mathbb{R}$ is defined as:
-$$\vw(s) = \bw^T \cdot {\bf \phi}(s) =  \sum_{j=1}^m w_j \cdot \phi_j(s) \mbox{ for any } s \in \mathcal{S}$$
+$$\vw(s) = \bm{\phi}(s)^T \cdot \bw =  \sum_{j=1}^m \phi_j(s) \cdot w_j \mbox{ for any } s \in \mathcal{S}$$
 \item $\bmu : \mathcal{S} \rightarrow [0, 1]$ denotes the states' probability distribution under $\pi$ 
 \end{itemize}
 \end{frame}
@@ -164,12 +169,12 @@ $$\vw(s) = \bw^T \cdot {\bf \phi}(s) =  \sum_{j=1}^m w_j \cdot \phi_j(s) \mbox{ 
 \item Consider $n$-dim space $\mathbb{R}^n$, with each dim corresponding to a state in $\mathcal{S}$
 \item Think of a VF (typically denoted $\bv$): $\mathcal{S} \rightarrow \mathbb{R}$ as a vector in this space
 \item Each dimension's coordinate is the VF for that dimension's state
-\item Coordinates of vector $\vpi$ for policy $\pi$ are: $[\vpi(s_1), \vpi(s_2), \ldots, \vpi(s_n)]$
-\item Consider $m$ vectors where $j^{th}$ vector is: $[\phi_j(s_1), \phi_j(s_2), \ldots, \phi_j(s_n)]$
+\item Coordinates of vector $\vpi$ for policy $\pi$ are: $[\vpi(s_1), \ldots, \vpi(s_n)]$
+\item Consider $m$ independent vectors with $j^{th}$ vector: $[\phi_j(s_1), \ldots, \phi_j(s_n)]$
 \item These $m$ vectors are the $m$ columns of $n \times m$ matrix $\bphi = [\phi_j(s_i)]$
-\item Their span represents an $m$-dim subspace within this $n$-dim space
+\item Their span represents $m$-dim subspace within this $n$-dim space
 \item Spanned by the set of all $\bw = [w_1, w_2, \ldots, w_m] \in \mathbb{R}^m$
-\item Vector $\vw = \bphi \cdot \bw$ in this subspace has coordinates $[\vw(s_1), \vw(s_2), \ldots , \vw(s_n)]$
+\item Vector $\vw = \bphi \cdot \bw$ in this subspace has coordinates $[\vw(s_1), \ldots , \vw(s_n)]$
 \item Vector $\vw$ is fully specified by $\bw$ (so we often say $\bw$ to mean $\vw$)
 \end{itemize}
 \end{frame}
@@ -178,13 +183,13 @@ $$\vw(s) = \bw^T \cdot {\bf \phi}(s) =  \sum_{j=1}^m w_j \cdot \phi_j(s) \mbox{ 
 \frametitle{Some more notation}
 \pause
 \begin{itemize}[<+->]
-\item Denote $r(s,a)$ as the Expected Reward upon action $a$ in state $s$
-\item Denote $p(s,s',a)$ as the probability of transition $s \rightarrow s'$ upon action $a$
+\item Denote $\mathcal{R}(s,a)$ as the Expected Reward upon action $a$ in state $s$
+\item Denote $\mathcal{P}(s,a,s')$ as the probability of transition $s \rightarrow s'$ upon action $a$
 \item Define
-$${\bf R}_{\pi}(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot r(s,a)$$
-$${\bf P}_{\pi}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot p(s,s',a)$$
-\item Denote ${\bf R}_{\pi}$ as the vector $[{\bf R}_{\pi}(s_1), {\bf R}_{\pi}(s_2), \ldots, {\bf R}_{\pi}(s_n)]$
-\item Denote ${\bf P}_{\pi}$ as the matrix $[{\bf P}_{\pi}(s_i, s_{i'})], 1 \leq i, i' \leq n$ 
+$$\brew(s) = \sum_{a \in \mathcal{A}} \pi(s, a) \cdot \mathcal{R}(s,a)$$
+$$\bprob(s,s') = \sum_{a \in \mathcal{A}} \pi(s, a) \cdot \mathcal{P}(s,a,s')$$
+\item Notation $\brew$ refers to vector $[\brew(s_1), \brew(s_2), \ldots, \brew(s_n)]$
+\item Notation $\bprob$ refers to matrix $[\bprob(s_i, s_{i'})], 1 \leq i, i' \leq n$ 
 \item Denote $\gamma$ as the MDP discount factor
 \end{itemize}
 \end{frame}
@@ -193,11 +198,14 @@ $${\bf P}_{\pi}(s,s') = \sum_{a \in \mathcal{A}} \pi(a|s) \cdot p(s,s',a)$$
 \frametitle{Bellman operator $\bb$}
 \pause
 \begin{itemize}[<+->]
-\item Bellman operator $\bb$ for policy $\pi$ operating on VF vector $\bv$ defined as:
-$$\bb \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
-\item Note that $\vpi$ is the fixed point of operator $\bb$ (meaning $\bb \vpi = \vpi$)
+\item Bellman Policy Operator $\bb$ for policy $\pi$ operating on VF vector $\bv$:
+$$\bb (\bv) = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bv$$
+\item $\bb$ is a linear operator in vector space $\mathbb{R}^n$
+\item So we denote and treat $\bb$ as a $n \times n$ matrix
+\item Note that $\vpi$ is the fixed point of $\bb$, i.e.,
+$$\bb \cdot \vpi = \vpi$$
 \item If we start with an arbitrary VF vector $\bv$ and repeatedly apply $\bb$, 
-by Contraction Mapping Theorem, we will reach the fixed point $\vpi$
+by Fixed-Point Theorem, we will reach the fixed point $\vpi$
 \item This is the Dynamic Programming Policy Evaluation algorithm
 \item Monte Carlo without func approx also converges to $\vpi$ (albeit slowly)
 \end{itemize}
@@ -207,16 +215,16 @@ by Contraction Mapping Theorem, we will reach the fixed point $\vpi$
 \frametitle{Projection operator $\bpi$}
 \pause
 \begin{itemize}[<+->]
-\item First we define ``distance'' $d({\bf v_1}, {\bf v_2})$ between VF vectors ${\bf v_1}, {\bf v_2}$
-\item Weighted by $\bmu$ across the $n$ dimensions of ${\bf v_1}, {\bf v_2}$
-$$d({\bf v_1}, {\bf v_2}) = \sum_{i=1}^n \bmu(s_i) \cdot  ({\bf v_1}(s_i) - {\bf v_2}(s_i))^2 =  ({\bf v_1} - {\bf v_2})^T \cdot \bd \cdot ({\bf v_1} - {\bf v_2})$$
+\item First we define ``distance'' $d(\bm{V_1}, \bm{V_2})$ between VF vectors $\bm{V_1}, \bm{V_2}$
+\item Weighted by $\bmu$ across the $n$ dimensions of $\bm{V_1}, \bm{V_2}$
+$$d(\bm{V_1}, \bm{V_2}) = \sum_{i=1}^n \bmu(s_i) \cdot  (\bm{V_1}(s_i) - \bm{V_2}(s_i))^2 =  (\bm{V_1} - \bm{V_2})^T \cdot \bd \cdot (\bm{V_1} - \bm{V_2})$$
 where $\bd$ is the square diagonal matrix consisting of $\bmu(s_i), 1 \leq i \leq n$
 \item Projection operator for subspace spanned by $\bphi$ is denoted as $\bpi$
 \item $\bpi$ performs an orthogonal projection of VF vector $\bv$ on subspace $\bphi$
-\item So, $\bpi \bv$ is the VF in subspace $\bphi$ defined by $\argmin_{\bw} d(\bv, \vw)$
+\item So, $\bpi (\bv)$ is the VF in subspace $\bphi$ defined by $\argmin_{\bw} d(\bv, \vw)$
 \item This is a weighted least squares regression with solution:
 $$\bw = (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot \bv$$
-\item So, the Projection operator $\bpi$ can be written as:
+\item So, we denote and treat Projection operator $\bpi$ as a $n \times n$ matrix:
 $$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd$$
 \end{itemize}
 \end{frame}
@@ -226,24 +234,24 @@ $$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \b
 Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
 \pause
 \begin{enumerate}[<+->]
-\item Projection $\bpi \vpi$: $\bw_{\pi} = \argmin_\bw d(\vpi, \vw)$
+\item Projection $\bpi \cdot \vpi$ yields $\bm{w}_{\pi} = \argmin_{\bw} d(\vpi, \vw)$
 \begin{itemize}[<+->]
 \item This is the VF we seek when doing linear function approximation
 \item Because it is the VF vector ``closest'' to $\vpi$ in the $\bphi$ subspace
 \item Monte-Carlo with linear func approx will (slowly) converge to $\bw_{\pi}$
 \end{itemize}
 
-\item Bellman Error (BE)-minimizing: $\bw_{BE} = \argmin_\bw d(\bb \vw, \vw)$
+\item Bellman Error (BE)-minimizing: $\bm{w}_{BE} = \argmin_{\bw} d(\bb \cdot \vw, \vw)$
 \begin{itemize}[<+->]
-\item This can be expressed as the solution of a linear system ${\bf A w = b}$ 
-\item Matrix ${\bf A}$ and Vector ${\bf b}$ comprises of ${\bf P}_{\pi}, {\bf R}_{\pi}, \bphi, \mu_{\pi}$
-\item In model-free setting, ${\bf A}$ and ${\bf b}$ can be estimated with batch data
+\item This can be expressed as the solution of a linear system $\bm{A} \cdot \bm{w} = \bm{b}$ 
+\item Matrix $\bm{A}$ and Vector $\bm{b}$ comprises of $\brew, \bprob, \bphi, \bmu$
+\item In model-free setting, $\bm{A}$ and $\bm{b}$ can be estimated with batch data
 \item For non-linear approx or off-policy, Residual Gradient TD Algorithm
-\item Based on observation: $\bw_{BE} = \argmin_\bw (\mathbb{E}_{\pi} [\delta])^2$, where $\delta$ is TD Error 
+\item Based on observation: $\bm{w}_{BE} = \argmin_{\bw} (\mathbb{E}_{\pi} [\delta])^2$, where $\delta$ is TD Error 
 \item Cannot learn if we can only access features, and not underlying states
 \end{itemize}
 
-\item Temporal Difference Error (TDE)-minimizing: ${\bf w}_{TDE} = \argmin_\bw \mathbb{E}_{\pi} [\delta^2]$
+\item Temporal Difference Error (TDE)-minimizing: $\bm{w}_{TDE} = \argmin_{\bw} \mathbb{E}_{\pi} [\delta^2]$
 \begin{itemize}
 \item Naive Residual Gradient TD Algorithm
 \end{itemize}
@@ -260,13 +268,13 @@ Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
 
 \suite
 
-\item Projected Bellman Error (PBE)-minimizing: $\bw_{PBE} = \argmin_\bw d((\bpi \cdot \bb) \vw, \vw)$
+\item Projected Bellman Error (PBE)-minimizing: $\bm{w}_{PBE} = \argmin_{\bw} d((\bpi \cdot \bb) \cdot \vw, \vw)$
 \pause
 \begin{itemize}[<+->]
-\item The minimum is 0, i.e., $\bphi \cdot \bw_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$
-\item Starting with an arbitrary VF vector $\bv$ and repeatedly applying $\bb$ (taking it out of the subspace) followed by $\bpi$ (projecting it back to the subspace), we will reach the fixed point $\bphi \cdot \bw_{PBE}$
-\item Also, $\bw_{PBE}$ can be expressed as the solution of a linear system ${\bf A w = b}$
-\item In model-free setting, ${\bf A}$ and ${\bf b}$ can be estimated with batch data
+\item The minimum is 0, i.e., $\bphi \cdot \bm{w}_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$
+\item Starting with an arbitrary VF vector $\bv$ and repeatedly applying $\bb$ (potentially taking it out of the subspace) followed by $\bpi$ (projecting it back to the subspace), we will reach the fixed point $\bphi \cdot \bm{w}_{PBE}$
+\item $\bm{w}_{PBE}$ can be expressed as the solution of a linear system $\bm{A} \cdot \bw = \bm{b}$
+\item In model-free setting, $\bm{A}$ and $\bm{b}$ can be estimated with batch data
 \item This yields the {\em Least Squares Temporal Difference (LSTD)} algorithm
 \item For non-linear approx or off-policy, Gradient TD Algorithms
 \end{itemize}
@@ -281,35 +289,36 @@ Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
 \end{frame}
 
 
-\section{Solution of $\bw_{BE}$ with a Linear System Formulation}
+\section{BE-minimization with a Linear System Formulation}
 
 \begin{frame}
-\frametitle{Solution of $\bw_{BE}$ with a Linear System Formulation}
+\frametitle{Solution of $\bm{w}_{BE}$ with a Linear System Formulation}
 \pause
 \begin{align*}
-\bw_{BE} & = \argmin_\bw d(\vw, {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \vw) \\
-& = \argmin_\bw d(\bphi \cdot \bw, {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot \bw)\\
-& = \argmin_\bw d(\bphi \cdot \bw - \gamma {\bf P}_{\pi} \cdot \bphi \cdot \bw, {\bf R}_{\pi} )\\
-& = \argmin_\bw d((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot \bw, {\bf R}_{\pi} )\\
+\bm{w}_{BE} & = \argmin_{\bw} d(\vw, \brew + \gamma \bprob \cdot \vw) \\
+& = \argmin_{\bw} d(\bphi \cdot \bw, \brew + \gamma \bprob \cdot \bphi \cdot \bw)\\
+& = \argmin_{\bw} d(\bphi \cdot \bw - \gamma \bprob \cdot \bphi \cdot \bw, \brew)\\
+& = \argmin_{\bw} d((\bphi - \gamma \bprob \cdot \bphi) \cdot \bw, \brew )\\
 \end{align*}
 \pause
-This is a weighted least-squares linear regression of ${\bf R}_{\pi}$ versus $\bphi - \gamma {\bf P}_{\pi} \cdot \bphi$
+This is a weighted least-squares linear regression of $\brew$ versus $\bphi - \gamma \bprob \cdot \bphi$
 with weights $\bmu$, whose solution is:
 \pause
-$$w_{BE} = ((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot {\bf R}_{\pi}$$
+$$\bm{w}_{BE} = ((\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi))^{-1} \cdot (\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot \brew$$
 \end{frame}
 
 \begin{frame}
-\frametitle{Model-Free Learning of $\bw_{BE}$}
+\frametitle{Model-Free Learning of $\bm{w}_{BE}$}
 \pause
 \begin{itemize}[<+->]
-\item Let us refer to $(\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)$ as ${\bf A}$
-\item Let us refer to $(\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot {\bf R}_{\pi}$ as ${\bf b}$ 
-\item So that $w_{BE} = {\bf A}^{-1} \cdot {\bf b}$
-\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of ${\bf A}$ and ${\bf b}$
-\item Estimate of ${\bf A}$ is the outer-product of vector $\phi(s) - \gamma \cdot \phi(s')$ with itself
-\item Estimate of ${\bf b}$ is scalar $r$ times vector $\phi(s) - \gamma \cdot \phi(s')$ 
+\item Let us refer to $(\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi)$ as $\bm{A}$
+\item Let us refer to $(\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot \brew$ as $\bm{b}$ 
+\item So that $\bm{w}_{BE} = \bm{A}^{-1} \cdot \bm{b}$
+\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of $\bm{A}$ and $\bm{b}$
+\item Estimate of $\bm{A}$ is the outer-product of vector $\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')$ with itself
+\item Estimate of $\bm{b}$ is scalar $r$ times vector $\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')$ 
 \item Average these estimates across many such model-free transitions
+\item However, this requires $m$ (number of features) to not be too large
 \end{itemize}
 \end{frame}
 
@@ -317,20 +326,20 @@ $$w_{BE} = ((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi 
 \section{Residual Gradient TD}
 
 \begin{frame}
-\frametitle{Residual Gradient Algorithm to solve for ${\bf w}_{BE}$}
+\frametitle{Residual Gradient Algorithm to solve for $\bm{w}_{BE}$}
 \pause
 \begin{itemize}[<+->]
-\item We defined ${\bf w}_{BE}$ as the vector in the $\bphi$ subspace that minimizes BE
+\item We defined $\bm{w}_{BE}$ as the vector in the $\bphi$ subspace that minimizes BE
 \item But BE for a state is the expected TD error $\delta$ in that state when following policy $\pi$
 \item So we want to do SGD with gradient of square of expected TD error
 \begin{align*}
-\Delta w & = - \frac{1}{2} \alpha \cdot \nabla_w (\mathbb{E}_{\pi}[\delta])^2\\
-& = - \alpha \cdot \mathbb{E}_{\pi}[r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)] \cdot \nabla_w \mathbb{E}_{\pi}[\delta]\\
-& = \alpha \cdot (\mathbb{E}_{\pi}[r + \gamma \cdot w^T \cdot \phi(s')] - w^T \cdot \phi(s)) \cdot (\phi(s) - \gamma \cdot \mathbb{E}_{\pi}[\phi(s')])\\
+\Delta \bw & = - \frac{1}{2} \alpha \cdot \nabla_{\bw} (\mathbb{E}_{\pi}[\delta])^2\\
+& = - \alpha \cdot \mathbb{E}_{\pi}[r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw] \cdot \nabla_{\bw} \mathbb{E}_{\pi}[\delta]\\
+& = \alpha \cdot (\mathbb{E}_{\pi}[r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw] - \bm{\phi}(s)^T \cdot \bw) \cdot (\bm{\phi}(s) - \gamma \cdot \mathbb{E}_{\pi}[\bm{\phi}(s')])\\
 \end{align*}
 \item  This is called the {\em Residual Gradient} algorithm
 \item Requires two independent samples of $s'$ transitioning from $s$
-\item In that case, converges to ${\bf w}_{BE}$ robustly (even for non-linear approx)
+\item In that case, converges to $\bm{w}_{BE}$ robustly (even for non-linear approx)
 \item But it is slow, and doesn't converge to a desirable place
 \item Cannot learn if we can only access features, and not underlying states
 \end{itemize}
@@ -339,60 +348,60 @@ $$w_{BE} = ((\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)^T \cdot \bd \cdot (\bphi 
 
 
 \begin{frame}
-\frametitle{Naive Residual Gradient Algorithm to solve for ${\bf w}_{TDE}$}
+\frametitle{Naive Residual Gradient Algorithm to solve for $\bm{w}_{TDE}$}
 \pause
 \begin{itemize}[<+->]
-\item We defined ${\bf w}_{TDE}$ as the vector in the $\bphi$ subspace that minimizes the expected square of the TD error $\delta$ when following policy $\pi$
-$${\bf w}_{TDE} = \argmin_{{\bf w}} \sum_{s \in \mathcal{S}} \bmu(s) \sum_{r,s'} prob_{\pi}(r, s'|s) \cdot (r + \gamma \cdot {\bf w}^T \cdot \phi(s') - {\bf w}^T \cdot \phi(s))^2$$
+\item We defined $\bm{w}_{TDE}$ as the vector in the $\bphi$ subspace that minimizes the expected square of the TD error $\delta$ when following policy $\pi$
+$$\bm{w}_{TDE} = \argmin_{\bw} \sum_{s \in \mathcal{S}} \bmu(s) \sum_{r,s'} \mathbb{P}_{\pi}(r, s'|s) \cdot (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw)^2$$
 \item To perform SGD, we have to estimate the gradient of the expected square of TD error by sampling
 \item The weight update for each sample in the SGD will be:
 \begin{align*}
-\Delta w & = - \frac{1}{2} \alpha \cdot \nabla_w (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s))^2\\
-& = \alpha \cdot (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)) \cdot (\phi(s) - \gamma \cdot \phi(s'))\\
+\Delta \bw & = - \frac{1}{2} \alpha \cdot \nabla_{\bw} (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw)^2\\
+& = \alpha \cdot (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw) \cdot (\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s'))\\
 \end{align*}
 \item This algorithm (named {\em Naive Residual Gradient}) converges robustly, but not to a desirable place
 \end{itemize}
 \end{frame}
 
-\section{Solution of $\bw_{PBE}$ with a Linear System Formulation}
+\section{PBE-minimization with a Linear System Formulation}
 
 \begin{frame}
-\frametitle{Solution of $\bw_{PBE}$ with a Linear System Formulation}
+\frametitle{Solution of $\bm{w}_{PBE}$ with a Linear System Formulation}
 \pause
-$\bphi \cdot {\bf w}_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$. We know:
+$\bphi \cdot \bm{w}_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$. We know:
 $$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd$$
-$$\bb \bv = {\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bv$$
+$$\bb (\bv) = \brew + \gamma \bprob \cdot \bv$$
 \pause
 Therefore,
-$$\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) = \bphi \cdot {\bf w}_{PBE}$$
+$$\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bm{w}_{PBE}) = \bphi \cdot \bm{w}_{PBE}$$
 \pause
 Since columns of $\bphi$ are assumed to be independent (full rank),
 \begin{align*}
-(\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) & = {\bf w}_{PBE}\\
-\bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w}_{PBE}) &= \bphi^T \cdot \bd \cdot \bphi \cdot {\bf w}_{PBE}\\
-\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot {\bf w}_{PBE} &= \bphi^T \cdot \bd \cdot {\bf R}_{\pi}\\ 
+(\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bm{w}_{PBE}) & = \bm{w}_{PBE}\\
+\bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bm{w}_{PBE}) &= \bphi^T \cdot \bd \cdot \bphi \cdot \bm{w}_{PBE}\\
+\bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi) \cdot \bm{w}_{PBE} &= \bphi^T \cdot \bd \cdot \brew\\ 
 \end{align*}
 \pause
-This is a square linear system of the form ${\bf A} \cdot {\bf w}_{PBE} = {\bf b}$ whose solution is:
-$${\bf w}_{PBE} = {\bf A}^{-1} \cdot {\bf b} = (\bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi))^{-1} \cdot \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$$
+This is a square linear system of the form $\bm{A} \cdot \bm{w}_{PBE} = \bm{b}$ whose solution is:
+$$\bm{w}_{PBE} = \bm{A}^{-1} \cdot \bm{b} = (\bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi))^{-1} \cdot \bphi^T \cdot \bd \cdot \brew$$
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Model-Free Learning of $\bw_{PBE}$}
+\frametitle{Model-Free Learning of $\bm{w}_{PBE}$}
 \pause
 \begin{itemize}[<+->]
-\item How do we construct matrix ${\bf A} = \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi)$ and vector ${\bf b} = \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$ without a model?
-\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of ${\bf A}$ and ${\bf b}$
-\item Estimate of ${\bf A}$ is the outer-product of vectors $\phi(s)$ and $\phi(s) - \gamma \cdot \phi(s')$
-\item Estimate of ${\bf b}$ is scalar $r$ times vector  $\phi(s)$ 
+\item How do we construct matrix $\bm{A} = \bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi)$ and vector $\bm{b} = \bphi^T \cdot \bd \cdot \brew$ without a model?
+\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of $\bm{A}$ and $\bm{b}$
+\item Estimate of $\bm{A}$ is outer-product of vectors $\bm{\phi}(s)$ and $\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')$
+\item Estimate of $\bm{b}$ is scalar $r$ times vector $\bm{\phi}(s)$ 
 \item Average these estimates across many such model-free transitions
 \item This algorithm is called Least Squares Temporal Difference (LSTD)
 \item Alternative: Our usual Semi-Gradient TD descent with updates:
-$$\Delta w = \alpha \cdot (r + \gamma \cdot w^T \cdot \phi(s') - w^T \cdot \phi(s)) \cdot \phi(s)$$
-\item This converges to ${\bf w}_{PBE}$ because $\mathbb{E}_{\pi}[\Delta w] = 0$ yields
-$$ \bphi^T \cdot \bd \cdot ({\bf R}_{\pi} + \gamma {\bf P}_{\pi} \cdot \bphi \cdot {\bf w} - \bphi \cdot {\bf w}) = 0$$
-$$ \Rightarrow \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi) \cdot {\bf w} = \bphi^T \cdot \bd \cdot {\bf R}_{\pi}$$ 
+$$\Delta \bw = \alpha \cdot (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw) \cdot \bm{\phi}(s)$$
+\item This converges to $\bm{w}_{PBE}$ because $\mathbb{E}_{\pi}[\Delta \bw] = 0$ yields
+$$ \bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bw - \bphi \cdot \bw) = 0$$
+$$ \Rightarrow \bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi) \cdot \bw = \bphi^T \cdot \bd \cdot \brew$$ 
 \end{itemize}
 \end{frame}
 
@@ -402,7 +411,7 @@ $$ \Rightarrow \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi
 \section{Gradient TD}
 
 \begin{frame}
-\frametitle{Gradient TD Algorithms to solve for ${\bf w}_{PBE}$}
+\frametitle{Gradient TD Algorithms to solve for $\bm{w}_{PBE}$}
 \pause
 \begin{itemize}[<+->]
 \item For on-policy linear func approx, semi-gradient TD works
@@ -413,9 +422,9 @@ $$ \Rightarrow \bphi^T \cdot \bd \cdot (\bphi - \gamma {\bf P}_{\pi} \cdot \bphi
 \item TDC: TD with Gradient correction
 \end{itemize}
 \item We need to set up the loss function whose gradient will drive SGD
-\item ${\bf w}_{PBE} = \argmin_{\bf w} d(\bpi \bb \vw, \vw) = \argmin_{\bf w} d(\bpi \bb \vw, \bpi \vw)$
-\item So we define the loss function (denoting $\bb \vw - \vw$ as $\bdel$) as:
-$$\mathcal{L}({\bf w})  = (\bpi \bdel)^T \cdot \bd \cdot (\bpi \bdel) = \bdel^T \cdot \bpi^T \cdot \bd \cdot \bpi \cdot \bdel$$
+$$\bm{w}_{PBE} = \argmin_{\bw} d(\bpi \cdot \bb \cdot \vw, \vw) = \argmin_{\bw} d(\bpi \cdot \bb \cdot \vw, \bpi \cdot \vw)$$
+\item So we define the loss function (denoting $\bb \cdot \vw - \vw$ as $\bdel$) as:
+$$\mathcal{L}({\bf w})  = (\bpi \cdot \bdel)^T \cdot \bd \cdot (\bpi \cdot \bdel) = \bdel^T \cdot \bpi^T \cdot \bd \cdot \bpi \cdot \bdel$$
 $$=  \bdel^T \cdot (\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd)^T \cdot \bd \cdot  (\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd) \cdot \bdel$$
 $$= \bdel^T \cdot (\bd \cdot \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T) \cdot \bd \cdot  (\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd) \cdot \bdel$$
 $$= (\bdel^T \cdot \bd \cdot \bphi) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot  \bphi) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
@@ -424,46 +433,46 @@ $$= (\bphi^T \cdot \bd \cdot \bdel)^T \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1}
 \end{frame}
 
 \begin{frame}
-\frametitle{TDC Algorithm to solve for ${\bf w}_{PBE}$}
+\frametitle{TDC Algorithm to solve for $\bm{w}_{PBE}$}
 \pause
-We derive the TDC Algorithm based on $\nabla_{\bf w} \mathcal{L}({\bf w})$
-$$\nabla_{\bf w} \mathcal{L}({\bf w}) = 2 \cdot (\nabla_{\bf w} (\bphi^T \cdot \bd \cdot \bdel)^T) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
+We derive the TDC Algorithm based on $\nabla_{\bw} \mathcal{L}({\bw})$
+$$\nabla_{\bw} \mathcal{L}({\bw}) = 2 \cdot (\nabla_{\bw} (\bphi^T \cdot \bd \cdot \bdel)^T) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
 \pause
-Now we express each of these 3 terms as expectations of model-free transitions $s \stackrel{\pi}\longrightarrow (r,s')$, denoting $r + \gamma \cdot {\bw}^T \cdot \phi(s') - {\bw}^T \cdot \phi(s)$ as $\delta$
+Now we express each of these 3 terms as expectations of model-free transitions $s \stackrel{\pi}\longrightarrow (r,s')$, denoting $r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw$ as $\delta$
 \pause
 \begin{itemize}[<+->]
-\item $\bphi^T \cdot \bd \cdot \bdel = \mathbb{E}[\delta \cdot \phi(s)]$
-\item $\nabla_{\bf w} (\bphi^T \cdot \bd \cdot \bdel)^T = \nabla_{\bf w} (\mathbb{E}[\delta \cdot \phi(s)])^T = \mathbb{E}[(\nabla_{\bf w} \delta) \cdot \phi(s)^T] = \mathbb{E}[(\gamma \cdot \phi(s') - \phi(s)) \cdot \phi(s)^T]$
-\item $\bphi^T \cdot \bd \cdot \bphi = \mathbb{E}[\phi(s) \cdot \phi(s)^T]$
+\item $\bphi^T \cdot \bd \cdot \bdel = \mathbb{E}[\delta \cdot \bm{\phi}(s)]$
+\item $\nabla_{\bw} (\bphi^T \cdot \bd \cdot \bdel)^T = \mathbb{E}[(\nabla_{\bw} \delta) \cdot \bm{\phi}(s)^T] = \mathbb{E}[(\gamma \cdot \bm{\phi}(s') - \bm{\phi}(s)) \cdot \bm{\phi}(s)^T]$
+\item $\bphi^T \cdot \bd \cdot \bphi = \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]$
 \end{itemize}
 \pause
 Substituting, we get:
-$$\nabla_{\bf w} \mathcal{L}({\bf w}) = 2 \cdot  \mathbb{E}[(\gamma \cdot \phi(s') - \phi(s)) \cdot \phi(s)^T] \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$$
+$$\nabla_{\bw} \mathcal{L}({\bw}) = 2 \cdot  \mathbb{E}[(\gamma \cdot \bm{\phi}(s') - \bm{\phi}(s)) \cdot \bm{\phi}(s)^T] \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$$
 \end{frame}
 
 \begin{frame}
 \frametitle{Weight Updates of TDC Algorithm}
 \pause
-$$\Delta w  = - \frac {1} {2} \alpha \cdot \nabla_{\bf w} \mathcal{L}({\bf w})$$
-$$ = \alpha \cdot \mathbb{E}[(\phi(s) - \gamma \cdot \phi(s')) \cdot \phi(s)^T] \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$$
-$$ = \alpha \cdot (\mathbb{E}[\phi(s) \cdot \phi(s)^T] - \gamma \cdot \mathbb{E}[\phi(s') \cdot \phi(s)^T]) \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$$
-$$ = \alpha \cdot (\mathbb{E}[\delta \cdot \phi(s)] - \gamma \cdot \mathbb{E}[\phi(s') \cdot \phi(s)^T] \cdot \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)])$$
-$$ = \alpha \cdot (\mathbb{E}[\delta \cdot \phi(s)] - \gamma \cdot \mathbb{E}[\phi(s') \cdot \phi(s)^T] \cdot \theta)$$
+$$\Delta \bw  = - \frac {1} {2} \alpha \cdot \nabla_{\bw} \mathcal{L}({\bw})$$
+$$ = \alpha \cdot \mathbb{E}[(\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')) \cdot \bm{\phi}(s)^T] \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$$
+$$ = \alpha \cdot (\mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T] - \gamma \cdot \mathbb{E}[\bm{\phi}(s') \cdot \bm{\phi}(s)^T]) \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$$
+$$ = \alpha \cdot (\mathbb{E}[\delta \cdot \bm{\phi}(s)] - \gamma \cdot \mathbb{E}[\bm{\phi}(s') \cdot \bm{\phi}(s)^T] \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)])$$
+$$ = \alpha \cdot (\mathbb{E}[\delta \cdot \bm{\phi}(s)] - \gamma \cdot \mathbb{E}[\bm{\phi}(s') \cdot \bm{\phi}(s)^T] \cdot \btheta)$$
 \pause
 \vspace*{2mm}
 
-where $\theta = \mathbb{E}[\phi(s) \cdot \phi(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \phi(s)]$ is the solution to a weighted least-squares linear regression of $\bb \bv - \bv$ against $\bphi$, with weights as $\mu_{\pi}$.
+$\btheta = \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$ is the solution to weighted least-squares linear regression of $\bb \cdot \bv - \bv$ against $\bphi$, with weights as $\mu_{\pi}$.
 \pause
 \vspace*{3mm}
 
-{\bf Cascade Learning: Update both $w$ and $\theta$} ($\theta$ converging faster)
+{\bf Cascade Learning: Update both $\bw$ and $\btheta$} ($\btheta$ converging faster)
 \pause
 \begin{itemize}[<+->]
-\item $\Delta w = \alpha \cdot \delta \cdot \phi(s)  - \alpha \cdot \gamma \cdot \phi(s') \cdot (\theta^T \cdot \phi(s))$
-\item $\Delta \theta = \beta \cdot (\delta - \theta^T \cdot \phi(s)) \cdot \phi(s)$
+\item $\Delta \bw = \alpha \cdot \delta \cdot \bm{\phi}(s)  - \alpha \cdot \gamma \cdot \bm{\phi}(s') \cdot (\btheta^T \cdot \bm{\phi}(s))$
+\item $\Delta \btheta = \beta \cdot (\delta - \btheta^T \cdot \bm{\phi}(s)) \cdot \bm{\phi}(s)$
 \end{itemize}
 \pause
-Note: $\theta^T \cdot \phi(s)$ operates as estimate of TD error $\delta$ for current state $s$
+Note: $\btheta^T \cdot \bm{\phi}(s)$ operates as estimate of TD error $\delta$ for current state $s$
 
 \end{frame}
 \end{document}
