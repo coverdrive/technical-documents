@@ -224,16 +224,23 @@ $$(\bm{B}^{\pi'})^{i+1}(\bvpi) \geq (\bm{B}^{\pi'})^i(\bvpi) \text{ for all } i 
 \end{frame}
 
 \begin{frame}
-\frametitle{Proof of $\epsilon$-Greedy improving the policy}
+\frametitle{Base Case of Proof by Induction}
 \pause
-To prove base case (proof by induction), note: $\bm{B}^{\pi'}(\bvpi)(s)  = Q^{\pi}(s, \pi'(s))$
+The base case of proof by induction is to show that $\bm{B}^{\pi'}(\bvpi)  \geq  \bm{V}^{\pi}$
 \pause
 \begin{align*}
-Q^{\pi}(s, \pi'(s)) & = \sum_{a \in \mathcal{A}} \pi'(s, a) \cdot Q^{\pi}(s,a) \\
+\bm{B}^{\pi'}(\bvpi)(s) & = (\bm{\mathcal{R}}^{\pi'} + \gamma \cdot \bm{\mathcal{P}}^{\pi'} \cdot \bvpi)(s) \\
+& = \bm{\mathcal{R}}^{\pi'}(s) + \gamma \cdot \sum_{s' \in \mathcal{S}} \bm{\mathcal{P}}^{\pi'}(s,s') \cdot \bvpi(s') \\
+& = \sum_{a \in \mathcal{A}} \pi'(s, a) \cdot (\mathcal{R}(s,a) + \gamma \cdot \sum_{s' \in \mathcal{S}} \mathcal{P}(s,a,s') \cdot \bvpi(s')) \\
+& = \sum_{a \in \mathcal{A}} \pi'(s, a) \cdot Q^{\pi}(s,a) \\
 & = \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot \max_{a \in \mathcal{A}} Q^{\pi}(s,a) \\
 & \geq \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot \sum_{a \in \mathcal{A}} \frac {\pi(s,a) - \frac {\epsilon} {|\mathcal{A}|}} {1 - \epsilon} \cdot Q^{\pi}(s,a) \\
 & = \sum_{a \in \mathcal{A}} \pi(s,a) \cdot Q^{\pi}(s,a) = \bm{V}^{\pi}(s)
 \end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Induction Step of Proof by Induction}
 \pause
 Induction step is proved by monotonicity of $\bm{B}^{\pi}$ operator (for any $\pi$):
 \pause
@@ -266,7 +273,7 @@ $\epsilon$-greedy can be made GLIE if $\epsilon$ is reduced as: $\epsilon_k = \f
 \pause
 \begin{itemize}[<+->]
 \item  Sample $k$-th episode using $\pi$: $\{S_0, A_0, R_1, S_1, A_1, \ldots, R_T, S_T\} \sim \pi$
-\item For each state $S_t$ and action $A_t$ in the episode:
+\item For each state $S_t$ and action $A_t$ in episode, updates at {\em episode-end}:
 $$Count(S_t,A_t) \leftarrow Count(S_t,A_t) + 1$$
 $$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \frac 1 {Count(S_t, A_t)} \cdot (G_t - Q(S_t,A_t))$$
 \item Improve policy at end of episode based on updated $Q$-Value function:
@@ -298,7 +305,7 @@ GLIE Tabular Monte-Carlo Control converges to the Optimal Action-Value function:
 \item Apply TD to $Q(S,A)$ (instead of $V(S)$)
 \item Use $\epsilon$-greedy Policy Improvement
 \item Update $Q(S,A)$ after each {\em atomic experience}
-\item $\epsilon$-greedy policy automatically updated after each atomic experience
+\item $\epsilon$-greedy policy {\bf automatically updated} after each atomic experience
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -314,6 +321,7 @@ $$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t
 \item $\epsilon$-greedy policy automatically updated after each atomic experience
 \item Action $A_t$ is chosen from State $S_t$ based on $\epsilon$-greedy policy
 \item Action $A_{t+1}$ is chosen from State $S_{t+1}$ based on $\epsilon$-greedy policy
+\item Unlike MC Control, trace experience is incrementally generated
 \item Note: Instead of $\epsilon$-greedy, we could employ a more sophisticated exploratory policy derived from $Q$-value function ($\epsilon$-greedy is just our default simple exploratory policy derived from $Q$-value function)
 \end{itemize}
 \end{frame}
@@ -329,6 +337,7 @@ $$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t
 \pause
 \begin{theorem}
 Tabular SARSA converges to the Optimal Action-Value function, $Q(s,a) \rightarrow Q^*(s,a)$, under the following conditions:
+\pause
 \begin{itemize}[<+->]
 \item GLIE sequence of policies $\pi_t(s,a)$
 \item Robbins-Monro sequence of step-sizes $\alpha_t$
@@ -547,7 +556,7 @@ $$\Delta \bm{w} = \alpha \cdot \delta_t \cdot \bm{E}_t$$
       {\bf Full Backup (DP)} & {\bf Sample Backup (TD)} \\ \hline
        Iterative Policy Evaluation: $V(S)$ update & TD Learning: $V(S)$ update \\
        $\mathbb{E}[R + \gamma V(S')|S]$ & sample $R + \gamma V(S')$ \\ \hline
-      Q-Policy Evaluation: $Q(S,A)$ update & SARSA: $Q(S,A)$ update \\
+      Q-Policy Iteration: $Q(S,A)$ update & SARSA: $Q(S,A)$ update \\
        $\mathbb{E}[R + \gamma Q(S',A')|S,A]$ & sample $R + \gamma Q(S',A')$ \\ \hline
        Q-Value Iteration: $Q(S,A)$ update & Q-Learning: $Q(S,A)$ update \\
        $\mathbb{E}[R + \gamma \max_{a'} Q(S',a')|S,A]$ & sample $R + \gamma \max_{a' } Q(S',a')$ \\ \hline
