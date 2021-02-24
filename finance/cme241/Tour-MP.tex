@@ -518,8 +518,8 @@ $$V(s) = \mathbb{E}[G_t|S_t=s] \text{ for all } s \in \mathcal{N}, \text{ for al
 \item Bellman Equation for MRP (based on recursion $G_t = R_{t+1} + \gamma \cdot G_{t+1}$):
 $$V(s) = \mathcal{R}(s) + \gamma \cdot \sum_{s' \in \mathcal{N}} \mathcal{P}(s, s') \cdot V(s') \text{ for all } s \in \mathcal{N}$$
 \item In Vector form:
-$$\bm{v} = \bm{\mathcal{R}} + \gamma \bm{\mathcal{P}} \cdot \bm{v}$$
-$$\Rightarrow \bm{v} = (\bm{I}_m - \gamma \bm{\mathcal{P}})^{-1} \cdot \bm{\mathcal{R}}$$
+$$\bm{V} = \bm{\mathcal{R}} + \gamma \bm{\mathcal{P}} \cdot \bm{V}$$
+$$\Rightarrow \bm{V} = (\bm{I}_m - \gamma \bm{\mathcal{P}})^{-1} \cdot \bm{\mathcal{R}}$$
 where $\bm{I}_m$ is $m \times m$ identity matrix
 \item If $m$ is large, we need Dynamic Programming (or Approx. DP or RL)
 \end{itemize}
