@@ -156,7 +156,7 @@ $$\Delta \bm{w} = \alpha \cdot (G_i - V(S_i; \bm{w})) \cdot \nabla_{\bm{w}} V(S_
 \begin{itemize}[<+->]
 \item Instead we'd like to estimate the Value Function $V(s;\bm{w^*})$ such that
 \begin{align*}
-w^* & = \argmin_{\bm{w}} \frac 1 n \cdot \sum_{i=1}^n \frac 1 2 \cdot (V(S_i;\bm{w}) - G_i)^2 \\
+\bm{w^*} & = \argmin_{\bm{w}} \frac 1 n \cdot \sum_{i=1}^n \frac 1 2 \cdot (V(S_i;\bm{w}) - G_i)^2 \\
 & = \argmin_{\bm{w}} \mathbb{E}_{(S,G) \sim \mathcal{D}} [\frac 1 2 \cdot (V(S; \bm{w}) - G)^2]
 \end{align*}
 \item This is the \lstinline{solve} method of \lstinline{FunctionApprox} on training data $\mathcal{D}$
