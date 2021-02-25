@@ -476,7 +476,7 @@ $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_
 \frametitle{Off-Policy Control with Tabular Q-Learning}
 \pause
 \begin{itemize}[<+->]
-\item We now allow both behavior and target policies to {\bf improve}
+\item We now allow both experience and target policies to {\bf improve}
 \item The target (deterministic) policy $\pi_D$ is {\bf greedy} w.r.t $Q$-Value Function
 $$\pi_D(S_{t+1}) = \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a')$$
 \item The experience policy $\mu$ is also improving, eg: $\epsilon$-greedy w.r.t. $Q$
