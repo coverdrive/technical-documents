@@ -1,0 +1,49 @@
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{pseudocode}
+\usepackage{bm}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{MnSymbol,wasysym}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} 
+\newgeometry{vmargin={20mm}, hmargin={14mm,18mm}}
+ 
+\begin{document}
+\begin{center}
+{\large {\bf Stanford CME 241 (Winter 2021) - Assignment 15}}
+\end{center}
+ 
+{\large{\bf Assignments:}}
+\begin{questions}
+
+\question Assume you have fixed data available as $N$ complete episodes where each episode is in the form:
+$$S_0,R_1,S_1,R_2, S_2,\ldots, S_{n-1},R_n, T$$
+where $S_0,S_1,\ldots,S_{n-1}$ is the sequence of non-terminal states visited in the episode and $R_1,R_2,\ldots,R_n$ are the associated rewards following the visited states. $T$ is the terminal state. Note that $n$ (the length of an episode) can vary across the $N$ episodes. Note that there are no actions here, so the setting for this data is an underlying MRP and not MDP. Assume discount factor $\gamma = 1$.
+
+{\bf Given only this data of fixed $N$ episodes, your task is to implement working Python code that will estimate the Value Function for discount factor $\gamma = 1$ based on a variety of methods}. An outline of the code is made available for you \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/exam_problems/mrp_tdmc_outline.py}{here}. A couple of functions (\lstinline{get_state_return_samples}, required for tabular Monte-Carlo, and \lstinline{get_state_reward_next_state_samples}, required for the other methods) have been implemented for you and you may use them as helper functions. Your task is to implement the following methods, each compatible with their respective function interfaces provided in this outline code. 
+
+\begin{itemize}
+\item {\bf Tabular Monte-Carlo: } Implement \lstinline{get_mc_value_function}.
+\item {\bf MRP: } Implement \lstinline{get_probability_and_reward_functions} and using its output, implement \lstinline{get_mrp_value_function} (based on MRP Bellman Equation).
+\item {\bf Tabular TD(0): } Implement \lstinline{get_td_value_function}.
+\item {\bf LSTD: } Implement \lstinline{get_lstd_value_function}.
+\end{itemize}
+
+Make sure to read the comments/hints provided in the outline code (within each of the above functions you need to implement).
+
+If you run the \lstinline{__main__} code, it will evaluate each of your 4 methods on the data that is set up in the \lstinline{__main__} code. Do they all give the same Value Function? If not, do some of them give the same Value Function? Explain the Value Functions you obtain with these 4 different methods based on the theory you have learnt.
+
+\question Implement TD with Gradient Correction (abbreviated as TDC, a form of Gradient TD) for Prediction in Python. As covered in class, you have to do cascade learning, by learning the $\bm{w}$ parameters as well as the $\bm{\theta}$ parameters. Test your TDC Prediction algorithm against MC or TD prediction that you had previously written on an example simple MRP that you have previously modeled.
+
+\end{questions}
+
+\end{document}
