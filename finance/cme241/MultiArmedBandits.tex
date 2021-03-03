@@ -287,7 +287,7 @@ $$\epsilon_t = \min(1, \frac {c|\mathcal{A}|} {d^2t}\}$$
 \item Decaying $\epsilon_t$-Greedy algorithm has {\em logarithmic} total regret
 \item Unfortunately, above schedule requires advance knowledge of gaps
 \item Practically, implementing {\em some} decay schedule helps considerably
-\item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/epsilon_greedy.py}{\underline{\textcolor{blue}{Educational Code}}} for decaying $\epsilon$-greedy with optimistic initialization
+\item \href{https://github.com/coverdrive/MDP-DP-RLTikhonJelvis/RL-book/tree/master/rl/chapter14/blob/master/src/algorithms/mab/epsilon_greedy.py}{\underline{\textcolor{blue}{Educational Code}}} for decaying $\epsilon$-greedy with optimistic initialization
 \end{itemize}
 \end{frame}
 
@@ -387,7 +387,7 @@ $$a_t = \argmax_{a\in \mathcal{A}} \{ \hat{Q}_t(a) + \sqrt{\frac {\alpha \log t}
 The UCB1 Algorithm achieves logarithmic total regret
 $$L_T \leq \sum_{a|\Delta_a > 0} \frac {4\alpha \cdot \log T} {\Delta_a} + \frac {2\alpha \cdot \Delta_a}{\alpha - 1}$$
 \end{theorem}
-\href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/ucb1.py}{\underline{\textcolor{blue}{Educational Code}}} for UCB1 algorithm
+\href{https://github.com/TikhonJelvis/RL-book/tree/master/rl/chapter14/ucb1.py}{\underline{\textcolor{blue}{Educational Code}}} for UCB1 algorithm
 \end{frame}
 
 \begin{frame}
@@ -444,8 +444,8 @@ $$=\mathbb{E}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mathbbm{1}_{a_t=\
 \item Select action maximizing value of sample
 $$a_t = \argmax_{a\in\mathcal{A}} \hat{Q}_t(a)$$
 \item Thompson Sampling achieves Lai-Robbins lower bound!
-\item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/ts_gaussian.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Gaussian Distributions
-\item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/ts_bernoulli.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Bernoulli Distributions
+\item \href{https://github.com/TikhonJelvis/RL-book/tree/master/rl/chapter14/ts_gaussian.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Gaussian Distributions
+\item \href{https://github.com/TikhonJelvis/RL-book/tree/master/rl/chapter14/ts_bernoulli.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Bernoulli Distributions
 \end{itemize}
 \end{frame}
 
@@ -498,7 +498,7 @@ $$= B \cdot \sum_{a'\in\mathcal{A}} \pi(a') \cdot \pderiv{\log \pi(a')} {s_a} = 
 \item We can use $B = \bar{r_t} =\frac 1 t \sum_{s=1}^t r_s = $ average rewards until step $t$
 \item So, the update to scores $s_t(a)$ for all $a\in\mathcal{A}$ is: 
 $$s_{t+1}(a) = s_t(a) + \alpha \cdot (r_t - \bar{r_t}) \cdot (\mathbbm{1}_{a=a_t} - \pi_t(a))$$
-\item \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/algorithms/mab/gradient_bandits.py}{\underline{\textcolor{blue}{Educational Code}}} for this Gradient Bandit Algorithm
+\item \href{https://github.com/TikhonJelvis/RL-book/tree/master/rl/chapter14/gradient_bandits.py}{\underline{\textcolor{blue}{Educational Code}}} for this Gradient Bandit Algorithm
 \end{itemize}
 \end{frame}
 
