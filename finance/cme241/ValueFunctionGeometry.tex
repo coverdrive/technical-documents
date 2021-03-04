@@ -146,9 +146,9 @@ ICME, Stanford University
 \frametitle{Notation}
 \pause
 \begin{itemize}[<+->]
-\item Assume state space $\mathcal{S}$ consists of $n$ states: $\{s_1, s_2, \ldots, s_n\}$
+\item Assume finite state space $\mathcal{S} = \mathcal{N} = \{s_1, s_2, \ldots, s_n\}$
 \item Action space $\mathcal{A}$ consisting of finite number of actions
-\item This exposition extends easily to continuous state/action spaces too
+\item This exposition can be extended to infinite/continuous spaces
 \item This exposition is for a fixed (often stochastic) policy denoted $\pi(s,a)$
 \item VF for a policy $\pi$ is denoted as $\vpi: \mathcal{S} \rightarrow \mathbb{R}$
 \item $m$ feature functions $\phi_1, \phi_2, \ldots, \phi_m : \mathcal{S} \rightarrow \mathbb{R}$
@@ -190,7 +190,7 @@ $$\brew(s) = \sum_{a \in \mathcal{A}} \pi(s, a) \cdot \mathcal{R}(s,a)$$
 $$\bprob(s,s') = \sum_{a \in \mathcal{A}} \pi(s, a) \cdot \mathcal{P}(s,a,s')$$
 \item Notation $\brew$ refers to vector $[\brew(s_1), \brew(s_2), \ldots, \brew(s_n)]$
 \item Notation $\bprob$ refers to matrix $[\bprob(s_i, s_{i'})], 1 \leq i, i' \leq n$ 
-\item Denote $\gamma$ as the MDP discount factor
+\item Denote $\gamma < 1$ as the MDP discount factor
 \end{itemize}
 \end{frame}
 
