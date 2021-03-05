@@ -247,6 +247,7 @@ $$\nabla_{\bm{\theta}} J(\bm{\theta}) = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \
 \pause
 \begin{itemize}[<+->]
 \item Note: $\rho^{\pi}(s)$ depends on $\bm{\theta}$, but there's no $\nabla_{\bm{\theta}} \rho^{\pi}(s)$ term in $\nabla_{\bm{\theta}} J(\bm{\theta})$
+\item Note: $\nabla_{\bm{\theta}} \pi(s,a; \bm{\theta}) = \pi(s,a;\bm{\theta}) \cdot \nabla_{\bm{\theta}} \log{\pi(s,a; \bm{\theta})}$
 \item So we can simply generate sampling traces, and at each time step, calculate $(\nabla_{\bm{\theta}} \log{\pi(s,a; \bm{\theta})}) \cdot Q^{\pi}(s,a)$ (probabilities implicit in paths)
 \item Note: $\nabla_{\bm{\theta}} \log{\pi(s,a; \bm{\theta})}$ is Score function (Gradient of log-likelihood)
 \item We will estimate $Q^{\pi}(s,a)$ with a function approximation $Q(s,a;\bm{w})$
