@@ -329,25 +329,25 @@ Now bring the $\nabla_{\bm{\theta}}$ inside the $\sum_{S_1 \in \mathcal{N}}$ to 
 & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \sum_{S_1 \in \mathcal{N}} \gamma \cdot \mathcal{P}_{S_0,S_1}^{A_0} \cdot \nabla_{\bm{\theta}} V^{\pi}(S_1)
 \end{align*}
 \pause
-Now bring the outside $\sum_{S_0 \in \mathcal{N}}$ and $\sum_{A_0 \in \mathcal{A}}$ inside the $\sum_{S_1 \in \mathcal{N}}$
+Now bring $\sum_{S_0 \in \mathcal{N}}$ and $\sum_{A_0 \in \mathcal{A}}$ inside the $\sum_{S_1 \in \mathcal{N}}$
 \pause
 \begin{align*}
 = & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
-& \sum_{S_1 \in \mathcal{N}}  \sum_{S_0 \in \mathcal{N}} \gamma \cdot p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \mathcal{P}_{S_0,S_1}^{A_0} \cdot \nabla_{\bm{\theta}}V^{\pi}(S_1)
+& \sum_{S_1 \in \mathcal{N}}  \sum_{S_0 \in \mathcal{N}} \gamma \cdot p_0(S_0) \cdot (\sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \mathcal{P}_{S_0,S_1}^{A_0}) \cdot \nabla_{\bm{\theta}}V^{\pi}(S_1)
 \end{align*}
 \end{frame}
 
 \begin{frame}
 \frametitle{Policy Gradient Theorem}
 \pause
-Note that $\sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \mathcal{P}_{S_0,S_1}^{A_0} = p(S_0 \rightarrow S_1, 1, \pi)$
+$$\text{Note that } \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \mathcal{P}_{S_0,S_1}^{A_0} = p(S_0 \rightarrow S_1, 1, \pi)$$
 \pause
 \begin{align*}
 = & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
 & \sum_{S_1 \in \mathcal{N}}  \sum_{S_0 \in \mathcal{N}} \gamma \cdot p_0(S_0) \cdot p(S_0 \rightarrow S_1, 1, \pi) \cdot \nabla_{\bm{\theta}}V^{\pi}(S_1)
 \end{align*}
 \pause
-Now expand $V^{\pi}(S_1)$ to $\sum_{A_1 \in \mathcal{A}} \pi(S_1, A_1; \bm{\theta}) \cdot Q^{\pi}(S_1,A_1)$
+$$\text{Now expand } V^{\pi}(S_1) \text{ to } \sum_{A_1 \in \mathcal{A}} \pi(S_1, A_1; \bm{\theta}) \cdot Q^{\pi}(S_1,A_1)$$
 \pause
 \begin{align*}
 = & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
@@ -372,7 +372,7 @@ $$= \sum_{t=0}^\infty \sum_{S_t \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}} \gam
 \begin{frame}
 \frametitle{Proof of Policy Gradient Theorem}
 \pause
-Bring $\sum_{t=0}^{\infty}$ inside $\sum_{S_t \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}}$  and note that 
+$$\text{Bring } \sum_{t=0}^{\infty} \text{ inside } \sum_{S_t \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}} \text{ and note that}$$
 $$\sum_{A_t \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_t, A_t; \bm{\theta}) \cdot Q^{\pi}(S_t,A_t) \text{ is independent of } t$$
 \pause
 $$= \sum_{s \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}} \sum_{t=0}^{\infty} \gamma^t \cdot p_0(S_0) \cdot p(S_0 \rightarrow s, t, \pi) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s, a; \bm{\theta}) \cdot Q^{\pi}(s,a)$$
@@ -452,13 +452,13 @@ $$ \nabla_{\bm{\theta}} J(\bm{\theta}) \approx \sum_{s \in \mathcal{N}} \rho^{\p
 \pause
 \begin{itemize}[<+->]
 \item We can reduce variance by subtracting a baseline function $B(s)$ from $Q(s,a;\bm{w})$ in the Policy Gradient estimate
-\item This means at each time step, we replace $\gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t,A_t; \bm{\theta}) \cdot Q(S_t,A_t; \bm{w})$ with $\gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t,A_t; \bm{\theta}) \cdot (Q(S_t,A_t; \bm{w}) - B(s))$
+\item This means at each time step, we replace $\gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t,A_t; \bm{\theta}) \cdot Q(S_t,A_t; \bm{w})$ with $\gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t,A_t; \bm{\theta}) \cdot (Q(S_t,A_t; \bm{w}) - B(S_t))$
 \item Note that Baseline function $B(s)$ is only a function of $s$ (and not $a$)
 \item This ensures that subtracting Baseline $B(s)$ does not add bias
 \begin{align*}
 & \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s,a; \bm{\theta}) \cdot B(s)\\
  = & \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot B(s) \cdot \nabla_{\bm{\theta}} (\sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta})) \\
-  = & \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot B(s) \cdot \nabla_{\bm{\theta}} 1 \\
+ = & \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot B(s) \cdot \nabla_{\bm{\theta}} 1 \\
   = & 0
 \end{align*}
 \end{itemize}
