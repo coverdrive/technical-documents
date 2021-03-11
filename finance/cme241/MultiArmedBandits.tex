@@ -190,11 +190,11 @@ simply because it is a function of past (random) rewards
 \item The {\em Action Value} $Q(a)$ is the (unknown) mean reward of action $a$
 $$Q(a) = \mathbb{E}[r|a]$$
 \item The {\em Optimal Value} $V^*$ is defined as:
-$$V^* = Q(a^*) = \max_{a\in\mathcal{A}} Q(s)$$
+$$V^* = Q(a^*) = \max_{a\in\mathcal{A}} Q(a)$$
 \item The {\em Regret} $l_t$ is the opportunity loss on a single step $t$
 $$l_t = \mathbb{E}[V^* - Q(a_t)]$$
 \item The {\em Total Regret} $L_T$ is the total opportunity loss
-$$L_T = \sum_{t=1}^T \mathbb{E}[V^* - Q(a_t)]$$
+$$L_T = \sum_{t=1}^T l_t = \sum_{t=1}^T \mathbb{E}[V^* - Q(a_t)]$$
 \item Maximizing {\em Cumulative Reward} is same as Minimizing {\em Total Regret}
 \end{itemize}
 \end{frame}
@@ -209,8 +209,8 @@ $$L_T = \sum_{t=1}^T \mathbb{E}[V^* - Q(a_t)]$$
 $$\Delta_a = V^* - Q(a) $$
 \item Total Regret is sum-product (over actions) of $Gaps$ and $Counts_T$
 $$L_T = \sum_{t=1}^T \mathbb{E}[V^* - Q(a_t)]$$
-$$ = \sum_{a\in\mathcal{A}} \mathbb{E}[N_T(a)] (V^* - Q(a))$$
-$$ = \sum_{a\in\mathcal{A}} \mathbb{E}[N_T(a)] \Delta_a$$
+$$ = \sum_{a\in\mathcal{A}} \mathbb{E}[N_T(a)] \cdot (V^* - Q(a))$$
+$$ = \sum_{a\in\mathcal{A}} \mathbb{E}[N_T(a)] \cdot \Delta_a$$
 \item A good algorithm ensures small $Counts$ for large $Gaps$
 \item Little problem though: {\em We don't know the $Gaps$}!
 \end{itemize}
@@ -249,7 +249,7 @@ $$a_t = \argmax_{a\in \mathcal{A}} \hat{Q}_t(a)$$
 \item At each time-step $t$:
 \begin{itemize}
 \item With probability $1-\epsilon$, select $a_t=\argmax_{a\in\mathcal{A}} \hat{Q}_t(a)$
-\item With probability $\epsilon$, select a random action (uniformly) in $\mathcal{A}$
+\item With probability $\epsilon$, select a random action (uniformly) from $\mathcal{A}$
 \end{itemize}
 \item Constant $\epsilon$ ensures a minimum regret proportional to mean gap
 $$ l_t \geq \frac {\epsilon} {|\mathcal{A}|} \sum_{a\in\mathcal{A}} \Delta_a$$
@@ -265,10 +265,11 @@ $$ l_t \geq \frac {\epsilon} {|\mathcal{A}|} \sum_{a\in\mathcal{A}} \Delta_a$$
 \item Simple and practical idea: Initialize $\hat{Q}_0(a)$ to a high value for all $a\in \mathcal{A}$
 \item Update action value by incremental-averaging
 \item Starting with $N_0(a) \geq 0$ for all $a\in \mathcal{A}$,
-$$\hat{Q}_t(a_t) = \hat{Q}_{t-1}(a_t) + \frac 1 {N_t(a)} (r_t - \hat{Q}_{t-1}(a_t))$$
+$$N_t(a) = N_{t-1}(a) + \mathbbm{1}_{a = a_t} \mbox{ for all } a$$
+$$\hat{Q}_t(a_t) = \hat{Q}_{t-1}(a_t) + \frac 1 {N_t(a_t)} (r_t - \hat{Q}_{t-1}(a_t))$$
 $$\hat{Q}_t(a) = \hat{Q}_{t-1}(a) \mbox{ for all } a \neq a_t$$
 \item Encourages systematic exploration early on
-\item One can also start with a high value for $N_0(a)$ 
+\item One can also start with a high value for $N_0(a)$ for all $a \in \mathcal{A}$
 \item But can still lock onto suboptimal action
 \item Hence, Greedy $+$ optimistic initialization has linear total regret
 \item $\epsilon$-Greedy $+$ optimistic initialization also has linear total regret
@@ -287,7 +288,7 @@ $$\epsilon_t = \min(1, \frac {c|\mathcal{A}|} {d^2t}\}$$
 \item Decaying $\epsilon_t$-Greedy algorithm has {\em logarithmic} total regret
 \item Unfortunately, above schedule requires advance knowledge of gaps
 \item Practically, implementing {\em some} decay schedule helps considerably
-\item \href{https://github.com/coverdrive/MDP-DP-RLTikhonJelvis/RL-book/tree/master/rl/chapter14/blob/master/src/algorithms/mab/epsilon_greedy.py}{\underline{\textcolor{blue}{Educational Code}}} for decaying $\epsilon$-greedy with optimistic initialization
+\item \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter14/epsilon_greedy.py}{\underline{\textcolor{blue}{Educational Code}}} for decaying $\epsilon$-greedy with optimistic initialization
 \end{itemize}
 \end{frame}
 
@@ -353,12 +354,12 @@ $$a_t = \argmax_{a\in\mathcal{A}} \{ \hat{Q}_t(a) + \hat{U}_t(a) \}$$
 \pause
 \begin{theorem}[Hoeffding's Inequality]
 Let $X_1, \ldots, X_t$ be i.i.d. random variables in $[0,1]$, and let $$\bar{X}_t = \frac 1 t \sum_{s=1}^t X_s$$ be the sample mean. Then,
-$$\mathbb{P}[\mathbb{E}[X] > \bar{X}_t + u] \leq e^{-2tu^2}$$
+$$\mathbb{P}[\mathbb{E}[\bar{X}_t] > \bar{X}_t + u] \leq e^{-2tu^2}$$
 \end{theorem}
 \begin{itemize}[<+->]
 \item Apply Hoeffding's Inequality to rewards of $[0,1]$-support bandits
 \item Conditioned on selecting action $a$
-$$\mathbb{P}[Q(a) > \hat{Q}_t(a) + \hat{U}_t(a)] \leq e^{-2N_t(a)\hat{U}_t(a)^2}$$
+$$\mathbb{P}[Q(a) > \hat{Q}_t(a) + \hat{U}_t(a)] \leq e^{-2N_t(a) \cdot \hat{U}_t(a)^2}$$
 \end{itemize}
 \end{frame}
 
@@ -370,7 +371,7 @@ $$\mathbb{P}[Q(a) > \hat{Q}_t(a) + \hat{U}_t(a)] \leq e^{-2N_t(a)\hat{U}_t(a)^2}
 \begin{itemize}[<+->]
 \item Pick a small probability $p$ that $Q(a)$ exceeds UCB $\{\hat{Q}_t(a) + \hat{U}_t(a)\}$
 \item Now solve for $\hat{U}_t(a)$
-$$e^{-2N_t(a)\hat{U}_t(a)^2} = p$$
+$$e^{-2N_t(a) \cdot \hat{U}_t(a)^2} = p$$
 $$\Rightarrow \hat{U}_t(a) = \sqrt{\frac {-\log p} {2 N_t(a)}}$$
 \item Reduce $p$ as we observe more rewards, eg: $p = t^{-\alpha}$ (for fixed $\alpha > 0$)
 \item This ensures we select optimal action as $t\rightarrow \infty$
@@ -413,8 +414,8 @@ $$L_T \leq \sum_{a|\Delta_a > 0} \frac {4\alpha \cdot \log T} {\Delta_a} + \frac
 \item Assume reward distribution is Gaussian, $\mathcal{R}^a(r) =\mathcal{N}(r;\mu_a, \sigma_a^2)$
 \item Compute Gaussian posterior over $\mu_a,\sigma_a^2$  (Bayes update details \href{https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/lecture5.pdf}{\underline{\textcolor{blue}{here}}})
 $$\mathbb{P}[\mu_a, \sigma_a^2|h_t] \propto \mathbb{P}[\mu_a, \sigma_a^2] \cdot \prod_{t|a_t=a} \mathcal{N}(r_t;\mu_a, \sigma_a^2)$$
-\item Pick action that maximizes Expectation of $c$ std-devs above mean
-$$a_t = \argmax_{a\in\mathcal{A}} \mathbb{E}[\mu_a + \frac {c \sigma_a} {\sqrt{N_t(a)}}]$$
+\item Pick action that maximizes Expectation of:  ``$c$ std-errs above mean''
+$$a_t = \argmax_{a\in\mathcal{A}} \mathbb{E}[\mu_a + \frac {c \cdot \sigma_a} {\sqrt{N_t(a)}}]$$
 \end{itemize}
 \end{frame}
 
