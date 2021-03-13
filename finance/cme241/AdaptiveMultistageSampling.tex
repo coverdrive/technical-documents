@@ -129,7 +129,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{The Selection Step in MCTS}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Selection involves picking a child with ``most promise''
 \item This means prioritizing children with higher success estimates
 \item For estimate confidence, we need sufficient playouts under {\em each} child
@@ -147,7 +148,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{The Setting for the AMS Algorithm}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item MDP with finite number of time steps $t=0, 1, \ldots, T$
 \item State denoted $s_t \in \mathcal{S}$, where $\mathcal{S}$ is very large
 \item Action denoted $a_t \in \mathcal{A}$, where $\mathcal{A}$ is fairly small
@@ -162,7 +164,8 @@ ICME, Stanford University
 
 \begin{frame}
 \frametitle{Outline of AMS Algorithm}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item AMS Algorithm is based on a fixed allocation of action selections for each state in each time step
 \item Denote number of action selections per state in time step $t$ as $N_t$
 \item Denote $\hat{V}_t^{N_t}(s_t)$ as the AMS Algorithm estimate of $V_t^*(s_t)$
@@ -205,7 +208,8 @@ CNTS[a^*] \GETS CNTS[a^*] + 1
 
 \begin{frame}
 \frametitle{Running Time, Bias, Convergence and Code}
-\begin{itemize}
+\pause
+\begin{itemize}[<+->]
 \item Let $N = \max{(N_0, N_1, \ldots, N_{T-1})}$ and assume $N > |\mathcal{A}|$
 \item Running time of AMS Algorithm is of the order of $N^T \cdot |\mathcal{A}|$
 \item Compare this versus backward induction running time of $|\mathcal{S}|^2 \cdot |\mathcal{A}| \cdot T$
