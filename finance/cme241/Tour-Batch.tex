@@ -15,7 +15,7 @@
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
 
-\documentclass[handout]{beamer}
+\documentclass{beamer}
 
 \mode<presentation> {
 
@@ -432,7 +432,7 @@ g(s) & \text{ if } a = e
 $$
 for feature funcs $\bm{\phi}(\cdot) = [\phi_i(\cdot)|i = 1, \ldots, m]$ of only state \& not action
 \item Each iteration starts with $\bm{w}$ defining $\hat{Q}$ (and it's greedy policy $\pi_D$), and ends by solving for $\bm{w}^*$ setting next iteration's $\bm{w}$ to $\bm{w}^*$
-\item Since we learn Q-Value function for only $a=c$, experience policy $\mu$ generating experience data for training is a constant function $\mu(s) = c$
+\item Since we learn Q-Value function for only $a=c$, behavior policy $\mu$ generating experience data for training is a constant function $\mu(s) = c$
 \item Also, for American Options, the reward for $a=c$ is 0
 \item So each atomic experiences for training is of the form $(s,c,0,s')$
 \item So we represent each atomic experience for training as a 2-tuple $(s,s')$
