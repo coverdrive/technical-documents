@@ -436,7 +436,7 @@ $$\{S_0, A_0, R_1, S_1, A_1, \ldots, R_T, S_T\} \sim \mu$$
 \item Use returns generated from $\mu$ to estimate Value Function for $\pi$
 \item Weight return $G_t$ according to similarity between policies
 \item Multiply importance sampling corrections along whole episode
-$$G_t^{\pi / \mu} = \frac {\pi(S_t, A_t)} {\mu(S_t, A_t)} \cdot  \frac {\pi(S_{t+1}, A_{t+1})} {\mu(S_{t+1}, A_{t+1})} \cdots \frac {\pi(S_T, A_t)} {\mu(S_T, A_T)} \cdot G_t$$
+$$G_t^{\pi / \mu} = \frac {\pi(S_t, A_t)} {\mu(S_t, A_t)} \cdot  \frac {\pi(S_{t+1}, A_{t+1})} {\mu(S_{t+1}, A_{t+1})} \cdots \frac {\pi(S_{T-1}, A_{T-1})} {\mu(S_{T-1}, A_{T-1})} \cdot G_t$$
 \item Update value towards {\em corrected} return
 $$V(S_t) \leftarrow V(S_t) + \alpha \cdot (G_t^{\pi / \mu} - V(S_t))$$
 \item Likewise for $Q$-Value Function for MC Control
