@@ -226,7 +226,7 @@ Parameters $\bm{w}^-$ of target network infrequently updated to values of Q-netw
 \item Batch RL Prediction for general function approximation is iterative
 \item Uses experience replay and gradient descent
 \item We can solve directly (without gradient) for linear function approx
-\item Define a sequence of feature functions $\phi_j: \mathcal{X} \rightarrow \mathbb{R}, j = 1, 2, \ldots, m$
+\item Define a sequence of feature functions $\phi_j: \mathcal{S} \rightarrow \mathbb{R}, j = 1, 2, \ldots, m$
 \item Parameters $w$ is a weights vector $\bm{w} = (w_1, w_2, \ldots, w_m) \in \mathbb{R}^m$
 \item Value Function is approximated as:
 $$V(s;\bm{w}) = \sum_{j=1}^m \phi_j(s) \cdot w_j = \bm{\phi}(s)^T \cdot \bm{w}$$
@@ -248,7 +248,7 @@ $$\sum_{i=1}^n \bm{\phi}(S_i) \cdot (\bm{\phi}(S_i)^T \cdot \bm{w^*} - G_i) = 0$
 $$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(S_i) \cdot \bm{\phi}(S_i)^T \text{ (i.e., outer-product of } \bm{\phi}(S_i) \text{ with itself})$$
 \item $m$-Vector $\bm{b}$ is accumulated at each data pair $(S_i, G_i)$ as:
 $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(S_i) \cdot G_i$$
-\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\item Sherman-Morrison incremental inverse can be done in $O(m^2)$
 \end{itemize}
 \end{frame}
 
@@ -256,16 +256,16 @@ $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(S_i) \cdot G_i$$
 \frametitle{Least-Squares Temporal-Difference (LSTD)}
 \pause
 \begin{itemize}[<+->]
-\item Loss func for Batch TD Prediction with data $[(s_i, r_i, s'_i) | 1 \leq i \leq n]$:
-$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(s_i) \cdot \bm{w} - (r_i + \gamma \cdot \bm{\phi}(s'_i)^T \cdot \bm{w}))^2$$
+\item Loss func for Batch TD Prediction with data $[(S_i, R_i, S'_i) | 1 \leq i \leq n]$:
+$$\mathcal{L}(\bm{w}) = \frac 1 {2n} \cdot \sum_{i=1}^n (\bm{\phi}(S_i)^T \cdot \bm{w} - (R_i + \gamma \cdot \bm{\phi}(S'_i)^T \cdot \bm{w}))^2$$
 \item The semi-gradient of this Loss function is set to 0 to solve for $\bm{w}^*$
-$$\sum_{i=1}^n \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i)^T \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i)^T \cdot \bm{w}^*)) = 0$$
+$$\sum_{i=1}^n \bm{\phi}(S_i) \cdot (\bm{\phi}(S_i)^T \cdot \bm{w^*} - (R_i + \gamma \cdot \bm{\phi}(S'_i)^T \cdot \bm{w}^*)) = 0$$
 \item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
-\item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$:
-$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i))^T \text{ (note the Outer-Product)}$$
-\item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$:
-$$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i) \cdot r_i$$
-\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(S_i, R_i, S'_i)$:
+$$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(S_i) \cdot (\bm{\phi}(S_i) - \gamma \cdot \bm{\phi}(S'_i))^T \text{ (note the Outer-Product)}$$
+\item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(S_i, R_i, S'_i)$:
+$$\bm{b} \leftarrow \bm{b} + \bm{\phi}(S_i) \cdot R_i$$
+\item Sherman-Morrison incremental inverse can be done in $O(m^2)$
 \end{itemize}
 \end{frame}
 
@@ -277,13 +277,13 @@ $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i) \cdot r_i$$
 \item Denote the Eligibility Trace of atomic experience $i$ as $\bm{E}_i$
 \item Note: $\bm{E}_i$ accumulates $\nabla_{\bm{w}} V(s;\bm{w}) = \bm{\phi}(s)$ in each trace experience
 \item When accumulating, previous step's eligibility trace discounted by $\lambda \gamma$
-$$\sum_{i=1}^n \bm{E_i} \cdot (\bm{\phi}(s_i)^T \cdot \bm{w^*} - (r_i + \gamma \cdot \bm{\phi}(s'_i)^T \cdot \bm{w}^*)) = 0$$
+$$\sum_{i=1}^n \bm{E_i} \cdot (\bm{\phi}(S_i)^T \cdot \bm{w^*} - (R_i + \gamma \cdot \bm{\phi}(S'_i)^T \cdot \bm{w}^*)) = 0$$
 \item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
-\item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $i$:
-$$ \bm{A} \leftarrow \bm{A} + \bm{E_i} \cdot (\bm{\phi}(s_i) - \gamma \cdot \bm{\phi}(s'_i))^T \text{ (note the Outer-Product)}$$
-\item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, r_i, s'_i)$ as:
-$$\bm{b} \leftarrow \bm{b} + \bm{E_i} \cdot r_i$$
-\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(S_i, R_i, S'_i)$:
+$$ \bm{A} \leftarrow \bm{A} + \bm{E_i} \cdot (\bm{\phi}(S_i) - \gamma \cdot \bm{\phi}(S'_i))^T \text{ (note the Outer-Product)}$$
+\item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(S_i, R_i, S'_i)$ as:
+$$\bm{b} \leftarrow \bm{b} + \bm{E_i} \cdot R_i$$
+\item Sherman-Morrison incremental inverse can be done in $O(m^2)$
 \end{itemize}
 \end{frame}
 
@@ -356,7 +356,7 @@ $$\pi_D(s) = \argmax_a Q(s,a; \bm{w})$$
 $$ \bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i, a_i) \cdot (\bm{\phi}(s_i, a_i) - \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i)))^T $$
 \item $m$-Vector $\bm{b}$ is accumulated at each experience $(s_i,a_i,r_i,s'_i)$ as:
 $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i, a_i) \cdot r_i$$
-\item Shermann-Morrison incremental inverse can be done in $O(m^2)$
+\item Sherman-Morrison incremental inverse can be done in $O(m^2)$
 \item This least-squares solution of $\bm{w}^*$ (Prediction) is known as {\em LSTDQ}
 \item GPI with LSTDQ and greedy policy improvement known as {\em LSPI}
 \end{itemize}
@@ -475,7 +475,7 @@ $$\bm{b} = \gamma \cdot \sum_i \mathbb{I}_{g(s'_i)  > \bm{\phi}(s'_i)^T \cdot  \
 $$\bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) -  \mathbb{I}_{\bm{\phi}(s'_i)^T \cdot \bm{w} \geq g(s'_i)} \cdot \gamma \cdot \bm{\phi}(s'_i))^T$$
 \item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, s'_i)$ as:
 $$\bm{b} \leftarrow \bm{b} + \gamma  \cdot \mathbb{I}_{g(s'_i) > \bm{\phi}(s'_i)^T  \cdot \bm{w}} \cdot \bm{\phi}(s_i) \cdot g(s'_i)$$
-\item Shermann-Morrison incremental inverse of $\bm{A}$ can be done in $O(m^2)$
+\item Sherman-Morrison incremental inverse of $\bm{A}$ can be done in $O(m^2)$
 \end{itemize}
 \end{frame}
 
