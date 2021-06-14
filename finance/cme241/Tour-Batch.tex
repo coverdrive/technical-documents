@@ -469,12 +469,12 @@ $$(\sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) - \mathbb{I}_{C1} \cdot \gamma \c
 \pause
 \begin{itemize}[<+->]
 \item This can be written in the familiar vector-matrix notation: $\bm{A} \cdot \bm{w}^* = \bm{b}$
-$$\bm{A} = \sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) - \mathbb{I}_{\bm{\phi}(s'_i)^T  \cdot \bm{w} \geq g(s'_i)} \cdot \gamma \cdot \bm{\phi}(s'_i))^T$$
-$$\bm{b} = \gamma \cdot \sum_i \mathbb{I}_{g(s'_i)  > \bm{\phi}(s'_i)^T \cdot  \bm{w}} \cdot \bm{\phi}(s_i) \cdot  g(s'_i)$$
+$$\bm{A} = \sum_i \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) - \mathbb{I}_{C1} \cdot \gamma \cdot \bm{\phi}(s'_i))^T$$
+$$\bm{b} = \gamma \cdot \sum_i \mathbb{I}_{C2} \cdot \bm{\phi}(s_i) \cdot  g(s'_i)$$
 \item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(s_i,s'_i)$ as:
-$$\bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) -  \mathbb{I}_{\bm{\phi}(s'_i)^T \cdot \bm{w} \geq g(s'_i)} \cdot \gamma \cdot \bm{\phi}(s'_i))^T$$
+$$\bm{A} \leftarrow \bm{A} + \bm{\phi}(s_i) \cdot (\bm{\phi}(s_i) -  \mathbb{I}_{C1} \cdot \gamma \cdot \bm{\phi}(s'_i))^T$$
 \item $m$-Vector $\bm{b}$ is accumulated at each atomic experience $(s_i, s'_i)$ as:
-$$\bm{b} \leftarrow \bm{b} + \gamma  \cdot \mathbb{I}_{g(s'_i) > \bm{\phi}(s'_i)^T  \cdot \bm{w}} \cdot \bm{\phi}(s_i) \cdot g(s'_i)$$
+$$\bm{b} \leftarrow \bm{b} + \gamma  \cdot \mathbb{I}_{C2} \cdot \bm{\phi}(s_i) \cdot g(s'_i)$$
 \item Sherman-Morrison incremental inverse of $\bm{A}$ can be done in $O(m^2)$
 \end{itemize}
 \end{frame}
