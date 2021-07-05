@@ -546,7 +546,7 @@ P \GETS \gamma \cdot P, s \GETS s'\\
 
 
 
-\section{Compatible Function Approximation Theorem and Proof}
+\section{Compatible Function Approximation Theorem}
 
 \begin{frame}
 \frametitle{Overcoming Bias}
@@ -636,7 +636,7 @@ $$=\sum_{a \in \mathcal{A}} (\sum_{i=1}^m \pderiv{\pi(s,a;\bm{\theta})}{\theta_i
 $$=\sum_{i=1}^m \frac {\partial} {\partial \theta_i} (\sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}))\cdot w_i = \sum_{i=1}^m \pderiv{1}{\theta_i} \cdot w_i = 0$$
 \end{frame}
 
-\section{Natural Policy Gradient}
+
 
 \begin{frame}
 \frametitle{Fisher Information Matrix}
@@ -652,26 +652,24 @@ Denoting $[\pderiv{\log \pi(s,a;\bm{\theta})}{\theta_i}], i = 1, \ldots, m$ as t
 where $FIM_{\rho_{\pi}, \pi}(\bm{\theta})$ is the Fisher Information Matrix w.r.t. $s \sim \rho^{\pi}, a \sim \pi$.
 \end{frame}
 
+\section{Natural Policy Gradient}
+
 \begin{frame}
 \frametitle{Natural Policy Gradient}
 \pause
 \begin{itemize}[<+->]
-\item Recall the idea of Natural Gradient from Numerical Optimization
 \item Natural gradient $\nabla_{\bm{\theta}}^{nat} J(\bm{\theta})$ is the direction of optimal $\bm{\theta}$ movement
 \item In terms of the KL-divergence metric (versus plain Euclidean norm)
-\item Natural gradient yields better convergence (we won't cover proof)
-\end{itemize}
-\pause
-$$\mbox{Formally defined as: } \nabla_{\bm{\theta}} J(\bm{\theta}) = FIM_{\rho_{\pi}, \pi}(\bm{\theta}) \cdot \nabla_{\bm{\theta}}^{nat} J(\bm{\theta}) $$
-\pause
-$$\mbox{Therefore, } \nabla_{\bm{\theta}}^{nat} J(\bm{\theta}) = \bm{w}$$
-\pause
-{\bf This compact result is great for our algorithm:}
-\pause
+\item Formally defined as:
+$$\nabla_{\bm{\theta}} J(\bm{\theta}) = FIM_{\rho_{\pi}, \pi}(\bm{\theta}) \cdot \nabla_{\bm{\theta}}^{nat} J(\bm{\theta}) $$
+\item Enabling Compatible Function Approximation implies:
+$$\nabla_{\bm{\theta}}^{nat} J(\bm{\theta}) = \bm{w}$$
+\item {\bf This compact result is great for our algorithm:}
 \begin{itemize}[<+->]
 \item Update Critic params $\bm{w}$ with the critic loss gradient (at step $t$) as:
-$$\gamma^t \cdot (R_{t+1} + \gamma \cdot \bm{SC}(S_{t+1}, A_{t+1}; \bm{\theta})^T \cdot \bm{w} - \bm{SC}(S_t,A_t; \bm{\theta})^T \cdot \bm{w}) \cdot \bm{SC}(S_t,A_t; \bm{\theta})$$
-\item Update Actor params $\bm{\theta}$ in the direction equal to value of $\bm{w}$
+$$(R_{t+1} + \gamma \cdot \bm{SC}(S_{t+1}, A_{t+1}; \bm{\theta})^T \cdot \bm{w} - \bm{SC}(S_t,A_t; \bm{\theta})^T \cdot \bm{w}) \cdot \bm{SC}(S_t,A_t; \bm{\theta})$$
+\item Update Actor params $\bm{\theta}$ in the direction of $\bm{w}$
+\end{itemize}
 \end{itemize}
 \end{frame}
 
