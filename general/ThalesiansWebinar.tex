@@ -512,7 +512,6 @@ $$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t
 \item {\bf Complete Market} - where payoffs of all derivatives can be replicated
 \item {\bf Risk-Neutral Measure} - Altered probability measure for movements of underlying securities for mathematical convenience in pricing
 \end{itemize}
-
 \item Assumptions of \href{https://github.com/coverdrive/technical-documents/blob/master/finance/ArbitrageCompleteness.pdf}{\underline{\textcolor{blue}{arbitrage-free and completeness}}}
 lead to (dynamic, exact, unique) replication of derivatives with the underlying securities
 \item Assumptions of frictionless trading provide these idealistic conditions
@@ -696,7 +695,7 @@ $$V^*(X_t) = \max(H(X_t), \mathbb{E}[V^*(X_{t+1})|X_t])$$
 
 
 \begin{frame}
-\frametitle{P3: Mainstream approaches to American Option Pricing}
+\frametitle{P3: American Option Pricing}
 \pause
 \begin{itemize}[<+->]
 \item American Option Pricing is Optimal Stopping, and hence an MDP
@@ -848,7 +847,7 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 \end{frame}
 
 \begin{frame}
-\frametitle{P5: OB Dynamics and Market-Making}
+\frametitle{P5: Order-Book Dynamics and Market-Making}
 \pause
 \begin{itemize}[<+->]
 \item Modeling OB Dynamics involves predicting arrival of MOs and LOs
