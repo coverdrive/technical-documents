@@ -238,17 +238,17 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \frametitle{Value Function and Bellman Equations}
 \pause
 \begin{itemize}
-\item Value function (under policy $\pi$) $V_{\pi}(s) = \mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
+\item Value function (under policy $\pi$) $V^{\pi}(s) = \mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
 \pause
-$$V_{\pi}(s) = \sum_{a} \pi(a|s) \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
+$$V^{\pi}(s) = \sum_{a} \pi(a|s) \cdot \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V^{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
-\item Optimal Value Function $V_{*}(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
+\item Optimal Value Function $V^*(s) = \max_{\pi} V^{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
 \pause
-$$V_{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{*}(s')) \mbox{ for all } s \in \mathcal{S}$$
+$$V^{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V^*(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
-\item {\em There exists an Optimal Policy} $\pi_{*}$ achieving $V_{*}(s)$ for all $s \in \mathcal{S}$
+\item {\em There exists an Optimal Policy} $\pi^*$ achieving $V^*(s)$ for all $s \in \mathcal{S}$
 \pause
-\item Determining $V_{\pi}(s)$ known as {\em Prediction}, and $V_{*}(s)$ known as {\em Control}
+\item Determining $V^{\pi}(s)$ known as {\em Prediction}, and $V^*(s)$ known as {\em Control}
 \pause
 \item The above recursive equations are called {\em Bellman equations}
 \pause
@@ -414,10 +414,9 @@ For simplicity, consider the case of 1 risky asset
 \item Balance constraint implies the following process for Wealth $W_t$
 $$dW_t = ((\pi_t \cdot (\mu - r) + r) \cdot W_t - c_t) \cdot dt + \pi_t \cdot \sigma \cdot W_t \cdot dz_t$$
 \item At any time $t$, determine optimal $[\pi(t,W_t), c(t, W_t)]$ to maximize:
-$$\mathbb{E}[\int_t^T \frac {e^{-\rho (s-t)} \cdot c_s^{1-\gamma}} {1-\gamma} \cdot ds + \frac {e^{-\rho (T-t)} \cdot B \cdot W_T^{1-\gamma}} {1-\gamma} \mid W_t]$$
-where $\rho \geq 0$ is the utility discount rate, $B$ is the bequest
-\item We can solve this problem for arbitrary bequest but Merton considers $B = \epsilon^{\gamma}$
-where $0 < \epsilon \ll 1$, meaning ``zero" bequest
+$$\mathbb{E}[(\int_t^T e^{-\rho (s-t)} \cdot \frac {c_s^{1-\gamma}} {1-\gamma} \cdot ds + e^{-\rho (T-t)} \cdot B \cdot \frac{W_T^{1-\gamma}} {1-\gamma}) \mid W_t]$$
+where $\rho \geq 0$ is the utility discount rate, $B$ is bequest utility factor
+\item We can solve this problem for arbitrary $B$ but Merton considers $B = 0$
 \end{itemize}
 \end{frame}
 
@@ -739,30 +738,18 @@ $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 0 \leq i < n], P_i^{(a)} < P_j^{(a)
 \end{frame}
 
 \begin{frame}
-\frametitle{P4: Order Book (OB) Activity}
-\pause
-\begin{itemize}[<+->]
-\item A new Sell LO $(P,N)$ potentially removes best bid prices on the OB
-$$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=0}^{i-1} N_j^{(b)}))) \mid (i: P_i^{(b)} \geq P)]$$
-\item After this removal, it adds the following to the asks side of the OB 
-$$(P, \max(0, N - \sum_{i: P_i^{(b)} \geq P}  N_i^{(b)}))$$
-\item A new Buy LO operates analogously (on the other side of the OB)
-\item A Sell Market Order $N$ will remove the best bid prices on the OB
-$$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=0}^{i-1} N_j^{(b)}))) \mid 0 \leq i < m]$$
-\item A Buy Market Order $N$ will remove the best ask prices on the OB
-$$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=0}^{i-1} N_j^{(a)}))) \mid 0 \leq i < n]$$
-\end{itemize}
-\end{frame}
-
-\begin{frame}
 \frametitle{P4: Price Impact and Order Book Dynamics}
 \pause
 \begin{itemize}[<+->]
-\item We focus on how a Market order (MO) alters the OB
-\item A large-sized MO often results in a big {\em Spread} which could soon be replenished by new LOs, potentially from either side
-\item So a large-sized MO moves the Bid/Ask/Mid ({\em Price Impact} of MO)
-\item Subsequent Replenishment activity is part of {\em OB Dynamics}
-\item Models for OB Dynamics can be quite complex
+\item A new Sell LO $(P,N)$ potentially removes best bid prices on the OB
+\item After this removal, it adds to the asks side of the OB 
+\item A new Buy LO operates analogously (on the other side of the OB)
+\item A Sell Market Order $N$ will remove the best bid prices on the OB
+\item A Buy Market Order $N$ will remove the best ask prices on the OB
+\item A large-sized MO can result in a big {\em Big-Ask Spread} - we call this the {\em Temporary Price Impact}
+\item {\em Spread} typically replenished by new LOs, potentially from either side
+\item Subsequent Replenishment moves {\em Bid/Ask/Mid} - we call this the {\em Permanent Price Impact}
+\item Price Impact Models with OB Dynamics can be quite complex
 \end{itemize}
 \end{frame}
 
@@ -793,7 +780,6 @@ $$\mbox{Removal: } [(P_i^{(a)}, \min(N_i^{(a)}, \max(0, N - \sum_{j=0}^{i-1} N_j
 \item $P_t$ denotes Bid Price at start of time step $t$
 \item $N_t$ denotes number of shares sold in time step $t$
 \item $R_t = N - \sum_{i=0}^{t-1}N_i = $ shares remaining to be sold at start of step $t$
-\item $R_0 = N, R_{t+1}  = R_t - N_t \text{ for all } t < T, N_{T-1} = R_{T-1} \Rightarrow R_T = 0$
 \item Price Dynamics given by:
 $$P_{t+1} = f_t(P_t, N_t, \epsilon_t)$$
 where $f_t(\cdot)$ is an arbitrary function incorporating:
