@@ -294,7 +294,7 @@ $$V^{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V^*(s')) \mbox{ 
 \item Even if MDP model is available, model updates can be challenging
 \item Often real-world models end up being too large or too complex
 \item Sometimes estimating a {\em sampling model} is much more feasible
-\item So RL interacts with either {\em actual} or {\em simulated} environment
+\item RL interacts with either {\em actual} or {\em simulated} environment
 \item Either way, we receive {\em individual transitions} to next state and reward
 \item RL is a ``trial-and-error'' approach linking {\em Actions} to {\em Returns}
 \item Try different actions \& learn what works, what doesn't
@@ -430,7 +430,6 @@ where $\rho \geq 0$ is the utility discount rate, $B$ is bequest utility factor
 \item The {\em Return} at time $t$ is the accumulated discounted {\em Reward}:
 $$\int_t^T e^{-\rho(s-t)} \cdot \frac {c_s^{1-\gamma}} {1-\gamma} \cdot ds$$
 \item Find {\em Policy} $: (t, W_t) \rightarrow [\pi_t, c_t]$ that maximizes the {\em Expected Return}
-\item Note: $c_t \geq 0$, but $\pi_t$ is unconstrained
 \end{itemize}
 \end{frame}
 
@@ -649,7 +648,7 @@ $$V_0^*((\bm{\alpha}_0, \bm{P}_0, \beta_0 - x, D \cup D')) = V_0^*((\bm{\alpha}_
 \item Stopping time $\tau$ is a ``random time'' (random variable) interpreted as time at which a given stochastic process exhibits certain behavior
 \item Stopping time often defined by a ``stopping policy'' to decide whether to continue/stop a process based on present position and past events
 \item Deciding whether $\tau \leq t$ only depends on information up to time $t$
-\item Hitting time of a Borel set $A$ for a process $X_t$ is the first time $X_t$ takes a value within the set $A$
+\item Hitting time of a set $A$ for a process $X_t$ is the first time $X_t$ takes a value within the set $A$
 \item Hitting time is an example of stopping time. Formally, 
 $$T_{X,A} = \min \{t \in \mathbb{R} | X_t \in A\}$$
 eg: Hitting time of a process to exceed a certain fixed level
@@ -735,6 +734,11 @@ $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 0 \leq i < n], P_i^{(a)} < P_j^{(a)
 \item We call $P_0^{(a)} - P_0^{(b)}$ as {\em Spread}, $P_{n-1}^{(a)} - P_{m-1}^{(b)}$ as {\em Market Depth}
 \item A Market Order (MO) states intent to buy/sell $N$ shares at the {\em best possible price(s)} available on the OB at the time of MO submission
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{P4: Trading Order Book}
+\includegraphics[width=11.5cm, height=7cm]{../finance/cme241/order_book.png}
 \end{frame}
 
 \begin{frame}
@@ -833,12 +837,11 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 \end{frame}
 
 \begin{frame}
-\frametitle{P5: Order-Book Dynamics and Market-Making}
+\frametitle{P5: Market-Making}
 \pause
 \begin{itemize}[<+->]
-\item Modeling OB Dynamics involves predicting arrival of MOs and LOs
 \item Market-makers are liquidity providers (providers of Buy and Sell LOs)
-\item Other market participants are typically liquidity takers (MOs)
+\item Market participants submitting MOs are liquidity takers
 \item But there are also other market participants that trade with LOs
 \item Complex interplay between market-makers \& other mkt participants
 \item Hence, OB Dynamics tend to be quite complex
@@ -867,9 +870,11 @@ where $g_t(\cdot)$ is an arbitrary func representing Temporary Price Impact
 \item Assume market-maker can add or remove bids/asks costlessly
 \item Random var $X_t^{(b)} \in \mathbb{Z}_{\geq 0}$ denotes bid-shares ``hit'' {\em up to} time $t$
 \item Random var $X_t^{(a)} \in \mathbb{Z}_{\geq 0}$ denotes ask-shares ``lifted'' {\em up to} time $t$
-$$W_{t+1} = W_t + P_t^{(a)} \cdot (X_{t+1}^{(a)} - X_t^{(a)}) - P_t^{(b)} \cdot (X_{t+1}^{(b)} - X_t^{(b)}) \mbox{ , } I_t = X_t^{(b)} - X_t^{(a)}$$
-\item Goal to maximize $\mathbb{E}[U(W_T + I_T \cdot S_T)]$ for appropriate concave $U(\cdot)$
 \end{itemize}
+\pause
+$$W_{t+1} = W_t + P_t^{(a)} \cdot (X_{t+1}^{(a)} - X_t^{(a)}) - P_t^{(b)} \cdot (X_{t+1}^{(b)} - X_t^{(b)}) \mbox{ , } I_t = X_t^{(b)} - X_t^{(a)}$$
+\pause
+Goal to maximize $\mathbb{E}[U(W_T + I_T \cdot S_T)]$ for appropriate concave $U(\cdot)$
 \end{frame}
 
 \begin{frame}
