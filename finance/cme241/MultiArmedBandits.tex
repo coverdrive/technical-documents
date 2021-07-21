@@ -234,7 +234,7 @@ $$ = \sum_{a\in\mathcal{A}} \mathbb{E}[N_T(a)] \cdot \Delta_a$$
 \item Estimate the value of each action by rewards-averaging
 $$\hat{Q}_t(a) = \frac 1 {N_t(a)} \sum_{s=1}^t r_s \cdot \mathbbm{1}_{a_s=a}$$
 \item The {\em Greedy} algorithm selects the action with highest estimated value
-$$a_t = \argmax_{a\in \mathcal{A}} \hat{Q}_t(a)$$
+$$a_t = \argmax_{a\in \mathcal{A}} \hat{Q}_{t-1}(a)$$
 \item Greedy algorithm can lock onto a suboptimal action forever
 \item Hence, Greedy algorithm has linear total regret
 \end{itemize}
