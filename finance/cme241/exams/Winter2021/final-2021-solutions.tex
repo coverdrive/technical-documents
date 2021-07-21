@@ -234,7 +234,7 @@ To satisfy the above, we get:
 $$B_i = L \cdot \frac {(1 + \frac M {12})^n - (1 + \frac M {12})^i} {(1 + \frac M {12})^n - 1} \text{for all } 0 \leq i \leq n$$
 $$P_i = \frac {\frac {B_i \cdot M} {12}} {(1 + \frac M {12})^{n - i} - 1} \text{ for all } 0 \leq i < n$$
 $$I_i = \frac {B_i \cdot M} {12} \text{ for all } 0 \leq i < n$$
-$$P_i + I_i = \frac {B_i \cdot M} {12} \cdot (1 + \frac 1 {(1 + \frac M {12})^{n - i} - 1}) =  \frac {L \cdot M} {1 - (1 + \frac M {12})^{-n}} \text{ for all } 0 \leq i < n$$ 
+$$P_i + I_i = \frac {B_i \cdot M} {12} \cdot (1 + \frac 1 {(1 + \frac M {12})^{n - i} - 1}) =  \frac {L \cdot M} {12} \cdot \frac 1 {1 - (1 + \frac M {12})^{-n}} \text{ for all } 0 \leq i < n$$ 
 
 Now assume that you have just bought an expensive house by taking out a mortgage with a loan amount $L$ and mortgage rate $M$. After the first month of your mortgage, at the beginning of each month, the bank offers you an updated mortgage rate that reflects the updated market conditions (assumed to be stochastic). You can:
 
