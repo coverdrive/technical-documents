@@ -248,7 +248,7 @@ $$a_t = \argmax_{a\in \mathcal{A}} \hat{Q}_{t-1}(a)$$
 \item The $\epsilon$-Greedy algorithm continues to explore forever
 \item At each time-step $t$:
 \begin{itemize}
-\item With probability $1-\epsilon$, select $a_t=\argmax_{a\in\mathcal{A}} \hat{Q}_t(a)$
+\item With probability $1-\epsilon$, select $a_t=\argmax_{a\in\mathcal{A}} \hat{Q}_{t-1}(a)$
 \item With probability $\epsilon$, select a random action (uniformly) from $\mathcal{A}$
 \end{itemize}
 \item Constant $\epsilon$ ensures a minimum regret proportional to mean gap
@@ -345,7 +345,7 @@ $$\lim_{T\rightarrow \infty} L_T \geq \log T \sum_{a|\Delta_a > 0} \frac 1 {\Del
 \item Large $N_t(a) \Rightarrow$ Small $\hat{U}_t(a)$ (estimated value is accurate)
 \end{itemize}
 \item Select action maximizing Upper Confidence  Bound (UCB)
-$$a_t = \argmax_{a\in\mathcal{A}} \{ \hat{Q}_t(a) + \hat{U}_t(a) \}$$
+$$a_{t+1} = \argmax_{a\in\mathcal{A}} \{ \hat{Q}_t(a) + \hat{U}_t(a) \}$$
 \end{itemize}
 \end{frame}
 
@@ -383,7 +383,7 @@ $$\hat{U}_t(a) = \sqrt{\frac {\alpha \log t} {2N_t(a)}}$$
 \frametitle{UCB1}
 \pause
 Yields UCB1 algorithm for arbitrary-distribution arms bounded in $[0,1]$
-$$a_t = \argmax_{a\in \mathcal{A}} \{ \hat{Q}_t(a) + \sqrt{\frac {\alpha \log t} {2N_t(a)}} \}$$
+$$a_{t+1} = \argmax_{a\in \mathcal{A}} \{ \hat{Q}_t(a) + \sqrt{\frac {\alpha \log t} {2N_t(a)}} \}$$
 \begin{theorem}
 The UCB1 Algorithm achieves logarithmic total regret
 $$L_T \leq \sum_{a|\Delta_a > 0} \frac {4\alpha \cdot \log T} {\Delta_a} + \frac {2\alpha \cdot \Delta_a}{\alpha - 1}$$
@@ -415,7 +415,7 @@ $$L_T \leq \sum_{a|\Delta_a > 0} \frac {4\alpha \cdot \log T} {\Delta_a} + \frac
 \item Compute Gaussian posterior over $\mu_a,\sigma_a^2$  (Bayes update details \href{https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/lecture5.pdf}{\underline{\textcolor{blue}{here}}})
 $$\mathbb{P}[\mu_a, \sigma_a^2|h_t] \propto \mathbb{P}[\mu_a, \sigma_a^2] \cdot \prod_{t|a_t=a} \mathcal{N}(r_t;\mu_a, \sigma_a^2)$$
 \item Pick action that maximizes Expectation of:  ``$c$ std-errs above mean''
-$$a_t = \argmax_{a\in\mathcal{A}} \mathbb{E}[\mu_a + \frac {c \cdot \sigma_a} {\sqrt{N_t(a)}}]$$
+$$a_{t+1} = \argmax_{a\in\mathcal{A}} \mathbb{E}[\mu_a + \frac {c \cdot \sigma_a} {\sqrt{N_t(a)}}]$$
 \end{itemize}
 \end{frame}
 
