@@ -353,12 +353,12 @@ $$a_{t+1} = \argmax_{a\in\mathcal{A}} \{ \hat{Q}_t(a) + \hat{U}_t(a) \}$$
 \frametitle{Hoeffding's Inequality}
 \pause
 \begin{theorem}[Hoeffding's Inequality]
-Let $X_1, \ldots, X_t$ be i.i.d. random variables in $[0,1]$, and let $$\bar{X}_t = \frac 1 t \sum_{s=1}^t X_s$$ be the sample mean. Then,
-$$\mathbb{P}[\mathbb{E}[\bar{X}_t] > \bar{X}_t + u] \leq e^{-2tu^2}$$
+Let $X_1, \ldots, X_n$ be i.i.d. random variables in $[0,1]$, and let $$\bar{X}_n = \frac 1 n \sum_{i=1}^n X_i$$ be the sample mean. Then for any $u \geq 0$,
+$$\mathbb{P}[\mathbb{E}[\bar{X}_n] > \bar{X}_n + u] \leq e^{-2nu^2}$$
 \end{theorem}
 \begin{itemize}[<+->]
 \item Apply Hoeffding's Inequality to rewards of $[0,1]$-support bandits
-\item Conditioned on selecting action $a$
+\item Conditioned on selecting action $a$ at time step $t$, setting $n = N_t(a)$ and $u=\hat{U}_t(a)$,
 $$\mathbb{P}[Q(a) > \hat{Q}_t(a) + \hat{U}_t(a)] \leq e^{-2N_t(a) \cdot \hat{U}_t(a)^2}$$
 \end{itemize}
 \end{frame}
