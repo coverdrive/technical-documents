@@ -397,7 +397,7 @@ $$L_T \leq \sum_{a|\Delta_a > 0} \frac {4\alpha \cdot \log T} {\Delta_a} + \frac
 \begin{itemize}
 \item So far we have made no assumptions about the rewards distribution $\mathcal{R}$ (except bounds on rewards)
 \item {\em Bayesian Bandits} exploit prior knowledge of rewards distribution $\mathbb{P}[\mathcal{R}]$
-\item They compute posterior distribution of rewards $\mathbb{P}[\mathcal{R}|h_t]$ where $h_t = a_1,r_1, \ldots, a_{t-1}, r_{t-1}$ is the history
+\item They compute posterior distribution of rewards $\mathbb{P}[\mathcal{R}|h_t]$ where $h_t = a_1,r_1, \ldots, a_t, r_t$ is the history
 \item Use posterior to guide exploration
 \begin{itemize}
 \item Upper Confidence Bounds (Bayesian UCB)
@@ -415,7 +415,7 @@ $$L_T \leq \sum_{a|\Delta_a > 0} \frac {4\alpha \cdot \log T} {\Delta_a} + \frac
 \item Compute Gaussian posterior over $\mu_a,\sigma_a^2$  (Bayes update details \href{https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/lecture5.pdf}{\underline{\textcolor{blue}{here}}})
 $$\mathbb{P}[\mu_a, \sigma_a^2|h_t] \propto \mathbb{P}[\mu_a, \sigma_a^2] \cdot \prod_{t|a_t=a} \mathcal{N}(r_t;\mu_a, \sigma_a^2)$$
 \item Pick action that maximizes Expectation of:  ``$c$ std-errs above mean''
-$$a_{t+1} = \argmax_{a\in\mathcal{A}} \mathbb{E}[\mu_a + \frac {c \cdot \sigma_a} {\sqrt{N_t(a)}}]$$
+$$a_{t+1} = \argmax_{a\in\mathcal{A}} \mathbb{E}_{\mathbb{P}[\mu_a, \sigma_a|h_t]}[\mu_a + \frac {c \cdot \sigma_a} {\sqrt{N_t(a)}}]$$
 \end{itemize}
 \end{frame}
 
@@ -425,7 +425,7 @@ $$a_{t+1} = \argmax_{a\in\mathcal{A}} \mathbb{E}[\mu_a + \frac {c \cdot \sigma_a
 \pause
 \begin{itemize}[<+->]
 \item {\em Probability Matching} selects action $a$ according to probability that $a$ is the optimal action
-$$\pi(a_t|h_t) = \mathbb{P}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mathbb{E}_{\mathcal{D}_t}[r|a_t] > \mathbb{E}_{\mathcal{D}_t}[r|a], \forall a \neq a_t]$$
+$$\pi(a_{t+1}|h_t) = \mathbb{P}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mathbb{E}_{\mathcal{D}_t}[r|a_{t+1}] > \mathbb{E}_{\mathcal{D}_t}[r|a], \forall a \neq a_{t+1}]$$
 \item Probability matching is optimistic in the face of uncertainty
 \item Because uncertain actions have higher probability of being max
 \item Can be difficult to compute analytically from posterior
@@ -437,13 +437,13 @@ $$\pi(a_t|h_t) = \mathbb{P}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mat
 \pause
 \begin{itemize}[<+->]
 \item {\em Thompson Sampling} implements probability matching 
-$$\pi(a_t|h_t) = \mathbb{P}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mathbb{E}_{\mathcal{D}_t}[r|a_t] > \mathbb{E}_{\mathcal{D}_t}[r|a], \forall a \neq a_t]$$
-$$=\mathbb{E}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mathbbm{1}_{a_t=\argmax_{a\in\mathcal{A}} \mathbb{E}_{\mathcal{D}_t}[r|a]}]$$
+$$\pi(a_{t+1}|h_t) = \mathbb{P}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mathbb{E}_{\mathcal{D}_t}[r|a_{t+1}] > \mathbb{E}_{\mathcal{D}_t}[r|a], \forall a \neq a_{t+1}]$$
+$$=\mathbb{E}_{\mathcal{D}_t\sim \mathbb{P}[\mathcal{R}|h_t]}[\mathbbm{1}_{a_{t+1}=\argmax_{a\in\mathcal{A}} \mathbb{E}_{\mathcal{D}_t}[r|a]}]$$
 \item Use Bayes law to compute posterior distribution $\mathbb{P}[\mathcal{R}|h_t]$
 \item {\em Sample} a reward distribution $\mathcal{D}_t$ from posterior $\mathbb{P}[\mathcal{R}|h_t]$
 \item Estimate Action-Value function with sample $\mathcal{D}_t$ as $\hat{Q}_t(a) = \mathbb{E}_{\mathcal{D}_t}[r|a]$
 \item Select action maximizing value of sample
-$$a_t = \argmax_{a\in\mathcal{A}} \hat{Q}_t(a)$$
+$$a_{t+1} = \argmax_{a\in\mathcal{A}} \hat{Q}_t(a)$$
 \item Thompson Sampling achieves Lai-Robbins lower bound!
 \item \href{https://github.com/TikhonJelvis/RL-book/tree/master/rl/chapter14/ts_gaussian.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Gaussian Distributions
 \item \href{https://github.com/TikhonJelvis/RL-book/tree/master/rl/chapter14/ts_bernoulli.py}{\underline{\textcolor{blue}{Educational Code}}} for Thompson Sampling for Bernoulli Distributions
