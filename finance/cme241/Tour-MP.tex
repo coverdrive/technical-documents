@@ -215,8 +215,8 @@ $$ = \mathbb{P}[(U_{t+1}, D_{t+1})|(U_t, D_t)]$$
 A {\em Markov Process} consists of:
 \begin{itemize}
 \item A countable set of states $\mathcal{S}$ (known as the State Space) and a set $\mathcal{T} \subseteq \mathcal{S}$ (known as the set of Terminal States)
-\item A time-indexed sequence of random states $S_t \in \mathcal{S}$ for time steps $t=0, 1, 2, \ldots$ with each state transition satisfying the Markov Property: $\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[S_{t+1}|S_t]$ for all $t \geq 0$.
-\item Termination: If an outcome for $S_T$ (for some time step $T$) is a state in the set $\mathcal{T}$, then this sequence outcome terminates at time step $T$.
+\item A time-indexed sequence of random states $S_t \in \mathcal{S}$ for time steps $t=0, 1, 2, \ldots$ with each state transition satisfying the Markov Property: $\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[S_{t+1}|S_t]$ for all $t \geq 0$
+\item Termination: If an outcome for $S_T$ (for some time step $T$) is a state in the set $\mathcal{T}$, then this sequence outcome terminates at time step $T$
 \end{itemize}
 \end{definition}
 \pause
@@ -256,25 +256,19 @@ $$\mathcal{P}(s, s') = \mathbb{P}[S_{t+1}=s'|S_t=s] \text{ for all } s \in \math
 class MarkovProcess(ABC, Generic[S]):
 
     @abstractmethod
-    def transition(self, state: S) -> \
-            Optional[Distribution[S]]:
+    def transition(self, state: NonTerminal[S]) -> \
+            Distribution[State[S]]:
         pass
-
-    def is_terminal(self, state: S) -> bool:
-        return self.transition(state) is None
 
     def simulate(
         self,
-        start_state_distribution: Distribution[S]
-    ) -> Iterable[S]:
-        state: S = start_state_distribution.sample()
-        while True:
-            yield state
-            next_states = self.transition(state)
-            if next_states is None:
-                return
-
-            state = next_states.sample()
+        start_st_distr: Distribution[NonTerminal[S]]
+    ) -> Iterable[State[S]]:
+        st: State[S] = start_state_distr.sample()
+        yield st
+        while isinstance(st, NonTerminal):
+            st = self.transition(st).sample()
+            yield st
 \end{lstlisting}
 \end{frame}
 
@@ -288,9 +282,55 @@ class MarkovProcess(ABC, Generic[S]):
 \end{itemize}
 \pause
 \begin{lstlisting}
-Transition[S] = \
-    Mapping[S, Optional[FiniteDistribution[S]]]
+Transition = Mapping[
+    NonTerminal[S],
+    FiniteDistribution[State[S]]
+]
+\end{lstlisting}
+\end{frame}
 
+
+\begin{frame}[fragile]
+\frametitle{class FiniteMarkovProcess}
+\pause
+\begin{lstlisting}
+class FiniteMarkovProcess(MarkovProcess[S]):
+
+    nt_states: Sequence[NonTerminal[S]]
+    tr_map: Transition[S]
+
+    def __init__(self, tr: Mapping[S,
+            FiniteDistribution[S]]):
+        nt: Set[S] = set(tr.keys())
+        self.tr_map = {
+            NonTerminal(s): Categorical(
+                {(NonTerminal(s1) if s1 in nt else
+                 Terminal(s1)): p
+                 for s1, p in v.table().items()}
+            ) for s, v in tr.items()
+        }
+        self.nt_states = list(self.tr_map.keys())
+        
+    def transition(self, state: NonTerminal[S])\
+        -> FiniteDistribution[State[S]]:
+    return self.tr_map[state]
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{class FiniteMarkovProcess}
+\pause
+\begin{lstlisting}        
+    def transition(self, state: NonTerminal[S])\
+        -> FiniteDistribution[State[S]]:
+    return self.tr_map[state]
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Weather Finite Markov Reward Process}
+\begin{lstlisting}       
 {
   "Rain": Categorical({"Rain": 0.3, "Nice": 0.7}),
   "Snow": Categorical({"Rain": 0.4, "Snow": 0.6}),
@@ -306,29 +346,6 @@ Transition[S] = \
 \begin{frame}
 \frametitle{Weather Finite Markov Reward Process}
 \includegraphics[width=10cm, height=8cm]{weather_mp.png}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{class FiniteMarkovProcess}
-\pause
-\begin{lstlisting}
-class FiniteMarkovProcess(MarkovProcess[S]):
-    
-    non_terminal_states: Sequence[S]
-    transition_map: Transition[S]
-
-    def __init__(self, transition_map: Transition[S]):
-        self.non_terminal_states = [s for s, v in transition_map.items()
-                                    if v is not None]
-        self.transition_map = transition_map
-
-    def transition(self, state: S) -> \
-            Optional[FiniteDistribution[S]]:
-        return self.transition_map[state]
-
-    def states(self) -> Iterable[S]:
-        return self.transition_map.keys()
-\end{lstlisting}
 \end{frame}
 
 
@@ -407,22 +424,22 @@ $$\mathcal{P}_R(s,r,s') = \mathbb{P}[(R_{t+1}=r, S_{t+1}=s') | S_t=s]$$
 \pause
 \begin{lstlisting}
 class MarkovRewardProcess(MarkovProcess[S]):
+
     @abstractmethod
-    def transition_reward(self, state: S)\
-            -> Optional[Distribution[Tuple[S, float]]]:
+    def transition_reward(self, state: NonTerminal[S])\
+            -> Distribution[Tuple[State[S], float]]:
         pass
         
-    def transition(self, state: S) -> Optional[Distribution[S]]:
+    def transition(self, state: NonTerminal[S]) \
+            -> Distribution[State[S]]:
         distribution = self.transition_reward(state)
-        if distribution is None:
-            return None
 
         def next_state(distribution=distribution):
             next_s, _ = distribution.sample()
             return next_s
 
-        return SampledDistribution(next_state)    
-\end{lstlisting}
+        return SampledDistribution(next_state)
+\end{lstlisting}            
 \end{frame}
 
 \begin{frame}
@@ -483,8 +500,10 @@ $$\text{PMF } f(i) = \frac {e^{-\lambda} \lambda^i} {i!}, \text{ CMF } F(i) = \s
 \end{itemize}
 \pause
 \begin{lstlisting}
-StateReward = FiniteDistribution[Tuple[S, float]]
-RewardTransition = Mapping[S, Optional[StateReward[S]]]
+StateReward = FiniteDistribution[Tuple[State[S],
+                                       float]]
+RewardTransition = Mapping[NonTerminal[S],
+                           StateReward[S]]
 \end{lstlisting}
 \end{frame}
 

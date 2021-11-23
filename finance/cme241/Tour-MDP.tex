@@ -192,8 +192,8 @@ $$\pi(s, \pi_D(s)) = 1 \text{ and } \pi(s, a) = 0 \text{ for all } a\in \mathcal
 \begin{lstlisting}
 class Policy(ABC, Generic[S, A]):
     @abstractmethod
-    def act(self, state: S) -> \
-            Optional[Distribution[A]]:
+    def act(self, state: NonTerminal[S]) -> \
+            Distribution[A]:
         pass
 \end{lstlisting}
 \end{frame}
@@ -217,20 +217,14 @@ $$\mathcal{R}^{\pi}(s) = \sum_{a\in \mathcal{A}} \pi(s,a) \cdot \mathcal{R}(s,a)
 \begin{lstlisting}
 class MarkovDecisionProcess(ABC, Generic[S, A]):
     @abstractmethod
-    def actions(self, state: S) -> Iterable[A]:
+    def actions(self, state: NonTerminal[S]) \
+            -> Iterable[A]:
         pass
 
     @abstractmethod
-    def step(self, state: S, action: A) -> \
-            Optional[Distribution[Tuple[S, float]]]:
+    def step(self, state: NonTerminal[S], action: A) \
+            -> Distribution[Tuple[State[S], float]]:
         pass
-        
-    def is_terminal(self, state: S) -> bool:
-        try:
-            next(iter(self.actions(state)))
-            return False
-        except StopIteration:
-            return True
 \end{lstlisting}
 \end{frame}
 
@@ -244,14 +238,15 @@ def apply_policy(self, policy: Policy[S, A]) \
     mdp = self
 
     class RewardProcess(MarkovRewardProcess[S]):
-        def transition_reward(self, state: S) -> \
-                Optional[Distribution[Tuple[S, float]]]:
-            if policy.act(state) is None:
-                return None
-            return policy.act(state).apply(
-                lambda a: mdp.step(state, a)
-            )
-
+        def transition_reward(
+            self,
+            st: NonTerminal[S]
+        ) -> Distribution[Tuple[State[S], float]]:
+           actions: Distribution[A] = policy.act(st)
+           return actions.apply(
+               lambda a: mdp.step(st, a)
+           )
+           
     return RewardProcess()        
 \end{lstlisting}
 \end{frame}
@@ -269,9 +264,11 @@ $$\mathcal{N} \rightarrow (\mathcal{A} \rightarrow (\mathcal{S} \times \mathcal{
 \end{itemize}
 \pause
 \begin{lstlisting}
-StateReward = FiniteDistribution[Tuple[S, float]]
+StateReward = FiniteDistribution[Tuple[State[S],
+                                       float]]
 ActionMapping = Mapping[A, StateReward[S]]
-StateActionMapping = Mapping[S, Optional[ActionMapping[A, S]]]
+StateActionMapping = Mapping[NonTerminal[S], 
+                             ActionMapping[A, S]]
 \end{lstlisting}
 \end{frame}
 
@@ -283,19 +280,20 @@ StateActionMapping = Mapping[S, Optional[ActionMapping[A, S]]]
 class FiniteMarkovDecisionProcess(
         MarkovDecisionProcess[S, A]
 ):
-    mapping: StateActionMapping[S, A]
-    non_terminal_states: Sequence[S]
+    m: StateActionMapping[S, A]
+    nt_states: Sequence[NonTerminal[S]]
 
-    def __init__(self, mapping: StateActionMapping[S, A]):
-        self.mapping = mapping
-        self.non_terminal_states = [s for s, v in mapping.items()
-                                    if v is not None]
+    def __init__(self, m: Mapping[S, Mapping[A, 
+                FiniteDistribution[Tuple[S, float]]]]):
+        nt: Set[S] = set(mapping.keys())
+        self.m = {NonTerminal(s): {a: Categorical(
+            {(NonTerminal(s1) if s1 in nt else
+             Terminal(s1), r): p for (s1, r), p in
+             v.table().items()}) for a, v in
+             d.items()} for s, d in mapping.items()}
+        self.nt_states = list(self.m.keys())
 
-    def step(self, state: S, action: A) \
-            -> Optional[StateReward]:
-        if self.mapping[state] is None:
-            return None
-        return self.mapping[state][action]                                
+                      
 \end{lstlisting}                                    
 \end{frame}
 
@@ -303,17 +301,18 @@ class FiniteMarkovDecisionProcess(
 \frametitle{class FinitePolicy}
 \pause
 \begin{lstlisting}
+    def step(self, state: NonTerminal[S], action: A) \
+            -> StateReward:
+        return self.mapping[state][action]             
+        
+        
+@dataclass(frozen=True)
 class FinitePolicy(Policy[S, A]):
-    policy_map: Mapping[S, Optional[FiniteDistribution[A]]]
+    policy_map: Mapping[S, FiniteDistribution[A]]
 
-    def __init__(
-        self,
-        policy_map: Mapping[S, Optional[FiniteDistribution[A]]]
-    ):
-        self.policy_map = policy_map
-
-    def act(self, state: S) -> Optional[FiniteDistribution[A]]:
-        return self.policy_map[state]                           
+    def act(self, state: NonTerminal[S]) \
+            -> FiniteDistribution[A]:
+        return self.policy_map[state.state]                           
 \end{lstlisting}
 
 With this, we can write a method for FiniteMarkovDecisionProcess that \\
