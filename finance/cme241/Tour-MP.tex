@@ -234,7 +234,7 @@ A {\em Markov Process} consists of:
 \begin{itemize}[<+->]
 \item Stationary Markov Process: $\mathbb{P}[S_{t+1}|S_t]$ independent of $t$
 \item Stationary Markov Process specified with function $\mathcal{P}: \mathcal{N} \times \mathcal{S} \rightarrow [0,1]$
-$$\mathcal{P}(s, s') = \mathbb{P}[S_{t+1}=s'|S_t=s] \text{ for all } s \in \mathcal{N}, s' \in \mathcal{S}$$
+$$\mathcal{P}(s, s') = \mathbb{P}[S_{t+1}=s'|S_t=s] \text{ for all } t = 0, 1, 2, \ldots$$
 \item $\mathcal{P}$ is the {\em Transition Probability Function} (source $s \rightarrow$ destination $s'$)
 \item Convert non-Stationary to Stationary by augmenting {\em State} with time
 \item Default: {\em Discrete-Time, Countable-States Stationary Markov Process}
@@ -413,7 +413,7 @@ $\bm{\mathcal{P}}^T \cdot \bm{\pi}= \bm{\pi} \Rightarrow \bm{\pi}$ is an eigenve
  \begin{itemize}[<+->]
 \item By default, assume stationary: $\mathbb{P}[(R_{t+1}, S_{t+1}) | S_t]$ independent of $t$
 \item Stationary MRP specified with function $\mathcal{P}_R: \mathcal{N} \times \mathcal{D} \times \mathcal{S} \rightarrow [0,1]$
-$$\mathcal{P}_R(s,r,s') = \mathbb{P}[(R_{t+1}=r, S_{t+1}=s') | S_t=s]$$
+$$\mathcal{P}_R(s,r,s') = \mathbb{P}[(R_{t+1}=r, S_{t+1}=s') | S_t=s] \text{ for all } t = 0, 1, 2, \ldots$$
 \item $\mathcal{P}_R$ known as the {\em Transition Probability Function}
 \end{itemize}
 \end{frame}
