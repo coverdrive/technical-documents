@@ -92,7 +92,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[``RL for Finance'' course]{CME 241: Reinforcement Learning for \\ Stochastic Control Problems in Finance} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[``RL for Finance'' course]{CME 241: Foundations of Reinforcement Learning \\ with Applications in Finance} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Ashwin Rao} % Your name
 \institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -100,7 +100,7 @@
  % Your institution for the title page
 }
 
-\date{Winter 2021} % Date, can be changed to a custom date
+\date{Winter 2022} % Date, can be changed to a custom date
 
 \begin{document}
 \begin{frame}
@@ -116,7 +116,7 @@
 \frametitle{Meet your Instructor}
 \pause
 \begin{itemize}[<+->]
-\item Joined Stanford ICME as Adjunct Faculty in Fall 2018
+\item Joined Stanford ICME as Adjunct Professor in Fall 2018
 \item Research Interests: A.I. for Dynamic Decisioning under Uncertainty
 \item Technical mentor to ICME students, partnerships with industry
 \item Educational background: Algorithms Theory \& Abstract Algebra
@@ -125,7 +125,6 @@
 \item Founded Tech Startup {\em ZLemma}, Acquired by hired.com in 2015
 \item One of our products was algorithmic jobs/career guidance for students
 \item Teaching experience: Pure \& Applied Math, CompSci, Finance, Mgmt
-\item Current Industry Job: V.P. of A.I. at Target (the Retail company)
 \end{itemize}
 \end{frame}
 
@@ -141,11 +140,12 @@
 \item Basic familiarity with Pricing, Portfolio Mgmt and Algo Trading, but we will do an overview of the requisite Finance/Economics
 \item No background required in MDP, DP, RL (we will cover from scratch)
 \end{itemize}
-\item Here's \href{http://web.stanford.edu/class/cme241/lecture_slides/final-2020.pdf}{\underline{\textcolor{blue}{last year's final exam}}}  to get a sense of course difficulty
-\item Register for the \href{https://piazza.com/stanford/winter2021/cme241/home}{\underline{\textcolor{blue}{course on Piazza}}}
+\item Here's \href{http://web.stanford.edu/class/cme241/lecture_slides/final-2021.pdf}{\underline{\textcolor{blue}{last year's final exam}}}  to get a sense of course difficulty
+\item Register for the \href{https://piazza.com/stanford/winter2022/cme241/home}{\underline{\textcolor{blue}{course on Piazza}}}
 \item Install Python 3 and supporting IDE/tools (eg: PyCharm, Jupyter)
 \item Install LaTeX/Markdown and supporting editor for tech writing
-\item Assignments and code in my book based on \href{https://github.com/TikhonJelvis/RL-Book}{\underline{\textcolor{blue}{this open-source code}}}
+\item Download  \href{https://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{the textbook for this course}}}
+\item Assignments and code in the textbook based on \href{https://github.com/TikhonJelvis/RL-Book}{\underline{\textcolor{blue}{this open-source code}}}
 \item {\em Fork} this repo and \href{http://web.stanford.edu/class/cme241/lecture_slides/assignments/assignment1.pdf}{\underline{\textcolor{blue}{get set up}}} to use this code in assignments
 \item Create separate directories for each assignment for CA (\href{mailto:svenl@stanford.edu}{\underline{\textcolor{blue}{Sven Lerner}}}) to review - send Sven your forked repo URL and {\em git push} often
 \end{itemize}
@@ -162,10 +162,10 @@
 \item 40\% 48-hour Final Exam (on Theory, Modeling, Programming)
 \item 30\% {\em Assignments}: Technical Writing and Programming
 \end{itemize}
-\item Lectures (on Zoom): Wed \& Fri 4:00pm - 5:20pm, Jan 13  - Mar 19
-\item Office Hours 1-4pm Fri (or by appointment) on Zoom
+\item Lectures (on Zoom): Wed \& Fri 3:15pm-4:45pm. McCullough 115.
+\item Office Hours 12:30pm-2:30pm Fri (or by appointment) in ICME Mezzanine level, room M05 (within Huang Engg Bldg)
 \item Course Web Site: \href{http://cme241.stanford.edu}{\underline{\textcolor{blue}{cme241.stanford.edu}}}
-\item Ask Questions and engage in Discussions on \href{https://piazza.com/stanford/winter2021/cme241/home}{\underline{\textcolor{blue}{Piazza}}}
+\item Ask Questions and engage in Discussions on \href{https://piazza.com/stanford/winter2022/cme241/home}{\underline{\textcolor{blue}{Piazza}}}
 \item My e-mail: \href{mailto:ashwin.rao@stanford.edu}{\underline{\textcolor{blue}{ashwin.rao@stanford.edu}}}
 \end{itemize}
 \end{frame}
@@ -195,7 +195,7 @@
 \frametitle{Resources}
 \pause
 \begin{itemize}[<+->]
-\item Course based on the (incomplete) \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{book}}} I am currently writing
+\item Course based on my new \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{RL For Finance book}}}
 \item Supplementary/Optional reading:  \href{http://incompleteideas.net/book/the-book-2nd.html}{\underline{\textcolor{blue}{Sutton-Barto's RL book}}}
 \item I prepare slides for each lecture (``guided tour'' of respective chapter)
 \item A couple of lecture slides are from \href{https://www.davidsilver.uk/teaching/}{\underline{\textcolor{blue}{David Silver's RL course}}}
@@ -585,25 +585,12 @@ $$V_{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item W6: RL For Prediction (MC, TD, TD($\lambda$))
 \item W7: RL for Control (SARSA, Q-Learning)
 \item W8: Batch Methods (DQN, LSTD/LSPI) and Gradient TD
-\item W9: Policy Gradient and Actor-Critic Algorithms
-\item W10: Model-based RL and Explore v/s Exploit
+\item W9: Policy Gradient, Model-based RL, Explore v/s Exploit
+\item W10: Read-World RL and Guest Lecture by an Industry leader
 \item Final Exam
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Getting a sense of the style and content of the lectures}
-A sampling of lectures to browse through and get a sense ...
-\begin{itemize}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/UtilityTheoryForRisk.pdf}{\underline{\textcolor{blue}{Understanding Risk-Aversion through Utility Theory}}}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MertonPortfolio.pdf}{\underline{\textcolor{blue}{HJB Equation and Merton's Portfolio Problem}}}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/DeepHedging.pdf}{\underline{\textcolor{blue}{Derivatives Pricing and Hedging with Deep Reinforcement Learning}}}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/MarketMaking.pdf}{\underline{\textcolor{blue}{Stochastic Control for Optimal Market-Making}}}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient Theorem and Compatible Approximation Theorem}}}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/ValueFunctionGeometry.pdf}{\underline{\textcolor{blue}{Value Function Geometry and Gradient TD}}}
-\item \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/AdaptiveMultistageSampling.pdf}{\underline{\textcolor{blue}{Adapative Multistage Sampling Algorithm (Origins of MCTS)}}}
-\end{itemize}
-\end{frame}
 
 \begin{frame}
 \frametitle{Some Landmark Papers we cover in this course}
