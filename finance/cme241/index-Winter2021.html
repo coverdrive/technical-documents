@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+	width: 100%;
+}
+th {
+	text-align: left;
+}
+th.date {
+	width: 10%;
+}
+th.slides {
+	width: 20%;
+}
+th.reading {
+	width: 35%;
+}
+th.assignments {
+	width: 35%;
+}
+</style>
+<title>CME 241: Foundations of Reinforcement Learning with Applications in Finance</title>
+</head>
+
+<body>
+<h2>Welcome to the Winter 2021 edition of CME 241</h2>
+<h1>Foundations of Reinforcement Learning with Applications in Finance</h1>
+<h1>Instructor: <a href="http://stanford.edu/~ashlearn">Ashwin Rao</a></h1>
+<h2>&#8226; Lectures: Wed & Fri 4:00-5:20pm
+<h2>&#8226; Office Hours: Fri 1:00-4:00pm (or by appointment)</h2>
+<h2>&#8226; Course Assistant (CA): <a href="mailto:svenl@stanford.edu">Sven Lerner</a> (OH: Mon 10am-12noon, Thu 4-6pm)</h2>
+<h2>Overview of the Course</h2>
+<ul>
+	<li>Theory of Markov Decision Processes (MDPs)</li>
+	<li>Dynamic Programming (DP) Algorithms</li>
+	<li>Backward Induction (BI) and Approximate DP (ADP) Algorithms</li>
+	<li>Reinforcement Learning (RL) Algorithms</li>
+<li>Plenty of Python implementations of models and algorithms</li>
+<li>We apply these algorithms to 5 Financial/Trading problems:</li>
+<ul>
+	<li>(Dynamic) Asset-Allocation to maximize Utility of Consumption</li>
+	<li>Pricing and Hedging of Derivatives in an Incomplete Market</li>
+	<li>Optimal Exercise/Stopping of Path-dependent American Options</li>
+	<li>Optimal Trade Order Execution (managing Price Impact)</li>
+	<li>Optimal Market-Making (Bid/Ask managing Inventory Risk)</li>
+</ul>
+<li>By treating each of the problems as MDPs (i.e., Stochastic Control)</li>
+<li>We will go over classical/analytical solutions to these problems</li>
+<li>Then we will introduce real-world considerations, and tackle with RL (or DP)</li>
+<li>The course blends Theory/Mathematics, Programming/Algorithms and Real-World Financial Nuances</li>
+</ul>
+
+<h2>Learning Material will be a combination of</h2>
+<ul>
+	<li><a href="http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf">RL For Finance book</a> I am currently writing (henceforth known as "RLForFinanceBook")</li>
+	<li><a href="https://github.com/TikhonJelvis/RL-book/">Python codebase Tikhon Jelvis and I have developed</a> to help you "learn through coding"</li>
+	<li><a href="lecture_slides/">Technical Documents/Lecture Slides I have prepared for this course</a></li>
+	<li>Supplementary/Optional Videos: <a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html">Content from David Silver's UCL course on RL</a></li>
+	<li>Supplementary/Optional Reading/Reference: <a href="http://incompleteideas.net/book/the-book-2nd.html">The Sutton-Barto RL Book and Sutton's accompanying teaching material</a></li>
+	<li>Several classical and recent papers from the fields of Finance and RL</li>
+</ul>
+
+<h2>Lecture-by-Lecture (tentative) schedule with corresponding lecture slides, reading/videos, and assignments</h2>
+<table border="1">
+  <tr>
+    <th class="date">Date</th>
+    <th class="slides">Lecture Slides</th>
+    <th class="reading">Reading/Videos</th>
+    <th class="assignments">Assignments</th>
+  </tr>
+  <tr>
+    <th>January 13</th>
+    <th><a href="lecture_slides/Stanford-CME241.pdf">Course Overview</a></th>
+    <th>
+	    <ul>
+		    <li>Overview Chapter (pages 9-29) of RLForFinanceBook</li>
+		    <li>Optional: <a href="https://www.youtube.com/watch?v=2pWv7GOvuf0">David Silver's corresponding video (youtube) on Intro to RL</a></li>
+		    <li>Optional: <a href="lecture_slides/david_silver_slides/intro_RL.pdf">David Silver's slides on Intro to RL</a></li>
+		    <li>Optional: First (Introduction) chapter of Sutton-Barto book (pages 1-12)</li>
+		    <li>Optional: <a href="lecture_slides/rich_sutton_slides/1-admin-and-intro.pdf">Rich Sutton's slides on Intro to RL</a></li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment1.pdf">Instructions to get set up for the course</a>
+  </tr>
+  <tr>
+    <th>January 15</th>
+    <th>
+    	<a href="lecture_slides/Tour-MP.pdf">Markov Processes (MP) and Markov Reward Processes (MRP)</a>
+    </th>
+    <th>
+    	<ul>
+		<li>Chapter 1 (pages 35-73) of RLForFinanceBook</li>
+		<li>Optional: <a href="https://www.youtube.com/watch?v=lfHX2hHRMVQ">David Silver's video (on youtube) on MP/MRP/MDP</a></li>
+		<li>Optional: Third (MDP) chapter of Sutton-Barto book (pages 47-67)</li>
+		<li>Optional: <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Rich Sutton's corresponding slides on MDPs</a></li>
+	</ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment2.pdf">Assignment on Markov Processes and Markov Reward Processes</a>
+    </th>
+  </tr>
+  <tr>
+    <th>January 20</th>
+    <th>
+    	<a href="lecture_slides/Tour-MDP.pdf">Markov Decision Processes (MDP), Value Functions, and Bellman Equations</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Chapter 2 (pages 75-111) of RLForFinanceBook</li>
+		<li>Optional: <a href="https://www.youtube.com/watch?v=lfHX2hHRMVQ">David Silver's video (on youtube) on MP/MRP/MDP</a></li>
+		<li>Optional: Third (MDP) chapter of Sutton-Barto book (pages 47-67)</li>
+		<li>Optional: <a href="lecture_slides/rich_sutton_slides/5-6-MDPs.pdf">Rich Sutton's corresponding slides on MDPs</a></li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment3.pdf">Assignment on Markov Decision Processes</a>
+    </th>
+  </tr>
+  <tr>
+    <th>January 22</th>
+    <th>
+    	<a href="lecture_slides/Tour-DP.pdf">Dynamic Programming Algorithms</a>
+    </th>
+    <th>
+    	<ul>
+		<li>Chapter 3 (pages 113-156) of RLForFinanceBook</li>
+		<li>Optional: <a href="lecture_slides/BellmanOperators.pdf">Understanding Dynamic Programming through Bellman Operators</a></li>
+        	<li>Optional: <a href="https://www.youtube.com/watch?v=Nd1-UUMVfz4&t=3110s">David Silver's video (on youtube) on Dynamic Programming</a></li>
+		<li>Optional: Fourth (Dynamic Programming) chapter of Sutton-Barto book (pages 73-88)</li>
+		<li>Optional: <a href="lecture_slides/rich_sutton_slides/7-8-DP.pdf">Rich Sutton's corresponding slides on Dynamic Programming</a></li>
+	</ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment4.pdf">Assignment on Dynamic Programming</a>
+    </th>
+  </tr>
+  <tr>
+    <th>January 27</th>
+    <th>
+	    <a href="lecture_slides/Tour-ADP.pdf">Function Approximation and Approximate Dynamic Programming Algorithms</a>
+    </th>
+    <th>
+    	<ul>
+		<li>Chapter 4 (pages 157-195) of RLForFinanceBook</li>
+		</ul>
+    </th>
+    <th> 
+	    <a href="lecture_slides/assignments/assignment5.pdf">Assignment on Function Approximation and Approximate Dynamic Programming</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>January 29</th>
+    <th>
+    	<a href="lecture_slides/Tour-UtilityTheory.pdf">Understanding Risk-Aversion through Utility Theory</a> (as a pre-req for Finance Applications)
+    </th>
+    <th>
+    	<ul>
+		<li>Chapter 5 (pages 199-211) of RLForFinanceBook</li>
+		<li>Appendix A of RLForFinanceBook</li>
+		<li>Optional: Appendix C of RLForFinanceBook</li>
+    	</ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment6.pdf">Assignment on Utility Theory</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 3</th>
+    <th>
+    	<a href="lecture_slides/Tour-AssetAlloc.pdf">Application Problem 1 - Dynamic Asset-Allocation and Consumption</a>
+    </th>
+    <th>
+    	<ul>
+		<li>Appendix D of RLForFinanceBook</li>
+		<li>Appendix E of RLForFinanceBook</li>
+		<li>Chapter 6 (pages 213-239) of RLForFinanceBook</li>
+		        <li><a href="lecture_slides/DiscreteVSContinuous.pdf">Some (rough) pointers on Discrete versus Continuous MDPs, and solution techniques</a></li>
+		        <li>Reference: <a href="https://arxiv.org/pdf/1706.10059.pdf">A paper on <em>A Deep RL Framework for Optimal Asset Allocation</em></a></li>
+    	</ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment7.pdf">Assignment on Dynamic Asset-Allocation and Consumption</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 5</th>
+    <th>
+    	<a href="lecture_slides/Tour-Deriv.pdf">Application Problems 2 and 3 - Optimal Exercise of American Options and Optimal Hedging of Derivatives in Incomplete Markets</a>
+    </th>
+    <th>
+	    <ul>
+		    <li>Pages 241-245 on Intro to Derivatives in Chapter 7 of RLForFinanceBook</li>
+		    <li>Appendix F of RLForFinanceBook</li>
+		    <li>Optional: Pages 245-268 on Derivatives Pricing Theory in Chapter 7 of RLForFinanceBook</li>
+		    <li>Pages 268-282 in Chapter 7 of RLForFinanceBook</li>
+	       	<li>Optional Review: <a href="lecture_slides/ArbitrageCompleteness.pdf">Foundations of Arbitrage-Free and Complete Markets</a></li>
+		<li>Reference: <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3355706">JP Morgan Research paper on Deep Hedging</a></li>
+	    <li>Reference: <a href="https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf">Longstaff-Schwartz paper on Pricing American Options (industry-standard approach)</a></li>
+		    <li>Reference: <a href="http://proceedings.mlr.press/v5/li09d/li09d.pdf">A paper on <em>RL for Optimal Exercise of American Options</em></a> </li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment8.pdf">Assignment on Financial Modeling</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 10</th>
+    <th> <a href="lecture_slides/Tour-OrderBook.pdf">Application Problem 4 - Optimal Trade Order Execution</a>
+    </th>
+    <th>
+	    <ul>
+		    <li>Pages 283-309 in Chapter 8 of RLForFinanceBook</li>
+		    <li>Reference: <a href="http://alo.mit.edu/wp-content/uploads/2015/06/Optimal-Control-of-Execution-Costs.pdf">Bertsimas-Lo paper on Optimal Trade Order Execution</a> </li>
+		    <li>Reference: <a href="https://pdfs.semanticscholar.org/3d2d/773983c5201b58586af463f045befae5bbf2.pdf">Almgren-Chriss paper on Risk-Adjusted Optimal Trade Order Execution</a> </li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment9.pdf">Assignment on Optimal Trade Order Execution</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 12</th>
+    <th>
+    	<a href="lecture_slides/Tour-OrderBook.pdf">Application Problem 5 - Optimal Market-Making</a>
+    </th>
+    <th>
+	    <ul>
+		    <li>Pages 309-322 in Chapter 8 of RLForFinanceBook</li>
+		    <li>Reference: <a href="https://www.math.nyu.edu/faculty/avellane/HighFrequencyTrading.pdf">Avellaneda-Stoikov paper on Optimal Market-Making</a></li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment10.pdf">Assignment on Optimal Market-Making</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 15-17</th>
+     <th colspan="3"><a href="lecture_slides/midterm-2021.pdf">Midterm Exam</a> (<a href="lecture_slides/midterm-2021-solutions.pdf">Solutions</a>)</th>
+  </tr>
+  <tr>
+
+    <th>February 17</th>
+    <th>
+	    <a href="lecture_slides/Tour-RLPrediction.pdf">RL for Prediction (Monte-Carlo and Temporal-Difference)</a>
+    </th>
+    <th>
+	    <ul>
+	   <li>Chapter 9 (pages 325-357) of RLForFinanceBook</li>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's video (youtube) on Model-free Prediction</a></li>
+	    <li>Optional: MC and TD Prediction sections from Sutton-Barto book (pages 91-95, 119-128, 197-210)</li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment11.pdf">Assignment on RL for Prediction (MC and TD)</a>
+    </th>
+  </tr>
+  <tr>
+    <th>February 19</th>
+    <th>
+	    <a href="lecture_slides/Tour-RLPrediction.pdf">RL for Prediction (Eligibility Traces and TD(Lambda))</a>
+    </th>
+    <th>
+	    <ul>
+	   <li>Chapter 9 (pages 358-367) of RLForFinanceBook</li>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=PnHCvfgC_ZA&t=5s">David Silver's video (youtube) on Model-free Prediction</a></li>
+	    <li>Optional: n-Step TD section of Sutton-Barto book (pages 141-145)</li>
+            <li>Optional: TD(Lambda) and Eligibility Traces-based Prediction is covered on pages 287-297 of Sutton-Barto book.</li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment12.pdf">Assignment on RL for Prediction (Eligibility Traces and TD(Lambda)</a>
+    </th>
+  </tr>
+  <tr>
+    <th>February 24</th>
+    <th>
+	    <a href="lecture_slides/Tour-RLControl.pdf">RL for Control (Optimal Value Function/Optimal Policy)</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=0g4j2k_Ggc4&t=2713s">David Silver's video (youtube) on Model-free Control</a></li>
+	    <li>Optional: MC and TD-based Control sections of Sutton-Barto book (pages 96-111, 129-134, 146-149, 243-248)</li>
+	    <li>Optional: SARSA(Lambda) is covered on pages 303-307 of Sutton-Barto book)</li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment13.pdf">Assignment on RL for Control</a>
+    </th>
+  </tr>
+  <tr>
+    <th>February 26</th>
+    <th>
+	    <a href="lecture_slides/Tour-Batch.pdf">Batch RL: Experience Replay, Deep Q-Network (DQN) and Least Squares Policy Iteration (LSPI)</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=UoPei5o4fps&t=2120s">David Silver's video (youtube) on Batch Methods</a></li>
+	    <li>Optional: Batch Methods sections of Sutton-Barto book (pages 204-206, 228-230)</li>
+	    <li>Reference: <a href="https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf">Original DQN paper</a> and <a href="https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf">Nature DQN paper</a></li>
+	    <li>Reference: <a href="http://www.jmlr.org/papers/volume4/lagoudakis03a/lagoudakis03a.pdf">Lagoudakis-Parr paper on Least Squares Policy Iteration (LSPI)</a></li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment14.pdf">Assignment on Batch RL</a>
+    </th>
+  </tr>
+
+  <tr>
+	  <th>March 3</th`>
+    <th>
+    	<a href="lecture_slides/ValueFunctionGeometry.pdf">Value Function Geometry and Gradient TD</a>
+    </th>
+    <th>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment15.pdf">Assignment on Gradient TD</a>
+    </th>
+  </tr>
+  <tr>
+    <th>March 5</th>
+    <th>
+    	<a href="lecture_slides/PolicyGradient.pdf">Policy Gradient Algorithms</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=KHZVXao4qXs&t=1s">David Silver's video (youtube) on Policy Gradient Algorithms</a></li>
+	    <li>Optional: Policy Gradient chapter of Sutton-Barto book (pages 321-332, 335-336)</li>
+	    <li>Reference: <a href="https://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf">Original Paper on Policy Gradient</a></li>
+	    <li>Reference: <a href="http://proceedings.mlr.press/v32/silver14.pdf">Original Paper on Deterministic Policy Gradient</a></li>
+	    <li>Reference: <a href="https://papers.nips.cc/paper/2073-a-natural-policy-gradient.pdf">Original Paper on Natural Policy Gradient</a></li>
+	    </ul>
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment16.pdf">Assignment on Policy Gradient</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>March 10</th>
+    <th>
+	    <a href="lecture_slides/MultiArmedBandits.pdf">Exploration versus Exploitation (Multi-Armed Bandits)</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=sGuiWX07sKw&t=4570s">David Silver's video (youtube) on Exploration versus Exploitation</a></li>
+	    <li>Optional: Chapter of Sutton-Barto book on Multi-Armed Bandits (pages 25-41)</li>
+	    </ul>
+    </th>
+    <th>
+    </th>
+  </tr>
+
+  <tr>
+    <th>March 12</th>
+    <th>
+	    <a href="lecture_slides/david_silver_slides/dyna.pdf">Integrating Learning and Planning</a> and <a href="lecture_slides/AdaptiveMultistageSampling.pdf">Adaptive Multistage Sampling/Monte-Carlo Tree Search Algorithms</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Optional: <a href="https://www.youtube.com/watch?v=ItMutbeOHtc">David Silver's corresponding video (youtube) on Integrating Learning and Planning</a></li>
+	    <li>Optional: Chapter of Sutton-Barto book on Integrating Learning and Planning (pages 159-188)</li>
+		    <li>Reference: <a href="https://pdfs.semanticscholar.org/a378/b2895a3e3f6a19cdff1a0ad404b301b5545f.pdf">Chang, Fu, Hu, Marcus paper on Adapative Multistage Sampling</a></li>
+	    </ul>
+    </th>
+    <th>
+    </th>
+  </tr>
+
+  <tr>
+    <th>March 15-16</th>
+     <th colspan="3"><a href="lecture_slides/final-2021.pdf">Final Exam</a> (<a href="lecture_slides/final-2021-solutions.pdf">Solutions</a>)</th>
+  </tr>
+
+  <tr>
+    <th>March 17</th>
+    <th colspan="3">Guest Lecture: <a href="https://www.linkedin.com/in/svitlana-vyetrenko-2a75665b/"> Svitlana Vyetrenko from J.P. Morgan</a> on RL for Algorithmic Trading</th>
+  </tr>
+  <tr>
+    <th>March 19</th>
+    <th>
+	    Special Topics: <a href="lecture_slides/EvolutionaryStrategies.pdf">Evolutionary Strategies</a> and <a href="lecture_slides/RetailAI.pdf">Planning & Control for Inventory & Pricing in Real-World Retail Industry</a>
+    </th>
+    <th>
+	    <ul>
+	    <li>Reference: <a href="https://arxiv.org/pdf/1703.03864.pdf">OpenAI Research paper on Evolutionary Strategies as an Alternative to RL</a></li>
+		   	    </ul>
+    </th>
+    <th>
+    </th>
+  </tr>
+</table>
+
+<h2>Grade will be based on</h2>
+<ul>
+	<li>30% Mid-Term Exam (on Theory, Modeling and Algorithms)</li>
+	<li>40% Final Exam (on Theory, Modeling and Algorithms)</li>
+	<li>30% Assignments: Programming, Technical Writing and Theory (to be done throughout the course)</li>
+</ul>
+<h2>Purpose and Grading of Assignments</h2>
+<ul>
+	<li>Assignments are not to be treated as "tests/exams" with a right/wrong answer</li>
+	<li>Rather, they should be treated as part of your learning experience</li>
+	<li>You will TRULY understand ideas/models/algorithms only when you WRITE down the Mathematics and the Code precisely</li>
+	<li>In other words, simply reading the Mathematics or the Code gives you a false sense of understanding things</li>
+	<li>Take the initiative to make up your own assignments, especially on topics you feel you don't quite understand</li>
+	<li>Individual assignments won't get a grade and there are no due dates for the assignments</li>
+	<li>Rather, the entire body of assignments work throughout the course will be graded (upload regularly on your course git repo)</li>
+	<li>It will be graded less on correctness and completeness, and more on:
+		<ul>
+			<li>Coding and Technical Writing style that is clear and modular</li>
+			<li>Demonstration of curiosity and commitment to learning through the overall body of assignments work</li>
+			<li>Extent of engagement in asking questions and seeking feedback for improvements</li>
+		</ul>
+	</li>
+</ul>
+</body>
+</html>
