@@ -1,0 +1,61 @@
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{pseudocode}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{MnSymbol,wasysym}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} 
+\newgeometry{vmargin={20mm}, hmargin={14mm,18mm}}
+ 
+\begin{document}
+\begin{center}
+{\large {\bf Stanford CME 241 (Winter 2022) - Assignment 1}}
+\end{center}
+ 
+{\large{\bf This ``assignment'' is simply to complete the following tasks to get set up for course work and future assignments:}}
+\begin{questions}
+\question Register for the \href{https://piazza.com/stanford/winter2022/cme241/home}{Course on Piazza}.
+\question Install/Setup on your laptop with LaTeX/Markdown (for technical writing), Python 3 (and optionally Jupyter, if you prefer working with .pynb instead of plain .py).
+\question {\em Fork} the \href{https://github.com/TikhonJelvis/RL-book}{Code Repo associated with the RLForFinanceBook} and get set up to write code (for future assignments) that uses classes/functions from this code repo.
+\question Create separate directories for each assignment for the Course Assistant (\href{mailto:svenl@stanford.edu}{\underline{\textcolor{blue}{Sven Lerner}}}) to review and provide feedback - send Sven your forked repo URL and {\em git push} your work often (to your forked repo).
+\question {\bf Optionally}, you can create the same virtual environment I use and replicate my dependencies with the following instructions:
+\begin{itemize}
+\item After forking the repo on your laptop, create a virtual environment with the following shell command (from the RL-book directory):
+\begin{lstlisting}[language=bash]
+$ python3 -m venv .venv
+\end{lstlisting}
+\item Then, each time you're working on this project, make sure to activate the venv with the following shell command (again, from the RL-book directory):
+\begin{lstlisting}[language=bash]
+$ source .venv/bin/activate
+\end{lstlisting}
+\item Once the venv is activated, you should see a (.venv) in your shell prompt
+\item Now you can use pip to install dependencies inside the venv, for example:
+\begin{lstlisting}[language=bash]
+(.venv) $ pip install matplotlib
+\end{lstlisting}
+\item Initially, you can install every Python package you need to work this git repo with the following shell command (again, from the RL-book directory):
+\begin{lstlisting}[language=bash]
+(.venv) $ pip install -r requirements.txt
+\end{lstlisting}
+\item To work with the appropriate file paths of the Python files in this repo from the RL-book directory, execute the following command from the RL-book directory (this creates a pckage):
+\begin{lstlisting}[language=bash]
+(.venv) $ pip install -e .
+\end{lstlisting}
+\item To make sure you are all good, verify with the following command from the RL-book directory:
+\begin{lstlisting}[language=bash]
+(.venv) $ python -m unittest discover
+\end{lstlisting}
+If all is good, you should see an "OK" on the last line of the output upon running this command.
+\end{itemize}
+\end{questions}
+
+\end{document}
