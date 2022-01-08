@@ -161,10 +161,10 @@ A {\em Markov Decision Process (MDP)} comprises of:
 \end{frame}
 
 \begin{frame}
-\frametitle{Stationarity, Transition Function and Reward Functions}
+\frametitle{Time-Homogeneity, Transition Function, Reward Functions}
 \pause
 \begin{itemize}[<+->]
-\item Stationary (by default): $\mathbb{P}[(R_{t+1}, S_{t+1}) | (S_t, A_t)]$ independent of $t$
+\item Time-Homogeneity: $\mathbb{P}[(R_{t+1}, S_{t+1}) | (S_t, A_t)]$ independent of $t$
 \item $\Rightarrow$ {\em Transition Probability Function} $\mathcal{P}_R: \mathcal{N} \times \mathcal{A} \times \mathcal{D} \times \mathcal{S} \rightarrow [0,1]$
 $$\mathcal{P}_R(s,a,r,s') = \mathbb{P}[(R_{t+1}=r, S_{t+1}=s') | S_t=s, A_t = a]$$
 \item State Transition Probability Function $\mathcal{P}: \mathcal{N} \times \mathcal{A} \times \mathcal{S} \rightarrow [0,1]$:
@@ -466,7 +466,7 @@ $$\pi^* \in \Pi \text{ is an Optimal Policy if } V^{\pi^*}(s) \geq V^{\pi}(s) \t
 \begin{frame}
 \frametitle{Optimal Policy achieves Optimal Value Function}
 \begin{theorem}
-For any (discrete-time, countable-spaces, stationary) MDP:
+For any (discrete-time, countable-spaces, time-homogeneous) MDP:
 \pause
 \begin{itemize}[<+->]
 \item There exists an Optimal Policy $\pi^* \in \Pi$, i.e., there exists a Policy $\pi^* \in \Pi$ such that $V^{\pi^*}(s) \geq V^{\pi}(s) \text{ for all policies  } \pi \in \Pi \mbox{ and for all states } s \in \mathcal{N}$

@@ -232,12 +232,12 @@ A {\em Markov Process} consists of:
 \frametitle{Some nuances of Markov Processes}
 \pause
 \begin{itemize}[<+->]
-\item Stationary Markov Process: $\mathbb{P}[S_{t+1}|S_t]$ independent of $t$
-\item Stationary Markov Process specified with function $\mathcal{P}: \mathcal{N} \times \mathcal{S} \rightarrow [0,1]$
+\item Time-Homogeneous Markov Process: $\mathbb{P}[S_{t+1}|S_t]$ independent of $t$
+\item Time-Homogeneous MP specified with function $\mathcal{P}: \mathcal{N} \times \mathcal{S} \rightarrow [0,1]$
 $$\mathcal{P}(s, s') = \mathbb{P}[S_{t+1}=s'|S_t=s] \text{ for all } t = 0, 1, 2, \ldots$$
 \item $\mathcal{P}$ is the {\em Transition Probability Function} (source $s \rightarrow$ destination $s'$)
-\item Convert non-Stationary to Stationary by augmenting {\em State} with time
-\item Default: {\em Discrete-Time, Countable-States Stationary Markov Process}
+\item Can always convert to time-homogeneous: augment {\em State} with time
+\item Default: {\em Discrete-Time, Countable-States, Time-Homogeneous MP}
 \item Termination typically modeled with {\em Absorbing States} (we don't!)
 \item Separation between:
 \begin{itemize}
@@ -388,11 +388,11 @@ $$\mathcal{P}((\alpha, \beta), (0, C - (\alpha + \beta))) = \sum_{j=\alpha+\beta
 \frametitle{Stationary Distribution of a Markov Process}
 \pause
 \begin{definition} 
- The {\em Stationary Distribution} of a (Stationary) Markov Process with state space $\mathcal{S} = \mathcal{N}$ and transition probability function $\mathcal{P}: \mathcal{N} \times \mathcal{N} \rightarrow [0, 1]$ is a probability distribution function $\pi: \mathcal{N} \rightarrow [0, 1]$ such that:
+ The {\em Stationary Distribution} of a (Time-Homogeneous) Markov Process with state space $\mathcal{S} = \mathcal{N}$ and transition probability function $\mathcal{P}: \mathcal{N} \times \mathcal{N} \rightarrow [0, 1]$ is a probability distribution function $\pi: \mathcal{N} \rightarrow [0, 1]$ such that:
   $$\pi(s) = \sum_{s'\in \mathcal{N}} \pi(s) \cdot \mathcal{P}(s, s') \text{ for all } s \in \mathcal{N}$$
 \end{definition}
 \pause
-For Stationary Process with finite states $\mathcal{S} = \{s_1, s_2, \ldots, s_n\} = \mathcal{N}$,
+For Time-Homogeneous MP with finite states $\mathcal{S} = \{s_1, s_2, \ldots, s_n\} = \mathcal{N}$,
 $$\pi(s_j) = \sum_{i=1}^n \pi(s_i) \cdot \mathcal{P}(s_i, s_j) \text{ for all } j = 1, 2, \ldots n$$
 \pause
 Turning $\mathcal{P}$ into a matrix, we get: $\bm{\pi}^T = \bm{\pi}^T \cdot \bm{\mathcal{P}}$\\
@@ -411,8 +411,8 @@ $\bm{\mathcal{P}}^T \cdot \bm{\pi}= \bm{\pi} \Rightarrow \bm{\pi}$ is an eigenve
   $$S_0, R_1, S_1, R_2, S_2, \ldots, S_{T-1}, R_T, S_T$$
   \pause
  \begin{itemize}[<+->]
-\item By default, assume stationary: $\mathbb{P}[(R_{t+1}, S_{t+1}) | S_t]$ independent of $t$
-\item Stationary MRP specified with function $\mathcal{P}_R: \mathcal{N} \times \mathcal{D} \times \mathcal{S} \rightarrow [0,1]$
+\item By default, we assume time-homogeneous MRP, i.e., $\mathbb{P}[(R_{t+1}, S_{t+1}) | S_t]$ is independent of $t$
+\item Time-Homogeneous MRP specified as: $\mathcal{P}_R: \mathcal{N} \times \mathcal{D} \times \mathcal{S} \rightarrow [0,1]$
 $$\mathcal{P}_R(s,r,s') = \mathbb{P}[(R_{t+1}=r, S_{t+1}=s') | S_t=s] \text{ for all } t = 0, 1, 2, \ldots$$
 \item $\mathcal{P}_R$ known as the {\em Transition Probability Function}
 \end{itemize}
