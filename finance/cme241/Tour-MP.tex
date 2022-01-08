@@ -361,7 +361,7 @@ $\alpha$ := On-Hand Inventory, $\beta$ := On-Order Inventory, $C$ := Store Capac
 \item Open the store at 8am
 \item Experience random demand $i$ with poisson probabilities:
 $$\text{PMF } f(i) = \frac {e^{-\lambda} \lambda^i} {i!}, \text{ CMF } F(i) = \sum_{j=0}^i f(j)$$
-\item Inventory Sold is $\max(\alpha + \beta, i)$
+\item Inventory Sold is $\min(\alpha + \beta, i)$
 \item Close the store at 6pm
 \item Observe new state $S_{t+1}: (\max(\alpha + \beta - i, 0), \max(C - (\alpha + \beta), 0))$
 \end{itemize}
@@ -481,7 +481,7 @@ $\alpha$ := On-Hand Inventory, $\beta$ := On-Order Inventory, $C$ := Store Capac
 \item Open the store at 8am
 \item Experience random demand $i$ with poisson probabilities:
 $$\text{PMF } f(i) = \frac {e^{-\lambda} \lambda^i} {i!}, \text{ CMF } F(i) = \sum_{j=0}^i f(j)$$
-\item Inventory Sold is $\max(\alpha + \beta, i)$
+\item Inventory Sold is $\min(\alpha + \beta, i)$
 \item Record any stockout cost due ($=p\cdot \max(i - (\alpha + \beta), 0)$)
 \item Close the store at 6pm
 \item Register reward $R_{t+1}$ as negative sum of holding and stockout costs
