@@ -437,7 +437,7 @@ V^*_t((P_t,R_t,X_t)) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(
 \pause
 \begin{itemize}[<+->]
 \item Arbitrary Price Dynamics $f_t(\cdot)$ and Temporary Price Impact $g_t(\cdot)$
-\item Non-stationarity/non-linear dynamics/impact require (Numerical) DP
+\item Time-Heterogeneity/non-linear dynamics/impact $\Rightarrow$ (Numerical) DP
 \item Frictions: Discrete Prices/Sizes, Constraints on Prices/Sizes, Fees
 \item Incorporating various markets factors in the State bloats State Space
 \item We could also represent the entire OB within the State
@@ -946,7 +946,7 @@ $$\mbox{ Inner Spreads } Q_t^{(a)} - Q_t^{(m)} = Q_t^{(m)} - Q_t^{(b)} = \frac {
 \frametitle{Real-world Market-Making and Reinforcement Learning}
 \pause
 \begin{itemize}[<+->]
-\item Real-world OB dynamics are non-stationary, non-linear, complex
+\item Real-world OB dynamics are time-heterogeneous, non-linear, complex
 \item Frictions: Discrete Prices/Sizes, Constraints on Prices/Sizes, Fees
 \item Need to capture various market factors in the {\em State} \& OB Dynamics
 \item This leads to Curse of Dimensionality and Curse of Modeling
