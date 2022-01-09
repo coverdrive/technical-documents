@@ -276,7 +276,7 @@ $$\bm{V}^{\pi_D'} = \bm{V}^{G(\bvpi)} \geq \bvpi$$
 $$\lim_{i\rightarrow \infty} (\bm{B}^{\pi_D'})^i(\bvpi) = \bm{V}^{\pi_D'}$$
 \item So the proof is complete if we prove that:
 $$(\bm{B}^{\pi_D'})^{i+1}(\bvpi) \geq (\bm{B}^{\pi_D'})^i(\bvpi) \text{ for all } i = 0, 1, 2, \ldots$$
-\item Increasing tower of Value Functions $[(\bm{B}^{\pi_D'})^i(\bvpi)|i = 0, 1, 2, \ldots]$ with repeated applications of $\bm{B}^{\pi_D'}$
+\item Non-decreasing tower of Value Functions $[(\bm{B}^{\pi_D'})^i(\bvpi)|i = 0, 1, 2, \ldots]$ with repeated applications of $\bm{B}^{\pi_D'}$
 \end{itemize}
 \end{frame}
 
@@ -299,7 +299,7 @@ $$\text{So } (\bm{B}^{\pi_D'})^{i+1}(\bvpi) \geq (\bm{B}^{\pi_D'})^i(\bvpi) \Rig
 \frametitle{Intuitive Understanding of Policy Improvement Theorem}
 \pause
 \begin{itemize}[<+->]	
-\item Increasing tower of Value Functions $[(\bm{B}^{\pi_D'})^i(\bvpi)|i = 0, 1, 2, \ldots]$
+\item Non-decreasing tower of Value Functions $[(\bm{B}^{\pi_D'})^i(\bvpi)|i = 0, 1, 2, \ldots]$
 \item Each stage of further application of $\bm{B}^{\pi_D'}$ improves the Value Function
 \item Stage 0:  Value Function $\bvpi$ means execute policy $\pi$ throughout
 \item Stage 1: VF $\bm{B}^{\pi_D'}(\bvpi)$ means execute improved policy $\pi_D'$ for the 1st time step, then execute policy $\pi$ for all further time steps
@@ -308,7 +308,7 @@ $$\text{So } (\bm{B}^{\pi_D'})^{i+1}(\bvpi) \geq (\bm{B}^{\pi_D'})^i(\bvpi) \Rig
 \item Improves the VF from Stage 1: $\bm{B}^{\pi_D'}(\bvpi)$ to Stage 2: $(\bm{B}^{\pi_D'})^2(\bvpi)$
 \item Each stage applies policy $\pi_D'$ instead of $\pi$ for an extra time step
 \item These stages are the iterations of {\em Policy Evaluation} (using policy $\pi_D'$)
-\item Building an increasing tower of VFs that converge to VF $\bm{V}^{\pi_D'}$ ($\geq \bvpi$)
+\item Builds non-decreasing tower of VFs that converge to VF $\bm{V}^{\pi_D'}$ ($\geq \bvpi$)
 \end{itemize}
 \end{frame}
 
