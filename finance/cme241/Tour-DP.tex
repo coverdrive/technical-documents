@@ -203,7 +203,7 @@ $$\bvpi  = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bvpi$$
 \begin{itemize}[<+->]
 \item Define the {\em Bellman Policy Operator} $\bbpi: \mathbb{R}^m \rightarrow \mathbb{R}^m$ as:
 $$\bbpi(\bv) = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bv \text{ for any Value Function vector } \bv \in \mathbb{R}^m$$
-\item $\bbpi$ is a linear transformation on vectors in $\mathbb{R}^m$
+\item $\bbpi$ is an affine transformation on vectors in $\mathbb{R}^m$
 \item So, the MRP Bellman Equation can be expressed as:
 $$\bvpi = \bbpi(\bvpi)$$
 \item This means $\bvpi \in \mathbb{R}^m$ is the Fixed-Point of $\bbpi: \mathbb{R}^m \rightarrow \mathbb{R}^m$
