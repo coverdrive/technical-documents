@@ -206,7 +206,7 @@ $$\bbpi(\bv) = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bv 
 \item $\bbpi$ is an affine transformation on vectors in $\mathbb{R}^m$
 \item So, the MRP Bellman Equation can be expressed as:
 $$\bvpi = \bbpi(\bvpi)$$
-\item This means $\bvpi \in \mathbb{R}^m$ is the Fixed-Point of $\bbpi: \mathbb{R}^m \rightarrow \mathbb{R}^m$
+\item This means $\bvpi \in \mathbb{R}^m$ is a Fixed-Point of $\bbpi: \mathbb{R}^m \rightarrow \mathbb{R}^m$
 \item Metric $d: \mathbb{R}^m \times \mathbb{R}^m \rightarrow \mathbb{R}$ defined as $L^{\infty}$ norm:
 $$d(\bm{X}, \bm{Y}) = \Vert \bm{X} - \bm{Y} \Vert_{\infty} = \max_{s \in \mathcal{N}} |(\bm{X} - \bm{Y})(s)|$$
 \item $\bbpi$ is a contraction function under $L^{\infty}$ norm: For all $\bm{X}, \bm{Y} \in \mathbb{R}^m$,
@@ -380,7 +380,7 @@ Running time of each iteration of Policy Evaluation is $O(m^2 k)$
 \item {\em Bellman Optimality Operator} $\bbs: \mathbb{R}^m \rightarrow \mathbb{R}^m$ defined as:
 $$\bbs(\bv)(s) = \max_{a\in \mathcal{A}} \{\mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \bv(s')\}$$
 \item Think of this as a non-linear transformation of a VF vector $\bv \in \mathbb{R}^m$
-\item The action $a$ producing the max is the action prescribed by $\pi_D$. So,
+\item The action $a$ producing the max is the action prescribed by $G(\bv)$. So,
 $$\bm{B}^{G(\bv)}(\bv) = \bbs(\bv) \text{ for all } \bv \in \mathbb{R}^m$$
 \item Specializing $\bv$ to be the Value Function $\bvpi$ for a policy $\pi$, we get:
 $$\bm{B}^{G(\bvpi)}(\bvpi) = \bbs(\bvpi)$$
@@ -397,7 +397,7 @@ $$\bm{B}^{G(\bvpi)}(\bvpi) = \bbs(\bvpi)$$
 $$\bvs(s) = \max_{a \in \mathcal{A}} \{ \mathcal{R}(s,a) + \gamma \sum_{s' \in \mathcal{N}} \mathcal{P}(s,a,s') \cdot \bvs(s') \} \text{ for all } s \in \mathcal{N}$$
 \item So we can express the MDP Bellman Optimality Equation neatly as:
 $$\bvs = \bbs(\bvs)$$
-\item Therefore, $\bvs \in \mathbb{R}^m$ is the Fixed-Point of $\bbs: \mathbb{R}^m \rightarrow \mathbb{R}^m$
+\item Therefore, $\bvs \in \mathbb{R}^m$ is a Fixed-Point of $\bbs: \mathbb{R}^m \rightarrow \mathbb{R}^m$
 \item We want to prove that $\bbs$ is a contraction function (under $L^{\infty}$ norm)
 \item So we can take advantage of Banach Fixed-Point Theorem
 \item And solve the Control problem by iterative applications of $\bbs$
