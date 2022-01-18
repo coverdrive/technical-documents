@@ -207,7 +207,6 @@ class FunctionApprox(ABC, Generic[X]):
 \frametitle{The @abstractclass FunctionApprox}
 \pause
 \begin{lstlisting}
-    @abstractmethod
     def update(
         self,
         xy_vals_seq: Iterable[Tuple[X, float]]
@@ -408,13 +407,16 @@ class Distribution(ABC, Generic[A]):
 \frametitle{Approximate Policy Evaluation interface}
 \pause
 \begin{lstlisting}
+ValueFunctionApprox = FunctionApprox[NonTerminal[S]]
+NTStateDistribution = Distribution[NonTerminal[S]]
+
 def evaluate_mrp(
     mrp: MarkovRewardProcess[S],
     gamma: float,
-    approx_0: FunctionApprox[S],
-    non_terminal_states_distribution: Distribution[S],
-    num_state_samples: int
-) -> Iterator[FunctionApprox[S]]:
+    approx_0: ValueFunctionApprox[S,
+    nt_states_distribution: NTStateDistribution[S],
+    num_samples: int
+) -> Iterator[ValueFunctionApprox[S]]:
 \end{lstlisting}
 \end{frame}
 
@@ -422,15 +424,14 @@ def evaluate_mrp(
 \frametitle{Approximate Policy Evaluation code}
 \pause
 \begin{lstlisting}
-def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
-    nt_states: Sequence[S] = \
-        non_terminal_states_distribution.sample_n(
-            num_state_samples
-        )
+def update(v: ValueFunctionApprox[S]) -> \
+        ValueFunctionApprox[S]:
+    nt_states: Sequence[NonTerminal[S]] = \
+        nt_states_distribution.sample_n(num_samples)
 
-    def return_(s_r: Tuple[S, float]) -> float:
-        s, r = s_r
-        return r + gamma * v.evaluate([s]).item()
+    def return_(s_r: Tuple[State[S], float]) -> float:
+        s1, r = s_r
+        return r + gamma * extended_vf(v, s1)
 
     return v.update(
         [(s, mrp.transition_reward(s).expectation(
@@ -448,10 +449,10 @@ return iterate(update, approx_0)
 def value_iteration(
     mdp: MarkovDecisionProcess[S, A],
     gamma: float,
-    approx_0: FunctionApprox[S],
-    non_terminal_states_distribution: Distribution[S],
-    num_state_samples: int
-) -> Iterator[FunctionApprox[S]]:
+    approx_0: ValueFunctionApprox[S],
+    nt_states_distribution: NTStateDistribution[S],
+    num_samples: int
+) -> Iterator[ValueFunctionApprox[S]]:
 \end{lstlisting}
 \end{frame}
 
@@ -459,15 +460,14 @@ def value_iteration(
 \frametitle{Approximate Value Iteration code}
 \pause
 \begin{lstlisting}
-def update(v: FunctionApprox[S]) -> FunctionApprox[S]:
-    nt_states: Sequence[S] = \
-        non_terminal_states_distribution.sample_n(
-            num_state_samples
-        )
+def update(v: ValueFunctionApprox[S]) -> \
+        ValueFunctionApprox[S]:
+    nt_states: Sequence[NonTerminal[S]] = \
+        nt_states_distribution.sample_n(num_samples)
 
-    def return_(s_r: Tuple[S, float]) -> float:
-        s, r = s_r
-        return r + gamma * v.evaluate([s]).item()
+    def return_(s_r: Tuple[State[S], float]) -> float:
+        s1, r = s_r
+        return r + gamma * extended_vf(v, s1)
 
     return v.update(
         [(s, max(mdp.step(s, a).expectation(return_)
