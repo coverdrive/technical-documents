@@ -130,7 +130,7 @@ ICME, Stanford University
 \begin{itemize}[<+->]
 \item We seek a ``valuation formula'' for the amount we'd pay that:
 \begin{itemize}
-\item Increases one-to-one with the Mean of the outcome
+\item Increases with the Mean of the outcome
 \item Decreases as the Variance of the outcome (i.e.. Risk) increases
 \item Decreases as our Personal Risk-Aversion increases
 \end{itemize}
@@ -317,7 +317,7 @@ $$dW_t = (r + \pi (\mu - r)) \cdot W_t \cdot dt + \pi \cdot \sigma \cdot W_t \cd
 Applying Ito's Lemma on $\log W_t$ gives us:
 $$\log W_t = \int_0^t (r + \pi (\mu - r) - \frac {\pi^2 \sigma^2} 2) \cdot du + \int_0^t \pi \cdot \sigma \cdot dz_u$$
 \pause
-$$\Rightarrow \log W \sim \mathcal{N}(r+\pi(\mu -r) - \frac {\pi^2 \sigma^2} 2,  \pi^2 \sigma^2)$$
+$$\Rightarrow \log W_1 \sim \mathcal{N}(r+\pi(\mu -r) - \frac {\pi^2 \sigma^2} 2,  \pi^2 \sigma^2)$$
 \pause
 From the section on CRRA Utility, we know we need to maximize:
 $$r+\pi(\mu -r) - \frac {\pi^2 \sigma^2} 2 + \frac {\pi^2 \sigma^2 (1-\gamma)} 2$$
@@ -326,6 +326,17 @@ $$= r + \pi(\mu - r) - \frac {\pi^2 \sigma^2 \gamma} 2$$
 \pause
 So optimal investment fraction in risky asset
 $$\pi^* = \frac {\mu - r} {\gamma \sigma^2}$$
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Key Takeaways from this Chapter}
+\pause
+\begin{itemize}[<+->]
+\item An individual's financial risk-aversion is represented by the concave nature of the individual's Utility as a function of financial outcomes.
+\item Risk-Premium (compensation an individual seeks for taking financial risk) is roughly proportional to the individual's financial risk-aversion and the measure of uncertainty in financial outcomes.
+\item Risk-Adjusted-Return in finance should be thought of as the Certainty-Equivalent-Value, whose Utility is the Expected Utility across uncertain (risky) financial outcomes.
+\end{itemize}
 \end{frame}
 
 \end{document}
