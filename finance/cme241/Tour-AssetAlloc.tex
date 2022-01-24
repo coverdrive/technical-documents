@@ -342,7 +342,7 @@ $$
 \item Optimal Allocation $\pi^*(t, W_t)$ is constant (independent of $t$ and $W_t$)
 \item Optimal Fractional Consumption $\frac {c^*(t, W_t)} {W_t}$ depends only on $t$ ($=\frac 1 {f(t)}$)
 \item With Optimal Allocation \& Consumption, the Wealth process is:
-$$\frac {dW_t} {W_t} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t)}) \cdot dt + \frac {\mu - r} {\sigma \gamma} \cdot dz_t$$
+$$\frac {dW_t^*} {W_t^*} = (r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t)}) \cdot dt + \frac {\mu - r} {\sigma \gamma} \cdot dz_t$$
 \item Expected Portfolio Return is constant over time ($=r + \frac {(\mu - r)^2} {\sigma^2 \gamma}$)
 \item Assuming $\epsilon < \frac 1 {\nu}$, Fractional Consumption $\frac 1 {f(t)}$ increases over time
 \item Expected Rate of Wealth Growth $r + \frac {(\mu - r)^2} {\sigma^2 \gamma} - \frac 1 {f(t)}$ decreases over time
@@ -522,6 +522,16 @@ class AssetAllocDiscrete:
     dnn_spec: DNNSpec
     initial_wealth_distribution: Distribution[float]
 \end{lstlisting}    
+\end{frame}
+
+\begin{frame}
+\frametitle{Key Takeaways from this Chapter}
+\pause
+\begin{itemize}[<+->]
+\item Fundamental problem of jointly deciding on optimal investment allocation and optimal consumption
+\item Merton, in his landmark 1969 paper, provided an elegant closed-form solution under simplifying assumptions in continuous-time
+\item In real-world, we need to model this problem as an MDP (capturing various frictions/constraints), and solve with ADP/RL
+\end{itemize}
 \end{frame}    
 
 \end{document}
