@@ -133,7 +133,7 @@ ICME, Stanford University
 \item So we can represent with two sorted lists of (Price, Size) pairs
 $$\mbox{Bids: } [(P_i^{(b)}, N_i^{(b)}) \mid 0 \leq i < m], P_i^{(b)} > P_j^{(b)} \mbox{ for } i < j$$
 $$\mbox{Asks: } [(P_i^{(a)}, N_i^{(a)}) \mid 0 \leq i < n], P_i^{(a)} < P_j^{(a)} \mbox{ for } i < j$$
-\item We call $P_0^{(b)}$ as simply {\em Bid}, $P_0^{(a)}$ as {\em Ask}, $\frac {P_0^{(a)} + P_0^{(b)}} 2$ as {\em Mid}
+\item We call $P_0^{(b)}$ as {\em Best Bid}, $P_0^{(a)}$ as {\em Best Ask}, $\frac {P_0^{(a)} + P_0^{(b)}} 2$ as {\em Mid}
 \item We call $P_0^{(a)} - P_0^{(b)}$ as {\em Spread}, $P_{n-1}^{(a)} - P_{m-1}^{(b)}$ as {\em Market Depth}
 \item A Market Order (MO) states intent to buy/sell $N$ shares at the {\em best possible price(s)} available on the OB at the time of MO submission
 \end{itemize}
@@ -201,12 +201,13 @@ def sell_market_order(
 \begin{itemize}[<+->]
 \item We focus on how a Market order (MO) alters the OB
 \item A large-sized MO often results in a big {\em Spread} which could soon be replenished by new LOs, potentially from either side
-\item So a large-sized MO moves the Bid/Ask/Mid ({\em Price Impact} of MO)
+\item So a large-sized MO moves the Best Bid/Best Ask/Mid
+\item This is known as the {\em Price Impact} of a Market Order
 \item Subsequent Replenishment activity is part of {\em OB Dynamics}
 \item Models for OB Dynamics can be quite complex
 \item We will cover a few simple Models in this lecture
-\item Models based on how a Sell MO will move the OB {\em Bid Price}
-\item Models of Buy MO moving the OB {\em Ask Price} are analogous
+\item Models based on how a Sell MO will move the OB {\em Best Bid Price}
+\item Models of Buy MO moving the OB {\em Best Ask Price} are analogous
 \end{itemize}
 \end{frame}
 
@@ -220,7 +221,7 @@ def sell_market_order(
 \item We are allowed to trade in $T$ discrete time steps
 \item We are only allowed to submit Market Orders
 \item We consider both {\em Temporary} and {\em Permanent} Price Impact
-\item For simplicity, we consider a model of just the {\em Bid Price} Dynamics
+\item For simplicity, we consider a model of just {\em Best Bid Price} Dynamics
 \item Goal is to maximize Expected Total Utility of Sales Proceeds
 \item By breaking $N$ into appropriate chunks (timed appropriately)
 \item If we sell too fast, we are likely to get poor prices
@@ -236,7 +237,7 @@ def sell_market_order(
 \pause
 \begin{itemize}[<+->]
 \item Time steps indexed by $t = 0, 1, \ldots, T$
-\item $P_t$ denotes Bid Price at start of time step $t$
+\item $P_t$ denotes Best Bid Price at start of time step $t$
 \item $N_t$ denotes number of shares sold in time step $t$
 \item $R_t = N - \sum_{i=0}^{t-1}N_i = $ shares remaining to be sold at start of time step $t$
 \item Note that $R_0 = N, R_{t+1}  = R_t - N_t \text{ for all } t < T, N_{T-1} = R_{T-1} \Rightarrow R_T = 0$
@@ -245,8 +246,8 @@ $$P_{t+1} = f_t(P_t, N_t, \epsilon_t)$$
 where $f_t(\cdot)$ is an arbitrary function incorporating:
 \begin{itemize}
 \item Permanent Price Impact of selling $N_t$ shares
-\item Impact-independent market-movement of Bid Price over time step $t$
-\item $\epsilon_t$ denotes source of randomness in Bid Price market-movement
+\item Impact-independent market-movement of Best Bid Price for time step $t$
+\item $\epsilon_t$ denotes source of randomness in Best Bid Price market-movement
 \end{itemize}
 \item Sales Proceeds in time step $t$ defined as:
 $$N_t \cdot Q_t = N_t \cdot (P_t - g_t(P_t, N_t))$$
@@ -479,7 +480,7 @@ V^*_t((P_t,R_t,X_t)) = e^{\mu_Z + \frac {\sigma_Z^2} 2} \cdot P_t \cdot ( & c^{(
 \begin{itemize}[<+->]
 \item We simplify the setting for ease of exposition
 \item Assume finite time steps indexed by $t= 0, 1, \ldots, T$
-\item Denote $W_t \in \mathbb{R}$ as Market-maker's trading PnL at time $t$
+\item Denote $W_t \in \mathbb{R}$ as Market-maker's trading account value at time $t$
 \item Denote $I_t \in \mathbb{Z}$ as Market-maker's inventory of shares at time $t$ ($I_0 = 0$)
 \item $S_t \in \mathbb{R}^+$ is the OB Mid Price at time $t$ (assume stochastic process)
 \item $P_t^{(b)} \in \mathbb{R}^+, N_t^{(b)} \in \mathbb{Z}^+$ are market maker's Bid Price, Bid Size at time $t$
