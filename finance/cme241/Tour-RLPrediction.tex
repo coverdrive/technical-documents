@@ -183,8 +183,8 @@ An {\em atomic experience} is represented as a \lstinline{TransitionStep[S]}
 \begin{lstlisting}
 @dataclass(frozen=True)
 class TransitionStep(Generic[S]):
-    state: S
-    next_state: S
+    state: NonTerminal[S]
+    next_state: State[S]
     reward: float
 \end{lstlisting}
 \pause
@@ -455,7 +455,7 @@ So parameters update formula has same product-structure as MC
 \frametitle{Bias, Variance and Convergence of TD versus MC}
 \pause
 \begin{itemize}[<+->]
-\item MC uses $G_t$ is an unbiased estimate of the Value Function
+\item MC uses $G_t$ as an unbiased estimate of the Value Function
 \item This helps MC with convergence even with function approximation
 \item TD uses $R_{t+1} + \gamma \cdot V(S_{t+1};\bm{w})$ as a biased estimate of the VF
 \item Tabular TD prediction converges to true VF in the mean for const $\alpha$
@@ -742,7 +742,7 @@ $$\sum_{t=0}^{T-1} \alpha \cdot \delta_t \cdot E_t(s) = \sum_{t=0}^{T-1} \alpha 
 \begin{aligned}[b]
 G_t^{(\lambda)} =  & (1 - \lambda) \cdot \lambda^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1})) \\
 + & (1 - \lambda) \cdot \lambda^1 \cdot (R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot V(S_{t+2})) \\
-+ & (1 - \lambda) \cdot \lambda^2 \cdot (R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \gamma^3 \cdot V(S_{t+2})) \\
++ & (1 - \lambda) \cdot \lambda^2 \cdot (R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot R_{t+3} + \gamma^3 \cdot V(S_{t+3})) \\
 + & \ldots \\
 \pause
 = & (\gamma \lambda)^0 \cdot (R_{t+1} + \gamma \cdot V(S_{t+1}) - \gamma \lambda \cdot V(S_{t+1})) \\
