@@ -145,7 +145,6 @@
 \item Either way, we receive {\em individual experiences} of next state and reward
 \item We saw how RL Prediction learns from individual experiences
 \item Now we extend those ideas to RL Control: Learning Optimal VF
-\item We start with Tabular RL Control
  \end{itemize}
 \end{frame}
 
@@ -156,14 +155,23 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{The idea of Generalized Policy Iteration (GPI)}
+\frametitle{Policy Iteration}
 \includegraphics[width=10cm, height=5cm]{vf_policy_intersecting_lines.png}
 \pause
 \begin{itemize}[<+->]
-\item {\em Any} Policy Evaluation method, {\em Any} Policy Improvement method
 \item Policy Evaluation estimates $V^{\pi}$, eg: Iterative Policy Evaluation
 \item Policy Improvement produces $\pi' \geq \pi$, eg: Greedy Policy Improvement
 \item Policy Evaluation and Policy Improvement alternate until convergence
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The idea of Generalized Policy Iteration (GPI)}
+\includegraphics[width=10cm, height=5cm]{gpi.png}
+\pause
+\begin{itemize}[<+->]
+\item {\em Any} Policy Evaluation method, {\em Any} Policy Improvement method
+\item For instance, {\em Partial} Policy Evaluation and {\em Partial} Policy Improvement
 \end{itemize}
 \end{frame}
 
@@ -211,7 +219,7 @@ $$
 \frametitle{$\epsilon$-Greedy improves the policy}
 \pause
 \begin{theorem}
-For any $\epsilon$-greedy policy $\pi$, the $\epsilon$-greedy policy $\pi'$ with respect to $Q^{\pi}$ is an improvement, i.e., $\bm{V}^{\pi'}(s) \geq \bm{V}^{\pi}(s)$ for all $s \in \mathcal{N}$.
+For any $\epsilon$-greedy policy $\pi$, the $\epsilon$-greedy policy $\pi'$ with respect to $Q^{\pi}$ is an improvement over $\pi$, i.e., $\bm{V}^{\pi'}(s) \geq \bm{V}^{\pi}(s)$ for all $s \in \mathcal{N}$.
 \end{theorem}
 \pause
 \begin{itemize}[<+->]
@@ -234,7 +242,7 @@ The base case of proof by induction is to show that $\bm{B}^{\pi'}(\bvpi)  \geq 
 & = \sum_{a \in \mathcal{A}} \pi'(s, a) \cdot (\mathcal{R}(s,a) + \gamma \cdot \sum_{s' \in \mathcal{S}} \mathcal{P}(s,a,s') \cdot \bvpi(s')) \\
 & = \sum_{a \in \mathcal{A}} \pi'(s, a) \cdot Q^{\pi}(s,a) \\
 & = \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot \max_{a \in \mathcal{A}} Q^{\pi}(s,a) \\
-& \geq \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot \sum_{a \in \mathcal{A}} \frac {\pi(s,a) - \frac {\epsilon} {|\mathcal{A}|}} {1 - \epsilon} \cdot Q^{\pi}(s,a) \\
+& \geq \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot Q^{\pi}(s,\argmax_{a \in \mathcal{A}} \pi(s,a)) \\
 & = \sum_{a \in \mathcal{A}} \pi(s,a) \cdot Q^{\pi}(s,a) = \bm{V}^{\pi}(s)
 \end{align*}
 \end{frame}
@@ -286,6 +294,81 @@ GLIE Tabular Monte-Carlo Control converges to the Optimal Action-Value function:
 \end{theorem}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{GLIE MC Control with Function Approximation}
+\pause
+\begin{lstlisting}
+def glie_mc_control(
+    mdp: MarkovDecisionProcess[S, A],
+    states: NTStateDistribution[S],
+    approx_0: QValueFunctionApprox[S, A],
+    gamma: float,
+    epsilon_func: Callable[[int], float],
+    episode_len_tol: float = 1e-6
+) -> Iterator[QValueFunctionApprox[S, A]]:
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{GLIE MC Control with Function Approximation}
+\pause
+\begin{lstlisting}
+q: QValueFunctionApprox[S, A] = approx_0
+p: Policy[S, A] = epsilon_greedy_policy(q, mdp, 1.0)
+yield q
+num_episodes: int = 0
+while True:
+  trace: Iterable[TransitionStep[S, A]] = \
+    mdp.simulate_actions(states, p)
+  num_episodes += 1
+  for step in returns(trace, gamma, episode_len_tol):
+    q = q.update([((step.state, step.action), step.return_)])
+  p = epsilon_greedy_policy(
+    q,
+    mdp,
+    epsilon_func(num_episodes)
+  )
+  yield q
+\end{lstlisting}    
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{GLIE MC Control with Function Approximation}
+\pause
+\begin{lstlisting}    
+def epsilon_greedy_policy(
+    q: QValueFunctionApprox[S, A],
+    mdp: MarkovDecisionProcess[S, A],
+    epsilon: float = 0.0
+) -> Policy[S, A]:
+    def explore(s: S, mdp=mdp) -> Iterable[A]:
+        return mdp.actions(NonTerminal(s))
+    return RandomPolicy(Categorical(
+        {UniformPolicy(explore): epsilon,
+         greedy_policy_from_qvf(q, mdp.actions):
+              1 - epsilon}
+    ))
+\end{lstlisting}
+\end{frame}
+    
+\begin{frame}[fragile]
+\frametitle{GLIE MC Control with Function Approximation}
+\pause
+\begin{lstlisting}
+def greedy_policy_from_qvf(
+    q: QValueFunctionApprox[S, A],
+    actions: Callable[[NonTerminal[S]], Iterable[A]]
+) -> DeterministicPolicy[S, A]:
+    def optimal_action(s: S) -> A:
+        _, a = q.argmax((NonTerminal(s), a)
+            for a in actions(NonTerminal(s)))
+        return a
+    return DeterministicPolicy(optimal_action)
+\end{lstlisting}    
+\end{frame}
+
+
+
 
 \begin{frame}
 \frametitle{MC versus TD Control}
@@ -311,13 +394,13 @@ GLIE Tabular Monte-Carlo Control converges to the Optimal Action-Value function:
 \end{frame}
 
 \begin{frame}
-\frametitle{Tabular SARSA Algorithm}
+\frametitle{SARSA Algorithm}
 \begin{itemize}[<+->]
-\item Tabular SARSA is our first TD Control algorithm
-\item Like Tabular MC Control, Policy Improvement is $\epsilon$-greedy
+\item SARSA is our first TD Control algorithm
+\item Like MC Control, Policy Improvement is $\epsilon$-greedy
 \item But here Policy Evaluation is with a TD target, as below:
-$$Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A_{t+1}) - Q(S_t,A_t))$$
-\item Note that $Q(S,A)$ is updated after each atomic experience
+$$\Delta \bm{w} =  \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A_{t+1}; \bm{w}) - Q(S_t,A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
+\item Note that parameters $\bm{w}$ are updated after each atomic experience
 \item $\epsilon$-greedy policy automatically updated after each atomic experience
 \item Action $A_t$ is chosen from State $S_t$ based on $\epsilon$-greedy policy
 \item Action $A_{t+1}$ is chosen from State $S_{t+1}$ based on $\epsilon$-greedy policy
@@ -340,7 +423,7 @@ Tabular SARSA converges to the Optimal Action-Value function, $Q(s,a) \rightarro
 \pause
 \begin{itemize}[<+->]
 \item GLIE sequence of policies $\pi_t(s,a)$
-\item Robbins-Monro sequence of step-sizes $\alpha_t$
+\item Robbins-Monro sequence of step-sizes $\alpha_t$:
 $$\sum_{t=1}^{\infty} \alpha_t = \infty$$
 $$\sum_{t=1}^{\infty} \alpha_t^2 < \infty$$
 \end{itemize}
@@ -349,25 +432,25 @@ $$\sum_{t=1}^{\infty} \alpha_t^2 < \infty$$
 
 
 \begin{frame}
-\frametitle{Tabular $n$-step SARSA}
+\frametitle{$n$-step SARSA}
 \pause
 \begin{itemize}[<+->]
-\item Tabular SARSA bootstraps the $Q$-Value Function with update:
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha (R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t))$$
+\item SARSA bootstraps the $Q$-Value Function with update:
+$$\Delta \bm{w} =  \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A_{t+1}; \bm{w}) - Q(S_t,A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
 \item So it's natural to extend this to bootstrapping with 2 steps ahead:
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha (R_{t+1} + \gamma R_{t+2} + \gamma^2 Q(S_{t+2}, A_{t+2})- Q(S_t, A_t))$$
+$$\alpha \cdot (R_{t+1} + \gamma \cdot R_{t+2} + \gamma^2 \cdot Q(S_{t+2}, A_{t+2}; \bm{w}) - Q(S_t,A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
 \item Generalize to bootstrapping with $n \geq 1$ time steps ahead:
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha (G_{t,n} - Q(S_t, A_t))$$
+$$\Delta \bm{w} =  \alpha \cdot (G_{t,n} - Q(S_t,A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
 \item $G_{t,n}$ (call it $n$-step bootstrapped return) is defined as:
 \begin{align*}
-G_{t,n} & = \sum_{i=t+1}^{t+n} \gamma^{i-t-1} \cdot R_i  + \gamma^n \cdot Q(S_{t+n}, A_{t+n}) \\
-& = R_{t+1} + \gamma \cdot R_{t+2} + \ldots + \gamma^{n-1} \cdot R_{t+n} + \gamma^n \cdot Q(S_{t+n}, A_{t+n})
+G_{t,n} & = \sum_{i=t+1}^{t+n} \gamma^{i-t-1} \cdot R_i  + \gamma^n \cdot Q(S_{t+n}, A_{t+n}; \bm{w}) \\
+& = R_{t+1} + \gamma \cdot R_{t+2} + \ldots + \gamma^{n-1} \cdot R_{t+n} + \gamma^n \cdot Q(S_{t+n}, A_{t+n}; \bm{w})
 \end{align*}
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Tabular $\lambda$-Return SARSA}
+\frametitle{$\lambda$-Return SARSA}
 \pause
 \begin{itemize}[<+->]
 \item Instead of $G_{t,n}$, a valid target is a weighted-average target:
@@ -378,24 +461,23 @@ $$u_n = (1 - \lambda) \cdot \lambda^{n-1} \text{ for all } n = 1, \ldots, T-t-1$
 $$u_n = 0 \text{ for all } n \geq T-t \text{ and } u = \lambda^{T-t-1}$$
 \item We denote the $\lambda$-Return target as $G_t^{(\lambda)}$, defined as:
 $$G_t^{(\lambda)} = (1-\lambda) \cdot \sum_{n=1}^{T-t-1} \lambda^{n-1} \cdot G_{t,n} + \lambda^{T-t-1} \cdot G_t$$
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (G_t^{(\lambda)} - Q(S_t, A_t))$$
+$$\Delta \bm{w} = \alpha \cdot (G_t^{(\lambda)} - Q(S_t, A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Tabular SARSA($\lambda$)}
+\frametitle{SARSA($\lambda$)}
 \pause
 \begin{itemize}[<+->]
 \item $\lambda$ can be tuned from SARSA ($\lambda=0$) to MC Control ($\lambda=1$)
 \item Note that for $\lambda > 0$, $\lambda$-Return SARSA is an Offline Algorithm
 \item SARSA($\lambda$) is online ``version'' of $\lambda$-Return SARSA
 \item Similar to TD($\lambda$) for Prediction, SARSA($\lambda$) uses Eligibility Traces
- \item Eligibility Trace for a given trace experience at time $t$ is a function
-$$E_t: \mathcal{N} \times \mathcal{A} \rightarrow \mathbb{R}_{\geq 0}$$
-$$E_0(s, a) = 0, \text{ for all } s \in \mathcal{N}, a \in \mathcal{A}$$
-$$E_t(s, a) = \gamma \cdot \lambda \cdot E_{t-1}(s, a) + \mathbb{I}_{S_t=s, A_t=a}, \text{ for all } s \in \mathcal{N}, a \in \mathcal{A}, \text{ for all } t$$
-\item Tabular SARSA($\lambda$) performs following update at each time step $t$ in each trace experience (for each $s \in \mathcal{N}, a \in \mathcal{A}$):
-$$Q(s, a) \leftarrow Q(s, a) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t)) \cdot E_t(s, a)$$
+ \item Eligibility Traces $\bm{E}_t$ for a given trace experience at time $t$ defined as:
+$$\bm{E}_0 = \nabla_{\bm{w}} V(S_0; \bm{w})$$
+$$\bm{E}_t = \gamma \lambda \cdot \bm{E}_{t-1} + \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
+\item SARSA($\lambda$) performs following update at each time step $t$:
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1},A_{t+1};\bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \bm{E}_t$$
 \end{itemize}
 \end{frame}
 
@@ -403,8 +485,12 @@ $$Q(s, a) \leftarrow Q(s, a) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A
 \frametitle{Off-Policy Learning}
 \pause
 \begin{itemize}[<+->]
+\item Tension in Control Algorithms: Wanting to learn Q-Values contingent on {\em subsequent optimal behavior} versus wanting to explore all actions
+\item So separate these concerns into two different policies 
 \item Estimate VF for {\em target policy} $\pi$  while following {\em behavior policy} $\mu$
 $$\{S_0, A_0, R_1, S_1, A_1, \ldots, R_T, S_T\} \sim \mu$$
+\item Behavior Policy meant to explore to collect data for all actions
+\item Target Policy is the policy to learn (driving towards Optimal Policy)
 \item Why is this important?
 \begin{itemize}[<+->]
 \item Learning from observing  humans or other agents
@@ -414,6 +500,46 @@ $$\{S_0, A_0, R_1, S_1, A_1, \ldots, R_T, S_T\} \sim \mu$$
 \end{itemize}
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Off-Policy Control with Q-Learning}
+\pause
+\begin{itemize}[<+->]
+\item Q-Learning performs Off-Policy learning of action-values $Q(s,a;\bm{w})$
+\item The current action is chosen using behavior policy: $A_t \sim \mu(S_t,\cdot)$
+\item The next action is chosen using target policy: $A' \sim \pi(S_t, \cdot)$
+\item Update $Q(S_t, A_t;\bm{w})$ towards value of {\em targeted action}
+$$\bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A'; \bm{w}) - Q(S_t, A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Q-Learning}
+\pause
+\begin{itemize}[<+->]
+\item We now allow both behavior and target policies to {\bf improve}
+\item The target (deterministic) policy $\pi_D$ is {\bf greedy} w.r.t $Q$-Value Function
+$$\pi_D(S_{t+1}) = \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w})$$
+\item The behavior policy $\mu$ is also improving, eg: $\epsilon$-greedy w.r.t. $Q$
+\item The $Q$-learning target then simplifies to:
+\begin{align*}
+& R_{t+1} + \gamma \cdot Q(S_{t+1}, A'; \bm{w}) \\
+= & R_{t+1} + \gamma \cdot Q(S_{t+1}, \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w})) \\
+= & R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w})
+\end{align*}
+\item Thus the update to $Q$-Value Function after each atomic experience is:
+$$\bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w}) - Q(S_t, A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t; \bm{w})$$
+\item Tabular convergence proofs require infinite exploration of all (s, a) pairs \& appropriate stochastic approximation conditions for step sizes.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Q-Learning Control Visualization}
+\centerline{\includegraphics[width=4cm, height=8cm]{q_learning.png}}
+\end{frame}
+
+
 
 \begin{frame}
 \frametitle{Importance Sampling for Off-Policy Learning}
@@ -459,80 +585,8 @@ $$V(S_t) \leftarrow V(S_t) + \alpha \cdot ( \frac {\pi(S_t, A_t)} {\mu(S_t, A_t)
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Tabular Q-Learning}
-\pause
-\begin{itemize}[<+->]
-\item We now consider off-policy learning of action-values $Q(s,a)$
-\item {\bf No} importance sampling is required
-\item The next action is chosen using behavior policy $A_{t+1} \sim \mu(S_t,\cdot)$
-\item But we consider an alternative successor action $A' \sim \pi(S_t, \cdot)$
-\item Update $Q(S_t, A_t)$ towards value of alternative action
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A') - Q(S_t, A_t))$$ 
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Off-Policy Control with Tabular Q-Learning}
-\pause
-\begin{itemize}[<+->]
-\item We now allow both experience and target policies to {\bf improve}
-\item The target (deterministic) policy $\pi_D$ is {\bf greedy} w.r.t $Q$-Value Function
-$$\pi_D(S_{t+1}) = \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a')$$
-\item The behavior policy $\mu$ is also improving, eg: $\epsilon$-greedy w.r.t. $Q$
-\item The $Q$-learning target then simplifies to:
-\begin{align*}
-& R_{t+1} + \gamma \cdot Q(S_{t+1}, A') \\
-= & R_{t+1} + \gamma \cdot Q(S_{t+1}, \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a')) \\
-= & R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a')
-\end{align*}
-\item Thus the update to $Q$-Value Function after each atomic experience is:
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a') - Q(S_t, A_t))$$
-\item Convergence proofs require infinite exploration of all (state, action) pairs \& appropriate stochastic approximation conditions for step sizes.
-\end{itemize}
-\end{frame}
 
 
-\begin{frame}
-\frametitle{Q-Learning Control Visualization}
-\centerline{\includegraphics[width=4cm, height=8cm]{q_learning.png}}
-\end{frame}
-
-\begin{frame}
-\frametitle{RL Control with Function Approximation}
-\pause
-\begin{itemize}[<+->]
-\item Natural extension of Tabular Control to function approximations
-\item Instead of parameterized approximation $V(s; \bm{w})$, we have $Q(s,a;\bm{w})$
-\item GPI's Policy Evaluation is Approximate $Q$-Value Policy Evaluation
-\item Loss Function for $Q(s,a;\bm{w})$ estimate relative to appropriate return
-\item For MC Control, the loss function for $(S_t,A_t)$ in an episode is:
-$$\mathcal{L}_{(S_t,A_t,G_t)}(\bm{w}) = \frac 1 2 \cdot (Q(S_t,A_t;\bm{w}) - G_t)^2$$
-\item Therefore, the gradient of the loss function for this $(S_t,A_t)$ is:
-$$\nabla_{\bm{w}} \mathcal{L}_{(S_t,A_t,G_t)}(\bm{w}) = (Q(S_t,A_t;\bm{w}) - G_t) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
-\item Therefore, parameters update for this $(S_t,A_t)$ at episode-end is:
-$$\Delta \bm{w} = \alpha \cdot (G_t - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
-\item $\epsilon$-greedy policy improvement is automatic from updated $Q$ estimate
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Bootstrapped Control with Function Approximation}
-\pause
-\begin{itemize}[<+->]
-\item For SARSA, parameters update after each atomic experience:
-$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1},A_{t+1};\bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
-\item For Q-Learning, parameters update after each atomic experience:
-$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1},a';\bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
-\item For offline $\lambda$-Return Control, parameters update at episode-end:
-$$\Delta \bm{w} = \alpha \cdot (G_t^{(\lambda)} - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
-\item For online SARSA($\lambda$), update after each atomic experience:
-$$\delta_t = R_{t+1} + \gamma \cdot Q(S_{t+1},A_{t+1};\bm{w}) - Q(S_t,A_t;\bm{w})$$
-$$\bm{E}_t = \gamma \lambda \cdot \bm{E}_{t-1} + \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
-$$\Delta \bm{w} = \alpha \cdot \delta_t \cdot \bm{E}_t$$
-\item $\epsilon$-greedy policy improvement is automatic from updated $Q$ estimate
-\end{itemize}
-\end{frame}
 
 \begin{frame}
 \frametitle{Relationship between DP and TD}
@@ -579,6 +633,8 @@ $$\Delta \bm{w} = \alpha \cdot \delta_t \cdot \bm{E}_t$$
       & TD($\lambda$) & \cmark & \xmark & \xmark \\ \hline
       \end{tabular}
 \end{center}      
+\pause
+Deadly Triad := [Bootstrapping, Function Approximation, Off-Policy]
 \end{frame}
 
 \begin{frame}
