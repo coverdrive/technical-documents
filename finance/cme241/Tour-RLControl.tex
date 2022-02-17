@@ -219,7 +219,7 @@ $$
 \frametitle{$\epsilon$-Greedy improves the policy}
 \pause
 \begin{theorem}
-For any $\epsilon$-greedy policy $\pi$, the $\epsilon$-greedy policy $\pi'$ with respect to $Q^{\pi}$ is an improvement over $\pi$, i.e., $\bm{V}^{\pi'}(s) \geq \bm{V}^{\pi}(s)$ for all $s \in \mathcal{N}$.
+For a Finite MDP, if $\pi$ is a policy such that for all $s \in \mathcal{N}, \pi(s, a) \geq \frac {\epsilon} {|\mathcal{A}|}$ for all $a \in \mathcal{A}$, then the $\epsilon$-greedy policy $\pi'$ obtained from $Q^{\pi}$ is an improvement over $\pi$, i.e., $\bm{V}^{\pi'}(s) \geq \bm{V}^{\pi}(s)$ for all $s \in \mathcal{N}$.
 \end{theorem}
 \pause
 \begin{itemize}[<+->]
@@ -227,7 +227,7 @@ For any $\epsilon$-greedy policy $\pi$, the $\epsilon$-greedy policy $\pi'$ with
 $$\lim_{i\rightarrow \infty} (\bm{B}^{\pi'})^i(\bvpi) = \bm{V}^{\pi'}$$
 \item So the proof is complete if we prove that:
 $$(\bm{B}^{\pi'})^{i+1}(\bvpi) \geq (\bm{B}^{\pi'})^i(\bvpi) \text{ for all } i = 0, 1, 2, \ldots$$
-\item Non-decreasing tower of Value Functions $[(\bm{B}^{\pi'})^i(\bvpi)|i = 0, 1, 2, \ldots]$ with repeated applications of $\bm{B}^{\pi'}$
+\item Non-decreasing sequence of Value Functions $[(\bm{B}^{\pi'})^i(\bvpi)|i = 0, 1, 2, \ldots]$ with repeated applications of $\bm{B}^{\pi'}$
 \end{itemize}
 \end{frame}
 
@@ -242,7 +242,7 @@ The base case of proof by induction is to show that $\bm{B}^{\pi'}(\bvpi)  \geq 
 & = \sum_{a \in \mathcal{A}} \pi'(s, a) \cdot (\mathcal{R}(s,a) + \gamma \cdot \sum_{s' \in \mathcal{S}} \mathcal{P}(s,a,s') \cdot \bvpi(s')) \\
 & = \sum_{a \in \mathcal{A}} \pi'(s, a) \cdot Q^{\pi}(s,a) \\
 & = \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot \max_{a \in \mathcal{A}} Q^{\pi}(s,a) \\
-& \geq \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot Q^{\pi}(s,\argmax_{a \in \mathcal{A}} \pi(s,a)) \\
+& \geq \frac {\epsilon} {|\mathcal{A}|} \cdot \sum_{a \in \mathcal{A}} Q^{\pi}(s,a) + (1 - \epsilon) \cdot \sum_{a \in \mathcal{A}} \frac {\pi(s,a) - \frac {\epsilon} {|\mathcal{A}|}} {1 - \epsilon} \cdot Q^{\pi}(s,a) \\
 & = \sum_{a \in \mathcal{A}} \pi(s,a) \cdot Q^{\pi}(s,a) = \bm{V}^{\pi}(s)
 \end{align*}
 \end{frame}
@@ -296,6 +296,8 @@ GLIE Tabular Monte-Carlo Control converges to the Optimal Action-Value function:
 
 \begin{frame}[fragile]
 \frametitle{GLIE MC Control with Function Approximation}
+\pause
+$$\Delta \bm{w} =  \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A_{t+1}; \bm{w}) - Q(S_t,A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
 \pause
 \begin{lstlisting}
 def glie_mc_control(
@@ -474,7 +476,7 @@ $$\Delta \bm{w} = \alpha \cdot (G_t^{(\lambda)} - Q(S_t, A_t; \bm{w})) \cdot \na
 \item SARSA($\lambda$) is online ``version'' of $\lambda$-Return SARSA
 \item Similar to TD($\lambda$) for Prediction, SARSA($\lambda$) uses Eligibility Traces
  \item Eligibility Traces $\bm{E}_t$ for a given trace experience at time $t$ defined as:
-$$\bm{E}_0 = \nabla_{\bm{w}} V(S_0; \bm{w})$$
+$$\bm{E}_0 = \nabla_{\bm{w}} Q(S_0, A_0; \bm{w})$$
 $$\bm{E}_t = \gamma \lambda \cdot \bm{E}_{t-1} + \nabla_{\bm{w}} Q(S_t,A_t;\bm{w})$$
 \item SARSA($\lambda$) performs following update at each time step $t$:
 $$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1},A_{t+1};\bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \bm{E}_t$$
@@ -507,9 +509,9 @@ $$\{S_0, A_0, R_1, S_1, A_1, \ldots, R_T, S_T\} \sim \mu$$
 \begin{itemize}[<+->]
 \item Q-Learning performs Off-Policy learning of action-values $Q(s,a;\bm{w})$
 \item The current action is chosen using behavior policy: $A_t \sim \mu(S_t,\cdot)$
-\item The next action is chosen using target policy: $A' \sim \pi(S_t, \cdot)$
+\item The next action is chosen using target policy: $A' \sim \pi(S_{t+1}, \cdot)$
 \item Update $Q(S_t, A_t;\bm{w})$ towards value of {\em targeted action}
-$$\bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A'; \bm{w}) - Q(S_t, A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$ 
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A'; \bm{w}) - Q(S_t, A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$ 
 \end{itemize}
 \end{frame}
 
@@ -528,7 +530,7 @@ $$\pi_D(S_{t+1}) = \argmax_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w})$$
 = & R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w})
 \end{align*}
 \item Thus the update to $Q$-Value Function after each atomic experience is:
-$$\bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w}) - Q(S_t, A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t; \bm{w})$$
+$$\Delta \bm{w} = \alpha \cdot (R_{t+1} + \gamma \cdot \max_{a' \in \mathcal{A}} Q(S_{t+1}, a'; \bm{w}) - Q(S_t, A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t; \bm{w})$$
 \item Tabular convergence proofs require infinite exploration of all (s, a) pairs \& appropriate stochastic approximation conditions for step sizes.
 \end{itemize}
 \end{frame}
