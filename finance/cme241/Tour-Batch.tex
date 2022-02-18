@@ -110,7 +110,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[Batch RL Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 11}}}: \\ Batch RL: Experience Replay, DQN, LSPI} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[Batch RL Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 11}}}: \\ Batch RL, Experience-Replay, DQN, LSPI, Gradient TD} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Ashwin Rao} % Your name
 \institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -130,6 +130,24 @@
 % \frametitle{Overview} % Table of contents slide, comment this block out to remove it
 % \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 % \end{frame}
+
+\begin{frame}
+\frametitle{Moving on to practically sophisticated algorithms}
+\begin{itemize}[<+->]
+\item Let's examine the core pattern of RL Algorithms we've learnt so far
+\item Experiences arrive one at a time, is used (for learning) and {\em discarded}
+\item Learning is {\em incremental}, with VF update after each unit of experience
+\item Are there alternative patterns we can employ? The answer is {\em Yes}
+\item We highlight 2 key patterns that yield a richer range of RL Algorithms
+\begin{enumerate}[<+->]
+\item {\em Experience-Replay}: Store the data as it arrives, and re-use it
+\item {\em Batch RL}: Learn the VF for an entire batch of data directly
+\end{enumerate} 
+\item Experience-Replay and Batch RL can be combined in interesting ways
+\end{itemize}
+\end{frame}
+
+
 
 \begin{frame}
 \frametitle{Incremental RL makes inefficient use of training data}
@@ -165,24 +183,24 @@ $$\Delta \bm{w} = \alpha \cdot (G_i - V(S_i; \bm{w})) \cdot \nabla_{\bm{w}} V(S_
 \item Each update using random data pair $(S,G) \sim \mathcal{D}$
 $$\Delta \bm{w} = \alpha \cdot (G - V(S; \bm{w})) \cdot \nabla_{\bm{w}} V(S; \bm{w})$$
 \item This will ultimately converge to desired value function $V(s;\bm{w^*})$
-\item Repeated use of available data  known as {\em Experience Replay} 
+\item Repeated use of available data  known as {\em Experience-Replay} 
 \item This makes more efficient use of available training data $\mathcal{D}$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Batch TD Prediction makes efficient use of {\em Experience}}
+\frametitle{Batch TD Prediction makes efficient use of Experiences}
 \pause
 \begin{itemize}[<+->]
-\item In Batch TD Prediction, we have experience $\mathcal{D}$ available as:
+\item In Batch TD Prediction, we have experiences data $\mathcal{D}$ available as:
 $$\mathcal{D} = [(S_i, R_i, S'_i) | 1 \leq i \leq n]$$
 \item Where $(R_i, S'_i)$ is the pair of reward and next state from a state $S_i$
-\item So, Experience $\mathcal{D}$ in the form of finite number of atomic experiences
+\item So, Experiences $\mathcal{D}$ in the form of finite number of atomic experiences
 \item This is represented in code as an \lstinline{Iterable[TransitionStep[S]]}
 \item Parameters updated with repeated use of these atomic experiences
 \item Each update using random data pair $(S,R,S') \sim \mathcal{D}$
 $$\Delta \bm{w} = \alpha \cdot (R + \gamma \cdot V(S'; \bm{w}) - V(S; \bm{w})) \cdot \nabla_{\bm{w}} V(S; \bm{w})$$
-\item This is TD Prediction with Experience Replay on Finite Experience $\mathcal{D}$
+\item This is TD Prediction with Experience-Replay on Finite Experiences $\mathcal{D}$
 \end{itemize}
 \end{frame}
 
@@ -203,7 +221,7 @@ $$\Delta \bm{w} = \alpha \cdot (R_{i,t+1} + \gamma \cdot V(S_{i,t+1}; \bm{w}) - 
 \begin{frame}
 \frametitle{The Deep Q-Networks (DQN) Control Algorithm}
 \pause
-DQN uses {\bf Experience Replay} and {\bf fixed Q-learning targets}.\\
+DQN uses {\bf Experience-Replay} and {\bf fixed Q-learning targets}.\\
 \pause
 At each time $t$ for each episode:
 \begin{itemize}[<+->]
@@ -224,7 +242,7 @@ Parameters $\bm{w}^-$ of target network infrequently updated to values of Q-netw
 \pause
 \begin{itemize}[<+->]
 \item Batch RL Prediction for general function approximation is iterative
-\item Uses experience replay and gradient descent
+\item Uses Experience-Replay and Gradient Descent
 \item We can solve directly (without gradient) for linear function approx
 \item Define a sequence of feature functions $\phi_j: \mathcal{S} \rightarrow \mathbb{R}, j = 1, 2, \ldots, m$
 \item Parameters $w$ is a weights vector $\bm{w} = (w_1, w_2, \ldots, w_m) \in \mathbb{R}^m$
@@ -274,9 +292,9 @@ $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(S_i) \cdot R_i$$
 \pause
 \begin{itemize}[<+->]
 \item Likewise, we can do LSTD($\lambda$) using Eligibility Traces
-\item Denote the Eligibility Trace of atomic experience $i$ as $\bm{E}_i$
+\item Denote the Eligibility Traces of atomic experience $i$ as $\bm{E}_i$
 \item Note: $\bm{E}_i$ accumulates $\nabla_{\bm{w}} V(s;\bm{w}) = \bm{\phi}(s)$ in each trace experience
-\item When accumulating, previous step's eligibility trace discounted by $\lambda \gamma$
+\item When accumulating, previous step's eligibility traces discounted by $\lambda \gamma$
 $$\sum_{i=1}^n \bm{E_i} \cdot (\bm{\phi}(S_i)^T \cdot \bm{w^*} - (R_i + \gamma \cdot \bm{\phi}(S'_i)^T \cdot \bm{w}^*)) = 0$$
 \item $\bm{w}^*$ is solved as $\bm{A}^{-1} \cdot \bm{b}$
 \item $m \times m$ Matrix $\bm{A}$ is accumulated at each atomic experience $(S_i, R_i, S'_i)$:
@@ -313,13 +331,13 @@ $$\bm{b} \leftarrow \bm{b} + \bm{E_i} \cdot R_i$$
 \item To perform Least Squares RL Control, we do GPI with:
 \begin{itemize}[<+->]
 \item Policy Evaluation as Least-Squares Q-Value Prediction
-\item Greedy Policy Improvement
+\item Greedy (or $\epsilon$-Greedy) Policy Improvement
 \end{itemize}
-\item For MC or On-Policy TD Control, Q-Value Prediction (for policy $\pi$):
+\item For On-Policy MC/TD Control, Q-Value Prediction (for policy $\pi$):
 $$Q^{\pi}(s,a) \approx Q(s,a;\bm{w}^*) = \bm{\phi}(s,a)^T \cdot \bm{w}^*$$
-\item Direct solve for $\bm{w}^*$ using experience data generated using policy $\pi$
+\item Direct solve for $\bm{w}^*$ using experiences data generated using policy $\pi$
 \item We are interested in Off-Policy Control with Least-Squares TD
-\item Using the same idea as Q-Learning and with Experience Replay
+\item Using the same idea as Q-Learning and with Experience-Replay
 \item This technique is known as Least Squares Policy Iteration (LSPI)
 \end{itemize}
 \end{frame}
@@ -328,25 +346,27 @@ $$Q^{\pi}(s,a) \approx Q(s,a;\bm{w}^*) = \bm{\phi}(s,a)^T \cdot \bm{w}^*$$
 \frametitle{Least Squares Policy Iteration (LSPI)}
 \pause
 \begin{itemize}[<+->]
-\item Each iteration of GPI starts with a function approximation
-$$Q(s,a; \bm{w}) = \bm{\phi}(s,a)^T \cdot \bm{w} = \sum_{j=1}^m \phi_j(s,a) \cdot w_j$$
-\item Deterministic policy $\pi_D$ ({\em target policy} for this iteration) is given by:
-$$\pi_D(s) = \argmax_a Q(s,a; \bm{w})$$
-\item Sample mini-batch of experiences $(s_i,a_i,r_i,s'_i)$ from replay memory $\mathcal{D}$
+\item Input is fixed finite data set $\mathcal{D}$ consisting of $(s,a,r,s')$ experiences
+\item Goal is to determine Optimal Q-Value Linear Function Approximation
+\item Each iteration of GPI starts with a deterministic target policy $\pi_D$
+\item $\pi_D$ is made available from the previous iteration of GPI
 \item Goal of the iteration is to solve for weights $\bm{w}^*$ to minimize:
 \begin{align*}
 \mathcal{L}(\bm{w}) & = \sum_i (Q(s_i,a_i; \bm{w}) - (r_i + \gamma \cdot Q(s'_i,\pi_D(s'_i); \bm{w})))^2\\
 & = \sum_i (\bm{\phi}(s_i,a_i)^T \cdot \bm{w} - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i))^T \cdot \bm{w}))^2
 \end{align*}
-\item Iteration ends by setting the next iteration's start parameters $\bm{w}$ to $\bm{w}^*$
+\item Solved using sampled mini-batch of experiences $(s_i,a_i,r_i,s'_i)$ from $\mathcal{D}$
+\item This solved $\bm{w}^*$ defines an updated Q-Value Function
+\item Iteration ends by setting the target policy $\pi_D$ (for next iteration) as:
+$$\pi_D(s) = \argmax_a Q(s,a; \bm{w}^*)$$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Least Squares Policy Iteration (LSPI)}
+\frametitle{Solving with weights $\bm{w}^*$ with LSTDQ}
 \pause
 \begin{itemize}[<+->]
-\item We set the semi-gradient of $\mathcal{L}(\bm{w}^*)$ to 0
+\item We set the semi-gradient of $\mathcal{L}(\bm{w})$ at $\bm{w} = \bm{w}^*$ to 0
 \begin{equation}
 \sum_i \phi(s_i,a_i) \cdot (\bm{\phi}(s_i,a_i)^T \cdot \bm{w}^* - (r_i + \gamma \cdot \bm{\phi}(s'_i, \pi_D(s'_i))^T \cdot \bm{w}^*)) = 0
 \label{eq:lspi-loss-semi-gradient}
@@ -397,7 +417,6 @@ $$\bm{b} \leftarrow \bm{b} + \bm{\phi}(s_i, a_i) \cdot r_i$$
 \item Backward-recursive determination of early exercise states
 \end{itemize}
 \item We consider LSPI as an alternative approach for American Pricing
-
 \end{itemize}
 \end{frame}
 
@@ -431,8 +450,9 @@ g(s) & \text{ if } a = e
 \end{cases}
 $$
 for feature funcs $\bm{\phi}(\cdot) = [\phi_i(\cdot)|i = 1, \ldots, m]$ of only state \& not action
-\item Each iteration starts with $\bm{w}$ defining $\hat{Q}$ (and it's greedy policy $\pi_D$), and ends by solving for $\bm{w}^*$ setting next iteration's $\bm{w}$ to $\bm{w}^*$
-\item Since we learn Q-Value function for only $a=c$, behavior policy $\mu$ generating experience data for training is a constant function $\mu(s) = c$
+\item Each iteration of GPI starts with a deterministic target policy $\pi_D$
+\item $\pi_D$ is greedy policy from previous iteration's solved $Q(s,a;\bm{w}^*)$
+\item Since we learn Q-Value function for only $a=c$, behavior policy $\mu$ generating experiences data for training is a constant func $\mu(s) = c$
 \item Also, for American Options, the reward for $a=c$ is 0
 \item So each atomic experiences for training is of the form $(s,c,0,s')$
 \item So we represent each atomic experience for training as a 2-tuple $(s,s')$
@@ -484,9 +504,9 @@ $$\bm{b} \leftarrow \bm{b} + \gamma  \cdot \mathbb{I}_{C2} \cdot \bm{\phi}(s_i) 
 \frametitle{Feature functions}
 \pause
 \begin{itemize}[<+->]
-\item Li, Szepesvari, Schuurmans recommend Laguerre polynomials (first 3)
-\item Over $S' = S_t/K$ where $S_t$ is underlying price and $K$ is strike
-\item $\phi_0(S_t) = 1, \phi_1(S_t) = e^{-\frac {S'} 2}, \phi_2(S_t) = e^{-\frac{S'} 2} \cdot (1-S'), \phi_3(S_t) = e^{-\frac{S'} 2} \cdot (1-2S'+S'^2/2)$
+\item Li, Szepesvari, Schuurmans recommend Laguerre polynomials (first 4)
+\item Over $M_t = S_t/K$ where $S_t$ is underlying price and $K$ is strike
+\item $\phi_0(S_t) = 1, \phi_1(S_t) = e^{-\frac {M_t} 2}, \phi_2(S_t) = e^{-\frac{M_t} 2} \cdot (1-M_t), \phi_3(S_t) = e^{-\frac{M_t} 2} \cdot (1-2M_t+M_t^2/2)$
 \item They used these for Longstaff-Schwartz as well as for LSPI
 \item For LSPI, we also need feature functions for time
 \item They recommend $\phi_0^{(t)}(t) = sin(\frac {\pi(T-t)} {2T}), \phi_1^{(t)}(t) = \log(T-t), \phi_2^{(t)}(t) = (\frac t T)^2$
@@ -499,7 +519,7 @@ $$\bm{b} \leftarrow \bm{b} + \gamma  \cdot \mathbb{I}_{C2} \cdot \bm{\phi}(s_i) 
 \begin{itemize}[<+->]
 \item LSPI is data-efficient/compute-efficient, but linearity is a limitation
 \item Alternative is (incremental) Q-Learning with neural network approx
-\item We employ the same set up as LSPI (including Experience Replay)
+\item We employ the same set up as LSPI (including Experience-Replay)
 $$
 \hat{Q}(s,a; \bm{w}) =
 \begin{cases}
@@ -522,7 +542,7 @@ $$\Delta \bm{w} = \alpha \cdot (\gamma \cdot g(s'_i) - f(s_i;\bm{w})) \cdot \nab
 \pause
 \begin{itemize}[<+->]
 \item Batch RL makes efficient use of data
-\item DQN uses experience replay and fixed Q-learning targets, avoiding the pitfalls of time-correlation and semi-gradient
+\item DQN uses Experience-Replay and fixed Q-learning targets, avoiding the pitfalls of time-correlation and semi-gradient
 \item LSTD is a direct (gradient-free) solution of Batch TD Prediction
 \item LSPI is an off-policy, experience-replay Control Algorithm using LSTDQ for Policy Evaluation
 \item Optimal Exercise of American Options can be tackled with LSPI and Deep Q-Learning algorithms
