@@ -100,11 +100,20 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
-\newcommand{\bvpi}{\bm{V}^{\pi}}
-\newcommand{\bvs}{\bm{V}^*}
-\newcommand{\bbpi}{\bm{B}^{\pi}}
-\newcommand{\bbs}{\bm{B}^*}
+\newcommand{\vw}{\bm{V_w}}
+\newcommand{\vpi}{\bm{V}^{\pi}}
+\newcommand{\bphi}{\bm{\Phi}}
+\newcommand{\bb}{\bm{B}^{\pi}}
+\newcommand{\bpi}{\bm{\Pi_{\Phi}}}
+\newcommand{\bmu}{\bm{\mu_{\pi}}}
 \newcommand{\bv}{\bm{V}}
+\newcommand{\bd}{\bm{D}}
+\newcommand{\bw}{\bm{w}}
+\newcommand{\btheta}{\bm{\theta}}
+\newcommand{\bdel}{\bm{\delta_w}}
+\newcommand{\brew}{\bm{\mathcal{R}}^{\pi}}
+\newcommand{\bprob}{\bm{\mathcal{P}}^{\pi}}
+
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -363,7 +372,7 @@ $$\pi_D(s) = \argmax_a Q(s,a; \bm{w}^*)$$
 \end{frame}
 
 \begin{frame}
-\frametitle{Solving with weights $\bm{w}^*$ with LSTDQ}
+\frametitle{Solving for weights $\bm{w}^*$ with LSTDQ}
 \pause
 \begin{itemize}[<+->]
 \item We set the semi-gradient of $\mathcal{L}(\bm{w})$ at $\bm{w} = \bm{w}^*$ to 0
@@ -538,6 +547,323 @@ $$\Delta \bm{w} = \alpha \cdot (\gamma \cdot g(s'_i) - f(s_i;\bm{w})) \cdot \nab
 \end{frame}
 
 \begin{frame}
+\frametitle{Motivation for understanding Value Function Geometry}
+\pause
+\begin{itemize}[<+->]
+\item Helps us better understand transformations of Value Functions (VFs)
+\item Across the various DP and RL algorithms
+\item Particularly helps when VFs are approximated, esp. with linear approx
+\item Provides insights into stability and convergence
+\item Particularly when dealing with the ``Deadly Triad''
+\item Deadly Triad := [Bootstrapping, Func Approx, Off-Policy]
+\item {\bf Leads us to Gradient TD}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Notation}
+\pause
+\begin{itemize}[<+->]
+\item Assume finite state space $\mathcal{S} = \mathcal{N} = \{s_1, s_2, \ldots, s_n\}$
+\item Action space $\mathcal{A}$ consisting of finite number of actions
+\item This exposition can be extended to infinite/continuous spaces
+\item This exposition is for a fixed (often stochastic) policy denoted $\pi(s,a)$
+\item VF for a policy $\pi$ is denoted as $\vpi: \mathcal{S} \rightarrow \mathbb{R}$
+\item $m$ feature functions $\phi_1, \phi_2, \ldots, \phi_m : \mathcal{S} \rightarrow \mathbb{R}$
+\item Feature vector for a state $s \in \mathcal{S}$ denoted as $\bm{\phi}(s) \in \mathbb{R}^m$
+\item For linear function approximation of VF with weights $\bw = (w_1, w_2, \ldots, w_m)$,
+VF $\vw: \mathcal{S} \rightarrow \mathbb{R}$ is defined as:
+$$\vw(s) = \bm{\phi}(s)^T \cdot \bw =  \sum_{j=1}^m \phi_j(s) \cdot w_j \mbox{ for any } s \in \mathcal{S}$$
+\item $\bmu : \mathcal{S} \rightarrow [0, 1]$ denotes the states' probability distribution under $\pi$ 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{VF Geometry and VF Linear Approximations}
+\pause
+\begin{itemize}[<+->]
+\item Consider $n$-dim space $\mathbb{R}^n$, with each dim corresponding to a state in $\mathcal{S}$
+\item Think of a VF (typically denoted $\bv$): $\mathcal{S} \rightarrow \mathbb{R}$ as a vector in this space
+\item Each dimension's coordinate is the VF for that dimension's state
+\item Coordinates of vector $\vpi$ for policy $\pi$ are: $[\vpi(s_1), \ldots, \vpi(s_n)]$
+\item Consider $m$ independent vectors with $j^{th}$ vector: $[\phi_j(s_1), \ldots, \phi_j(s_n)]$
+\item These $m$ vectors are the $m$ columns of $n \times m$ matrix $\bphi = [\phi_j(s_i)]$
+\item Their span represents $m$-dim subspace within this $n$-dim space
+\item Spanned by the set of all $\bw = [w_1, w_2, \ldots, w_m] \in \mathbb{R}^m$
+\item Vector $\vw = \bphi \cdot \bw$ in this subspace has coordinates $[\vw(s_1), \ldots , \vw(s_n)]$
+\item Vector $\vw$ is fully specified by $\bw$ (so we often say $\bw$ to mean $\vw$)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Some more notation}
+\pause
+\begin{itemize}[<+->]
+\item Denote $\mathcal{R}(s,a)$ as the Expected Reward upon action $a$ in state $s$
+\item Denote $\mathcal{P}(s,a,s')$ as the probability of transition $s \rightarrow s'$ upon action $a$
+\item Define
+$$\brew(s) = \sum_{a \in \mathcal{A}} \pi(s, a) \cdot \mathcal{R}(s,a)$$
+$$\bprob(s,s') = \sum_{a \in \mathcal{A}} \pi(s, a) \cdot \mathcal{P}(s,a,s')$$
+\item Notation $\brew$ refers to vector $[\brew(s_1), \brew(s_2), \ldots, \brew(s_n)]$
+\item Notation $\bprob$ refers to matrix $[\bprob(s_i, s_{i'})], 1 \leq i, i' \leq n$ 
+\item Denote $\gamma < 1$ as the MDP discount factor
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bellman operator $\bb$}
+\pause
+\begin{itemize}[<+->]
+\item Bellman Policy Operator $\bb$ for policy $\pi$ operating on VF vector $\bv$:
+$$\bb (\bv) = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bv$$
+\item $\bb$ is a linear operator in vector space $\mathbb{R}^n$
+\item So we denote and treat $\bb$ as a $n \times n$ matrix
+\item Note that $\vpi$ is the fixed point of $\bb$, i.e.,
+$$\bb \cdot \vpi = \vpi$$
+\item If we start with an arbitrary VF vector $\bv$ and repeatedly apply $\bb$, 
+by Fixed-Point Theorem, we will reach the fixed point $\vpi$
+\item This is the Dynamic Programming Policy Evaluation algorithm
+\item Monte Carlo without func approx also converges to $\vpi$ (albeit slowly)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Projection operator $\bpi$}
+\pause
+\begin{itemize}[<+->]
+\item First we define ``distance'' $d(\bm{V_1}, \bm{V_2})$ between VF vectors $\bm{V_1}, \bm{V_2}$
+\item Weighted by $\bmu$ across the $n$ dimensions of $\bm{V_1}, \bm{V_2}$
+$$d(\bm{V_1}, \bm{V_2}) = \sum_{i=1}^n \bmu(s_i) \cdot  (\bm{V_1}(s_i) - \bm{V_2}(s_i))^2 =  (\bm{V_1} - \bm{V_2})^T \cdot \bd \cdot (\bm{V_1} - \bm{V_2})$$
+where $\bd$ is the square diagonal matrix consisting of $\bmu(s_i), 1 \leq i \leq n$
+\item Projection operator for subspace spanned by $\bphi$ is denoted as $\bpi$
+\item $\bpi$ performs an orthogonal projection of VF vector $\bv$ on subspace $\bphi$
+\item So, $\bpi (\bv)$ is the VF in subspace $\bphi$ defined by $\argmin_{\bw} d(\bv, \vw)$
+\item This is a weighted least squares regression with solution:
+$$\bw = (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot \bv$$
+\item So, we denote and treat Projection operator $\bpi$ as a $n \times n$ matrix:
+$$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{4 VF vectors of interest in the $\bphi$ subspace}
+Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
+\pause
+\begin{enumerate}[<+->]
+\item Projection $\bpi \cdot \vpi$ yields $\bm{w}_{\pi} = \argmin_{\bw} d(\vpi, \vw)$
+\begin{itemize}[<+->]
+\item This is the VF we seek when doing linear function approximation
+\item Because it is the VF vector ``closest'' to $\vpi$ in the $\bphi$ subspace
+\item Monte-Carlo with linear func approx will (slowly) converge to $\bw_{\pi}$
+\end{itemize}
+\item Bellman Error (BE)-minimizing: $\bm{w}_{BE} = \argmin_{\bw} d(\bb \cdot \vw, \vw)$
+\item Temporal Difference Error (TDE)-minimizing: $\bm{w}_{TDE} = \argmin_{\bw} \mathbb{E}_{\pi} [\delta^2]$
+\item Projected Bellman Error (PBE)-minimizing: $\bm{w}_{PBE} = \argmin_{\bw} d((\bpi \cdot \bb) \cdot \vw, \vw)$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\includegraphics[scale=0.105]{VFGeometryImg.jpg}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bellman Error (BE)-minimizing $\bm{w}_{BE}$}
+\pause
+$\bm{w}_{BE}$ is the vector in the $\bphi$ subspace for which the Bellman Error $\bb \cdot \vw - \vw$ is minimized
+\begin{align*}
+\bm{w}_{BE} & =  \argmin_{\bw} d(\bb \cdot \vw, \vw) \\
+& = \argmin_{\bw} d(\vw, \brew + \gamma \bprob \cdot \vw) \\
+& = \argmin_{\bw} d(\bphi \cdot \bw, \brew + \gamma \bprob \cdot \bphi \cdot \bw)\\
+& = \argmin_{\bw} d(\bphi \cdot \bw - \gamma \bprob \cdot \bphi \cdot \bw, \brew)\\
+& = \argmin_{\bw} d((\bphi - \gamma \bprob \cdot \bphi) \cdot \bw, \brew )\\
+\end{align*}
+\pause
+This is a weighted least-squares linear regression of $\brew$ versus $\bphi - \gamma \bprob \cdot \bphi$
+with weights $\bmu$, whose solution is:
+\pause
+$$\bm{w}_{BE} = ((\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi))^{-1} \cdot (\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot \brew$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Model-Free Learning of $\bm{w}_{BE}$}
+\pause
+\begin{itemize}[<+->]
+\item Let us refer to $(\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi)$ as $\bm{A}$
+\item Let us refer to $(\bphi - \gamma \bprob \cdot \bphi)^T \cdot \bd \cdot \brew$ as $\bm{b}$ 
+\item So that $\bm{w}_{BE} = \bm{A}^{-1} \cdot \bm{b}$
+\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of $\bm{A}$ and $\bm{b}$
+\item Estimate of $\bm{A}$ is the outer-product of vector $\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')$ with itself
+\item Estimate of $\bm{b}$ is scalar $r$ times vector $\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')$ 
+\item Average these estimates across many such model-free transitions
+\item However, this requires $m$ (number of features) to not be too large
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Residual Gradient Algorithm to solve for $\bm{w}_{BE}$}
+\pause
+\begin{itemize}[<+->]
+\item $\bm{w}_{BE}$ is the vector in the $\bphi$ subspace for which BE is minimized
+\item But BE for a state is the expected TD error $\delta$ in that state when following policy $\pi$
+\item So we want to do SGD with gradient of square of expected TD error
+\begin{align*}
+\Delta \bw & = - \frac{1}{2} \alpha \cdot \nabla_{\bw} (\mathbb{E}_{\pi}[\delta])^2\\
+& = - \alpha \cdot \mathbb{E}_{\pi}[r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw] \cdot \nabla_{\bw} \mathbb{E}_{\pi}[\delta]\\
+& = \alpha \cdot (\mathbb{E}_{\pi}[r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw] - \bm{\phi}(s)^T \cdot \bw) \cdot (\bm{\phi}(s) - \gamma \cdot \mathbb{E}_{\pi}[\bm{\phi}(s')])\\
+\end{align*}
+\item  This is called the {\em Residual Gradient} algorithm
+\item Requires two independent samples of $s'$ transitioning from $s$
+\item In that case, converges to $\bm{w}_{BE}$ robustly (even for non-linear approx)
+\item But it is slow, and doesn't converge to a desirable place
+\item Cannot learn if we can only access features, and not underlying states
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Temporal Difference Error (TDE)-minimizing $\bm{w}_{TDE}$}
+\pause
+\begin{itemize}[<+->]
+\item $\bm{w}_{TDE}$ is the vector in the $\bphi$ subspace for which the expected square of the TD error $\delta$ (when following policy $\pi$) is minimized
+$$\bm{w}_{TDE} = \argmin_{\bw} \sum_{s \in \mathcal{S}} \bmu(s) \sum_{r,s'} \mathbb{P}_{\pi}(r, s'|s) \cdot (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw)^2$$
+\item To perform SGD, we have to estimate the gradient of the expected square of TD error by sampling
+\item The weight update for each sample in the SGD will be:
+\begin{align*}
+\Delta \bw & = - \frac{1}{2} \alpha \cdot \nabla_{\bw} (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw)^2\\
+& = \alpha \cdot (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw) \cdot (\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s'))\\
+\end{align*}
+\item This algorithm (named {\em Naive Residual Gradient}) converges robustly, but not to a desirable place
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Projected Bellman Error (PBE)-minimizing vector $\bm{w}_{PBE}$}
+\pause
+\begin{itemize}[<+->]
+\item Consider the composition of Projection Operator $\bpi$ and Bellman Policy Operator $\bb$, i.e., $\bpi \cdot \bb$
+\item We call $\bpi \cdot \bb$ the Projected Bellman Operator
+\item Applying $\bb$ on a VF vector $\vw$ in the $\bphi$ subspace typically throws it out of the $\bphi$ subspace
+\item Then further applying $\bpi$ brings it back into the $\bphi$ subspace
+\item Call this resultant VF vector in the $\bphi$ subspace as $\bm{V_{w'}}$
+\item Define $\bm{w}_{BE}$ as the $\bw$ for which $d(\bm{V_{w'}}, \vw)$ is minimized
+\item Projected Bellman Error (PBE)-minimizing: $\bm{w}_{PBE} = \argmin_{\bw} d((\bpi \cdot \bb) \cdot \vw, \vw)$
+\item The minimum is 0, i.e., $\bphi \cdot \bm{w}_{PBE}$ is the fixed point of $\bpi \cdot \bb$
+\item Starting with an arbitrary VF vector $\bv$ and repeatedly applying $\bb$ (potentially taking it out of the subspace) followed by $\bpi$ (projecting it back to the subspace), we will reach the fixed point $\bphi \cdot \bm{w}_{PBE}$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Solution of $\bm{w}_{PBE}$ with a Linear System Formulation}
+\pause
+$\bphi \cdot \bm{w}_{PBE}$ is the fixed point of operator $\bpi \cdot \bb$. We know:
+$$\bpi = \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd$$
+$$\bb (\bv) = \brew + \gamma \bprob \cdot \bv$$
+\pause
+Therefore,
+$$\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bm{w}_{PBE}) = \bphi \cdot \bm{w}_{PBE}$$
+\pause
+Since columns of $\bphi$ are assumed to be independent (full rank),
+\begin{align*}
+(\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bm{w}_{PBE}) & = \bm{w}_{PBE}\\
+\bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bm{w}_{PBE}) &= \bphi^T \cdot \bd \cdot \bphi \cdot \bm{w}_{PBE}\\
+\bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi) \cdot \bm{w}_{PBE} &= \bphi^T \cdot \bd \cdot \brew\\ 
+\end{align*}
+\pause
+This is a square linear system of the form $\bm{A} \cdot \bm{w}_{PBE} = \bm{b}$ whose solution is:
+$$\bm{w}_{PBE} = \bm{A}^{-1} \cdot \bm{b} = (\bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi))^{-1} \cdot \bphi^T \cdot \bd \cdot \brew$$
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Model-Free Learning of $\bm{w}_{PBE}$}
+\pause
+\begin{itemize}[<+->]
+\item How do we construct matrix $\bm{A} = \bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi)$ and vector $\bm{b} = \bphi^T \cdot \bd \cdot \brew$ without a model?
+\item Following policy $\pi$, each time we perform a model-free transition from $s$ to $s'$ getting reward $r$, we get a sample estimate of $\bm{A}$ and $\bm{b}$
+\item Estimate of $\bm{A}$ is outer-product of vectors $\bm{\phi}(s)$ and $\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')$
+\item Estimate of $\bm{b}$ is scalar $r$ times vector $\bm{\phi}(s)$ 
+\item Average these estimates across many such model-free transitions
+\item This algorithm is called Least Squares Temporal Difference (LSTD)
+\item Alternative: Our usual Semi-Gradient TD descent with updates:
+$$\Delta \bw = \alpha \cdot (r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw) \cdot \bm{\phi}(s)$$
+\item This converges to $\bm{w}_{PBE}$ because $\mathbb{E}_{\pi}[\Delta \bw] = 0$ yields
+$$ \bphi^T \cdot \bd \cdot (\brew + \gamma \bprob \cdot \bphi \cdot \bw - \bphi \cdot \bw) = 0$$
+$$ \Rightarrow \bphi^T \cdot \bd \cdot (\bphi - \gamma \bprob \cdot \bphi) \cdot \bw = \bphi^T \cdot \bd \cdot \brew$$ 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Gradient TD Algorithms to solve for $\bm{w}_{PBE}$}
+\pause
+\begin{itemize}[<+->]
+\item For on-policy linear func approx, semi-gradient TD works
+\item For non-linear func approx or off-policy, we need Gradient TD
+\begin{itemize}
+\item GTD: The original Gradient TD algorithm
+\item GTD-2: Second-generation GTD
+\item TDC: TD with Gradient correction
+\end{itemize}
+\item We need to set up the loss function whose gradient will drive SGD
+$$\bm{w}_{PBE} = \argmin_{\bw} d(\bpi \cdot \bb \cdot \vw, \vw) = \argmin_{\bw} d(\bpi \cdot \bb \cdot \vw, \bpi \cdot \vw)$$
+\item So we define the loss function (denoting $\bb \cdot \vw - \vw$ as $\bdel$) as:
+$$\mathcal{L}({\bf w})  = (\bpi \cdot \bdel)^T \cdot \bd \cdot (\bpi \cdot \bdel) = \bdel^T \cdot \bpi^T \cdot \bd \cdot \bpi \cdot \bdel$$
+$$=  \bdel^T \cdot (\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd)^T \cdot \bd \cdot  (\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd) \cdot \bdel$$
+$$= \bdel^T \cdot (\bd \cdot \bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T) \cdot \bd \cdot  (\bphi \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot \bphi^T \cdot \bd) \cdot \bdel$$
+$$= (\bdel^T \cdot \bd \cdot \bphi) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot  \bphi) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
+$$= (\bphi^T \cdot \bd \cdot \bdel)^T \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{TDC Algorithm to solve for $\bm{w}_{PBE}$}
+\pause
+We derive the TDC Algorithm based on $\nabla_{\bw} \mathcal{L}({\bw})$
+$$\nabla_{\bw} \mathcal{L}({\bw}) = 2 \cdot (\nabla_{\bw} (\bphi^T \cdot \bd \cdot \bdel)^T) \cdot (\bphi^T \cdot \bd \cdot \bphi)^{-1} \cdot (\bphi^T \cdot \bd \cdot \bdel)$$
+\pause
+Now we express each of these 3 terms as expectations of model-free transitions $s \stackrel{\pi}\longrightarrow (r,s')$, denoting $r + \gamma \cdot \bm{\phi}(s')^T \cdot \bw - \bm{\phi}(s)^T \cdot \bw$ as $\delta$
+\pause
+\begin{itemize}[<+->]
+\item $\bphi^T \cdot \bd \cdot \bdel = \mathbb{E}[\delta \cdot \bm{\phi}(s)]$
+\item $\nabla_{\bw} (\bphi^T \cdot \bd \cdot \bdel)^T = \mathbb{E}[(\nabla_{\bw} \delta) \cdot \bm{\phi}(s)^T] = \mathbb{E}[(\gamma \cdot \bm{\phi}(s') - \bm{\phi}(s)) \cdot \bm{\phi}(s)^T]$
+\item $\bphi^T \cdot \bd \cdot \bphi = \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]$
+\end{itemize}
+\pause
+Substituting, we get:
+$$\nabla_{\bw} \mathcal{L}({\bw}) = 2 \cdot  \mathbb{E}[(\gamma \cdot \bm{\phi}(s') - \bm{\phi}(s)) \cdot \bm{\phi}(s)^T] \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Weight Updates of TDC Algorithm}
+\pause
+$$\Delta \bw  = - \frac {1} {2} \alpha \cdot \nabla_{\bw} \mathcal{L}({\bw})$$
+$$ = \alpha \cdot \mathbb{E}[(\bm{\phi}(s) - \gamma \cdot \bm{\phi}(s')) \cdot \bm{\phi}(s)^T] \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$$
+$$ = \alpha \cdot (\mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T] - \gamma \cdot \mathbb{E}[\bm{\phi}(s') \cdot \bm{\phi}(s)^T]) \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$$
+$$ = \alpha \cdot (\mathbb{E}[\delta \cdot \bm{\phi}(s)] - \gamma \cdot \mathbb{E}[\bm{\phi}(s') \cdot \bm{\phi}(s)^T] \cdot \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)])$$
+$$ = \alpha \cdot (\mathbb{E}[\delta \cdot \bm{\phi}(s)] - \gamma \cdot \mathbb{E}[\bm{\phi}(s') \cdot \bm{\phi}(s)^T] \cdot \btheta)$$
+\pause
+\vspace*{2mm}
+
+$\btheta = \mathbb{E}[\bm{\phi}(s) \cdot \bm{\phi}(s)^T]^{-1} \cdot \mathbb{E}[\delta \cdot \bm{\phi}(s)]$ is the solution to weighted least-squares linear regression of $\bb \cdot \bv - \bv$ against $\bphi$, with weights as $\mu_{\pi}$.
+\pause
+\vspace*{3mm}
+
+{\bf Cascade Learning: Update both $\bw$ and $\btheta$} ($\btheta$ converging faster)
+\pause
+\begin{itemize}[<+->]
+\item $\Delta \bw = \alpha \cdot \delta \cdot \bm{\phi}(s)  - \alpha \cdot \gamma \cdot \bm{\phi}(s') \cdot (\btheta^T \cdot \bm{\phi}(s))$
+\item $\Delta \btheta = \beta \cdot (\delta - \btheta^T \cdot \bm{\phi}(s)) \cdot \bm{\phi}(s)$
+\end{itemize}
+\pause
+Note: $\btheta^T \cdot \bm{\phi}(s)$ operates as estimate of TD error $\delta$ for current state $s$
+\end{frame}
+
+\begin{frame}
 \frametitle{Key Takeaways from this Chapter}
 \pause
 \begin{itemize}[<+->]
@@ -546,6 +872,9 @@ $$\Delta \bm{w} = \alpha \cdot (\gamma \cdot g(s'_i) - f(s_i;\bm{w})) \cdot \nab
 \item LSTD is a direct (gradient-free) solution of Batch TD Prediction
 \item LSPI is an off-policy, experience-replay Control Algorithm using LSTDQ for Policy Evaluation
 \item Optimal Exercise of American Options can be tackled with LSPI and Deep Q-Learning algorithms
+\item Value Function Geometry provides tremendous intuition
+\item Projected Bellman Error (PBE) is the right loss function to use
+\item The gradient of PBE loss function yields Gradient TD algorithms
 \end{itemize}
 \end{frame}
 
