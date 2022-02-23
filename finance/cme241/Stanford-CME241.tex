@@ -377,43 +377,65 @@ $$V_{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \end{itemize}
 \end{frame}
 
-
 \begin{frame}
-\frametitle{Dynamic Programming versus Reinforcement Learning}
+\frametitle{Dynamic Programming}
 \pause
 \begin{itemize}[<+->]
 \item When Probabilities Model is known $\Rightarrow$ {\em Dynamic Programming} (DP)
 \item DP Algorithms take advantage of knowledge of probabilities
 \item So, DP Algorithms do not require interaction with the environment
-\item In the Language of A.I, DP is a type of {\em Planning Algorithm}
-\item When Probabilities Model unknown $\Rightarrow$ {\em Reinforcement Learning} (RL)
-\item RL Algorithms interact with the Environment and incrementally learn
-\item Environment interaction could be {\em real} or {\em simulated} interaction
-\item RL approach: Try different actions \& learn what works, what doesn't
-\item RL Algorithms' key challenge is to tradeoff ``explore'' versus ``exploit''
-\item DP or RL, Good approximation of Value Function is vital to success
-\item Deep Neural Networks are typically used for function approximation
+\item In the Language of AI, DP is a type of {\em Planning Algorithm}
+\item DP algorithms are iterative algorithms based on Fixed-Point Theorem
+\item Finding a {\em Fixed Point} of Operator based on Bellman Equation
+\item Why is DP not effective in practice?
+\pause
+\begin{itemize}[<+->]
+\item Curse of Dimensionality
+\item Curse of Modeling
+\end{itemize}
+\item Curse of Dimensionality can be partially cured with Approximate DP
+\item To resolve both curses effectively, we need RL
 \end{itemize}
 \end{frame}
 
-
 \begin{frame}
-\frametitle{Why is RL interesting/useful to learn about?}
+\frametitle{Reinforcement Learning}
 \pause
 \begin{itemize}[<+->]
-\item RL solves MDP problem when {\em Environment Probabilities} are unknown
-\item This is typical in real-world problems (complex/unknown probabilities)
-\item RL interacts with {\em Actual Environment} or with {\em Simulated Environment}
+\item Typically in real-world, we don't have access to a Probabilities Model
+\item All we have is access to an environment serving individual transitions
+\item Even if MDP model is available, model updates can be challenging
+\item Often real-world models end up being too large or too complex
+\item Sometimes estimating a {\em sampling model} is much more feasible
+\item RL interacts with either {\em actual} or {\em simulated} environment
+\item Either way, we receive {\em individual transitions} to next state and reward
+\item RL is a ``trial-and-error'' approach linking {\em Actions} to {\em Returns}
+\item Try different actions \& learn what works, what doesn't
+\item This is hard because actions have overlapping reward sequences
+\item Also, sometimes Actions result in {\em delayed Rewards}
+\end{itemize}
+\end{frame}
 
+\begin{frame}
+\frametitle{RL: Learning Value Function Approximation from Samples}
+\pause
+\begin{itemize}[<+->]
+\item RL incrementally learns the Value Function from transitions data
+\item Appropriate Approximation of Value Function is key to success
+\item Deep Neural Networks are typically used for function approximation
+\item Big Picture: Sampling and Function Approximation come together
+\item RL algorithms are clever about balancing  ``explore'' versus ``exploit''
+\item Most RL Algorithms are founded on the Bellman Equations
 \item {\bf Promise of modern A.I. is based on success of RL algorithms}
 \item Potential for automated decision-making in many industries
 \item In 10-20 years: Bots that act or behave more optimal than humans
 \item RL already solves various low-complexity real-world problems
 \item RL might soon be the most-desired skill in the technical job-market
 \item Possibilities in Finance are endless (we cover 5 important problems)
-\item Learning RL is a lot of fun! (interesting in theory as well as coding)
+\item Studying RL is a lot of fun! (interesting in theory as well as coding)
 \end{itemize}
 \end{frame}
+
 
 \begin{frame}
 \frametitle{Many Faces of Reinforcement Learning}
