@@ -1,0 +1,786 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[handout]{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{pseudocode}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\usetikzlibrary{positioning}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Policy Gradient Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 12}}}: \\ Policy Gradient Algorithms} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{ICME, Stanford University
+ % Your institution for the title page
+}
+
+\date{} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Why do we care about Policy Gradient (PG)?}
+\pause
+\begin{itemize}[<+->]
+\item Let us review how we got here
+\item We started with Markov Decision Processes and Bellman Equations
+\item Next we studied several variants of DP and RL algorithms
+\item We noted that the idea of {\em Generalized Policy Iteration} (GPI) is key
+\item Policy Improvement step: $\pi(s, a)$ derived from $\argmax_a Q(s, a)$
+\item How do we do $\argmax$ when action space is large or continuous?
+\item Idea: Do Policy Improvement step with a Gradient Ascent instead
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{``Policy Improvement with a Gradient Ascent??''}
+\pause
+\begin{itemize}[<+->]
+\item We want to find the Policy that fetches the ``Best Expected Returns''
+\item Gradient Ascent on ``Expected Returns'' w.r.t params of Policy func
+\item So we need a func approx for (stochastic) Policy Func: $\pi(s, a; \bm{\theta})$
+\item In addition to the usual func approx for Action Value Func: $Q(s, a; \bm{w})$
+\item $\pi(s, a; \bm{\theta})$ called {\em Actor} and $Q(s, a; \bm{w})$ called {\em Critic}
+\item Critic parameters $\bm{w}$ are optimized w.r.t $Q(s, a; \bm{w})$ loss function $\min$
+\item Actor parameters $\bm{\theta}$ are optimized w.r.t Expected Returns $\max$
+\item We need to formally define ``Expected Returns''
+\item But we already see that this idea is appealing for continuous actions
+\item GPI with Policy Improvement done as {\bf Policy Gradient (Ascent)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Value Function-based and Policy-based RL}
+\pause
+\begin{itemize}[<+->]
+\item Value Function-based
+\begin{itemize}
+\item Learn Value Function (with a function approximation)
+\item Policy is implicit - readily derived from Value Function (eg: $\epsilon$-greedy)
+\end{itemize}
+\item Policy-based
+\begin{itemize}
+\item Learn Policy (with a function approximation)
+\item No need to learn a Value Function
+\end{itemize}
+\item Actor-Critic
+\begin{itemize}
+\item Learn Policy (Actor)
+\item Learn Value Function (Critic)
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Advantages and Disadvantages of Policy Gradient approach}
+\pause
+{\bf Advantages:}
+\pause
+\begin{itemize}[<+->]
+\item Finds the best {\em Stochastic} Policy (Optimal Deterministic Policy, produced by other RL algorithms, can be unsuitable for POMDPs)
+\item Naturally {\em explores} due to Stochastic Policy representation
+\item Effective in high-dimensional or continuous action spaces
+\item Small changes in $\bm{\theta} \Rightarrow$ small changes in $\pi$, and in state distribution
+\item This avoids the convergence issues seen in $\argmax$-based algorithms 
+\end{itemize}
+\pause
+{\bf Disadvantages:}
+\pause
+\begin{itemize}[<+->]
+\item Typically converge to a local optimum rather than a global optimum
+\item Policy Evaluation is typically inefficient and has high variance
+\item Policy Improvement happens in small steps $\Rightarrow$ slow convergence
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Notation}
+\pause
+\begin{itemize}[<+->]
+\item Assume episodic with $0 \leq \gamma \leq1$ or non-episodic with $0 \leq \gamma < 1$
+\item Assume discrete-time, countable-spaces, time-homogeneous MDPs
+\item We lighten $\mathcal{P}(s,a,s')$ notation to $\mathcal{P}_{s,s'}^a$ and $\mathcal{R}(s,a)$ notation to $\mathcal{R}_s^a$
+\item Initial State Probability Distribution denoted as $p_0 : \mathcal{N} \rightarrow [0,1]$
+\item Policy Function Approximation $\pi(s,a;\bm{\theta}) = \mathbb{P}[A_t=a | S_t=s; \bm{\theta}]$
+\end{itemize}
+\pause
+PG coverage is quite similar for non-discounted non-episodic, by considering average-reward objective (we won't cover it)
+\end{frame}
+
+\begin{frame}
+\frametitle{``Expected Returns" Objective}
+\pause
+Now we formalize the ``Expected Returns'' Objective $J(\bm{\theta})$
+$$J(\bm{\theta}) = \mathbb{E}_{\pi}[\sum_{t=0}^\infty \gamma^t \cdot R_{t+1}]$$
+\pause
+Value Function $V^{\pi}(s)$ and Action Value function $Q^{\pi}(s,a)$ defined as:
+$$V^{\pi}(s) = \mathbb{E}_{\pi}[\sum_{k=t}^\infty \gamma^{k-t} \cdot R_{k+1} | S_t=s] \text{ for all } t = 0, 1, 2, \ldots$$
+$$Q^{\pi}(s,a) = \mathbb{E}_{\pi}[\sum_{k=t}^\infty \gamma^{k-t} \cdot R_{k+1} | S_t=s, A_t=a] \text{ for all } t = 0, 1, 2, \ldots$$
+\pause
+$$\mbox{Advantage Function } A^{\pi}(s,a) = Q^{\pi}(s,a) - V^{\pi}(s)$$
+\pause
+Also, $p(s \rightarrow s', t, \pi)$ will be a key function for us - it denotes the probability of going from state $s$ to $s'$ in $t$ steps by following policy $\pi$
+\end{frame}
+
+\begin{frame}
+\frametitle{Discounted-Aggregate State-Visitation Measure}
+\pause
+$$J(\bm{\theta}) = \mathbb{E}_{\pi}[\sum_{t=0}^\infty \gamma^t \cdot R_{t+1}] = \sum_{t=0}^\infty \gamma^t \cdot \mathbb{E}_{\pi}[R_{t+1}]$$
+\pause
+$$ = \sum_{t=0}^\infty \gamma^t \cdot \sum_{s \in \mathcal{N}} (\sum_{S_0 \in \mathcal{N}}  p_0(S_0) \cdot p(S_0 \rightarrow s, t, \pi)) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot \mathcal{R}_s^a$$
+\pause
+$$ =  \sum_{s \in \mathcal{N}} (\sum_{S_0 \in \mathcal{N}}  \sum_{t=0}^\infty \gamma^t \cdot p_0(S_0) \cdot p(S_0 \rightarrow s, t, \pi)) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot \mathcal{R}_s^a$$
+\pause
+\begin{definition}
+$$J(\bm{\theta}) =  \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot \mathcal{R}_s^a$$
+\end{definition}
+\pause
+where $\rho^{\pi}(s) = \sum_{S_0 \in \mathcal{N}}  \sum_{t=0}^\infty \gamma^t \cdot p_0(S_0) \cdot p(S_0 \rightarrow s, t, \pi)$ is the key function (for PG) we'll refer to as {\em Discounted-Aggregate State-Visitation Measure}.
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Gradient Theorem (PGT)}
+\pause
+\begin{theorem}
+$$\nabla_{\bm{\theta}} J(\bm{\theta}) = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s,a; \bm{\theta}) \cdot Q^{\pi}(s,a)$$
+\end{theorem}
+\pause
+\begin{itemize}[<+->]
+\item Note: $\rho^{\pi}(s)$ depends on $\bm{\theta}$, but there's no $\nabla_{\bm{\theta}} \rho^{\pi}(s)$ term in $\nabla_{\bm{\theta}} J(\bm{\theta})$
+\item Note: $\nabla_{\bm{\theta}} \pi(s,a; \bm{\theta}) = \pi(s,a;\bm{\theta}) \cdot \nabla_{\bm{\theta}} \log{\pi(s,a; \bm{\theta})}$
+\item So we can simply generate sampling traces, and at each time step, calculate $(\nabla_{\bm{\theta}} \log{\pi(s,a; \bm{\theta})}) \cdot Q^{\pi}(s,a)$ (probabilities implicit in paths)
+\item Note: $\nabla_{\bm{\theta}} \log{\pi(s,a; \bm{\theta})}$ is Score function (Gradient of log-likelihood)
+\item We will estimate $Q^{\pi}(s,a)$ with a function approximation $Q(s,a;\bm{w})$
+\item We will later show how to avoid the estimate bias of $Q(s,a;\bm{w})$
+\item This numerical estimate of $\nabla_{\bm{\theta}} J(\bm{\theta})$ enables {\bf Policy Gradient Ascent}
+\item Let us look at the score function of some canonical $\pi(s,a; \bm{\theta})$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Canonical $\pi(s,a; \bm{\theta})$ for finite action spaces}
+\pause
+\begin{itemize}[<+->]
+\item For finite action spaces, we often use Softmax Policy
+\item $\bm{\theta}$ is an $m$-vector $(\theta_1, \ldots, \theta_m)$
+\item Features vector $\bm{\phi}(s,a) = (\phi_1(s,a), \ldots, \phi_m(s,a))$ for all $s \in \mathcal{N}, a \in \mathcal{A}$
+\item Weight actions using linear combinations of features: $\bm{\phi}(s,a)^T \cdot \bm{\theta}$
+\item Action probabilities proportional to exponentiated weights:
+$$\pi(s,a; \bm{\theta}) = \frac {e^{\bm{\phi}(s,a)^T \cdot \bm{\theta}}} {\sum_{b \in \mathcal{A}} e^{\bm{\phi}(s,b)^T \cdot \bm{\theta}}} \mbox{ for all } s \in \mathcal{N}, a \in \mathcal{A}$$
+\item The score function is:
+$$\nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta}) = \bm{\phi}(s,a) - \sum_{b \in \mathcal{A}} \pi(s,b; \bm{\theta}) \cdot \bm{\phi}(s,b) = \bm{\phi}(s,a) - \mathbb{E}_{\pi}[\bm{\phi}(s,\cdot)]$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Canonical $\pi(s,a; \bm{\theta})$ for continuous action spaces}
+\pause
+\begin{itemize}[<+->]
+\item For continuous action spaces, we often use Gaussian Policy
+\item $\bm{\theta}$ is an $m$-vector $(\theta_1, \ldots, \theta_m)$
+\item State features vector $\bm{\phi}(s) = (\phi_1(s), \ldots, \phi_m(s))$ for all $s \in \mathcal{N}$
+\item Gaussian Mean is a linear combination of state features $\bm{\phi}(s)^T \cdot \bm{\theta}$
+\item Variance may be fixed $\sigma^2$, or can also be parameterized
+\item Policy is Gaussian, $a \sim \mathcal{N}(\bm{\phi}(s)^T \cdot \bm{\theta}, \sigma^2) \mbox{ for all } s \in \mathcal{N}$
+\item The score function is:
+$$\nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta}) = \frac {(a - \bm{\phi}(s)^T \cdot \bm{\theta}) \cdot \bm{\phi}(s)} {\sigma^2}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+We begin the proof by noting that:
+$$J(\bm{\theta}) = \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot V^{\pi}(S_0)  = \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0)$$
+\pause
+Calculate $\nabla_{\bm{\theta}} J(\bm{\theta})$ by parts $\pi(S_0, A_0; \bm{\theta})$ and $Q^{\pi}(S_0, A_0)$
+\pause
+\begin{align*}
+\nabla_{\bm{\theta}} J(\bm{\theta}) & = \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot  \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) \\
+& + \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \nabla_{\bm{\theta}} Q^{\pi}(S_0, A_0)
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+Now expand $Q^{\pi}(S_0, A_0)$ as:
+$$\mathcal{R}_{S_0}^{A_0} + \sum_{S_1 \in \mathcal{N}} \gamma \cdot \mathcal{P}_{S_0, S_1}^{A_0} \cdot V^{\pi}(S_1) \mbox{ (Bellman Policy Equation)}$$
+\pause
+\begin{align*} 
+= & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
+& \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \nabla_{\bm{\theta}} (\mathcal{R}_{S_0}^{A_0} + \sum_{S_1 \in \mathcal{N}} \gamma \cdot  \mathcal{P}_{S_0,S_1}^{A_0} \cdot V^{\pi}(S_1))
+\end{align*}
+\pause
+Note: $\nabla_{\theta} \mathcal{R}_{S_0}^{A_0} = 0$, so remove that term
+\pause
+\begin{align*}
+= & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
+& \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \nabla_{\bm{\theta}} (\sum_{S_1 \in \mathcal{N}} \gamma \cdot \mathcal{P}_{S_0,S_1}^{A_0} \cdot V^{\pi}(S_1))
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+Now bring the $\nabla_{\bm{\theta}}$ inside the $\sum_{S_1 \in \mathcal{N}}$ to apply only on $V^{\pi}(S_1)$
+\pause
+\begin{align*}
+= & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
+& \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \sum_{S_1 \in \mathcal{N}} \gamma \cdot \mathcal{P}_{S_0,S_1}^{A_0} \cdot \nabla_{\bm{\theta}} V^{\pi}(S_1)
+\end{align*}
+\pause
+Now bring $\sum_{S_0 \in \mathcal{N}}$ and $\sum_{A_0 \in \mathcal{A}}$ inside the $\sum_{S_1 \in \mathcal{N}}$
+\pause
+\begin{align*}
+= & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
+& \sum_{S_1 \in \mathcal{N}}  \sum_{S_0 \in \mathcal{N}} \gamma \cdot p_0(S_0) \cdot (\sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \mathcal{P}_{S_0,S_1}^{A_0}) \cdot \nabla_{\bm{\theta}}V^{\pi}(S_1)
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Gradient Theorem}
+\pause
+$$\text{Note that } \sum_{A_0 \in \mathcal{A}} \pi(S_0, A_0; \bm{\theta}) \cdot \mathcal{P}_{S_0,S_1}^{A_0} = p(S_0 \rightarrow S_1, 1, \pi)$$
+\pause
+\begin{align*}
+= & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
+& \sum_{S_1 \in \mathcal{N}}  \sum_{S_0 \in \mathcal{N}} \gamma \cdot p_0(S_0) \cdot p(S_0 \rightarrow S_1, 1, \pi) \cdot \nabla_{\bm{\theta}}V^{\pi}(S_1)
+\end{align*}
+\pause
+$$\text{Now expand } V^{\pi}(S_1) \text{ to } \sum_{A_1 \in \mathcal{A}} \pi(S_1, A_1; \bm{\theta}) \cdot Q^{\pi}(S_1,A_1)$$
+\pause
+\begin{align*}
+= & \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + \\
+& \sum_{S_1 \in \mathcal{N}}  \sum_{S_0 \in \mathcal{N}} \gamma \cdot p_0(S_0) \cdot p(S_0 \rightarrow S_1, 1, \pi) \cdot \nabla_{\bm{\theta}} (\sum_{A_1 \in \mathcal{A}} \pi(S_1, A_1; \bm{\theta}) \cdot Q^{\pi}(S_1,A_1)) 
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+We are now back to when we started calculating gradient of $\sum_a \pi \cdot Q^{\pi}$.\\
+\pause
+Follow the same process of splitting $\pi \cdot Q^{\pi}$, then Bellman-expanding $Q^{\pi}$ (to calculate its gradient), and iterate.
+\pause
+$$\nabla_{\bm{\theta}} J(\bm{\theta}) = \sum_{S_0 \in \mathcal{N}} p_0(S_0) \cdot \sum_{A_0 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_0, A_0; \bm{\theta}) \cdot Q^{\pi}(S_0, A_0) + $$
+$$\sum_{S_1 \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}} \gamma \cdot p_0(S_0) \cdot p(S_0 \rightarrow S_1, 1, \pi) \cdot  (\sum_{A_1 \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_1, A_1; \bm{\theta}) \cdot Q^{\pi}(S_1,A_1) + \ldots)$$
+\pause
+This iterative process leads us to:
+$$= \sum_{t=0}^\infty \sum_{S_t \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}} \gamma^t \cdot p_0(S_0) \cdot p(S_0 \rightarrow S_t, t, \pi) \cdot \sum_{A_t \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_t, A_t; \bm{\theta}) \cdot Q^{\pi}(S_t,A_t)$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Policy Gradient Theorem}
+\pause
+$$\text{Bring } \sum_{t=0}^{\infty} \text{ inside } \sum_{S_t \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}} \text{ and note that}$$
+$$\sum_{A_t \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(S_t, A_t; \bm{\theta}) \cdot Q^{\pi}(S_t,A_t) \text{ is independent of } t$$
+\pause
+$$= \sum_{s \in \mathcal{N}} \sum_{S_0 \in \mathcal{N}} \sum_{t=0}^{\infty} \gamma^t \cdot p_0(S_0) \cdot p(S_0 \rightarrow s, t, \pi) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s, a; \bm{\theta}) \cdot Q^{\pi}(s,a)$$
+\pause
+$$\text{Reminder that } \sum_{S_0 \in \mathcal{N}} \sum_{t=0}^{\infty} \gamma^t \cdot p_0(S_0) \cdot p(S_0 \rightarrow s, t, \pi) \overset{\mathrm{def}}{=} \rho^{\pi}(s) \mbox{. So,}$$
+\pause
+$$ \nabla_{\bm{\theta}} J(\bm{\theta}) = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s, a; \bm{\theta}) \cdot Q^{\pi}(s,a) $$
+$$\mathbb{Q.E.D.}$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Monte-Carlo Policy Gradient (REINFORCE Algorithm)}
+\pause
+\begin{itemize}[<+->]
+\item Update $\bm{\theta}$ by stochastic gradient ascent using PGT
+\item Using $G_t = \sum_{k=t}^T \gamma^{k-t} \cdot R_{k+1}$ as an unbiased sample of $Q^{\pi}(S_t,A_t)$
+$$\Delta \bm{\theta} = \alpha \cdot \gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t, A_t; \bm{\theta}) \cdot G_t$$
+\end{itemize}
+\pause
+\begin{pseudocode}{REINFORCE}{\cdot}
+\mbox{Initialize } \bm{\theta} \mbox{ arbitrarily}\\
+\FOR \mbox{each episode } \{S_0, A_0, R_1, S_1, \ldots, S_{T-1}, A_{T-1}, R_T, S_T\} \sim \pi(\cdot, \cdot; \bm{\theta}) \DO
+\BEGIN
+\FOR t \GETS 0 \TO T \DO
+\BEGIN
+G \GETS \sum_{k=t}^{T} \gamma^{k-t} \cdot R_{k+1}\\
+\bm{\theta} \GETS \bm{\theta} + \alpha \cdot \gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t, A_t; \bm{\theta}) \cdot G\\
+\END\\
+\END\\
+\end{pseudocode}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Reducing Variance using a Critic}
+\pause
+\begin{itemize}[<+->]
+\item Monte Carlo Policy Gradient has high variance
+\item We use a Critic $Q(s,a; \bm{w})$ to estimate $Q^{\pi}(s,a)$
+\item Actor-Critic algorithms maintain two sets of parameters:
+\begin{itemize}
+\item Critic updates parameters $\bm{w}$ to approximate $Q$-function for policy $\pi$
+\item Critic could use any of the algorithms we learnt earlier:
+\begin{itemize}
+\item Monte Carlo policy evaluation
+\item Temporal-Difference Learning
+\item $TD(\lambda)$ based on Eligibility Traces
+\item Could even use LSTD (if critic function approximation is linear)
+\end{itemize}
+\item Actor updates policy parameters $\bm{\theta}$ in direction suggested by Critic
+\item This is Approximate Policy Gradient due to {\em Bias} of Critic
+$$ \nabla_{\bm{\theta}} J(\bm{\theta}) \approx \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s, a; \bm{\theta}) \cdot Q(s,a; \bm{w}) $$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{So what does the algorithm look like?}
+\pause
+\begin{itemize}[<+->]
+\item Generate a sufficient set of sampling traces $S_0,A_0,R_1,S_1,A_1,R_2,S_2\ldots$
+\item $S_0$ is sampled from the distribution $p_0(\cdot)$
+\item $A_t$ is sampled from $\pi(S_t,\cdot; \bm{\theta})$
+\item Receive atomic experience $(R_{t+1}, S_{t+1})$ from the environment
+\item At each time step $t$, update $\bm{w}$ proportional to gradient of appropriate (MC or TD-based) loss function of $Q(s,a;\bm{w})$
+\item Sum $\gamma^t \cdot (\nabla_{\bm{\theta}} \log \pi(S_t,A_t; \bm{\theta})) \cdot Q(S_t,A_t; \bm{w})$ over $t$ and over paths
+\item Update $\bm{\theta}$ using this (biased) estimate of $\nabla_{\bm{\theta}} J(\bm{\theta})$
+\item Iterate with a new set of sampling traces ...
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Reducing Variance with a Baseline}
+\pause
+\begin{itemize}[<+->]
+\item We can reduce variance by subtracting a baseline function $B(s)$ from $Q(s,a;\bm{w})$ in the Policy Gradient estimate
+\item This means at each time step, we replace $\gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t,A_t; \bm{\theta}) \cdot Q(S_t,A_t; \bm{w})$ with $\gamma^t \cdot \nabla_{\bm{\theta}} \log \pi(S_t,A_t; \bm{\theta}) \cdot (Q(S_t,A_t; \bm{w}) - B(S_t))$
+\item Note that Baseline function $B(s)$ is only a function of $s$ (and not $a$)
+\item This ensures that subtracting Baseline $B(s)$ does not add bias
+\begin{align*}
+& \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s,a; \bm{\theta}) \cdot B(s)\\
+ = & \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot B(s) \cdot \nabla_{\bm{\theta}} (\sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta})) \\
+ = & \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot B(s) \cdot \nabla_{\bm{\theta}} 1 \\
+  = & 0
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Using State Value function as Baseline}
+\pause
+\begin{itemize}[<+->]
+\item A good baseline $B(s)$ is state value function $V(s;\bm{v})$
+\item Rewrite Policy Gradient algorithm using advantage function estimate
+$$A(s,a;\bm{w},\bm{v}) = Q(s,a;\bm{w}) - V(s; \bm{v})$$
+\item Now the estimate of $\nabla_{\bm{\theta}} J(\bm{\theta})$ is given by:
+$$\sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s, a; \bm{\theta}) \cdot A(s,a; \bm{w}, \bm{v})$$
+\item At each time step, we update both sets of parameters $\bm{w}$ and $\bm{v}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{TD Error as estimate of Advantage Function}
+\pause
+\begin{itemize}[<+->]
+\item Consider TD error $\delta^{\pi}$ for the {\em true} Value Function $V^{\pi}(s)$
+$$\delta^{\pi} = r + \gamma \cdot V^{\pi}(s') - V^{\pi}(s)$$
+\item $\delta^{\pi}$ is an unbiased estimate of Advantage function $A^{\pi}(s,a)$
+$$\mathbb{E}_{\pi}[\delta^{\pi} | s,a] = \mathbb{E}_{\pi}[r + \gamma \cdot V^{\pi}(s') | s, a] - V^{\pi}(s) = Q^{\pi}(s,a) - V^{\pi}(s) = A^{\pi}(s,a)$$
+\item So we can write Policy Gradient in terms of $\mathbb{E}_{\pi}[\delta^{\pi} | s,a]$
+$$\nabla_{\bm{\theta}} J(\bm{\theta}) = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s, a; \bm{\theta}) \cdot \mathbb{E}_{\pi}[\delta^{\pi} | s,a]$$
+\item In practice, we can use func approx for TD error (and sample):
+$$\delta(s,r,s';\bm{v}) = r + \gamma \cdot V(s';\bm{v}) - V(s;\bm{v})$$
+\item This approach requires only one set of critic parameters $\bm{v}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{TD Error can be used by both Actor and Critic}
+\pause
+\begin{pseudocode}{ACTOR-CRITIC-TD-ERROR}{\cdot}
+\mbox{Initialize Policy params } \bm{\theta} \mbox{ and State VF params } \bm{v} \mbox{ arbitrarily}\\
+\FOR \mbox{each episode }  \DO
+\BEGIN
+\mbox{Initialize } s \mbox{ (first state of episode)}\\
+P \GETS 1\\
+\WHILE s \mbox{ is not terminal} \DO
+\BEGIN
+a \sim \pi(s, \cdot; \bm{\theta})\\
+\mbox{Take action } a, \mbox{ receive } r, s' \mbox{ from the environment}\\
+\delta \GETS r + \gamma \cdot V(s'; \bm{v}) - V(s; \bm{v})\\
+\bm{v} \GETS \bm{v} + \alpha_{\bm{v}} \cdot \delta \cdot \nabla_{\bm{v}} V(s; \bm{v})\\
+\bm{\theta} \GETS \bm{\theta} + \alpha_{\bm{\theta}} \cdot P \cdot \delta \cdot \nabla_{\bm{\theta}} \log \pi(s, a; \bm{\theta})\\
+P \GETS \gamma \cdot P\\
+s \GETS s' \\
+\END\\
+\END\\
+\end{pseudocode}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Using Eligibility Traces for both Actor and Critic}
+\pause
+\begin{pseudocode}{ACTOR-CRITIC-ELIGIBILITY-TRACES}{\cdot}
+\mbox{Initialize Policy params } \bm{\theta} \mbox{ and State VF params } \bm{v} \mbox{ arbitrarily}\\
+\FOR \mbox{each episode }  \DO
+\BEGIN
+\mbox{Initialize } s \mbox{ (first state of episode)}\\
+\bm{z_{\theta}}, \bm{z_v} \GETS 0 \mbox{ (eligibility traces for } \bm{\theta} \mbox{ and } \bm{v} \mbox{)}\\
+P \GETS 1\\
+\WHILE s \mbox{ is not terminal} \DO
+\BEGIN
+a \sim \pi(s, \cdot; \theta)\\
+\mbox{Take action } a, \mbox{ observe } r, s'\\
+\delta \GETS r + \gamma \cdot V(s'; \bm{v}) - V(s; \bm{v})\\
+\bm{z_v} \GETS \gamma \cdot \lambda_{\bm{v}} \cdot \bm{z_v }+ \nabla_{\bm{v}} V(s;\bm{v})\\
+\bm{z_{\theta}} \GETS \gamma \cdot \lambda_{\bm{\theta}} \cdot \bm{z_{\theta}} + P \cdot \nabla_{\bm{\theta}} \log \pi(s,a;\bm{\theta})\\
+\bm{v} \GETS \bm{v} + \alpha_{\bm{v}} \cdot \delta \cdot \bm{z_v}\\
+\bm{\theta} \GETS \bm{\theta} + \alpha_{\bm{\theta}} \cdot \delta \cdot \bm{z_{\theta}}\\
+P \GETS \gamma \cdot P, s \GETS s'\\
+\END\\
+\END\\
+\end{pseudocode}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Overcoming Bias}
+\pause
+\begin{itemize}[<+->]
+\item We've learnt a few ways of how to reduce variance
+\item But we haven't discussed how to overcome bias
+\item All of the following substitutes for $Q^{\pi}(s,a)$ in PG have bias:
+\begin{itemize}
+\item $Q(s,a;\bm{w})$
+\item $A(s,a;\bm{w}, \bm{v})$
+\item $\delta(s,s',r;\bm{v})$
+\end{itemize}
+\item Turns out there is indeed a way to overcome bias
+\item It is called the  {\em Compatible Function Approximation Theorem}
+\end{itemize}	
+\end{frame}
+
+\begin{frame}
+\frametitle{Compatible Function Approximation Theorem}
+\pause
+\begin{theorem}
+Let $\bm{w_{\theta}^*}$ denote the Critic parameters $\bm{w}$ that minimize the following mean-squared-error for given policy parameters $\bm{\theta}$:
+$$\sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot (Q^{\pi}(s,a) - Q(s,a;\bm{w}))^2$$
+Assume that the data type of $\bm{\theta}$ is the same as the data type of $\bm{w}$ and furthermore, assume that for any policy parameters $\bm{\theta}$, the Critic gradient at $\bm{w_{\theta}^*}$ is {\em compatible} with the Actor score function, i.e., 
+$$\nabla_{\bm{w}} Q(s,a;\bm{w_{\theta}^*}) = \nabla_{\bm{\theta}} \log \pi(s,a;\bm{\theta}) \text{ for all } s \in \mathcal{N}, \text{ for all } a \in \mathcal{A}$$ 
+Then the Policy Gradient using critic $Q(s,a;\bm{w_{\theta}^*})$ is exact:
+$$\nabla_{\bm{\theta}} J(\bm{\theta}) = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s, a; \bm{\theta}) \cdot Q(s,a; \bm{w_{\theta}^*})$$
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Compatible Function Approximation Theorem}
+\pause
+For a given $\bm{\theta}$, since $\bm{w_{\theta}^*}$ minimizes the mean-squared-error as defined above, we have:
+$$\sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot (Q^{\pi}(s,a) - Q(s,a;\bm{w_{\theta}^*})) \cdot \nabla_{\bm{w}} Q(s,a;\bm{w_{\theta}^*}) = 0$$
+\pause
+But since $\nabla_{\bm{w}} Q(s,a;\bm{w_{\theta}^*}) = \nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta})$, we have:
+$$\sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot (Q^{\pi}(s,a) - Q(s,a;\bm{w_{\theta}^*})) \cdot \nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta}) = 0$$
+\pause
+Therefore,
+\begin{align*}
+& \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot Q^{\pi}(s,a) \cdot \nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta}) \\
+= & \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot Q(s,a; \bm{w_{\theta}^*}) \cdot \nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta})\\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Compatible Function Approximation Theorem}
+\pause
+$$\mbox{But } \nabla_{\bm{\theta}} J(\bm{\theta}) = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot  \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot Q^{\pi}(s,a) \cdot \nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta})$$
+\pause
+\begin{align*}
+\mbox{So, } \nabla_{\bm{\theta}} J(\bm{\theta}) & = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}) \cdot Q(s,a; \bm{w_{\theta}^*}) \cdot \nabla_{\bm{\theta}} \log \pi(s,a; \bm{\theta}) \\
+& = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \nabla_{\bm{\theta}} \pi(s,a; \bm{\theta}) \cdot Q(s,a; \bm{w_{\theta}^*})\\
+\end{align*}
+\pause
+{\bf This means with conditions of Compatible Function Approximation Theorem, we can use the critic func approx $Q(s,a;\bm{w_{\theta}^*})$ and still have the exact Policy Gradient.}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{How to enable Compatible Function Approximation}
+\pause
+A simple way to enable Compatible Function Approximation
+\pause
+$\pderiv{Q(s,a;\bm{w_{\theta}^*})}{w_i} = \pderiv{\log \pi(s,a; \bm{\theta})}{\theta_i} , \forall i$ is to set $Q(s,a;\bm{w})$ to be linear in its features.
+\pause
+$$Q(s,a;\bm{w}) = \sum_{i=1}^m \phi_i(s,a) \cdot w_i = \sum_{i=1}^m \pderiv{\log \pi(s,a;\bm{\theta})}{\theta_i} \cdot w_i$$
+\pause
+We note below that a compatible $Q(s,a;\bm{w})$ serves as an approximation of the advantage function.
+\pause
+$$\sum_{a \in \mathcal{A}} \pi(s,a;\bm{\theta}) \cdot Q(s,a;\bm{w}) = \sum_{a \in \mathcal{A}} \pi(s,a;\bm{\theta}) \cdot (\sum_{i=1}^m \pderiv{\log \pi(s,a;\bm{\theta})}{\theta_i} \cdot w_i)$$
+\pause
+$$=\sum_{a \in \mathcal{A}} (\sum_{i=1}^m \pderiv{\pi(s,a;\bm{\theta})}{\theta_i} \cdot w_i) = \sum_{i=1}^m (\sum_{a \in \mathcal{A}} \pderiv{\pi(s,a;\bm{\theta})}{\theta_i})\cdot w_i$$
+\pause
+$$=\sum_{i=1}^m \frac {\partial} {\partial \theta_i} (\sum_{a \in \mathcal{A}} \pi(s,a; \bm{\theta}))\cdot w_i = \sum_{i=1}^m \pderiv{1}{\theta_i} \cdot w_i = 0$$
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Fisher Information Matrix}
+\pause
+Denoting $[\pderiv{\log \pi(s,a;\bm{\theta})}{\theta_i}], i = 1, \ldots, m$ as the score column vector $\bm{SC}(s,a;\bm{\theta})$ and assuming compatible linear-approximation critic:
+\pause
+\begin{align*}
+\nabla_{\bm{\theta}} J(\bm{\theta}) & = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a;  \bm{\theta}) \cdot \bm{SC}(s, a; \bm{\theta}) \cdot (\bm{SC}(s,a;\bm{\theta})^T \cdot \bm{w_{\theta}^*})\\
+ & = \sum_{s \in \mathcal{N}} \rho^{\pi}(s) \cdot \sum_{a \in \mathcal{A}} \pi(s,a;  \bm{\theta}) \cdot (\bm{SC}(s, a; \bm{\theta}) \cdot \bm{SC}(s,a;\bm{\theta})^T) \cdot \bm{w_{\theta}^*} \\
+ & = \mathbb{E}_{s \sim \rho^{\pi}, a \sim \pi}[\bm{SC}(s, a; \bm{\theta}) \cdot \bm{SC}(s,a;\bm{\theta})^T] \cdot \bm{w_{\theta}^*} \\
+& = FIM_{\rho^{\pi}, \pi}(\bm{\theta}) \cdot \bm{w_{\theta}^*}\\
+\end{align*}
+\pause
+where $FIM_{\rho_{\pi}, \pi}(\bm{\theta})$ is the Fisher Information Matrix w.r.t. $s \sim \rho^{\pi}, a \sim \pi$.
+\pause
+Hence, updates after each atomic experience are as follows:
+\pause
+$$\Delta \bm{\theta} = \alpha_{\bm{\theta}} \cdot \gamma^t \cdot \bm{SC}(S_t,A_t;\bm{w}) \cdot \bm{SC}(S_t,A_t;\bm{w})^T \cdot \bm{w}$$
+\pause
+$$\Delta \bm{w} = \alpha_{\bm{w}} \cdot (R_{t+1} + \gamma \cdot \bm{SC}(S_{t+1}, A_{t+1}; \bm{\theta})^T \cdot \bm{w} - \bm{SC}(S_t,A_t; \bm{\theta})^T \cdot \bm{w}) \cdot \bm{SC}(S_t,A_t;\bm{\theta})$$
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Natural Policy Gradient (NPG)}
+\pause
+\begin{itemize}[<+->]
+\item Natural gradient $\nabla_{\bm{\theta}}^{nat} J(\bm{\theta})$ is the direction of optimal $\bm{\theta}$ movement
+\item In terms of the KL-divergence metric (versus plain Euclidean norm)
+\item Formally defined as:
+$$\nabla_{\bm{\theta}} J(\bm{\theta}) = FIM_{\rho_{\pi}, \pi}(\bm{\theta}) \cdot \nabla_{\bm{\theta}}^{nat} J(\bm{\theta}) $$
+\item Enabling Compatible Function Approximation implies:
+$$\nabla_{\bm{\theta}}^{nat} J(\bm{\theta}) = \bm{w_{\theta}^*}$$
+\item {\bf This compact result is great for our algorithm:}
+\begin{itemize}[<+->]
+\item Update Critic params $\bm{w}$ with the critic loss gradient (at step $t$) as:
+$$(R_{t+1} + \gamma \cdot \bm{SC}(S_{t+1}, A_{t+1}; \bm{\theta})^T \cdot \bm{w} - \bm{SC}(S_t,A_t; \bm{\theta})^T \cdot \bm{w}) \cdot \bm{SC}(S_t,A_t; \bm{\theta})$$
+\item Update Actor params $\bm{\theta}$ in the direction of $\bm{w}$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Deterministic Policy Gradient (DPG)}
+\begin{itemize}
+\item Function approximation for deterministic policy for continuous actions
+\item DPG expressed as Expected Gradient of Q-Value Function
+\item Integrates only over state space, so efficient for high-dim action spaces
+\item Usual machinery of PG is applicable to DPG
+\item Is Off-Policy: Target policy $\pi_D$ learnt, behavior policy $\mu$ is exploratory
+\item Core Idea: Instead of greedy policy improvement for continuous action spaces, move policy in the direction of gradient of Q-Value Function
+\item Policy parameters $\bm{\theta}$ are updated in proportion to $\nabla_{\bm{\theta}} Q(s,\pi_D(s;\bm{\theta}))$
+\item Average direction of policy improvements is given by: 
+$$\mathbb{E}_{s \sim \rho^{\pi_D}}[\nabla_{\bm{\theta}} Q(s,\pi_D(s; \bm{\theta}))] = \mathbb{E}_{s \sim \rho^{\pi_D}}[\nabla_{\bm{\theta}} \pi_D(s; \bm{\theta}) \cdot \nabla_a Q^{\pi_D}(s,a) \Bigr\rvert_{a=\pi_D(s;\bm{\theta})}]$$
+$$\rho^{\pi_D}(s) = \sum_{S_0 \in \mathcal{N}}  \sum_{t=0}^\infty \gamma^t \cdot p_0(S_0) \cdot p(S_0 \rightarrow s, t, \pi_D)$$
+\item For multi-dimensional $a$, $\nabla_{\bm{\theta}} \pi(s; \bm{\theta})$ is a Jacobian matrix
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{DPG Theorem}
+\pause
+$$J(\bm{\theta}) = \mathbb{E}_{\pi_D}[\sum_{t=0}^\infty \gamma^t \cdot R_{t+1}] = \sum_{s \in \mathcal{N}} \rho^{\pi_D}(s) \cdot \mathcal{R}_s^{\pi_D(s;\bm{\theta})} = \mathbb{E}_{s \sim \rho^{\pi_D}}[\mathcal{R}_s^{\pi_D(s;\bm{\theta})}]$$
+\pause
+\begin{theorem}
+For action space $\mathbb{R}^k$, 
+\begin{align*}
+\nabla_{\bm{\theta}} J(\bm{\theta}) & = \sum_{s \in \mathcal{N}} \rho^{\pi_D}(s) \cdot \nabla_{\bm{\theta}} \pi_D(s; \bm{\theta}) \cdot \nabla_a Q^{\pi_D}(s,a) \Bigr\rvert_{a=\pi_D(s;\bm{\theta})}\\
+& = \mathbb{E}_{s \sim \rho^{\pi_D}}[\nabla_{\bm{\theta}} \pi_D(s; \bm{\theta}) \cdot \nabla_a Q^{\pi_D}(s,a) \Bigr\rvert_{a=\pi_D(s;\bm{\theta})}]
+\end{align*}
+\end{theorem}
+\pause
+In practice, we use critic $Q(s,a;\bm{w})$ and keep updating both $\bm{w}$ and $\bm{\theta}$:
+\pause
+$$\Delta \bm{w} = \alpha_{\bm{w}} \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, \pi_D(S_{t+1}; \bm{\theta}); \bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t; \bm{w})$$
+$$\Delta \bm{\theta} = \alpha_{\bm{\theta}} \cdot \gamma^t \cdot \nabla_{\bm{\theta}} \pi_D(S_t; \bm{\theta}) \cdot \nabla_a Q(S_t,A_t;\bm{w}) \Bigr\rvert_{a=\pi_D(S_t;\bm{\theta})}$$
+\end{frame}
+
+\begin{frame}
+\frametitle{NES applied to solving Markov Decision Processes (MDPs)}
+\begin{itemize}
+\item We set $F(\cdot)$ to be the (stochastic) {\em Return} of a MDP
+\item $\psi$ refers to the parameters of a policy $\pi_{\psi} : \mathcal{S} \rightarrow \mathcal{A}$
+\item $\psi$ will be drawn from an isotropic multivariate Gaussian distribution
+\item Gaussian with mean vector $\theta$ and fixed diagonal covariance matrix $\sigma^2 I$
+\item The average objective ({\em Expected Return}) can then be written as:
+$$\mathbb{E}_{\psi \sim p_{\theta}}[F(\psi)] = \mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[F(\theta + \sigma \cdot \epsilon)]$$
+\item The gradient ($\nabla_{\theta}$) of {\em Expected Return} can be written as:
+$$\mathbb{E}_{\psi \sim p_{\theta}}[\nabla_{\theta}(\log{p_{\theta}(\psi)}) \cdot F(\psi)]$$
+$$ = \mathbb{E}_{\psi \sim \mathcal{N}(\theta,\sigma^2 I)}[\nabla_{\theta} ( \frac {-(\psi - \theta)^T \cdot (\psi - \theta)} {2\sigma^2}) \cdot F(\psi)]$$
+$$=\frac 1 {\sigma} \cdot \mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[\epsilon \cdot F(\theta + \sigma \cdot \epsilon)]$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{A sampling-based algorithm to solve the MDP}
+\begin{itemize}
+\item The above formula helps estimate gradient of {\em Expected Return}
+\item By sampling several $\epsilon$ (each $\epsilon$ represents a {\em Policy} $\pi_{\theta + \sigma \cdot \epsilon}$)
+\item And averaging $\epsilon \cdot F(\theta + \sigma \cdot \epsilon)$ across a large set ($n$) of $\epsilon$ samples
+\item Note $F(\theta + \sigma \cdot \epsilon)$ involves playing an episode for a given sampled $\epsilon$, \\ and obtaining that episode's {\em Return} $F(\theta + \sigma \cdot \epsilon)$
+\item Hence, $n$ values of $\epsilon$, $n$ {\em Policies} $\pi_{\theta + \sigma \cdot \epsilon}$, and $n$ {\em Returns} $F(\theta + \sigma \cdot \epsilon)$
+\item Given gradient estimate, we update $\theta$ in this gradient direction
+\item Which in turn leads to new samples of $\epsilon$ (new set of {\em Policies} $\pi_{\theta + \sigma \cdot \epsilon}$)
+\item And the process repeats until $\mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[F(\theta + \sigma \cdot \epsilon)]$ is maximized
+\item The key inputs to the algorithm will be:
+\begin{itemize}
+\item Learning rate (SGD Step Size) $\alpha$
+\item Standard Deviation $\sigma$
+\item Initial value of parameter vector $\theta_0$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Algorithm}
+\begin{pseudocode}{Natural Evolution Strategies}{\alpha, \sigma, \theta_0}
+\FOR t \GETS 0, 1, 2, \ldots \DO
+\BEGIN
+\mbox{Sample } \epsilon_1, \epsilon_2, \ldots \epsilon_n \sim \mathcal{N}(0, I)\\
+\mbox{Compute Returns } F_i \GETS F(\theta_t + \sigma \cdot \epsilon_i) \mbox{ for } i = 1,2, \ldots, n\\
+\theta_{t+1} \GETS \theta_t + \frac {\alpha} {n \sigma} \sum_{i=1}^n \epsilon_i \cdot F_i
+\END\\
+\end{pseudocode}
+\end{frame}
+
+\begin{frame}
+\frametitle{Resemblance to Policy Gradient?}
+\begin{itemize}
+\item On the surface, this NES algorithm looks like \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient}}} (PG)
+\item Because it's not Value Function-based (it's Policy-based, like PG)
+\item Also, similar to PG, it uses a gradient to move towards optimality
+\item But, ES does not interact with the environment (like PG/RL does)
+\item ES operates at a high-level, ignoring (state,action,reward) interplay
+\item Specifically, does not aim to assign credit to actions in specific states
+\item Hence, ES doesn't have the core essence of RL: {\em Estimating the Q-Value Function of a Policy and using it to Improve the Policy}
+\item Therefore, we don't classify ES as Reinforcement Learning
+\item We consider ES to be an alternative approach to RL Algorithms
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ES versus RL}
+\begin{itemize}
+\item Traditional view has been that ES won't work on high-dim problems
+\item Specifically, ES has been shown to be data-inefficient relative to RL
+\item Because ES resembles simple hill-climbing based only on finite differences along a few random directions at each step
+\item However, ES is very simple to implement (no Value Function approx. or back-propagation needed), and is highly parallelizable
+\item ES has the benefits of being indifferent to distribution of rewards and to action frequency, and is tolerant of long horizons
+\item \href{https://arxiv.org/pdf/1703.03864.pdf}{\underline{\textcolor{blue}{This paper from OpenAI Researchers}}} shows techniques to make NES more robust and more data-efficient, and they demonstrate that NES has more exploratory behavior than advanced PG algorithms
+\item I'd always recommend trying NES before attempting to solve with RL
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Key Takeaways from this Chapter}
+\pause
+\begin{itemize}[<+->]
+\item PG Algorithms are based on GPI with Policy Improvement as a Stochastic Gradient Ascent for "Expected Returns" Objective $J(\bm{\theta})$ where $\bm{\theta}$ are parameters of the function approximation for the Policy
+\item Policy Gradient Theorem gives us a simple formula for $\nabla_{\bm{\theta}} J(\bm{\theta})$ in terms of the score of the policy function approximation
+\item We can reduce variance in PG algorithms by using a critic and by using an estimate of the advantage function for the Q-Value Function
+\item Compatible Function Approximation Theorem enables us to overcome bias in PG Algorithms
+\item Natural Policy Gradient and Deterministic Policy Gradient are specialized PG algorithms that have worked well in practice
+\item Evolutionary Strategies are technically not RL, but they resemble PG Algorithms and can sometimes be quite effective for MDP Control
+\end{itemize}
+\end{frame}
+
+
+\end{document}
