@@ -661,11 +661,10 @@ $$(R_{t+1} + \gamma \cdot \bm{SC}(S_{t+1}, A_{t+1}; \bm{\theta})^T \cdot \bm{w} 
 \frametitle{Deterministic Policy Gradient (DPG)}
 \begin{itemize}
 \item Function approximation for deterministic policy for continuous actions
-\item DPG expressed as Expected Gradient of Q-Value Function
+\item DPG expressed as Expected Gradient of Q-Value
 \item Integrates only over state space, so efficient for high-dim action spaces
 \item Usual machinery of PG is applicable to DPG
-\item Is Off-Policy: Target policy $\pi_D$ learnt, behavior policy $\mu$ is exploratory
-\item Core Idea: Instead of greedy policy improvement for continuous action spaces, move policy in the direction of gradient of Q-Value Function
+\item Intuition: Instead of greedy policy improvement for continuous action spaces, move policy in the direction of gradient of Q-Value Function
 \item Policy parameters $\bm{\theta}$ are updated in proportion to $\nabla_{\bm{\theta}} Q(s,\pi_D(s;\bm{\theta}))$
 \item Average direction of policy improvements is given by: 
 $$\mathbb{E}_{s \sim \rho^{\pi_D}}[\nabla_{\bm{\theta}} Q(s,\pi_D(s; \bm{\theta}))] = \mathbb{E}_{s \sim \rho^{\pi_D}}[\nabla_{\bm{\theta}} \pi_D(s; \bm{\theta}) \cdot \nabla_a Q^{\pi_D}(s,a) \Bigr\rvert_{a=\pi_D(s;\bm{\theta})}]$$
@@ -680,17 +679,18 @@ $$\rho^{\pi_D}(s) = \sum_{S_0 \in \mathcal{N}}  \sum_{t=0}^\infty \gamma^t \cdot
 $$J(\bm{\theta}) = \mathbb{E}_{\pi_D}[\sum_{t=0}^\infty \gamma^t \cdot R_{t+1}] = \sum_{s \in \mathcal{N}} \rho^{\pi_D}(s) \cdot \mathcal{R}_s^{\pi_D(s;\bm{\theta})} = \mathbb{E}_{s \sim \rho^{\pi_D}}[\mathcal{R}_s^{\pi_D(s;\bm{\theta})}]$$
 \pause
 \begin{theorem}
-For action space $\mathbb{R}^k$, 
 \begin{align*}
 \nabla_{\bm{\theta}} J(\bm{\theta}) & = \sum_{s \in \mathcal{N}} \rho^{\pi_D}(s) \cdot \nabla_{\bm{\theta}} \pi_D(s; \bm{\theta}) \cdot \nabla_a Q^{\pi_D}(s,a) \Bigr\rvert_{a=\pi_D(s;\bm{\theta})}\\
 & = \mathbb{E}_{s \sim \rho^{\pi_D}}[\nabla_{\bm{\theta}} \pi_D(s; \bm{\theta}) \cdot \nabla_a Q^{\pi_D}(s,a) \Bigr\rvert_{a=\pi_D(s;\bm{\theta})}]
 \end{align*}
 \end{theorem}
 \pause
-In practice, we use critic $Q(s,a;\bm{w})$ and keep updating both $\bm{w}$ and $\bm{\theta}$:
-\pause
-$$\Delta \bm{w} = \alpha_{\bm{w}} \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, \pi_D(S_{t+1}; \bm{\theta}); \bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t; \bm{w})$$
-$$\Delta \bm{\theta} = \alpha_{\bm{\theta}} \cdot \gamma^t \cdot \nabla_{\bm{\theta}} \pi_D(S_t; \bm{\theta}) \cdot \nabla_a Q(S_t,A_t;\bm{w}) \Bigr\rvert_{a=\pi_D(S_t;\bm{\theta})}$$
+\begin{itemize}[<+->]
+\item Since $\pi_D$ (target policy) is deterministic, explore with behavior policy
+\item Actor and Critic parameters are updated after each atomic experience:
+$$\Delta \bm{w} \propto (R_{t+1} + \gamma \cdot Q(S_{t+1}, \pi_D(S_{t+1}; \bm{\theta}); \bm{w}) - Q(S_t,A_t;\bm{w})) \cdot \nabla_{\bm{w}} Q(S_t,A_t; \bm{w})$$
+$$\Delta \bm{\theta} \propto \nabla_{\bm{\theta}} \pi_D(S_t; \bm{\theta}) \cdot \nabla_a Q(S_t,a;\bm{w}) \Bigr\rvert_{a=\pi_D(S_t;\bm{\theta})}$$
+\end{itemize}
 \end{frame}
 
 \begin{frame}
