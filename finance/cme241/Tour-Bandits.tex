@@ -412,7 +412,7 @@ $$L_T \leq \sum_{a|\Delta_a > 0} \frac {4\alpha \cdot \log T} {\Delta_a} + \frac
 \pause
 \begin{itemize}[<+->]
 \item Assume reward distribution is Gaussian, $\mathcal{R}^a(r) =\mathcal{N}(r;\mu_a, \sigma_a^2)$
-\item Compute Gaussian posterior over $\mu_a,\sigma_a^2$  (Bayes update details \href{https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/lecture5.pdf}{\underline{\textcolor{blue}{here}}})
+\item Compute Gaussian posterior over $\mu_a,\sigma_a^2$  (details in book Appendix)
 $$\mathbb{P}[\mu_a, \sigma_a^2|h_t] \propto \mathbb{P}[\mu_a, \sigma_a^2] \cdot \prod_{t|A_t=a} \mathcal{N}(R_t;\mu_a, \sigma_a^2)$$
 \item Pick action that maximizes Expectation of:  ``$c$ std-errs above mean''
 $$A_{t+1} = \argmax_{a\in\mathcal{A}} \mathbb{E}_{\mathbb{P}[\mu_a, \sigma_a|h_t]}[\mu_a + \frac {c \cdot \sigma_a} {\sqrt{N_t(a)}}]$$
