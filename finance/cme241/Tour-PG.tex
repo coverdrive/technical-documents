@@ -694,9 +694,29 @@ $$\Delta \bm{\theta} \propto \nabla_{\bm{\theta}} \pi_D(S_t; \bm{\theta}) \cdot 
 \end{frame}
 
 \begin{frame}
+\frametitle{Introduction to Evolutionary Strategies}
+\begin{itemize}
+\item Evolutionary Strategies (ES) are a type of Black-Box Optimization
+\item Popularized in the 1970s as {\em Heuristic Search Methods}
+\item Loosely inspired by natural evolution of living beings
+\item We focus on a subclass called Natural Evolution Strategies (NES)
+\item The original setting was generic and nothing to do with MDPs or RL
+\item Given an objective function $F(\psi)$, where $\psi$ refers to parameters
+\item We consider a probability distribution $p_{\theta}(\psi)$ over $\psi$
+\item Where $\theta$ refers to the parameters of the probability distribution
+\item We want to maximize the average objective $\mathbb{E}_{\psi \sim p_{\theta}}[F(\psi)]$
+\item We search for optimal $\theta$ with stochastic gradient ascent as follows:
+$$\nabla_{\theta} (\mathbb{E}_{\psi \sim p_{\theta}}[F(\psi)]) = \nabla_{\theta} (\int_{\psi} p_{\theta}(\psi) \cdot F(\psi) \cdot d\psi)$$
+$$=\int_{\psi} \nabla_{\theta}(p_{\theta}(\psi)) \cdot F(\psi) \cdot d\psi = \int_{\psi} p_{\theta}(\psi) \cdot \nabla_{\theta}(\log{p_{\theta}(\psi)}) \cdot F(\psi) \cdot d\psi $$
+$$ = \mathbb{E}_{\psi \sim p_{\theta}}[\nabla_{\theta}(\log{p_{\theta}(\psi)}) \cdot F(\psi)]$$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{NES applied to solving Markov Decision Processes (MDPs)}
 \begin{itemize}
-\item We set $F(\cdot)$ to be the (stochastic) {\em Return} of a MDP
+\item We set $F(\cdot)$ to be the (stochastic) {\em Return} of an MDP
 \item $\psi$ refers to the parameters of a policy $\pi_{\psi} : \mathcal{S} \rightarrow \mathcal{A}$
 \item $\psi$ will be drawn from an isotropic multivariate Gaussian distribution
 \item Gaussian with mean vector $\theta$ and fixed diagonal covariance matrix $\sigma^2 I$
