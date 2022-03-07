@@ -165,7 +165,7 @@ class OrderBook:
 $$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=0}^{i-1} N_j^{(b)}))) \mid (i: P_i^{(b)} \geq P)]$$
 \item After this removal, it adds the following to the asks side of the OB 
 $$(P, \max(0, N - \sum_{i: P_i^{(b)} \geq P}  N_i^{(b)}))$$
-\item A new Buy MO operates analogously (on the other side of the OB)
+\item A new Buy LO operates analogously (on the other side of the OB)
 \item A Sell Market Order $N$ will remove the best bid prices on the OB
 $$\mbox{Removal: } [(P_i^{(b)}, \min(N_i^{(b)}, \max(0, N - \sum_{j=0}^{i-1} N_j^{(b)}))) \mid 0 \leq i < m]$$
 \item A Buy Market Order $N$ will remove the best ask prices on the OB
@@ -723,7 +723,7 @@ $$e^{-\gamma({\delta_t^{(a)}}^* + S_t - Q_t^{(a)})} \cdot (\gamma \cdot f^{(a)}(
 \begin{itemize}[<+->]
 \item Define {\em Indifference Mid Price} $Q_t^{(m)} = \frac {Q_t^{(b)} + Q_t^{(a)}} {2}$
 \item To develop intuition for Indifference Prices, consider a simple case where the market-maker doesn't supply any bids or asks
-$$V^*(t,S_t,W_t,I_t) = \mathbb{E}[-e^{-\gamma(W_T + I_T \cdot S_T)}]$$
+$$V^*(t,S_t,W_t,I_t) = \mathbb{E}[-e^{-\gamma(W_t + I_t \cdot S_T)}]$$
 \item Combining this with the diffusion $dS_t = \sigma \cdot dz_t$, we get:
 $$V^*(t,S_t,W_t,I_t) = -e^{-\gamma(W_t + I_t \cdot S_t - \frac {\gamma \cdot I_t^2 \cdot \sigma^2(T-t)} {2})}$$
 \item Combining this with equations (\ref{eq:indiffbid}) and (\ref{eq:indiffask}), we get:

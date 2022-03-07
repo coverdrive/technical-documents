@@ -413,7 +413,7 @@ NTStateDistribution = Distribution[NonTerminal[S]]
 def evaluate_mrp(
     mrp: MarkovRewardProcess[S],
     gamma: float,
-    approx_0: ValueFunctionApprox[S,
+    approx_0: ValueFunctionApprox[S],
     nt_states_distribution: NTStateDistribution[S],
     num_samples: int
 ) -> Iterator[ValueFunctionApprox[S]]:
