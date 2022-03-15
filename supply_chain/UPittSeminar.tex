@@ -1,0 +1,305 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[handout]{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{cool}
+\usepackage{amsmath}
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[ML for Forecasting and Replenishment]{Machine Learning Applications for \\ Demand Forecasting and Inventory Replenishment} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ashwin Rao} % Your name
+\institute[Wayfair/Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\tableofcontents
+
+\section{Supply-Chain Headaches}
+
+\begin{frame}
+\frametitle{Supply-Chain Headaches and Machine Learning Pills}
+\pause
+\begin{itemize}[<+->]
+\item Customer Demand is hard to forecast
+\item Lately, Supply constraints pose challenges too
+\item Often, Space and Throughput constraints
+\item Network Planning, Labor Planning, Transportation - all challenging
+\item Tracking Inventory Count/Location is hard
+\item Not easy to control damage, theft, misplacement, spoilage
+\item Nirvana: Inventory at right place, at right time, in right quantity
+\item Can modern Machine Learning be the path to low-cost Nirvana?
+\item Not really, but ML can indeed alleviate many of these headaches
+\item Today we look at two game-changing applications of ML
+\item Demand Forecasting and Inventory Replenishment
+\end{itemize}
+\end{frame}
+
+\section{Demand Forecasting: Transformers and Embeddings to the rescue}
+
+\begin{frame}
+\frametitle{Demand Forecasting}
+\pause
+\begin{itemize}[<+->]
+\item Why do we care about Demand Forecasting?
+\item Because it is foundational to LOTs of decisions in Supply-Chain
+\item Design/Planning Decisions and Operational/Control Decisions
+\item Design/Planning examples: Network, Labor, Transportation
+\item Operational/Control examples: Replenishment, Logistics
+\item Core: Forecast demand for [SKU group, locations group, time range]
+\item Choose your slice thickness in each of these 3 dimensions
+\item Thin Slice (local effects): Little data, highly uncertain forecasts
+\item Thick Slice (macro effects): Dependent on many external factors
+\item Hierarchical forecasting blends macro effects with local effects
+\item Good forecast captures structural patterns and regime shifts
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Similar/Substitutable Products identified with {\em Embeddings}}
+\pause
+\begin{itemize}[<+->]
+\item Demand Forecasting for similar/substitutable set of Products
+\item Can we automate identification of similarity/substitutability?
+\item Similarity by Visuals or by Descriptions or by Customer Interest
+\item Throw this heterogeneous data into deep neural network learning
+\item Deep inside the neural network, we find encodings of these products
+\item Similar/Substitutable products have similar encodings
+\item The technical term for these encodings is {\em Embeddings}
+\item Embeddings are low-dimensional numerical representations ({\em Vectors})
+\item Capturing the most important features of products
+\item Based on product images, descriptions, customer interest
+\item Embedding vectors have powerful algebraic/geometric properties
+\item Embeddings can be used as ML features for transfer learning
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Transformers for learning the old and the new}
+\pause
+\begin{itemize}[<+->]
+\item Forecasting needs to be ``Predictive'' as well as ``Reactive''
+\item {\em Predictive:} Capture temporal patterns from long history
+\item {\em Reactive:} Pay attention to recent shifts and trends
+\item Transformer Networks eating the lunch of good old time-series stats
+\item The core methodology is a technique called {\em Self-Attention}
+\item It automatically identifies the relative importance of old versus new
+\item Transformers are accurate and fast (highly parallelizable)
+\item Have found great success in Vision and Text applications
+\item Now being ported to numerical time-series applications
+\item Embeddings blended with Transformers $\Rightarrow$ Heady Cocktail
+\item Not easy to pull off, requires considerable experimentation/tuning
+\end{itemize}
+\end{frame}
+
+\section{Inventory Replenishment: Reinforcement Learning to the rescue}
+
+
+\begin{frame}
+\frametitle{Inventory Replenishment}
+\pause
+\begin{itemize}[<+->]
+\item Let's consider a simple example of a single SKU in a store
+\item The store experiences uncertain daily customer demand
+\item The store can order daily from a supplier carrying infinite inventory
+\item Cost associated with ordering, and order arrives in a few days
+\item Inventory in the store incurs a daily {\em Holding Cost} (per unit)
+\item Out-of-Stock incurs a {\em Stockout Cost} (per unit)
+\item There's a notion of {\em Ordering Cost} (Labor/Transport)
+\item When should one order? And in what quantity?
+\item Traditional OR literature focused on closed-form ``solutions''
+\item Approx closed-form solutions are often used in real businesses
+\item In spite of the limitations of missing out on key real-world features
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Welcome to the Real-World}
+\pause
+\begin{itemize}[<+->]
+\item Real-world not so simple - frictions, constraints, uncertainties
+\item Supply can be constrained/uncertain
+\item Space and Throughput constraints
+\item Pricing/Marketing has a big influence on demand
+\item New products, substitutable products complicate matters
+\item In physical stores, there are {\em Presentation-Minimum} requirements
+\item Often, products are shipped in casepacks
+\item Irregular/Uncertain order frequency and lead times
+\item Supply-Chain network might be {\em Multi-Echelon}
+\item Inventory Count/Location is often uncertain
+\item Cost of Damage, Theft, Misplacement, Spoilage
+\item End-of-Season/Obsolescence/Spoilage requires Clearance/Salvage
+\item All of this calls for a formal Stochastic Control framework
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The Markov Decision Process Framework}
+\includegraphics[width=12cm, height=7cm]{../finance/cme241/MDP.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Components of the MDP Framework}
+\pause
+\begin{itemize}[<+->]
+\item The {\em Agent} and the {\em Environment} interact in a time-sequenced loop
+\item {\em Agent} responds to [{\em State}, {\em Reward}] by taking an {\em Action}
+\item {\em Environment} responds by producing next step's (random) {\em State}
+\item {\em Environment} also produces a (random) number we call {\em Reward}
+\item Goal of {\em Agent} is to maximize {\em Expected Sum} of all future {\em Reward}s
+\item By controlling the ({\em Policy} : {\em State} $\rightarrow$ {\em Action}) function
+\item This is a dynamic (time-sequenced control) system under uncertainty
+\item MDP framework enables modeling real-world Replenishment problems
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{How a baby learns to walk}
+\includegraphics[width=13cm, height=8cm]{../finance/cme241/BabyMDP.jpg}
+\end{frame}
+
+\begin{frame}
+\frametitle{Many real-world problems fit this MDP framework}
+\pause
+\begin{itemize}[<+->]
+\item Self-driving vehicle (speed/steering to optimize safety/time)
+\item Game of Chess (Boolean {\em Reward} at end of game)
+\item Inventory Replenishment to ensure high availability at low cost
+\item Make a humanoid robot walk/run on difficult terrains
+\item Manage an investment portfolio
+\item Control a power station
+\item Optimal decisions during a football game
+\item Strategy to win an election (high-complexity MDP)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Self-Driving Vehicle}
+\includegraphics[width=13cm, height=8cm]{../finance/cme241/CarMDP.jpg}
+\end{frame}
+
+\begin{frame}
+\frametitle{Real-World Replenishment as a Markov Decision Process}
+\pause
+\begin{itemize}[<+->]
+\item MDP {\em State} is current Inventory Level at the store
+\item {\em State} also includes current in-transit inventory
+\item {\em Action} is the multiple of casepack to order (or not order)
+\item {\em Reward} function involves all of the costs we went over
+\item State transitions governed by all of the uncertainties we went over
+\item Solve: Dynamic Programming or Reinforcement Learning
+\item Curse of Dimensionality and Curse of Modeling $\Rightarrow$ RL
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{RL: Learning from Samples of Data}
+\pause
+\begin{itemize}[<+->]
+\item RL incrementally learns from state/reward transitions data
+\item Typically served by a simulator acting as a {\em Simulated Environment}
+\item RL is a ``trial-and-error'' approach linking {\em Actions} to {\em Rewards}
+\item Try different actions \& learn what works, what doesn't
+\item Deep Neural Networks are typically used for function approximation
+\item Big Picture: Sampling and Function Approximation come together
+\item RL algorithms are clever about balancing  ``explore'' versus ``exploit''
+\item {\bf Promise of modern A.I. is based on success of RL algorithms}
+\item Potential for automated decision-making in many industries
+\item In 10-20 years: Bots that act or behave more optimal than humans
+\item RL already solves various low-complexity real-world problems
+\item RL has many applications in Suppy-Chain
+\end{itemize}
+\end{frame}
+
+\end{document}
