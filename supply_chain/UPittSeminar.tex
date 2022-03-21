@@ -103,6 +103,31 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 
 \tableofcontents
 
+\section{Machine Learning Overview}
+
+\begin{frame}
+\frametitle{Machine Learning}
+\includegraphics[width=10cm, height=8cm]{../finance/cme241/MLBranches.PNG}
+\end{frame}
+
+\begin{frame}
+\frametitle{Machine Learning Overview}
+\pause
+\begin{itemize}[<+->]
+\item Supervised Learning: Predictions based on learning data implications
+\item Unsupervised Learning: Unearthing patterns \& structures within data
+\item Reinforcement Learning: Optimal Decisioning under Uncertainty
+\item ML has been a breakthrough for images, text, games
+\item Largely due to the recent success of Deep Neural Networks
+\item We are now adapting Deep Learning techniques to other domains
+\item Works well when we have plenty of data and plenty of compute
+\item ML practice tends to be quite laborious on Big Data Engineering
+\item I'm seeing promising results in Finance and Retail applications
+\item I cover this in depth in my \href{https://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{new book}}}
+\end{itemize}
+\end{frame}
+
+
 \section{Supply-Chain Headaches}
 
 \begin{frame}
@@ -115,9 +140,8 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Network Planning, Labor Planning, Transportation - all challenging
 \item Tracking Inventory Count/Location is hard
 \item Not easy to control damage, theft, misplacement, spoilage
-\item Nirvana: Inventory at right place, at right time, in right quantity
-\item Can modern Machine Learning be the path to low-cost Nirvana?
-\item Not really, but ML can indeed alleviate many of these headaches
+\item Nirvana: Inventory at right time/place, in right quantity, at low cost
+\item Blend of Traditional OR + Modern ML paves the path to Nirvana
 \item Today we look at two game-changing applications of ML
 \item Demand Forecasting and Inventory Replenishment
 \end{itemize}
@@ -156,10 +180,16 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item The technical term for these encodings is {\em Embeddings}
 \item Embeddings are low-dimensional numerical representations ({\em Vectors})
 \item Capturing the most important features of products
+\item Captures various relationships between products, eg: complementarity
 \item Based on product images, descriptions, customer interest
 \item Embedding vectors have powerful algebraic/geometric properties
 \item Embeddings can be used as ML features for transfer learning
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Book Embeddings flattened to 2-D Vectors}
+\includegraphics[width=12cm, height=8cm]{BookEmbeddings.png}
 \end{frame}
 
 \begin{frame}
@@ -178,6 +208,11 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Embeddings blended with Transformers $\Rightarrow$ Heady Cocktail
 \item Not easy to pull off, requires considerable experimentation/tuning
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Capturing Stock Price Cycles/Trends with Transformers}
+\includegraphics[width=11cm, height=7cm]{StockPriceTransformer.jpeg}
 \end{frame}
 
 \section{Inventory Replenishment: Reinforcement Learning to the rescue}
@@ -284,7 +319,7 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 
 
 \begin{frame}
-\frametitle{RL: Learning from Samples of Data}
+\frametitle{How RL Works: Learning from Samples of Data}
 \pause
 \begin{itemize}[<+->]
 \item RL incrementally learns from state/reward transitions data
@@ -294,7 +329,7 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Deep Neural Networks are typically used for function approximation
 \item Big Picture: Sampling and Function Approximation come together
 \item RL algorithms are clever about balancing  ``explore'' versus ``exploit''
-\item {\bf Promise of modern A.I. is based on success of RL algorithms}
+\item Promise of modern A.I. is based on success of RL algorithms
 \item Potential for automated decision-making in many industries
 \item In 10-20 years: Bots that act or behave more optimal than humans
 \item RL already solves various low-complexity real-world problems
