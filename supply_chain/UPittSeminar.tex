@@ -106,19 +106,20 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \section{Machine Learning Overview}
 
 \begin{frame}
-\frametitle{Machine Learning}
-\includegraphics[width=10cm, height=8cm]{../finance/cme241/MLBranches.PNG}
+\frametitle{Machine Learning Branches}
+\includegraphics[width=9cm, height=8cm]{../finance/cme241/MLBranches.PNG}
 \end{frame}
 
 \begin{frame}
 \frametitle{Machine Learning Overview}
 \pause
 \begin{itemize}[<+->]
-\item Supervised Learning: Predictions based on learning data implications
-\item Unsupervised Learning: Unearthing patterns \& structures within data
-\item Reinforcement Learning: Optimal Decisioning under Uncertainty
+\item ML is roughly classified into Supervised, Unsupervised and RL
+\item Supervised: Predicts by learning relationships between variables
+\item Unsupervised: Unearths patterns \& structures within data
+\item RL: Optimal Sequential Decisioning under Uncertainty
 \item ML has been a breakthrough for images, text, games
-\item Largely due to the recent success of Deep Neural Networks
+\item Largely due to the past decade of success of Deep Neural Networks
 \item We are now adapting Deep Learning techniques to other domains
 \item Works well when we have plenty of data and plenty of compute
 \item ML practice tends to be quite laborious on Big Data Engineering
@@ -159,11 +160,11 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Design/Planning examples: Network, Labor, Transportation
 \item Operational/Control examples: Replenishment, Logistics
 \item Core: Forecast demand for [SKU group, locations group, time range]
-\item Choose your slice thickness in each of these 3 dimensions
+\item Identify your problem's slice thickness in each of these 3 dimensions
 \item Thin Slice (local effects): Little data, highly uncertain forecasts
 \item Thick Slice (macro effects): Dependent on many external factors
 \item Hierarchical forecasting blends macro effects with local effects
-\item Good forecast captures structural patterns and regime shifts
+\item Good forecast captures structural patterns along with regime shifts
 \end{itemize}
 \end{frame}
 
@@ -177,13 +178,13 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Throw this heterogeneous data into deep neural network learning
 \item Deep inside the neural network, we find encodings of these products
 \item Similar/Substitutable products have similar encodings
-\item The technical term for these encodings is {\em Embeddings}
+\item The technical term for these encodings is \href{https://developers.google.com/machine-learning/crash-course/embeddings/video-lecture}{\underline{\textcolor{blue}{Embeddings}}}
 \item Embeddings are low-dimensional numerical representations ({\em Vectors})
 \item Capturing the most important features of products
 \item Captures various relationships between products, eg: complementarity
 \item Based on product images, descriptions, customer interest
-\item Embedding vectors have powerful algebraic/geometric properties
 \item Embeddings can be used as ML features for transfer learning
+\item Embedding vectors have powerful algebraic/geometric properties
 \end{itemize}
 \end{frame}
 
@@ -199,13 +200,13 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Forecasting needs to be ``Predictive'' as well as ``Reactive''
 \item {\em Predictive:} Capture temporal patterns from long history
 \item {\em Reactive:} Pay attention to recent shifts and trends
-\item Transformer Networks eating the lunch of good old time-series stats
+\item \href{https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)}{\underline{\textcolor{blue}{Transformer Networks}}} eating the lunch of good old time-series stats
 \item The core methodology is a technique called {\em Self-Attention}
 \item It automatically identifies the relative importance of old versus new
 \item Transformers are accurate and fast (highly parallelizable)
 \item Have found great success in Vision and Text applications
 \item Now being ported to numerical time-series applications
-\item Embeddings blended with Transformers $\Rightarrow$ Heady Cocktail
+\item Embeddings blended with Transformers $\Rightarrow$ Practically Potent Combo
 \item Not easy to pull off, requires considerable experimentation/tuning
 \end{itemize}
 \end{frame}
@@ -253,13 +254,14 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Inventory Count/Location is often uncertain
 \item Cost of Damage, Theft, Misplacement, Spoilage
 \item End-of-Season/Obsolescence/Spoilage requires Clearance/Salvage
-\item All of this calls for a formal Stochastic Control framework
+\item All of this calls for a formal Decision Control framework
 \end{itemize}
 \end{frame}
 
 
+
 \begin{frame}
-\frametitle{The Markov Decision Process Framework}
+\frametitle{The \href{https://en.wikipedia.org/wiki/Markov_decision_process}{\underline{\textcolor{yellow}{Markov Decision Process}}} Framework}
 \includegraphics[width=12cm, height=7cm]{../finance/cme241/MDP.png}
 \end{frame}
 
@@ -291,7 +293,7 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Game of Chess (Boolean {\em Reward} at end of game)
 \item Inventory Replenishment to ensure high availability at low cost
 \item Make a humanoid robot walk/run on difficult terrains
-\item Manage an investment portfolio
+\item Manage an investment portfolio (covered in depth in my book)
 \item Control a power station
 \item Optimal decisions during a football game
 \item Strategy to win an election (high-complexity MDP)
@@ -307,12 +309,13 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \frametitle{Real-World Replenishment as a Markov Decision Process}
 \pause
 \begin{itemize}[<+->]
-\item MDP {\em State} is current Inventory Level at the store
+\item MDP {\em State} is current Inventory Level at the store/warehouse
 \item {\em State} also includes current in-transit inventory
 \item {\em Action} is the multiple of casepack to order (or not order)
 \item {\em Reward} function involves all of the costs we went over
 \item State transitions governed by all of the uncertainties we went over
-\item Solve: Dynamic Programming or Reinforcement Learning
+\item Solve: \href{https://en.wikipedia.org/wiki/Dynamic_programming}{\underline{\textcolor{blue}{Dynamic Programming}}} or
+ \href{https://en.wikipedia.org/wiki/Reinforcement_learning}{\underline{\textcolor{blue}{Reinforcement Learning}}}
 \item Curse of Dimensionality and Curse of Modeling $\Rightarrow$ RL
 \end{itemize}
 \end{frame}
@@ -333,7 +336,8 @@ Chief Science Officer @ Wayfair and Adjunct Professor @ Stanford University
 \item Potential for automated decision-making in many industries
 \item In 10-20 years: Bots that act or behave more optimal than humans
 \item RL already solves various low-complexity real-world problems
-\item RL has many applications in Suppy-Chain
+\item RL has many applications in Suppy-Chain, more broadly in Operations
+\item RL covered in great detail in my book (theory, code and applications)
 \end{itemize}
 \end{frame}
 
