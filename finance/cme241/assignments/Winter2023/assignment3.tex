@@ -20,13 +20,13 @@
  
 \begin{document}
 \begin{center}
-{\large {\bf Stanford CME 241 (Winter 2022) - Assignment 3}}
+{\large {\bf Stanford CME 241 (Winter 2023) - Assignment 3}}
 \end{center}
  
-{\large{\bf Assignments:}}
+{\large{\bf Due:}}
 \begin{questions}
 
-\question Consider a continuous-states, continuous-actions, discrete-time, non-terminating MDP with state space as $\mathbb{R}$ and action space as $\mathbb{R}$. When in state $s\in \mathbb{R}$, upon taking action $a\in \mathbb{R}$, one transitions to next state $s' \in \mathbb{R}$ according to a normal distribution $s' \sim \mathcal{N}(s, \sigma^2)$ for a fixed variance $\sigma^2 \in \mathbb{R}^+$. The corresponding cost associated with this transition is $e^{as'}$, i.e., the cost depends on the action $a$ and the state $s'$ one transitions to. The problem is to minimize the infinite-horizon {\em Expected Discounted-Sum of Costs} (with discount factor $\gamma < 1$). For this assignment, solve this problem just for the special case of $\gamma = 0$ (i.e., the myopic case) using elementary calculus. Derive an analytic expression for the optimal action in any state and the corresponding optimal cost.
+\question {\bf Analytic Optimal Actions and Cost:} Consider a continuous-states, continuous-actions, discrete-time, non-terminating MDP with state space as $\mathbb{R}$ and action space as $\mathbb{R}$. When in state $s\in \mathbb{R}$, upon taking action $a\in \mathbb{R}$, one transitions to next state $s' \in \mathbb{R}$ according to a normal distribution $s' \sim \mathcal{N}(s, \sigma^2)$ for a fixed variance $\sigma^2 \in \mathbb{R}^+$. The corresponding cost associated with this transition is $e^{as'}$, i.e., the cost depends on the action $a$ and the state $s'$ one transitions to. The problem is to minimize the infinite-horizon {\em Expected Discounted-Sum of Costs} (with discount factor $\gamma < 1$). For this assignment, solve this problem just for the special case of $\gamma = 0$ (i.e., the myopic case) using elementary calculus. Derive an analytic expression for the optimal action in any state and the corresponding optimal cost.
 
 \question {\bf Manual Value Iteration:} Consider a simple MDP with $\mathcal{S} = \{s_1, s_2, s_3\}, \mathcal{T} =\{s_3\}, \mathcal{A} = \{a_1, a_2\}$. The State Transition Probability function
 $$\mathcal{P}: \mathcal{N} \times \mathcal{A} \times \mathcal{S} \rightarrow [0, 1]$$
