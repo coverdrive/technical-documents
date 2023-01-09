@@ -1,0 +1,70 @@
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{pseudocode}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{MnSymbol,wasysym}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} 
+\newgeometry{vmargin={20mm}, hmargin={14mm,18mm}}
+ 
+\begin{document}
+\begin{center}
+{\large {\bf Stanford CME 241 (Winter 2023) - Assignment 4}}
+\end{center}
+ 
+{\large{\bf Assignments:}}
+\begin{questions}
+\question Assume the Utility function is $U(x) = x - \frac {\alpha x^2} 2$. Assuming $x \sim \mathcal{N}(\mu, \sigma^2)$, calculate:
+\begin{itemize}
+\item Expected Utility $\mathbb{E}[U(x)]$
+\item Certainty-Equivalent Value $x_{CE}$
+\item Absolute Risk-Premium $\pi_A$	
+\end{itemize}
+Assume you have a million dollars to invest for a year and you are allowed to invest $z$ dollars in a risky asset whose annual return on investment is $\mathcal{N}(\mu, \sigma^2)$ and the remaining (a million minus $z$ dollars) would need to be invested in a riskless asset with fixed annual return on investment of $r$. You are not allowed to adjust the quantities invested in the risky and riskless assets after your initial investment decision at time $t=0$ (static asset allocation problem). If your risk-aversion is based on this Utility function, how much would you invest in the risky asset? In other words, what is the optimal value for $z$, given your level of risk-aversion (determined by a fixed value of $\alpha$)?
+
+Plot how the optimal value of $z$ varies with $\alpha$.
+
+\question Repeat the calculations for the {\em Portfolio application of CRRA} (that we covered in class) with a Utility function of $U(x) = \log(x)$ (instead of $U(x) = \frac {x^{1 - \gamma} - 1} {1 - \gamma}$).
+
+\question Assume you are playing a casino game where at every turn, if you bet a quantity $x$, you will be returned $x \cdot (1 + \alpha)$ with probability $p$ and returned $x \cdot (1 - \beta)$ with probability $q = 1 - p$ for $\alpha, \beta \in \mathbb{R}^+$ (i.e., the return on bet is $\alpha$ with probability $p$ and $-\beta$ with probability $q = 1-p$) . The problem is to identify a betting strategy that will maximize one's expected wealth over the long run. The optimal solution to this problem is known as the Kelly criterion, which involves betting a constant fraction of one's wealth at each turn (let us denote this optimal fraction as $f^*$).
+
+It is known that the Kelly criterion (formula for $f^*$) is equivalent to maximizing the Expected Utility of Wealth after a single bet, with the Utility function defined as: $U(W) = \log(W)$. Denote your wealth before placing the single bet as $W_0$. Let $f$ be the fraction (to be solved for) of $W_0$ that you will bet. Therefore, your bet is $f \cdot W_0$.
+
+\begin{itemize}
+\item Write down the two outcomes for wealth $W$ at the end of your single bet of $f \cdot W_0$.
+\item Write down the two outcomes for $\log$ (Utility) of $W$.
+\item Write down $\mathbb{E}[\log(W)]$.
+\item Take the derivative of $\mathbb{E}[\log(W)]$ with respect to $f$. 
+\item Set this derivative to 0 to solve for $f^*$. Verify that this is indeed a maxima by evaluating the second derivative at $f^*$. This formula for $f^*$ is known as the Kelly Criterion. 
+\item Convince yourself that this formula for $f^*$ makes intuitive sense (in terms of it's dependency on $\alpha$, $\beta$ and $p$).
+\end{itemize}
+
+\question Derive the solution to Merton's Portfolio problem for the case of the $\log(\cdot)$ Utility function. Note that the derivation in the textbook is for CRRA Utility function with $\gamma \neq 1$ and the case of the $\log(\cdot)$ Utility function was left as an exercise to the reader.
+\question {\bf Extra Credit:} One of the reasons the backward induction solution in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter7/asset_alloc_discrete.py}{rl\//chapter7\//asset\_alloc\_discrete.py} is slow is that we work with a generic \lstinline{Distribution} type for \lstinline{risky_return_distributions}, which means we have to sequentially sample from it to create the states distribution (in method \lstinline{get_states_distribution}) that can be passed as input to \lstinline{back_opt_qvf}. Modify the code to create a special type of distribution for the returns of the risky asset so we have a direct way of obtaining the probability distribution of the risky asset price at any time step (and hence, the probability distribution of wealth at any time step). With a direct way to obtain probability distribution of states at any time step, we can speed up the code considerably. 
+% \question Sketch out a rough design for the following MDP:
+% \begin{itemize}
+% 	\item Your job is such that you can spend a fraction $\alpha$ of each day working and the remaining fraction $1-\alpha$ of your day learning.
+%	\item Each minute that you spend in a day working earns you at the rate of $f(s)$ dollars per minutes where $s$ is your current skill level.
+%	\item Each minute you spend on learning improves your skill level by a certain factor $g(s)$ where $s$ is your current skill level.
+%	\item You could lose your job any day with a probability $p$.
+%	\item While unemployed, you do not have access to learning, so your skill level decays exponentially with half life $\lambda$.
+%	\item If you've lost your job, you could be offered the job back with a probability $h(s)$ where $s$ is your current skill level.
+%\end{itemize}
+
+% What should be your optimal policy for fraction of time on learning on any given day, if your goal is to maximize your Expected (Discounted) Lifetime Utility of Earnings?
+% Think about variants such as finite-horizon and infinite-horizon. What if there were multiple skills or multiple job options? You can also factor in the fact that you need to consume your earnings, and so consumption quantity on any given day will also be an action, and then the objective would be Expected (Discounted) Lifetime Utility of Consumption.
+
+% This question is open-ended and is meant as a thought exercise. But do try to sketch out the states, actions, rewards and transition function.
+
+\end{questions}
+
+\end{document}
