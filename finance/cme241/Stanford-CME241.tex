@@ -118,10 +118,12 @@
 \begin{itemize}[<+->]
 \item Joined Stanford ICME as Adjunct Professor in Fall 2018
 \item Research Interests: A.I. for Dynamic Decisioning under Uncertainty
+\item Directing ICME's {\em Mathematical and Computational Finance} program
 \item Technical mentor to ICME students, partnerships with industry
 \item Educational background: Algorithms Theory \& Abstract Algebra
 \item 10 years at Goldman Sachs (NY) {\em Rates/Mortgage Derivatives} Trading
 \item 4 years at Morgan Stanley as {\em Managing Director - Market Modeling}
+\item 6 years at Target, leading it's AI/Data Science capabilities
 \item Currently co-founder of an early-stage Tech Startup
 \item Teaching experience: Pure \& Applied Math, CompSci, Finance, Mgmt
 \end{itemize}
@@ -163,23 +165,31 @@
 \end{enumerate}
 \item Course Web Site: \href{http://cme241.stanford.edu}{\underline{\textcolor{blue}{cme241.stanford.edu}}}
 \item Ask Questions and engage in Discussions on \href{https://edstem.org/us/courses/31295}{\underline{\textcolor{blue}{Ed Discussion}}}
-\item My e-mail: \href{mailto:ashwin.rao@stanford.edu}{\underline{\textcolor{blue}{ashwin.rao@stanford.edu}}}
 \item Note: This course is listed as CME 241 as well as MS\& 346
+\item Any accommodations: Please reach out to me or Amil early enough
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Resources}
+\frametitle{Resources and Success Tips}
 \pause
 \begin{itemize}[<+->]
 \item Course based on my \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{RL For Finance book}}}
 \item I prepare slides for each lecture (``guided tour'' of respective chapter)
 \item Code in my book based on \href{https://github.com/TikhonJelvis/RL-Book}{\underline{\textcolor{blue}{this open-source code}}}
-\item Reading this code as important as the reading the theory 
-\item We will go over some classical papers on the Finance applications
-\item Some supplementary/optional papers from Finance/RL
+\item Reading this code as important as reading the theory 
 \item All resources organized on the \href{http://cme241.stanford.edu}{\underline{\textcolor{blue}{course web site}}} (``source of truth'')
+\item Today: Overview of course topics and getting a general flavor
+\item How to succeed in this course:
+\begin{itemize}
+\item {\bf Attend lectures}
+\item Lectures' {\bf Guided Tours} are more efficient for learning (than book)
+\item {\bf Ask questions} during class, on Ed, and during office hours
+\item Learn by {\bf writing} (code and math)
+\item Learn by {\bf observing code design} of modules in book's git repo
+\item Investments in {\bf first few weeks} vital (foundations for 2nd half)
+\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -191,7 +201,7 @@
 		\begin{itemize}
 			\item 40\% {\em Exam} (3 hour exam on Theory, Modeling, Programming)
 			\item 30\% {\em Group Assignments} (Technical Writing and Programming)
-			\item 30\% {\em Course Project} (Same groups as assignments)
+			\item 30\% {\em Course Project} (Idea Creativity, Proof-of-Concept, Presentation)
 		\end{itemize}
 	
 		\item Assignments
@@ -206,12 +216,12 @@
 		\begin{itemize}
 		\item Individual take-home exam, covering topics from weeks 1-7
 		\item Practice exams from prior years available
-		\item 3 hours within 48 hour window (tentatively February 20-22)
+		\item 3 hours within 48 hour window (tentatively February 27-28)
 		\end{itemize}
 	
 		\item Project
 		\begin{itemize}
-			\item Open-ended research project, groups of up to 3 
+			\item Open-ended project, groups of up to 3 
 			\item Choose topics of interest, a list of ideas will be released by Week 5
 			\item Deliverables will be a proposal, presentation, and code
 		\end{itemize}
@@ -346,17 +356,17 @@ The following notation is for discrete time steps. Continuous-time formulation i
 \frametitle{Value Function and Bellman Equations}
 \pause
 \begin{itemize}
-\item Value function (under policy $\pi$) $V_{\pi}(s) = \mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
+\item Value function (under policy $\pi$) $V^{\pi}(s) = \mathbb{E}[G_t|S_t = s]$ for all $s \in \mathcal{S}$
 \pause
-$$V_{\pi}(s) = \sum_{a} \pi(a|s) \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
+$$V^{\pi}(s) = \sum_{a} \pi(a|s) \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V^{\pi}(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
-\item Optimal Value Function $V_{*}(s) = \max_{\pi} V_{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
+\item Optimal Value Function $V^*(s) = \max_{\pi} V^{\pi}(s) \mbox{ for all } s \in \mathcal{S}$
 \pause
-$$V_{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{*}(s')) \mbox{ for all } s \in \mathcal{S}$$
+$$V^*(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V^*(s')) \mbox{ for all } s \in \mathcal{S}$$
 \pause
-\item {\em There exists an Optimal Policy} $\pi_{*}$ achieving $V_{*}(s)$ for all $s \in \mathcal{S}$
+\item {\em There exists an Optimal Policy} $\pi^*$ achieving $V^*(s)$ for all $s \in \mathcal{S}$
 \pause
-\item Determining $V_{\pi}(s)$ known as {\em Prediction}, and $V_{*}(s)$ known as {\em Control}
+\item Determining $V^{\pi}(s)$ known as {\em Prediction}, and $V^*(s)$ known as {\em Control}
 \pause
 \item The above recursive equations are called {\em Bellman equations}
 \pause
@@ -472,7 +482,7 @@ $$V_{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \item You can invest in (allocate wealth to) a collection of assets
 \item Investment horizon is a fixed length of time
 \item Each risky asset characterized by a probability distribution of returns
-\item Periodically, you are re-allocate your wealth to the various assets
+\item Periodically, you can re-allocate your wealth across the various assets
 \item Transaction Costs \& Constraints on trading hours/quantities/shorting
 \item Allowed to consume a fraction of your wealth at specific times
 \item Dynamic Decision: Time-Sequenced Allocation \& Consumption
@@ -586,7 +596,7 @@ $$V_{*}(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V_{*}(s')) \mbox
 \begin{itemize}[<+->]
 \item Market-maker's job is to submit bid and ask prices (and sizes)
 \item On the Trading {\em Order Book} (which moves due to other players)
-\item Market-maker needs to adjust bid/ask prizes/sizes appropriately
+\item Market-maker needs to adjust bid/ask prices/sizes appropriately
 \item By anticipating the {\em Order Book Dynamics}
 \item Goal is to maximize {\em Utility of Gains} at the end of a suitable horizon
 \item If Buy/Sell LOs are too narrow, more frequent but small gains
