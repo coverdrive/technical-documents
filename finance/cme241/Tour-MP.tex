@@ -93,7 +93,7 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[Markov Process Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 1}}}: \\  Markov Process and Markov Reward Process} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[Markov Process Chapter]{A Guided Tour of \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{yellow}{Chapter 3}}}: \\  Markov Process and Markov Reward Process} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Ashwin Rao} % Your name
 \institute[Stanford] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
@@ -122,7 +122,7 @@
 \item Random outcome eg: price of a derivative, portfolio value etc.
 \item {\em State:} Internal Representation $S_t$ driving future evolution
 \item We are interested in $\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0]$
-\item Let us consider random walks of stock prices $X_t = S_t$
+\item Let us consider random walks of stock prices $X_t $
 $$\mathbb{P}[X_{t+1} = X_t + 1] + \mathbb{P}[X_{t+1} = X_t - 1] = 1$$
 \item We consider 3 examples of such processes
 \end{itemize}
@@ -135,8 +135,9 @@ $$\mathbb{P}[X_{t+1} = X_t + 1] + \mathbb{P}[X_{t+1} = X_t - 1] = 1$$
 \item Process is pulled towards level $L$ with strength parameter $\alpha$
 $$\mathbb{P}[X_{t+1} = X_t + 1] = \frac 1 {1 + e^{-\alpha_1(L - X_t)}}$$
 \item Notice how the probability of next price depends only on current price
+\item We model the state $S_t = X_t$
 \item ``The future is independent of the past given the present''
-$$\mathbb{P}[X_{t+1}|X_t, X_{t-1}, \ldots, X_0] = \mathbb{P}[X_{t+1}|X_t]\text{ for all } t \geq 0$$
+$$\mathbb{P}[S_{t+1}|S_t, S_{t-1}, \ldots, S_0] = \mathbb{P}[S_{t+1}|S_t]\text{ for all } t \geq 0$$
 \item This makes the mathematics easier and the computation tractable
 \item We call this the {\em Markov Property} of States
 \item The state captures all relevant information from history
