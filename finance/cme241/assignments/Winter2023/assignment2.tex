@@ -30,7 +30,7 @@
 \noindent Questions 1 and 2 of this homework focus on Markov Processes (MP and MRP) that were taught in class on 1/13 and are covered in Chapter 3 of the book. Questions 3 and 4 cover Markov Decision Processes that will be taught on 1/18 and are covered in Chapter 4 of the book.
 
 \begin{questions}
-\question In the classic childhood game of Snakes and Ladders, all players start the the left of square 1 (call this position 0) and roll a 6-sided die to represent the number of squares they can move forward. The goal is to reach square 100 as quickly as possible. Landing on the bottom rung of a ladder allows for an automatic free-pass to climb (e.g. square 4 sends you directly to 14); whereas landing on a snake's head forces one to slide all the way to the tail (e.g. square 34 sends you to 6). Note, this game can be viewed as a Markov Process, where the outcome is only depedent on the current state and not the prior trajectory. In this question, we will ask you to both formally describe the Markov Process that describes this game, followed by coding up a version of the game to get familiar with the RL-book libraries.
+\question In the classic childhood game of Snakes and Ladders, all players start to the left of square 1 (call this position 0) and roll a 6-sided die to represent the number of squares they can move forward. The goal is to reach square 100 as quickly as possible. Landing on the bottom rung of a ladder allows for an automatic free-pass to climb, e.g. square 4 sends you directly to 14; whereas landing on a snake's head forces one to slide all the way to the tail, e.g. square 34 sends you to 6. Note, this game can be viewed as a Markov Process, where the outcome is only depedent on the current state and not the prior trajectory. In this question, we will ask you to both formally describe the Markov Process that describes this game, followed by coding up a version of the game to get familiar with the RL-book libraries.
 
 \begin{figure}[h]
 	\begin{center}
@@ -46,7 +46,7 @@
 	\item[e.] For the Snakes and Ladders game, calculate the expected number of rolls to finish the game. Hint: in order to calculate this, extend the Snakes and Ladders FiniteMarkovProcess to an appropriate FiniteMarkovRewardProcess instance. What should be the Rewards model in this MRP so you can use one of the methods in the FiniteMarkovRewardProcess class to determine the expected number of dice rolls to finish the game?
 \end{enumerate}
 \
-\question Consider the problem of a frog jumping across a river with $n=9$ lilypads. The frog at every time step will randomly jump to a position in front of it (e.g. at time step 0, the frog will jump with $\frac{1}{10}$ probability to each of the lilypads or $\frac{1}{10}$ to the other side of the river.)
+\question Consider the problem of a frog jumping across a river with $n=9$ lilypads. The frog at every time step will randomly jump to a position in front of it (e.g. at the starting step, the frog will jump with $\frac{1}{10}$ probability to each of the lilypads or $\frac{1}{10}$ to the other side of the river.)
 \begin{figure}
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{Figures/2_jumping.png}
@@ -82,7 +82,7 @@ The frog now starts on a random lilypad. A snake lives on one end of the river (
 
 \end{questions}
 
-\begin{figure}[t]
+\begin{figure}[b]
 	\begin{center}
 		\includegraphics[width=0.2\textwidth]{Figures/2_frog.png}
 	\end{center}
