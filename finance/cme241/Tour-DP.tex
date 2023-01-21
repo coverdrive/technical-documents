@@ -598,6 +598,29 @@ $$(\pi^*_D)_t(s_t) = \argmax_{a_t \in \mathcal{A}_t} \sum_{s_{t+1}} \sum_{r_{t+1
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{@abstractclass MarkovDecisionProcess}
+\pause
+\begin{lstlisting}
+def optimal_vf_and_policy(
+  steps: Sequence[StateActionMapping[S, A]],
+  gamma: float
+) -> Iterator[Tuple[
+    Mapping[NonTerminal[S], float],
+    FiniteDeterministicPolicy[S, A]
+]]
+
+def unwrap_finite_horizon_MDP(
+  process: FiniteMarkovDecisionProcess[WithTime[S], A]
+) -> Sequence[StateActionMapping[S, A]]
+
+def finite_horizon_MDP(
+  process: FiniteMarkovDecisionProcess[S, A],
+  limit: int
+) -> FiniteMarkovDecisionProcess[WithTime[S], A]
+\end{lstlisting}
+\end{frame}
+
 \begin{frame}
 \frametitle{Dynamic Pricing for End-of-Life/End-of-Season}
 \pause
@@ -634,28 +657,7 @@ $$
  $$
 \end{frame}
 
-\begin{frame}[fragile]
-\frametitle{@abstractclass MarkovDecisionProcess}
-\pause
-\begin{lstlisting}
-def optimal_vf_and_policy(
-  steps: Sequence[StateActionMapping[S, A]],
-  gamma: float
-) -> Iterator[Tuple[
-    Mapping[NonTerminal[S], float],
-    FiniteDeterministicPolicy[S, A]
-]]
 
-def unwrap_finite_horizon_MDP(
-  process: FiniteMarkovDecisionProcess[WithTime[S], A]
-) -> Sequence[StateActionMapping[S, A]]
-
-def finite_horizon_MDP(
-  process: FiniteMarkovDecisionProcess[S, A],
-  limit: int
-) -> FiniteMarkovDecisionProcess[WithTime[S], A]
-\end{lstlisting}
-\end{frame}
 
 \begin{frame}
 \frametitle{Optimal Dynamic Pricing}
