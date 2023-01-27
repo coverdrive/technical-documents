@@ -218,8 +218,9 @@ $$\pi_R \approx \frac 1 2 \cdot R(\bar{x}) \cdot \sigma_{\frac x {\bar{x}}}^2$$
 \item Concavity of the Utility function (at $\bar{x}$): $-U''(\bar{x})$
 \item Slope of the Utility function (at $\bar{x}$): $U'(\bar{x})$
 \end{itemize}
-\item For optimization problems, we ought to maximize $\mathbb{E}[U(x)]$ (not $\mathbb{E}[x])$
-\item Linear Utility function $U(x) = a + b \cdot x$ implies {\em Risk-Neutrality}
+\item Note: Linear Utility function $U(x) = a + b \cdot x$ implies {\em Risk-Neutrality}
+\item For optimization under uncertainty, we maximize $E[U(x)]$ (not $E[x]$)
+\item Or equivalently, maximize $x_{CE}$ ({\bf risk-adjusted expected outcome})
 \item Now we look at typically-used Utility functions $U(\cdot)$ with:
 \begin{itemize}
 \item Constant Absolute Risk-Aversion (CARA)
@@ -259,7 +260,7 @@ $$\mbox{Absolute Risk Premium } \pi_A = \mu - x_{CE} =  \frac {a \sigma^2} 2$$
 \item Risky Asset Annual Return $\sim \mathcal{N}(\mu, \sigma^2)$
 \item Riskless Asset Annual Return $=r$
 \item Determine unconstrained $\pi$ to allocate to risky asset ($1-\pi$ to riskless)
-\item Such that Portfolio has maximum Utility of Wealth in 1 year
+\item Such that Portfolio has maximum Expected Utility of Wealth in 1 year
 \item With CARA Utility $U(W) = \frac {1 -e^{-aW}} {a}$ for $a \neq 0$
 \item Portfolio Wealth $W \sim \mathcal{N}(1+ r + \pi(\mu - r), \pi^2 \sigma^2)$
 \item From the section on CARA Utility, we know we need to maximize:
