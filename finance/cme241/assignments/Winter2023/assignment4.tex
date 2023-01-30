@@ -23,6 +23,14 @@
  
  {\large{\bf Due: 2/6 @ 11:59pm. Solve 1, 2 and choose between either of 3 or 4.}}
 \begin{questions}
+	
+\question Implement {\em Approximate Policy Iteration}, generalization of the tabular Policy Iteration we covered in the previous class. In order to implement Approximate Policy Iteration, first review the interface and implementation of {\em Approximate Policy Evaluation} and {\em Approximate Value Iteration} (in file \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/approximate_dynamic_programming.py}{rl\//approximate\_dynamic\_programming.py}), then design the interface of {\em Approximate Policy Iteration} to be the same as that of {\em Approximate Value Iteration}. Note that your implementation of {\em Approximate Policy Iteration} would need to invoke {\em Approximate Policy Evaluation} since Policy Evaluation is a component of Policy Iteration. Test that your implementation is correct in two ways:
+	\begin{itemize}
+		\item Ensure that {\em Approximate Policy Iteration} gives the same Optimal Value Function/Optimal Policy as that obtained by {\em Approximate Value Iteration}.
+		\item Ensure that {\em Approximate Policy Iteration} produces the same result as our prior implementation of Policy Iteration (in file \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/dynamic_programming.py}{rl\//dynamic\_programming.py}). For this you need to pass to your implementation of {\em Approximate Policy Iteration} a \lstinline{FiniteMarkovDecisionProcess} input and a \lstinline{Tabular} instance for the \lstinline{FunctionApprox} input.
+	\end{itemize}
+	
+	
 \question Assume the Utility function is $U(x) = x - \frac {\alpha x^2} 2$. Assuming $x \sim \mathcal{N}(\mu, \sigma^2)$, calculate:
 \begin{itemize}
 \item Expected Utility $\mathbb{E}[U(x)]$
@@ -33,7 +41,7 @@ Assume you have a million dollars to invest for a year and you are allowed to in
 
 Plot how the optimal value of $z$ varies with $\alpha$.
 
-\question Repeat the calculations for the {\em Portfolio application of CRRA} (that we covered in class) with a Utility function of $U(x) = \log(x)$ (instead of $U(x) = \frac {x^{1 - \gamma} - 1} {1 - \gamma}$).
+% \question Repeat the calculations for the {\em Portfolio application of CRRA} (that we covered in class) with a Utility function of $U(x) = \log(x)$ (instead of $U(x) = \frac {x^{1 - \gamma} - 1} {1 - \gamma}$).
 
 \question Assume you are playing a casino game where at every turn, if you bet a quantity $x$, you will be returned $x \cdot (1 + \alpha)$ with probability $p$ and returned $x \cdot (1 - \beta)$ with probability $q = 1 - p$ for $\alpha, \beta \in \mathbb{R}^+$ (i.e., the return on bet is $\alpha$ with probability $p$ and $-\beta$ with probability $q = 1-p$) . The problem is to identify a betting strategy that will maximize one's expected wealth over the long run. The optimal solution to this problem is known as the Kelly criterion, which involves betting a constant fraction of one's wealth at each turn (let us denote this optimal fraction as $f^*$).
 
