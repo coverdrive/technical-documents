@@ -21,7 +21,7 @@
 {\large {\bf Stanford CME 241 (Winter 2023) - Assignment 4}}
 \end{center}
  
-{\large{\bf Assignments:}}
+ {\large{\bf Due: 2/6 @ 11:59pm. Solve 1, 2 and choose between either of 3 or 4.}}
 \begin{questions}
 \question Assume the Utility function is $U(x) = x - \frac {\alpha x^2} 2$. Assuming $x \sim \mathcal{N}(\mu, \sigma^2)$, calculate:
 \begin{itemize}
@@ -49,7 +49,7 @@ It is known that the Kelly criterion (formula for $f^*$) is equivalent to maximi
 \end{itemize}
 
 \question Derive the solution to Merton's Portfolio problem for the case of the $\log(\cdot)$ Utility function. Note that the derivation in the textbook is for CRRA Utility function with $\gamma \neq 1$ and the case of the $\log(\cdot)$ Utility function was left as an exercise to the reader.
-\question {\bf Extra Credit:} One of the reasons the backward induction solution in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter7/asset_alloc_discrete.py}{rl\//chapter7\//asset\_alloc\_discrete.py} is slow is that we work with a generic \lstinline{Distribution} type for \lstinline{risky_return_distributions}, which means we have to sequentially sample from it to create the states distribution (in method \lstinline{get_states_distribution}) that can be passed as input to \lstinline{back_opt_qvf}. Modify the code to create a special type of distribution for the returns of the risky asset so we have a direct way of obtaining the probability distribution of the risky asset price at any time step (and hence, the probability distribution of wealth at any time step). With a direct way to obtain probability distribution of states at any time step, we can speed up the code considerably. 
+% \question {\bf Extra Credit:} One of the reasons the backward induction solution in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter7/asset_alloc_discrete.py}{rl\//chapter7\//asset\_alloc\_discrete.py} is slow is that we work with a generic \lstinline{Distribution} type for \lstinline{risky_return_distributions}, which means we have to sequentially sample from it to create the states distribution (in method \lstinline{get_states_distribution}) that can be passed as input to \lstinline{back_opt_qvf}. Modify the code to create a special type of distribution for the returns of the risky asset so we have a direct way of obtaining the probability distribution of the risky asset price at any time step (and hence, the probability distribution of wealth at any time step). With a direct way to obtain probability distribution of states at any time step, we can speed up the code considerably. 
 % \question Sketch out a rough design for the following MDP:
 % \begin{itemize}
 % 	\item Your job is such that you can spend a fraction $\alpha$ of each day working and the remaining fraction $1-\alpha$ of your day learning.
