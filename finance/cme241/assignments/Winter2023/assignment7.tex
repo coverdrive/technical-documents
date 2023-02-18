@@ -21,16 +21,8 @@
 {\large {\bf Stanford CME 241 (Winter 2023) - Assignment 7}}
 \end{center}
  
-{\large{\bf Assignments:}}
+{\large{\bf Due: 3/6 @ 11:59pm (after the exam). Please solve all 3.}} \\
 \begin{questions}
-\question {\bf Optional} Although the provided code contains a number of utilties for Monte-Carlo prediction, you may consider writing re-writing these functions to improve your understanding. 
-\begin{enumerate}
-	\item[a.] We have written the function \lstinline{mc_prediction} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/monte_carlo.py}{rl\//monte\_carlo.py} as an implementation of Monte-Carlo Prediction with function approximation. You have also learnt that since Tabular MC Prediction is a special case of MC Prediction with Function Approximation and so, writing a separate function for Tabular MC Prediction is not necessary. But for a learning experience, it's a great idea to write a function for Tabular MC Prediction {\bf from scratch}. Think about what the input and output types must be. Be sure to reduce the learning rate appropriately as a function of number of updates (or as a function of number of episodes).
-	\item[b.] We have written the function \lstinline{td_prediction} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/td.py}{rl\//td.py} as an implementation of Temporal-Difference Prediction with function approximation. You have also learnt that since Tabular TD Prediction is a special case of TD Prediction with Function Approximation and so, writing a separate function for Tabular TD Prediction is not necessary. But for a learning experience, it's a great idea to write a function for Tabular TD Prediction {\bf from scratch}. Think about what the input and output types must be. Be sure to reduce the learning rate appropriately as a function of number of updates. 
-	\item[c.] Test your above implementations of Tabular MC Prediction and Tabular TD Prediction on \\\lstinline{SimpleInventoryMRPFinite} (from \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter2/simple_inventory_mrp.py}{rl\//chapter2\//simple\_inventory\_mrp.py}) by ensuring that your Value Function output matches that produced by the function approximation versions of MC Prediction and TD Prediction.
-\end{enumerate}
-
-\question Extend \lstinline{RandomWalkMRP} (in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter10/random_walk_mrp.py}{rl\//chapter10\//random\_walk\_mrp.py}) to \lstinline{RandomWalkMRP2D} which is a random walk in 2-D with states $\{i, j) | 0 \leq i \leq B_1, 0 \leq j \leq B_2\}$ with terminal states as $(0, j)$ and $(B_1, j)$ for all $j$, $(i, 0)$ and $(i, B_2)$ for all $i$, and with reward of 0 for all $(0, j)$ and for all $(i, 0)$, reward of 1 for all $(B_1, j)$ and for all $(i, B_2)$, and with discrete probabilities of 4 movements - UP, DOWN, LEFT, RIGHT from any non-terminal state. Analyze the convergence of MC and TD on this \lstinline{RandomWalkMRP2D} much like how we analyzed it for \lstinline{RandomWalkMRP}, along with plots of similar graphs.
 
 \question In the following question, we explore the connection between TD and MC algorithms. 
 \begin{enumerate} 
@@ -39,7 +31,23 @@
 $$G_t - V(S_t) = \sum_{u=t}^{T-1} \gamma^{u-t} \cdot (R_{u+1} + \gamma \cdot V(S_{u+1}) - V(S_u))$$
 The goal here is for you to practice formal proof-writing of these types of simple yet important identities. So aim to work this out from scratch rather than treating this as a special case of a more general result proved in class or in the textbook.
 	\item[c.] Test your above implementation of TD($\lambda$) Prediction algorithm by comparing the Value Function of an MRP you have previously developed (or worked with) as obtained by Policy Evaluation (DP) algorithm, as obtained by MC, as obtained by TD, and as obtained by your TD($\lambda$) implementation. Plot graphs of convergence for different values of $\lambda$.
-	\end{enumerate}
+	\item[d.]  Extend \lstinline{RandomWalkMRP} (in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter10/random_walk_mrp.py}{rl\//chapter10\//random\_walk\_mrp.py}) to \lstinline{RandomWalkMRP2D} which is a random walk in 2-D with states $\{i, j) | 0 \leq i \leq B_1, 0 \leq j \leq B_2\}$ with terminal states as $(0, j)$ and $(B_1, j)$ for all $j$, $(i, 0)$ and $(i, B_2)$ for all $i$, and with reward of 0 for all $(0, j)$ and for all $(i, 0)$, reward of 1 for all $(B_1, j)$ and for all $(i, B_2)$, and with discrete probabilities of 4 movements - UP, DOWN, LEFT, RIGHT from any non-terminal state. Analyze the convergence of MC and TD on this \lstinline{RandomWalkMRP2D} much like how we analyzed it for \lstinline{RandomWalkMRP}, along with plots of similar graphs.
+\end{enumerate}
+
+\question In this question, we will explore three different algorithms for control based on MC or TD. Please complete 2 of the following 3 implementations. For each algorithm, we expect you to test your implementation against the Optimal Value Function/Optimal Policy obtained by DP on \lstinline{SimpleInventoryMDPCap} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter3/simple_inventory_mdp_cap.py}{rl\//chapter3\//simple\_inventory\_mdp\_cap.py}. Then, generalize to MC Control with Function approximation and test your implementation against the Optimal Value Function/Optimal Policy obtained by ADP on \lstinline{AssetAllocDiscrete} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter7/asset_alloc_discrete.py}{rl\//chapter7\//asset\_alloc\_discrete.py}.
+
+\begin{enumerate}
+	\item Implement Tabular Monte-Carlo Control algorithm in Python with GLIE implemented as $\epsilon = \frac 1 k$ for episode number $k$ and initial state of each episode sampled uniformly from the state space.
+	\item Implement Tabular SARSA algorithm in Python with GLIE and a parameterized trajectory of decreasing step sizes.
+	\item Implement Tabular Q-Learning algorithm in Python with infinite exploration of all (state, action) pairs and with a parameterized trajectory of decreasing step sizes.
+\end{enumerate}
+
+\question Finally, we will explore reinforcment learning algorithms and apply them to the problem of Amercian options pricing. Implement the following two algorithms and apply them to the problem of American Options Pricing, as covered in class. Test by comparing the pricing of American Calls and Puts against the Binomial Tree implmeentation in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter8/optimal_exercise_bin_tree.py}{rl\//chapter8\//optimal\_exercise\_bin\_tree.py}.
+
+\begin{enumerate}
+	\item LSPI
+	\item Deep Q-Learning
+\end{enumerate}
 \end{questions}
 
 \end{document}
