@@ -21,7 +21,7 @@
 {\large {\bf Stanford CME 241 (Winter 2023) - Assignment 6}}
 \end{center}
  
-{\large{\bf Due:}}
+{\large{\bf Due: 2/20 @ 11:59pm. Solve all 3 questions.}}
 \begin{questions}
 \question We consider a special case of the Optimal Market-Making problem we covered in class (Avellandea-Stoikov formulation) where the market-maker has a cash amount of $W \in \mathbb{R}$ at time 0 and an inventory of shares equal to $I \in \mathbb{Z}$ (note: this could be positive or negative), but is not going to be market-making until time $T$. The market maker's {\em Value Function} at time $t$ (with $0 \leq t \leq T$) is given by the Expected Utility at time $T$ (conditional on the time $t$ and the OB Mid Price $S_t$ at time $t$):
 
@@ -66,6 +66,13 @@ Track the relevant metrics for each simulation trace on both the policies - the 
 Avallaneda-Stoikov used the following parameters in their simulation:
 
 $S_0 = 100, T = 1, \Delta t = 0.005, \gamma = 0.1, \sigma = 2, I_0 = 0, k = 1.5, c = 140$.
+
+\question Although the provided code contains a number of utilties for Monte-Carlo prediction, you may consider writing re-writing these functions to improve your understanding. 
+\begin{enumerate}
+	\item[a.] We have written the function \lstinline{mc_prediction} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/monte_carlo.py}{rl\//monte\_carlo.py} as an implementation of Monte-Carlo Prediction with function approximation. You have also learnt that since Tabular MC Prediction is a special case of MC Prediction with Function Approximation and so, writing a separate function for Tabular MC Prediction is not necessary. But for a learning experience, it's a great idea to write a function for Tabular MC Prediction {\bf from scratch}. Think about what the input and output types must be. Be sure to reduce the learning rate appropriately as a function of number of updates (or as a function of number of episodes).
+	\item[b.] We have written the function \lstinline{td_prediction} in \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/td.py}{rl\//td.py} as an implementation of Temporal-Difference Prediction with function approximation. You have also learnt that since Tabular TD Prediction is a special case of TD Prediction with Function Approximation and so, writing a separate function for Tabular TD Prediction is not necessary. But for a learning experience, it's a great idea to write a function for Tabular TD Prediction {\bf from scratch}. Think about what the input and output types must be. Be sure to reduce the learning rate appropriately as a function of number of updates. 
+	\item[c.] Test your above implementations of Tabular MC Prediction and Tabular TD Prediction on \\\lstinline{SimpleInventoryMRPFinite} (from \href{https://github.com/TikhonJelvis/RL-book/blob/master/rl/chapter2/simple_inventory_mrp.py}{rl\//chapter2\//simple\_inventory\_mrp.py}) by ensuring that your Value Function output matches that produced by the function approximation versions of MC Prediction and TD Prediction.
+\end{enumerate}
 
 \end{questions}
 
