@@ -617,8 +617,8 @@ $$\bprob(s,s') = \sum_{a \in \mathcal{A}} \pi(s, a) \cdot \mathcal{P}(s,a,s')$$
 \begin{itemize}[<+->]
 \item Bellman Policy Operator $\bb$ for policy $\pi$ operating on VF vector $\bv$:
 $$\bb (\bv) = \bm{\mathcal{R}}^{\pi} + \gamma \bm{\mathcal{P}}^{\pi} \cdot \bv$$
-\item $\bb$ is a linear operator in vector space $\mathbb{R}^n$
-\item So we denote and treat $\bb$ as a $n \times n$ matrix
+\item $\bb$ is an affine transformation in vector space $\mathbb{R}^n$
+\item We lighten notation for application of $\bb$ operator to $\bb \cdot \bv$
 \item Note that $\vpi$ is the fixed point of $\bb$, i.e.,
 $$\bb \cdot \vpi = \vpi$$
 \item If we start with an arbitrary VF vector $\bv$ and repeatedly apply $\bb$, 
@@ -665,7 +665,7 @@ Note: We will refer to the $\bphi$-subspace VF vectors by their weights $\bw$
 
 \begin{frame}
 \begin{figure}
-\includegraphics[scale=0.105]{VFGeometryImg.jpg}
+\includegraphics[scale=0.8]{vf_geometry.pdf}
 \end{figure}
 \end{frame}
 
