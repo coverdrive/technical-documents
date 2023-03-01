@@ -297,7 +297,7 @@ GLIE Tabular Monte-Carlo Control converges to the Optimal Action-Value function:
 \begin{frame}[fragile]
 \frametitle{GLIE MC Control with Function Approximation}
 \pause
-$$\Delta \bm{w} =  \alpha \cdot (R_{t+1} + \gamma \cdot Q(S_{t+1}, A_{t+1}; \bm{w}) - Q(S_t,A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
+$$\Delta \bm{w} =  \alpha \cdot (G_t - Q(S_t,A_t; \bm{w})) \cdot \nabla_{\bm{w}} Q(S_t, A_t; \bm{w})$$
 \pause
 \begin{lstlisting}
 def glie_mc_control(
