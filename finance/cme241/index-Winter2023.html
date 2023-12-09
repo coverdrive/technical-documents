@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+	width: 100%;
+}
+th {
+	text-align: left;
+}
+th.date {
+	width: 10%;
+}
+th.slides {
+	width: 20%;
+}
+th.reading {
+	width: 35%;
+}
+th.assignments {
+	width: 35%;
+}
+</style>
+<title>CME 241: Foundations of Reinforcement Learning with Applications in Finance</title>
+</head>
+
+<body>
+<h2>Welcome to the Winter 2023 edition of CME 241</h2>
+<h1>Foundations of Reinforcement Learning with Applications in Finance</h1>
+<h1>Instructor: <a href="http://stanford.edu/~ashlearn">Ashwin Rao</a></h1>
+<h2>&#8226; Lectures: Wed & Fri 3:00-4:20pm in <a href="https://campus-map.stanford.edu/?srch=200-205">Lane History Corner (450 Jane Stanford Way, Bldg 200), Room 205</a>
+	<h2>&#8226; Ashwin's Office Hours: Fri 1:00-2:30pm (or by appointment) in <a href="https://campus-map.stanford.edu/?id=04-080">ICME Mezzanine level, Room M05</a></h2>
+<h2>&#8226; Course Assistant (CA): <a href="https://profiles.stanford.edu/intranet/amil-merchant">Amil Merchant</a></h2>
+  <h2>&#8226; Amil's Office Hours: Mon & Thur 4:30-5:30pm Huang B008</h2>
+
+
+<h2>Overview of the Course</h2>
+<ul>
+	<li>Theory of Markov Decision Processes (MDPs)</li>
+	<li>Dynamic Programming (DP) Algorithms</li>
+	<li>Backward Induction (BI) and Approximate DP (ADP) Algorithms</li>
+	<li>Reinforcement Learning (RL) Algorithms</li>
+<li>Plenty of Python implementations of models and algorithms</li>
+<li>We apply these algorithms to 5 Financial/Trading problems:</li>
+<ul>
+	<li>(Dynamic) Asset-Allocation to maximize Utility of Consumption</li>
+	<li>Pricing and Hedging of Derivatives in an Incomplete Market</li>
+	<li>Optimal Exercise/Stopping of Path-dependent American Options</li>
+	<li>Optimal Trade Order Execution (managing Price Impact)</li>
+	<li>Optimal Market-Making (Bid/Ask managing Inventory Risk)</li>
+</ul>
+<li>By treating each of the problems as MDPs (i.e., Stochastic Control)</li>
+<li>We will go over classical/analytical solutions to these problems</li>
+<li>Then we will introduce real-world considerations, and tackle with RL (or DP)</li>
+<li>The course blends Theory/Mathematics, Programming/Algorithms and Real-World Financial Nuances</li>
+</ul>
+
+<h2>Learning Material</h2>
+<ul>
+	<li><a href="https://www.amazon.com/Foundations-Reinforcement-Learning-Applications-Finance/dp/1032124121">Course Textbook</a> (henceforth known as "RLForFinanceBook"). PDF version available as <a href="https://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf">free download</a></li>
+	<li><a href="https://github.com/TikhonJelvis/RL-book/tree/master/rl">Python codebase Tikhon Jelvis and I have developed</a> to help you "learn through coding"</li>
+	<li><a href="lecture_slides/">Technical Documents/Lecture Slides/Assignments Amil and I have prepared for this course</a></li>
+	<li><a href="https://edstem.org/us/courses/31295">Ed Discussion</a> (Online discussion forum)
+</ul>
+
+<h2>Grade will be based on</h2>
+<ul>
+	<li>40% Exam (in week 8)</li>
+	<li>30% Group Assignments (to be done until Week 7)</li>
+	<li>30% Course Project: <a href="lecture_slides/assignments/final_project.pdf">Details</a></li>
+</ul>
+
+<h2>Access and Accommodations</h2>
+<p>
+Stanford is committed to providing equal educational opportunities for disabled students. Disabled students are a valued and essential part of the Stanford community. We welcome you to our class.
+<p>
+If you experience disability, please register with the Office of Accessible Education (OAE). Professional staff will evaluate your needs, support appropriate and reasonable accommodations, and prepare an Academic Accommodation Letter for faculty. To get started, or to re-initiate services, please visit <a href="http://oae.stanford.edu">oae.stanford.edu</a>
+<p>
+If you already have an Academic Accommodation Letter, we invite you to share your letter with us. Academic Accommodation Letters should be shared at the earliest possible opportunity so we may partner with you and OAE to identify any barriers to access and inclusion that might be encountered in your experience of this course.
+
+
+<h2>Lecture-by-Lecture (tentative) schedule with corresponding lecture slides, reading, and assignments</h2>
+<table border="1">
+  <tr>
+    <th class="date">Date</th>
+    <th class="slides">Lecture Slides</th>
+    <th class="reading">Reading</th>
+    <th class="assignments">Assignments</th>
+  </tr>
+  <tr>
+    <th>January 11</th>
+    <th><a href="lecture_slides/Stanford-CME241.pdf">Course Overview</a></th>
+    <th>
+		    Chapter 1 of RLForFinanceBook
+    </th>
+    <th>
+	    <a href="lecture_slides/assignments/assignment1.pdf">Instructions to get set up for the course</a>
+  </tr>
+  <tr>
+    <th>January 13</th>
+    <th>
+    	<a href="lecture_slides/Tour-MP.pdf">Markov Processes (MP) and Markov Reward Processes (MRP)</a>
+    </th>
+    <th>
+		    Chapter 3 of RLForFinanceBook
+    </th>
+    <th>
+      <a href="lecture_slides/assignments/assignment2.pdf">Assignment 2: Due 1/23 @ 11:59pm</a>
+    </th>
+  </tr>
+  <tr>
+    <th>January 18</th>
+    <th>
+    	<a href="lecture_slides/Tour-MDP.pdf">Markov Decision Processes (MDP), Value Functions, and Bellman Equations</a>
+    </th>
+    <th>
+	    Chapter 4 of RLForFinanceBook (Section on POMDP not exam-able)
+    </th>
+    <th>
+    </th>
+  </tr>
+  <tr>
+    <th>January 20</th>
+    <th>
+    	<a href="lecture_slides/Tour-DP.pdf">Dynamic Programming Algorithms</a>
+    </th>
+    <th>
+		Chapter 5 of RLForFinanceBook
+    </th>
+    <th>
+      <a href="lecture_slides/assignments/assignment3.pdf">Assignment 3: Due 1/30 @ 11:59pm</a>
+    </th>
+  </tr>
+  <tr>
+    <th>January 25</th>
+    <th>
+	    <a href="lecture_slides/Tour-ADP.pdf">Function Approximation and Approximate Dynamic Programming Algorithms</a>
+    </th>
+    <th>
+    	<ul>
+		<li>Chapter 6 of RLForFinanceBook</li>
+		<li>Optional: Appendix F of RLForFinanceBook</li>
+		</ul>
+    </th>
+    <th> 
+    </th>
+  </tr>
+
+  <tr>
+    <th>January 27</th>
+    <th>
+    	<a href="lecture_slides/Tour-UtilityTheory.pdf">Understanding Risk-Aversion through Utility Theory</a> (as a pre-req for Finance Applications)
+    </th>
+    <th>
+    	<ul>
+		<li>Chapter 7 of RLForFinanceBook</li>
+		<li>Optional: Appendix A of RLForFinanceBook</li>
+		<li>Optional: Appendix C of RLForFinanceBook</li>
+    	</ul>
+    </th>
+    <th>
+      <a href="lecture_slides/assignments/assignment4.pdf">Assignment 4: Due 2/6 @ 11:59pm</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 1</th>
+    <th>
+    	<a href="lecture_slides/Tour-AssetAlloc.pdf">Application Problem 1 - Dynamic Asset-Allocation and Consumption</a>
+    </th>
+    <th>
+    	<ul>
+		<li>Chapter 8 of RLForFinanceBook</li>
+		<li>Optional: Appendix B of RLForFinanceBook</li>
+		<li>Optional: Appendix C of RLForFinanceBook</li>
+		<li>Optional: Appendix D of RLForFinanceBook</li>
+		        <li><a href="lecture_slides/DiscreteVSContinuous.pdf">Some (rough) pointers on Discrete versus Continuous MDPs, and solution techniques</a></li>
+    	</ul>
+    </th>
+    <th>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 3</th>
+    <th>
+    	<a href="lecture_slides/Tour-Deriv.pdf">Application Problems 2 and 3 - Optimal Exercise of American Options and Optimal Hedging of Derivatives in Incomplete Markets</a>
+    </th>
+    <th>
+	    <ul>
+		    <li>Intro to Derivatives section in Chapter 9 of RLForFinanceBook</li>
+		    <li>Optional: Appendix C of RLForFinanceBook</li>
+		    <li>Optional: Appendix E of RLForFinanceBook</li>
+		    <li>Optional: Derivatives Pricing Theory in Chapter 9 of RLForFinanceBook (Derivatives Pricing Theory is not exam-able)</li>
+		    <li>Relevant sections in Chapter 9 of RLForFinanceBook for Optimal Exercise and Optimal Hedging in Incomplete Markets</li>
+	       	<li>Optional Review: <a href="lecture_slides/ArbitrageCompleteness.pdf">Foundations of Arbitrage-Free and Complete Markets</a></li>
+	    </ul>
+    </th>
+    <th>
+        <a href="lecture_slides/assignments/assignment5.pdf">Assignment 5: Due 2/13 @ 11:59pm</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 8</th>
+    <th> <a href="lecture_slides/Tour-OrderBook.pdf">Application Problem 4 - Optimal Trade Order Execution</a>
+    </th>
+    <th>
+		    Optimal Trade Order Execution section in Chapter 10 of RLForFinanceBook
+    </th>
+    <th>
+    </th>
+  </tr>
+
+  <tr>
+    <th>February 10</th>
+    <th>
+    	<a href="lecture_slides/Tour-OrderBook.pdf">Application Problem 5 - Optimal Market-Making</a>
+    </th>
+    <th>
+		    Optimal Market-Making section in Chapter 10 of RLForFinanceBook
+    </th>
+    <th>
+	      <a href="lecture_slides/assignments/assignment6.pdf">Assignment 6: Due 2/20 @ 11:59pm</a>
+    </th>
+  </tr>
+
+    <th>February 15</th>
+    <th>
+	    <a href="lecture_slides/Tour-RLPrediction.pdf">RL for Prediction (Monte-Carlo and Temporal-Difference)</a>
+    </th>
+    <th>
+	   MC and TD sections in Chapter 11 of RLForFinanceBook
+    </th>
+    <th>
+    </th>
+  </tr>
+  <tr>
+    <th>February 17</th>
+    <th>
+	    <a href="lecture_slides/Tour-RLPrediction.pdf">RL for Prediction (Eligibility Traces and TD(Lambda))</a>
+    </th>
+    <th>
+	   Eligibility Traces and TD(Lambda) sections in Chapter 11 of RLForFinanceBook
+    </th>
+    <th>
+        <a href="lecture_slides/assignments/assignment7.pdf">Assignment 7: Due 3/6 @ 11:59pm</a>
+    </th>
+  </tr>
+  <tr>
+    <th>February 22</th>
+    <th>
+	    <a href="lecture_slides/Tour-RLControl.pdf">RL for Control (Optimal Value Function/Optimal Policy)</a>
+    </th>
+    <th>
+	   Chapter 12 of RLForFinanceBook
+    </th>
+    <th>
+    </th>
+  </tr>
+  <tr>
+    <th>February 24</th>
+    <th>
+	    <a href="lecture_slides/Tour-Batch.pdf">Batch RL, Experience-Replay, DQN, LSPI</a>
+    </th>
+    <th>
+	   Sections 13.1 to 13.6 in Chapter 13 of RLForFinanceBook
+    </th>
+    <th>
+    </th>
+  </tr>
+
+  <tr>
+	  <th>March 1</th>
+    <th>
+    	<a href="lecture_slides/Tour-Batch.pdf">Value Function Geometry and Gradient TD</a>
+    </th>
+    <th>
+	   Sections 13.7 and 13.8 in Chapter 13 of RLForFinanceBook
+    </th>
+    <th>
+    </th>
+  </tr>
+  <tr>
+	  <th>March 3</th>
+    <th>
+    	<a href="lecture_slides/Tour-PG.pdf">Policy Gradient Algorithms</a>
+    </th>
+    <th>
+	   Chapter 14 of RLForFinanceBook
+    </th>
+    <th>
+    </th>
+  </tr>
+
+  <tr>
+    <th>March 8</th>
+    <th>
+	    <a href="lecture_slides/Tour-Bandits.pdf">Exploration versus Exploitation (Multi-Armed Bandits)</a>
+    </th>
+    <th>
+	   Chapter 15 of RLForFinanceBook
+    </th>
+    <th>
+    </th>
+  </tr>
+  <tr>
+    <th>March 10</th>
+    <th>
+	    <a href="lecture_slides/Tour-LearningPlanning.pdf">Blending Learning and Planning</a> <br>
+	    <a href="lecture_slides/RetailAI.pdf">Planning & Control for Inventory & Pricing</a>
+    </th>
+    <th>
+	   Chapter 16 of RLForFinanceBook + Bonus Topic
+    </th>
+    <th>
+    </th>
+  </tr>
+
+  <tr>
+    <th>March 15</th>
+    <th colspan="3">Guest Lecture by <a href="https://www.linkedin.com/in/svitlana-vyetrenko-2a75665b/">Dr. Svitlana Vyetrenko</a> (AI Research Director at J.P.Morgan and Lecturer at UC Berkeley)</th>
+  </tr>
+  <tr>
+    <th>March 17</th>
+    <th colspan="3">
+            Final Project Presentations (Class extended from 3:00pm to 5:00pm)
+    </th>
+  </tr>
+
+</table>
+
+</body>
+</html>
