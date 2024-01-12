@@ -390,7 +390,7 @@ $$\mathcal{P}((\alpha, \beta), (0, C - (\alpha + \beta))) = \sum_{j=\alpha+\beta
 \pause
 \begin{definition} 
  The {\em Stationary Distribution} of a (Time-Homogeneous) Markov Process with state space $\mathcal{S} = \mathcal{N}$ and transition probability function $\mathcal{P}: \mathcal{N} \times \mathcal{N} \rightarrow [0, 1]$ is a probability distribution function $\pi: \mathcal{N} \rightarrow [0, 1]$ such that:
-  $$\pi(s) = \sum_{s'\in \mathcal{N}} \pi(s) \cdot \mathcal{P}(s, s') \text{ for all } s \in \mathcal{N}$$
+  $$\pi(s') = \sum_{s\in \mathcal{N}} \pi(s) \cdot \mathcal{P}(s, s') \text{ for all } s'  \in \mathcal{N}$$
 \end{definition}
 \pause
 For Time-Homogeneous MP with finite states $\mathcal{S} = \{s_1, s_2, \ldots, s_n\} = \mathcal{N}$,
