@@ -118,13 +118,14 @@
 \begin{itemize}[<+->]
 \item Joined Stanford ICME as Adjunct Professor in Fall 2018
 \item Research Interests: A.I. for Dynamic Decisioning under Uncertainty
-\item Directing ICME's {\em Mathematical and Computational Finance} program
-\item Technical mentor to ICME students, partnerships with industry
+\item Leading ICME's {\em Mathematical and Computational Finance} program
+\item Technical mentor to ICME students
+\item Teaching faculty at {\em HAI Institute}
 \item Educational background: Algorithms Theory \& Abstract Algebra
 \item 10 years at Goldman Sachs (NY) {\em Rates/Mortgage Derivatives} Trading
 \item 4 years at Morgan Stanley as {\em Managing Director - Market Modeling}
 \item 6 years at Target, leading it's AI/Data Science capabilities
-\item Currently Founder-CTO of CX Score (Enterprise AI startup)
+\item Currently Chief AI Officer at QXO (distribution of building materials)
 \item Teaching experience: Pure \& Applied Math, CompSci, Finance, Mgmt
 \end{itemize}
 \end{frame}
@@ -143,7 +144,7 @@
 \end{itemize}
 \item Here's \href{https://colab.research.google.com/drive/1DVu4IggqmqpfWzT706llabiQY2UnP951?usp=sharing}{\underline{\textcolor{blue}{a sample exam}}}  to get a sense of course difficulty
 \item Register for the \href{https://edstem.org/us/courses/70339}{\underline{\textcolor{blue}{course on Ed Discussion}}}
-\item Install Python 3 and supporting IDE/tools (eg: PyCharm, Jupyter)
+\item Install Python 3 and supporting IDE/tools (eg: VS Code, Jupyter)
 \item Install LaTeX/Markdown and supporting editor for tech writing
 \item \href{https://www.amazon.com/Foundations-Reinforcement-Learning-Applications-Finance-ebook/dp/B0BJTR8D5L}{\underline{\textcolor{blue}{Get the course textbook}}} or \href{https://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{download the PDF version}}}
 \item Assignments and code in the textbook based on \href{https://github.com/TikhonJelvis/RL-Book}{\underline{\textcolor{blue}{this open-source code}}}
@@ -176,7 +177,7 @@
 \pause
 \begin{itemize}[<+->]
 \item Course based on my \href{http://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{RL For Finance book}}}
-\item I prepare slides for each lecture (``guided tour'' of respective chapter)
+\item Slides available for each lecture (``guided tour'' of respective chapter)
 \item Code in my book based on \href{https://github.com/TikhonJelvis/RL-Book}{\underline{\textcolor{blue}{this open-source code}}}
 \item Reading this code as important as reading the theory 
 \item All resources organized on the \href{http://cme241.stanford.edu}{\underline{\textcolor{blue}{course web site}}} (``source of truth'')
@@ -236,7 +237,7 @@
 \begin{itemize}
 \item Each group member should be responsible for a subset of questions (indicate which question you do on the assignment)
 \item Writing answers/code should be your own (don't copy/paste)
-\item You can invoke the core modules I have written (as instructed), and can use LLMS (ChatGPT for example)
+\item You can invoke the core modules we have written (as instructed), and can use LLMS (ChatGPT for example)
 \end{itemize}
 \item {\em Exams}: You cannot engage in any conversation with other students
 \begin{itemize}
@@ -620,39 +621,6 @@ $$V^*(s) = \max_{a} \sum_{r,s'} p(r,s'|s,a) \cdot (r + \gamma V^*(s')) \mbox{ fo
 \item {\em Reward} is Utility of Gains at termination
 \item {\em State}-transitions governed by probabilities of hitting/lifting Bid/Ask
 \item Also governed by Order Book Dynamics (can be quite complex)
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Week by Week (Tentative) Schedule}
-\pause
-\begin{itemize}[<+->]
-\item W1: Markov Decision Processes
-\item W2: Bellman Equations \& Dynamic Programming Algorithms
-\item W3: Backward Induction and Approximate DP Algorithms
-\item W4: Optimal Asset Allocation \& Derivatives Pricing/Hedging
-\item W5: Options Exercise,  Order Execution, Market-Making
-\item W6: RL For Prediction (MC, TD, TD($\lambda$))
-\item W7: RL for Control (SARSA, Q-Learning)
-\item W8: Batch Methods (DQN, LSTD/LSPI) and Gradient TD
-\item W9: Policy Gradient, Model-based RL, Explore v/s Exploit
-\item W10: Read-World RL and Guest Lecture by an Industry leader
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Some Landmark Papers we cover in this course}
-\begin{itemize}
-\item \href{https://www.jstor.org/stable/1926560}{\underline{\textcolor{blue}{Merton's solution for Optimal Portfolio Allocation/Consumption}}}
-\item \href{https://people.math.ethz.ch/~hjfurrer/teaching/LongstaffSchwartzAmericanOptionsLeastSquareMonteCarlo.pdf}{\underline{\textcolor{blue}{Longstaff-Schwartz Algorithm for Pricing American Options}}}
-\item \href{https://pdfs.semanticscholar.org/3d2d/773983c5201b58586af463f045befae5bbf2.pdf}{\underline{\textcolor{blue}{Almgren-Chriss paper on Optimal Order Execution}}}
-\item \href{https://www.math.nyu.edu/faculty/avellane/HighFrequencyTrading.pdf}{\underline{\textcolor{blue}{Avellaneda-Stoikov paper on Optimal Market-Making}}}
-\item \href{https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf}{\underline{\textcolor{blue}{Original DQN paper}}} and \href{https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf}{\underline{\textcolor{blue}{Nature DQN paper}}}
-\item \href{http://www.jmlr.org/papers/volume4/lagoudakis03a/lagoudakis03a.pdf}{\underline{\textcolor{blue}{Lagoudakis-Parr paper on Least Squares Policy Iteration}}}
-\item \href{http://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf}{\underline{\textcolor{blue}{Sutton, McAllester, Singh, Mansour's Policy Gradient Theorem}}}
-\item \href{https://pdfs.semanticscholar.org/a378/b2895a3e3f6a19cdff1a0ad404b301b5545f.pdf}{\underline{\textcolor{blue}{Chang, Fu, Hu, Marcus' AMS origins of Monte Carlo Tree Search}}}
 \end{itemize}
 \end{frame}
 
