@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.22)  9 JAN 2025 00:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.22)  17 JAN 2025 16:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -885,14 +885,7 @@ File: ot1mathkerncmss.fd 2020/01/31 Fontinst v1.933 font definitions for OT1/mat
 
 ] [4
 
-]
-LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <10.95> not available
-(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 198.
-LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <8> not available
-(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 198.
-LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <6> not available
-(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 198.
- [5
+] [5
 
 ] [6
 
@@ -904,12 +897,7 @@ LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <6> not available
 
 ] [10
 
-]
-Overfull \hbox (7.18997pt too wide) detected at line 295
-\OT1/mathkerncmss/bx/sl/10.95 B[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 )(\OT1/mathkerncmss/m/sl/10.95 s\OT1/cmss/m/n/10.95 ) = []\OMS/cmsy/m/n/10.95 fR\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 ) + \OML/cmm/m/it/10.95 ^^M [] \OMS/cmsy/m/n/10.95 P\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 )\OMS/cmsy/m/n/10.95 g \OT1/cmss/m/n/10.95 = [] \OT1/mathkerncmss/m/sl/10.95 Q[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 )
- []
-
-[11
+] [11
 
 ] [12
 
@@ -917,20 +905,9 @@ Overfull \hbox (7.18997pt too wide) detected at line 295
 
 ] [14
 
-]
-<policy_iteration_loop.png, id=207, 526.96875pt x 268.00125pt>
-File: policy_iteration_loop.png Graphic file (type png)
-<use policy_iteration_loop.png>
-Package pdftex.def Info: policy_iteration_loop.png  used on input line 358.
-(pdftex.def)             Requested size: 341.44814pt x 142.2608pt.
-<policy_iteration_convergence.png, id=209, 322.20375pt x 65.24374pt>
-File: policy_iteration_convergence.png Graphic file (type png)
-<use policy_iteration_convergence.png>
-Package pdftex.def Info: policy_iteration_convergence.png  used on input line 358.
-(pdftex.def)             Requested size: 341.44585pt x 56.90594pt.
- [15
+] [15
 
- </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/policy_iteration_loop.png> </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/policy_iteration_convergence.png>] [16
+] [16
 
 ] [17
 
@@ -944,23 +921,11 @@ Package pdftex.def Info: policy_iteration_convergence.png  used on input line 35
 
 ] [22
 
-]
-<vf_policy_intersecting_lines.png, id=287, 602.25pt x 343.2825pt>
-File: vf_policy_intersecting_lines.png Graphic file (type png)
-<use vf_policy_intersecting_lines.png>
-Package pdftex.def Info: vf_policy_intersecting_lines.png  used on input line 483.
-(pdftex.def)             Requested size: 341.44815pt x 227.61998pt.
- [23
+] [23
 
- </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/vf_policy_intersecting_lines.png (PNG copy)>]
-<gpi.png, id=294, 477.785pt x 293.095pt>
-File: gpi.png Graphic file (type png)
-<use gpi.png>
-Package pdftex.def Info: gpi.png  used on input line 488.
-(pdftex.def)             Requested size: 341.43143pt x 227.62032pt.
- [24
+] [24
 
- </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/gpi.png>] [25
+] [25
 
 ] [26
 
@@ -970,12 +935,426 @@ Package pdftex.def Info: gpi.png  used on input line 488.
 
 ] [29
 
+] [30
+
+]
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <10.95> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 198.
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <8> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 198.
+LaTeX Font Info:    Font shape `OT1/cmss/b/n' in size <6> not available
+(Font)              Font shape `OT1/cmss/bx/n' tried instead on input line 198.
+ [31
+
+] [32
+
+] [33
+
+] [34
+
+] [35
+
+] [36
+
+] [37
+
+] [38
+
+] [39
+
+] [40
+
+] [41
+
+] [42
+
+] [43
+
+] [44
+
+] [45
+
+] [46
+
+] [47
+
+] [48
+
+] [49
+
+] [50
+
+] [51
+
+] [52
+
+] [53
+
+] [54
+
+] [55
+
+] [56
+
+] [57
+
+] [58
+
+] [59
+
+] [60
+
+] [61
+
+] [62
+
+] [63
+
+] [64
+
+] [65
+
+] [66
+
+]
+Overfull \hbox (7.18997pt too wide) detected at line 295
+\OT1/mathkerncmss/bx/sl/10.95 B[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 )(\OT1/mathkerncmss/m/sl/10.95 s\OT1/cmss/m/n/10.95 ) = []\OMS/cmsy/m/n/10.95 fR\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 ) + \OML/cmm/m/it/10.95 ^^M [] \OMS/cmsy/m/n/10.95 P\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 )\OMS/cmsy/m/n/10.95 g \OT1/cmss/m/n/10.95 = [] \OT1/mathkerncmss/m/sl/10.95 Q[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 )
+ []
+
+[67
+
+]
+Overfull \hbox (7.18997pt too wide) detected at line 295
+\OT1/mathkerncmss/bx/sl/10.95 B[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 )(\OT1/mathkerncmss/m/sl/10.95 s\OT1/cmss/m/n/10.95 ) = []\OMS/cmsy/m/n/10.95 fR\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 ) + \OML/cmm/m/it/10.95 ^^M [] \OMS/cmsy/m/n/10.95 P\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 )\OMS/cmsy/m/n/10.95 g \OT1/cmss/m/n/10.95 = [] \OT1/mathkerncmss/m/sl/10.95 Q[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 )
+ []
+
+[68
+
+]
+Overfull \hbox (7.18997pt too wide) detected at line 295
+\OT1/mathkerncmss/bx/sl/10.95 B[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 )(\OT1/mathkerncmss/m/sl/10.95 s\OT1/cmss/m/n/10.95 ) = []\OMS/cmsy/m/n/10.95 fR\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 ) + \OML/cmm/m/it/10.95 ^^M [] \OMS/cmsy/m/n/10.95 P\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 )\OMS/cmsy/m/n/10.95 g \OT1/cmss/m/n/10.95 = [] \OT1/mathkerncmss/m/sl/10.95 Q[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 )
+ []
+
+[69
+
+]
+Overfull \hbox (7.18997pt too wide) detected at line 295
+\OT1/mathkerncmss/bx/sl/10.95 B[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 )(\OT1/mathkerncmss/m/sl/10.95 s\OT1/cmss/m/n/10.95 ) = []\OMS/cmsy/m/n/10.95 fR\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 ) + \OML/cmm/m/it/10.95 ^^M [] \OMS/cmsy/m/n/10.95 P\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/bx/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 )\OMS/cmsy/m/n/10.95 g \OT1/cmss/m/n/10.95 = [] \OT1/mathkerncmss/m/sl/10.95 Q[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a\OT1/cmss/m/n/10.95 )
+ []
+
+[70
+
+] [71
+
+] [72
+
+] [73
+
+] [74
+
+] [75
+
+] [76
+
+] [77
+
+] [78
+
+] [79
+
+] [80
+
+] [81
+
+] [82
+
+] [83
+
+] [84
+
+] [85
+
+] [86
+
+] [87
+
+] [88
+
+] [89
+
+] [90
+
+] [91
+
+] [92
+
+] [93
+
+] [94
+
+] [95
+
+] [96
+
+] [97
+
+] [98
+
+] [99
+
+] [100
+
+]
+<policy_iteration_loop.png, id=2997, 526.96875pt x 268.00125pt>
+File: policy_iteration_loop.png Graphic file (type png)
+<use policy_iteration_loop.png>
+Package pdftex.def Info: policy_iteration_loop.png  used on input line 358.
+(pdftex.def)             Requested size: 341.44814pt x 142.2608pt.
+<policy_iteration_convergence.png, id=2999, 322.20375pt x 65.24374pt>
+File: policy_iteration_convergence.png Graphic file (type png)
+<use policy_iteration_convergence.png>
+Package pdftex.def Info: policy_iteration_convergence.png  used on input line 358.
+(pdftex.def)             Requested size: 341.44585pt x 56.90594pt.
+ [101
+
+ </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/policy_iteration_loop.png> </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/policy_iteration_convergence.png>] [102
+
+] [103
+
+] [104
+
+] [105
+
+] [106
+
+] [107
+
+] [108
+
+] [109
+
+] [110
+
+] [111
+
+] [112
+
+] [113
+
+] [114
+
+] [115
+
+] [116
+
+] [117
+
+] [118
+
+] [119
+
+] [120
+
+] [121
+
+] [122
+
+] [123
+
+] [124
+
+] [125
+
+] [126
+
+] [127
+
+] [128
+
+] [129
+
+] [130
+
+] [131
+
+] [132
+
+] [133
+
+] [134
+
+] [135
+
+] [136
+
+] [137
+
+] [138
+
+] [139
+
+] [140
+
+] [141
+
+] [142
+
+] [143
+
+] [144
+
+] [145
+
+] [146
+
+] [147
+
+]
+<vf_policy_intersecting_lines.png, id=4324, 602.25pt x 343.2825pt>
+File: vf_policy_intersecting_lines.png Graphic file (type png)
+<use vf_policy_intersecting_lines.png>
+Package pdftex.def Info: vf_policy_intersecting_lines.png  used on input line 483.
+(pdftex.def)             Requested size: 341.44815pt x 227.61998pt.
+ [148
+
+ </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/vf_policy_intersecting_lines.png (PNG copy)>]
+<gpi.png, id=4351, 477.785pt x 293.095pt>
+File: gpi.png Graphic file (type png)
+<use gpi.png>
+Package pdftex.def Info: gpi.png  used on input line 488.
+(pdftex.def)             Requested size: 341.43143pt x 227.62032pt.
+ [149
+
+ </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/gpi.png>] [150
+
+] [151
+
+] [152
+
+] [153
+
+] [154
+
+] [155
+
+] [156
+
+] [157
+
+] [158
+
+] [159
+
+] [160
+
+] [161
+
+] [162
+
+] [163
+
+] [164
+
+] [165
+
+] [166
+
+] [167
+
+] [168
+
+] [169
+
+] [170
+
+] [171
+
+] [172
+
+] [173
+
+] [174
+
+] [175
+
+] [176
+
+] [177
+
+] [178
+
+] [179
+
+] [180
+
+] [181
+
+] [182
+
+] [183
+
+] [184
+
+] [185
+
+] [186
+
+] [187
+
+] [188
+
+] [189
+
+] [190
+
 ]
 Overfull \hbox (11.469pt too wide) detected at line 599
 \OT1/cmss/m/n/10.95 (\OML/cmm/m/it/10.95 ^^Y[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) = [] [] [](\OMS/cmsy/m/n/10.95 P[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 r[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 r[] \OT1/cmss/m/n/10.95 + \OML/cmm/m/it/10.95 ^^M \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/m/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ))
  []
 
-[30
+[191
+
+]
+Overfull \hbox (11.469pt too wide) detected at line 599
+\OT1/cmss/m/n/10.95 (\OML/cmm/m/it/10.95 ^^Y[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) = [] [] [](\OMS/cmsy/m/n/10.95 P[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 r[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 r[] \OT1/cmss/m/n/10.95 + \OML/cmm/m/it/10.95 ^^M \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/m/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ))
+ []
+
+[192
+
+]
+Overfull \hbox (11.469pt too wide) detected at line 599
+\OT1/cmss/m/n/10.95 (\OML/cmm/m/it/10.95 ^^Y[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) = [] [] [](\OMS/cmsy/m/n/10.95 P[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 r[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 r[] \OT1/cmss/m/n/10.95 + \OML/cmm/m/it/10.95 ^^M \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/m/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ))
+ []
+
+[193
+
+]
+Overfull \hbox (11.469pt too wide) detected at line 599
+\OT1/cmss/m/n/10.95 (\OML/cmm/m/it/10.95 ^^Y[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) = [] [] [](\OMS/cmsy/m/n/10.95 P[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 r[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 r[] \OT1/cmss/m/n/10.95 + \OML/cmm/m/it/10.95 ^^M \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/m/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ))
+ []
+
+[194
+
+]
+Overfull \hbox (11.469pt too wide) detected at line 599
+\OT1/cmss/m/n/10.95 (\OML/cmm/m/it/10.95 ^^Y[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) = [] [] [](\OMS/cmsy/m/n/10.95 P[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 r[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 r[] \OT1/cmss/m/n/10.95 + \OML/cmm/m/it/10.95 ^^M \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/m/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ))
+ []
+
+[195
+
+]
+Overfull \hbox (11.469pt too wide) detected at line 599
+\OT1/cmss/m/n/10.95 (\OML/cmm/m/it/10.95 ^^Y[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) = [] [] [](\OMS/cmsy/m/n/10.95 P[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 r[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 r[] \OT1/cmss/m/n/10.95 + \OML/cmm/m/it/10.95 ^^M \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/m/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ))
+ []
+
+[196
+
+]
+Overfull \hbox (11.469pt too wide) detected at line 599
+\OT1/cmss/m/n/10.95 (\OML/cmm/m/it/10.95 ^^Y[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) = [] [] [](\OMS/cmsy/m/n/10.95 P[]\OT1/cmss/m/n/10.95 )[](\OT1/mathkerncmss/m/sl/10.95 s[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 a[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 r[]\OML/cmm/m/it/10.95 ; \OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^A \OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 r[] \OT1/cmss/m/n/10.95 + \OML/cmm/m/it/10.95 ^^M \OMS/cmsy/m/n/10.95 ^^A \OT1/mathkerncmss/m/sl/10.95 V[]\OT1/cmss/m/n/10.95 (\OT1/mathkerncmss/m/sl/10.95 s[]\OT1/cmss/m/n/10.95 ))
+ []
+
+[197
 
 ]
 \openout4 = `Tour-DP.vrb'.
@@ -998,23 +1377,84 @@ Overfull \hbox (12.48839pt too wide) in paragraph at lines 13--14
 [][][][][][][][][][][][][][][] 
  []
 
-) [31
+) [198
 
-] [32
+] (/Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/Tour-DP.vrb
+Overfull \hbox (12.48839pt too wide) in paragraph at lines 13--14
+[][][][][][][][][][][][][][][] 
+ []
 
-] [33
+) [199
+
+] [200
+
+] [201
+
+] [202
+
+] [203
+
+] [204
+
+] [205
+
+] [206
+
+] [207
+
+] [208
+
+] [209
+
+] [210
+
+] [211
+
+] [212
+
+] [213
+
+] [214
 
 ]
-<dynamic_pricing.png, id=362, 474.8139pt x 369.2997pt>
+<dynamic_pricing.png, id=6120, 474.8139pt x 369.2997pt>
 File: dynamic_pricing.png Graphic file (type png)
 <use dynamic_pricing.png>
 Package pdftex.def Info: dynamic_pricing.png  used on input line 665.
 (pdftex.def)             Requested size: 341.43105pt x 227.6223pt.
- [34
+ [215
 
- </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/dynamic_pricing.png>] [35
+ </Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/dynamic_pricing.png>] [216
 
-] [36
+] [217
+
+] [218
+
+] [219
+
+] [220
+
+] [221
+
+] [222
+
+] [223
+
+] [224
+
+] [225
+
+] [226
+
+] [227
+
+] [228
+
+] [229
+
+] [230
+
+] [231
 
 ]
 \tf@nav=\write6
@@ -1034,18 +1474,18 @@ Package rerunfilecheck Info: File `Tour-DP.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 24434 strings out of 478994
- 441225 string characters out of 5858183
- 943240 words of memory out of 5000000
- 41286 multiletter control sequences out of 15000+600000
+ 24835 strings out of 478994
+ 445659 string characters out of 5858183
+ 966301 words of memory out of 5000000
+ 41295 multiletter control sequences out of 15000+600000
  434773 words of font info for 115 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 131i,15n,132p,518b,1347s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 131i,15n,132p,518b,1354s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfso0800.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfso1000.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfso1200.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfss1095.pfb>
-Output written on "/Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/Tour-DP.pdf" (36 pages, 388615 bytes).
+Output written on "/Users/neelnarayan/Desktop/DATA/Stanford/Year 5/Q2/CME 241/coverdrive/technical-documents/finance/cme241/Tour-DP.pdf" (231 pages, 1002158 bytes).
 PDF statistics:
- 475 PDF objects out of 1000 (max. 8388607)
- 343 compressed objects within 4 object streams
- 76 named destinations out of 1000 (max. 500000)
- 380 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6752 PDF objects out of 7423 (max. 8388607)
+ 6206 compressed objects within 63 object streams
+ 466 named destinations out of 1000 (max. 500000)
+ 1340 words of extra memory for PDF output out of 10000 (max. 10000000)
 
