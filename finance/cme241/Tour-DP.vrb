@@ -1,0 +1,20 @@
+\frametitle{@abstractclass MarkovDecisionProcess}
+\pause
+\begin{lstlisting}
+def optimal_vf_and_policy(
+  steps: Sequence[StateActionMapping[S, A]],
+  gamma: float
+) -> Iterator[Tuple[
+    Mapping[NonTerminal[S], float],
+    FiniteDeterministicPolicy[S, A]
+]]
+
+def unwrap_finite_horizon_MDP(
+  process: FiniteMarkovDecisionProcess[WithTime[S], A]
+) -> Sequence[StateActionMapping[S, A]]
+
+def finite_horizon_MDP(
+  process: FiniteMarkovDecisionProcess[S, A],
+  limit: int
+) -> FiniteMarkovDecisionProcess[WithTime[S], A]
+\end{lstlisting}
