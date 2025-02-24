@@ -694,6 +694,42 @@ $$\Delta \bm{\theta} \propto \nabla_{\bm{\theta}} \pi_D(S_t; \bm{\theta}) \cdot 
 \end{frame}
 
 \begin{frame}
+\frametitle{Trust Region Policy Optimization (TRPO)}
+\begin{itemize}
+\item TRPO is a PG method that ensures stable policy updates
+\item By constraining the KL divergence between old and new policies
+\item This ensured large step sizes didn't lead to large policy updates
+\item Uses Hessian matrix (2nd order derivatives) to enforce trust region
+\item Hessian is inefficient for large-scale problems
+\item TRPO published in 2015, popular until 2017 (when PPO published)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proximal Policy Optimization (PPO)}
+\begin{itemize}
+\item PPO is a simplified, computationally efficient alternative to TRPO
+\item Essentially approximation to TRPO without computing Hessian
+\item Uses clipped surrogate objective to prevent large, unstable updates
+\item Since 2018, it was the default RL algorithm at OpenAI
+\item Has been the standard algorithm for RLHF in LLMs
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Group Relative Policy Optimization (GRPO)}
+\begin{itemize}
+\item DeepSeek used GRPO as an efficient substitute for PPO (for RLHF)
+\item It avoids training of the Critic (Value Function Approximation)
+\item It generates multiple responses (actions) to the same query
+\item Receives rewards for each of those responses
+\item The average of these rewards is used as baseline in {\em Advantage}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
 \frametitle{Introduction to Evolutionary Strategies}
 \begin{itemize}
 \item Evolutionary Strategies (ES) are a type of Black-Box Optimization
