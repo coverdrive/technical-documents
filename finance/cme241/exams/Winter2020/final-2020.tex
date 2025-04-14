@@ -1,0 +1,97 @@
+\documentclass[12pt]{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{cool}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{pseudocode}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{MnSymbol,wasysym}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} 
+\newgeometry{vmargin={20mm}, hmargin={14mm,18mm}}
+ 
+\begin{document}
+\begin{center}
+{\large {\bf Stanford CME 241 (Winter 2020) - Final Exam}}
+\end{center}
+{\large{\bf Instructions:}}
+\begin{itemize}
+\item This is a take-home exam, so I trust that you will follow \href{https://communitystandards.stanford.edu/policies-and-guidance/honor-code}{The Stanford Honor Code}.
+\item You need to submit your answers by 6:00pm Pacific Time, Thursday March 19. Although you have about 72 hours to finish this exam, the estimated amount of work for this test is about 3-5 hours, depending on your proficiency in typesetting mathematical notations and in writing code. There are 3 problems (with subproblems), with a total of 40 points.
+\item Include all of your writing, math formulas, code etc. into a single answers-document (code can be included in LaTeX using the {\em lstlisting} environment). Write your name and SUNET ID in your answers-document.
+\item I prefer not to have handwritten work since it is often hard to read and hence, hard to grade (PDF from LaTeX is prefered, but other typesetting options are also ok).
+\item Submit your answers-document by {\bf sending me a private post on Piazza} with your answers-document as an attachment. Make sure you do not accidentally send your answers-document to all (check the ``Individual Student(s) / Instructor(s)" button under ``Post To'', and type ``instructors''). Also make sure you do not upload your answers/code on git or to any other place where others can see your work.
+\end{itemize}
+
+\vspace{10mm}
+ 
+{\large{\bf Problems:}}
+\begin{questions}
+
+\question Consider an MDP with infinite number of states $\mathcal{S} = \{1,2,3, \ldots \}$ and finite number of actions $\mathcal{A} = \{A_1, A_2, \ldots, A_m\}$ for some fixed $m\geq 1$. The transition probabilities are as follows:
+For all states $s \in \mathcal{S}$,
+$$
+Pr[(s+j)|(s,A_i)] =
+\begin{cases}
+\frac 1 i & \text{ for each } 1\leq j \leq i\\
+0 & \text{ otherwise}
+\end{cases}
+$$
+For all states $s, s' \in \mathcal{S}$ and for all actions $a \in \mathcal{A}$, $R(s,a,s')$ denotes the reward when transitioning from $s$ to $s'$ upon taking action $a$
+$$R(s,a,s') = (s'-s)^n \text{ for some fixed } 1 \leq n \in \mathbb{R}$$
+Let the discount factor be denoted by $0 \leq \gamma < 1$.
+\begin{itemize}
+\item {\bf 6 points}: Derive analytical expressions for the Optimal Value Function $V_*(\cdot)$ and for an Optimal Deterministic Policy (each in terms of $m, n, \gamma$).
+\item {\bf 4 points}: Now assume that an agent, instead of following an optimal policy, decides to follow the stochastic policy: $\pi(A_i|s) = \frac 1 m$ for all $1 \leq i \leq m$ for all states $s \in \mathcal{S}$. Derive an analytical expression for the Value Function $V_{\pi}(\cdot)$ for this policy $\pi$ (in terms of $m, n, \gamma$).
+\end{itemize}
+
+\pagebreak
+
+
+\question Assume you have fixed data available as $N$ complete episodes where each episode is in the form:
+$$S_1,R_1,S_2,R_2,\ldots, S_n,R_n, T$$
+where $S_1,S_2,\ldots,S_n$ is the sequence of states visited in the episode and $R_1,R_2,\ldots,R_n$ are the associated rewards following the visited states. $T$ is the terminal state. Note that $n$ (the length of an episode) can vary across the $N$ episodes. Note that there are no actions here, so the setting for this data is an underlying MRP and not MDP. Assume discount factor $\gamma = 1$.
+
+{\bf Given only this data of fixed $N$ episodes, your task is to implement working Python code that will estimate the Value Function for discount factor $\gamma = 1$ based on a variety of methods}. An outline of the code is made available for you \href{https://github.com/coverdrive/MDP-DP-RL/blob/master/src/examples/exam_problems/mrp_tdmc_outline.py}{here}. A couple of functions (\lstinline{get_state_return_samples}, required for tabular Monte-Carlo, and \lstinline{get_state_reward_next_state_samples}, required for the other methods) have been implemented for you and you may use them as helper functions. Your task is to implement the following methods, each compatible with their respective function interfaces provided in this outline code. 
+
+\begin{itemize}
+\item {\bf Tabular Monte-Carlo - 3 points: } Implement \lstinline{get_mc_value_function}.
+\item {\bf MRP - 6 points: } Implement \lstinline{get_probability_and_reward_functions} and using its output, implement \lstinline{get_mrp_value_function} (based on MRP Bellman Equation).
+\item {\bf Tabular TD(0) with Experience Replay - 5 points: } Implement \lstinline{get_td_value_function}.
+\item {\bf LSTD - 6 points: } Implement \lstinline{get_lstd_value_function}.
+\end{itemize}
+
+Make sure to read the comments/hints provided in the outline code (within each of the above functions you need to implement).
+
+If you run the \lstinline{__main__} code, it will evaluate each of your 4 methods on the data that is set up in the \lstinline{__main__} code. In your answers-document, include the Python code you implemented and write the Value Function outputs you obtained for each of the 4 methods (up to 2 decimal places). {\bf Make sure your output Value Functions correspond to discount factor $\gamma = 1$}.
+
+\vspace{10mm}
+
+
+\question Assume you are the owner of a bank where customers come in randomly everyday to make cash deposits and to withdraw cash from their accounts. At the end of each day, you can borrow (from another bank, without transaction costs) any cash amount $y > 0$ at a constant daily interest rate $R$, meaning you will need to pay back a cash amount of $y(1+R)$ at the end of the next day. Also, at the end of each day, you can invest a portion of your bank's cash in a risky (high return, high risk) asset. Assume you can change the amount of your investment in the risky asset each day, with no transaction costs (this is your mechanism to turn any amount of cash into risky investment or vice-versa). The key point here is that once you make a decision to invest a portion of your cash in the risky asset at the end of a day, you will not have access to this invested amount as cash that otherwise could have been made available to customers who come in the next day for withdrawals. More importantly, if the cash amount $c$ in your bank at the start of a day is less than $C$, the banking regulator will make you pay a penalty of $K \cdot \cot(\frac {\pi \cdot c}{2C})$ (for a given constant $C > 0$ and a given constant $K > 0$).
+
+For convenience, we make the following assumptions:
+\begin{itemize}
+\item  Assume that the borrowing and investing is constrained so that we end the day (after borrowing and investing) with positive cash ($c >  0$) and that any amount of regulator penalty can be immediately paid (meaning $c \geq K \cdot \cot(\frac {\pi \cdot c}{2C})$ when $c \leq C$).
+\item Assume that the deposit rate customers earn is so small that it can be ignored.
+\item Assume for convenience that the first half of the day is reserved for only depositing money and the second half of the day is reserved for only withdrawal requests.
+\item Assume that if you do not have sufficient cash to fulfill a customer withdrawal request, you ask the customer to make the withdrawal request again the next day.
+\item Assume all quantities are continuous variables.
+\end{itemize}
+
+\begin{itemize}
+\item {\bf 5 points:} Your first task is to model an MDP so you can run the bank in the most optimal manner, i.e., maximizing the Expected Utility of assets less liabilities at the end of a $T$-day horizon, conditional on any current situation of assets and liabilities. Specify the states, actions, transitions, rewards with precise mathematical notation (make sure you do the financial accounting from one day to the next precisely).
+\item {\bf 5 points:} In a practical setting, we do not know the exact probability distributions of the customer deposits and withdrawals. Neither do we know the exact stochastic process of the risky asset. But assume we have access to a large set of historical data detailing daily customer deposits and withdrawal requests, as well as daily historical market valuations of the risky asset. Assume we also have data on new customers as well as leaving customers (sometimes due to their withdrawal requests not being satisfied promptly). Describe your approach to solve this problem with Reinforcement Learning by using the historical data described above. Specify which Reinforcement Learning algorithm you would use, including any customizations for the specifics of this problem. Although you are not expected to write any code for this problem, provide sufficient detail that will enable a programmer with knowledge of RL to implement your ideas.
+\end{itemize}
+
+
+ 
+\end{questions}
+
+\end{document}
