@@ -659,7 +659,7 @@ $$(R_{t+1} + \gamma \cdot \bm{SC}(S_{t+1}, A_{t+1}; \bm{\theta})^T \cdot \bm{w} 
 
 \begin{frame}
 \frametitle{Deterministic Policy Gradient (DPG)}
-\begin{itemize}
+\begin{itemize}[<+->]
 \item Function approximation for deterministic policy for continuous actions
 \item DPG expressed as Expected Gradient of Q-Value
 \item Integrates only over state space, so efficient for high-dim action spaces
@@ -695,7 +695,7 @@ $$\Delta \bm{\theta} \propto \nabla_{\bm{\theta}} \pi_D(S_t; \bm{\theta}) \cdot 
 
 \begin{frame}
 \frametitle{Introduction to Evolutionary Strategies}
-\begin{itemize}
+\begin{itemize}[<+->]
 \item Evolutionary Strategies (ES) are a type of Black-Box Optimization
 \item Popularized in the 1970s as {\em Heuristic Search Methods}
 \item Loosely inspired by natural evolution of living beings
@@ -715,7 +715,7 @@ $$ = \mathbb{E}_{\psi \sim p_{\theta}}[\nabla_{\theta}(\log{p_{\theta}(\psi)}) \
 
 \begin{frame}
 \frametitle{NES applied to solving Markov Decision Processes (MDPs)}
-\begin{itemize}
+\begin{itemize}[<+->]
 \item We set $F(\cdot)$ to be the (stochastic) {\em Return} of an MDP
 \item $\psi$ refers to the parameters of a policy $\pi_{\psi} : \mathcal{S} \rightarrow \mathcal{A}$
 \item $\psi$ will be drawn from an isotropic multivariate Gaussian distribution
@@ -731,7 +731,7 @@ $$=\frac 1 {\sigma} \cdot \mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[\epsilon \
 
 \begin{frame}
 \frametitle{A sampling-based algorithm to solve the MDP}
-\begin{itemize}
+\begin{itemize}[<+->]
 \item The above formula helps estimate gradient of {\em Expected Return}
 \item By sampling several $\epsilon$ (each $\epsilon$ represents a {\em Policy} $\pi_{\theta + \sigma \cdot \epsilon}$)
 \item And averaging $\epsilon \cdot F(\theta + \sigma \cdot \epsilon)$ across a large set ($n$) of $\epsilon$ samples
@@ -763,7 +763,7 @@ $$=\frac 1 {\sigma} \cdot \mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[\epsilon \
 
 \begin{frame}
 \frametitle{Resemblance to Policy Gradient?}
-\begin{itemize}
+\begin{itemize}[<+->]
 \item On the surface, this NES algorithm looks like \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/PolicyGradient.pdf}{\underline{\textcolor{blue}{Policy Gradient}}} (PG)
 \item Because it's not Value Function-based (it's Policy-based, like PG)
 \item Also, similar to PG, it uses a gradient to move towards optimality
@@ -778,7 +778,7 @@ $$=\frac 1 {\sigma} \cdot \mathbb{E}_{\epsilon \sim \mathcal{N}(0,I)}[\epsilon \
 
 \begin{frame}
 \frametitle{ES versus RL}
-\begin{itemize}
+\begin{itemize}[<+->]
 \item Traditional view has been that ES won't work on high-dim problems
 \item Specifically, ES has been shown to be data-inefficient relative to RL
 \item Because ES resembles simple hill-climbing based only on finite differences along a few random directions at each step
