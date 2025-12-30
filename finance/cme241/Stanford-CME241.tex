@@ -100,7 +100,7 @@
  % Your institution for the title page
 }
 
-\date{Winter 2025} % Date, can be changed to a custom date
+\date{Winter 2026} % Date, can be changed to a custom date
 
 \begin{document}
 \begin{frame}
@@ -125,8 +125,8 @@
 \item 10 years at Goldman Sachs (NY) {\em Rates/Mortgage Derivatives} Trading
 \item 4 years at Morgan Stanley as {\em Managing Director - Market Modeling}
 \item 6 years at Target, leading it's AI/Data Science capabilities
-\item Currently Chief AI Officer at QXO (distribution of building materials)
-\item Teaching experience: Pure \& Applied Math, CompSci, Finance, Mgmt
+\item Currently EVP AI at o9 (Enterprise AI software company)
+\item Teaching experience: Mathematics, Comp Sci, AI, Finance
 \end{itemize}
 \end{frame}
 
@@ -142,14 +142,14 @@
 \item Basic familiarity with Pricing, Portfolio Mgmt and Algo Trading, but we will do an overview of the requisite Finance/Economics
 \item No background required in MDP, DP, RL (we will cover from scratch)
 \end{itemize}
-\item Here's \href{https://colab.research.google.com/drive/1DVu4IggqmqpfWzT706llabiQY2UnP951?usp=sharing}{\underline{\textcolor{blue}{a sample exam}}}  to get a sense of course difficulty
-\item Register for the \href{https://edstem.org/us/courses/70339}{\underline{\textcolor{blue}{course on Ed Discussion}}}
+\item Register for the \href{https://edstem.org/us/courses/90295}{\underline{\textcolor{blue}{course on Ed Discussion}}}
 \item Install Python 3 and supporting IDE/tools (eg: VS Code, Jupyter)
 \item Install LaTeX/Markdown and supporting editor for tech writing
 \item \href{https://www.amazon.com/Foundations-Reinforcement-Learning-Applications-Finance-ebook/dp/B0BJTR8D5L}{\underline{\textcolor{blue}{Get the course textbook}}} or \href{https://stanford.edu/~ashlearn/RLForFinanceBook/book.pdf}{\underline{\textcolor{blue}{download the PDF version}}}
 \item Assignments and code in the textbook based on \href{https://github.com/TikhonJelvis/RL-Book}{\underline{\textcolor{blue}{this open-source code}}}
-\item {\em Fork} this repo and get set up to use this code in assignments (Assignment 0)
-\item Create separate directories for each assignment for CA \href{mailto:neelsn@stanford.edu}{\underline{\textcolor{blue}{Neel Narayan}}} to review - send Neel your forked repo URL and {\em git push} by due dates
+\item {\em Fork} this repo and get set up to use this code in assignments
+\item Create separate directories for each assignment for CA \href{mailto:cyc2152@stanford.edu}{\underline{\textcolor{blue}{Catherine Chen}}} to review
+\item Send Catherine your forked repo URL and {\em git push} by due dates
 \end{itemize}
 \end{frame}
 
@@ -158,16 +158,16 @@
 \frametitle{Housekeeping}
 \pause
 \begin{itemize}[<+->]
-\item Lectures: Wed \& Fri 4:30pm-5:50pm in 160-124.
+\item Lectures: Wed \& Fri 4:30pm-5:50pm at Gates B12
 \item Office Hours:
 \begin{enumerate}
 	\item  Ashwin: 2:30pm-4:00pm Fri (or by appointment) in ICME Mezzanine, room M05 (within Huang Engg Bldg)
-	\item  Neel: poll will be sent out on Ed (or by appointment)
+	\item  Catherine: poll will be sent out on Ed (or by appointment)
 \end{enumerate}
 \item Course Web Site: \href{http://cme241.stanford.edu}{\underline{\textcolor{blue}{cme241.stanford.edu}}}
-\item Ask Questions and engage in Discussions on \href{https://edstem.org/us/courses/70339}{\underline{\textcolor{blue}{Ed Discussion}}}
+\item Ask Questions and engage in Discussions on \href{https://edstem.org/us/courses/90295}{\underline{\textcolor{blue}{Ed Discussion}}}
 \item Note: This course is listed as CME 241 as well as MS\&E 346
-\item Any accommodations: Please reach out to me or Neel as soon as possible
+\item Any accommodations: Please reach out to me or Catherine as soon as possible
 \end{itemize}
 \end{frame}
 
@@ -198,11 +198,10 @@
 	\frametitle{Grading}
 	\pause
 	\begin{itemize}[<+->]
-		\item Breakdown:
+		\item Breakdown
 		\begin{itemize}
 			\item 45\% {\em Group Assignments} (Mix of Math and Programming)
-			\item 30\% {\em Exam} (Theory, Modeling, and Programming)
-			\item 20\% {\em Project} (Idea Creativity, Proof-of-Concept, Presentation)
+			\item 50\% {\em Course Project} (Idea Creativity, Proof-of-Concept, Practical Problem, Presentation)
                 \item 5\% {\em Attendance} (18/20 Minimum Lecture Attendance)
 		\end{itemize}
 	
@@ -212,40 +211,24 @@
                 \item Can be completed in groups of up to 3 (single repository)
 			\item 3 free late days, -10\% for each late day thereafter
 		\end{itemize}
-
-		\item Exam
-		\begin{itemize}
-		\item Individual take-home exam in week 8, covering topics from weeks 1-7
-		\item 48 hour window (tentatively 8PM 2/28 to 8 PM 3/2) 
-		\item Practice exams from prior years available
-		\end{itemize}
 	
-		\item Project
+		\item Course Project
 		\begin{itemize}
-			\item Open-ended project, groups of up to 3 
-			\item Choose topics of interest, a list of ideas will be released by Week 5
-			\item Deliverables will be a proposal, presentation, and code
+			\item Design a problem specialization within the space of {\em Personal Finance}
+			\item Group size of at most 3, can be same group as assignments
+			\item Delivery in 3 phases as described in detail in this \href{https://github.com/coverdrive/technical-documents/blob/master/finance/cme241/Project-Winter2026.pdf}{\underline{\textcolor{blue}{project guidance doc}}}
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Stanford Honor Code - Assignments versus Exams}
+\frametitle{Stanford Honor Code - Assignments and Project}
 \pause
 \begin{itemize}[<+->]
-\item {\em Assignments}: You can discuss approaches among your group members, not with other students outside of your group
-\begin{itemize}
-\item Each group member should be responsible for a subset of questions (indicate which question you do on the assignment)
+\item You can discuss approaches among your group members, not with other students outside of your group
+\item Each group member should be responsible for a subset (indicate which question you do on the assignment)
 \item Writing answers/code should be your own (don't copy/paste)
-\item You can invoke the core modules we have written (as instructed), and can use LLMS (ChatGPT for example)
-\end{itemize}
-\item {\em Exams}: You cannot engage in any conversation with other students
-\begin{itemize}
-\item Write to the CA if a question is unclear
-\item Exams are graded on correctness and completeness
-\item Open-internet Exams: Search for concepts, not answers to exam questions
-\item If you accidentally run into a strong hint/answer, state it honestly
-\end{itemize}
+\item You can invoke the core modules I have written (as instructed), and can use LLMs
 \end{itemize}
 \end{frame}
 
